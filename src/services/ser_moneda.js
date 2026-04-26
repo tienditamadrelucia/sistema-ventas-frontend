@@ -3,7 +3,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 
 const API = `${API_URL}/api/moneda`;
-const APIURL = `${API_URL}/api`;
+//const APIURL = `${API_URL}/api`;
 
 export const registrarMoneda = async (data) => {
   try {
