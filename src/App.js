@@ -20,7 +20,7 @@ import Consulta from "./pages/Consulta";
 import Caja from "./pages/Caja";
 import Gastos from "./pages/Gastos";
 import Diario from "./pages/Diario";
-import Rep_credito from "./pages/Repor_Credito";
+import Repcredito from "./pages/ReporCredito";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -70,7 +70,7 @@ function App() {
         <Route path="/caja" element={<ProtectedRoute><Caja /></ProtectedRoute>} />
         <Route path="/gastos" element={<ProtectedRoute><Gastos /></ProtectedRoute>} />
         <Route path="/diario" element={<ProtectedRoute><Diario /></ProtectedRoute>} />
-        <Route path="/rep_credito" element={<ProtectedRoute><Rep_credito /></ProtectedRoute>} />
+        <Route path="/repcredito" element={<ProtectedRoute><Repcredito /></ProtectedRoute>} />
 
       </Routes>
     </BrowserRouter>

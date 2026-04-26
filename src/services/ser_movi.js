@@ -3,7 +3,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 export async function Consultar(productoId, fechaInicio, fechaFin) {
   try {    
-    const url = '${API_URL}/api/movimientos/${productoId}?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}';
+    const url = `${API_URL}/api/movimientos/${productoId}?fechaInicio=${fechaInicio}&fechaFin=${fechaFin}`;
 
     const res = await fetch(url);
     

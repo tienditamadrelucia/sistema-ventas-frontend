@@ -3,7 +3,7 @@ import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 
-const Repor_Credito = () => {
+const ReporCredito = () => {
   const navigate = useNavigate();
   const formularioRef = useRef(null);
 
@@ -307,4 +307,4 @@ const Repor_Credito = () => {
   );
 };
 
-export default Repor_Credito;
+export default ReporCredito;
