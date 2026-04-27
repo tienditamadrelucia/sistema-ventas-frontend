@@ -126,7 +126,7 @@ function Usuarios() {
   // -----------------------------
 
   const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();
-
+  alert("rol " + rol);
   if (rol !== "ADMINISTRADOR") {
     return <h2 style={{ color: "red" }}>Acceso denegado</h2>;
   }
