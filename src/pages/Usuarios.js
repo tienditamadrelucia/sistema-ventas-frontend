@@ -28,6 +28,13 @@ function Usuarios() {
 
   // PAGINACIÓN DE LOGS (BITACORAS DE USUARIO)
 
+  // Solo entra si es el ADMINISTRADOR
+  const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();
+
+  if (rol !== "ADMINISTRADOR") {
+    return <h2 style={{ color: "red" }}>Acceso denegado</h2>;
+  }
+
   async function recargarLogs(pagina = 1) {
   const res = await fetch(`${API_URL}/api/logs?page=${pagina}&limit=20`);
   const data = await res.json();
@@ -205,14 +212,7 @@ function Usuarios() {
     setUsuarios(usuarios.filter((u) => u._id !== id));
     await registrarAccion(`Eliminó al usuario "${usuario}"`);
     await recargarLogs();
-  };
-
-  // Solo entra si es el ADMINISTRADOR
-  const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();
-
-if (rol !== "ADMINISTRADOR") {
-  return <h2 style={{ color: "red" }}>Acceso denegado</h2>;
-}
+  }; 
 
   
   return (
