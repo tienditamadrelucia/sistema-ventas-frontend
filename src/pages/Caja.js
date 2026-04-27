@@ -454,70 +454,72 @@ useEffect(() => {
       }));
     };
 
-    const totalPesosContados =
-    (billetesP["100000"] || 0) * 100000 +
-    (billetesP["50000"]  || 0) * 50000 +
-    (billetesP["20000"]  || 0) * 20000 +
-    (billetesP["10000"]  || 0) * 10000 +
-    (billetesP["5000"]   || 0) * 5000 +
-    (billetesP["2000"]   || 0) * 2000 +
-    (billetesP["1000"]   || 0) * 1000 +
-    (billetesP["500"]    || 0) * 500 +
-    (billetesP["200"]    || 0) * 200 +
-    (billetesP["100"]    || 0) * 100;
+    // eslint-disable-next-line no-useless-computed-key
+const totalPesosContados =
+  (billetesP["100000"] || 0) * 100000 +
+  (billetesP["50000"]  || 0) * 50000 +
+  (billetesP["20000"]  || 0) * 20000 +
+  (billetesP["10000"]  || 0) * 10000 +
+  (billetesP["5000"]   || 0) * 5000 +
+  (billetesP["2000"]   || 0) * 2000 +
+  (billetesP["1000"]   || 0) * 1000 +
+  (billetesP["500"]    || 0) * 500 +
+  (billetesP["200"]    || 0) * 200 +
+  (billetesP["100"]    || 0) * 100;
 
-    const totalDolaresContados =
-    (billetesD["100"] || 0) * 100 +
-    (billetesD["50"]  || 0) * 50 +
-    (billetesD["20"]  || 0) * 20 +
-    (billetesD["10"]  || 0) * 10 +
-    (billetesD["5"]   || 0) * 5 +
-    (billetesD["1"]   || 0) * 1;
+// eslint-disable-next-line no-useless-computed-key
+const totalDolaresContados =
+  (billetesD["100"] || 0) * 100 +
+  (billetesD["50"]  || 0) * 50 +
+  (billetesD["20"]  || 0) * 20 +
+  (billetesD["10"]  || 0) * 10 +
+  (billetesD["5"]   || 0) * 5 +
+  (billetesD["1"]   || 0) * 1;
 
-    const totalBolivaresContados =
-    (billetesBs["100"] || 0) * 100 +
-    (billetesBs["50"]  || 0) * 50 +
-    (billetesBs["20"]  || 0) * 20 +
-    (billetesBs["10"]  || 0) * 10 +
-    (billetesBs["5"]   || 0) * 5 +
-    (billetesBs["1"]   || 0) * 1;
+// eslint-disable-next-line no-useless-computed-key
+const totalBolivaresContados =
+  (billetesBs["100"] || 0) * 100 +
+  (billetesBs["50"]  || 0) * 50 +
+  (billetesBs["20"]  || 0) * 20 +
+  (billetesBs["10"]  || 0) * 10 +
+  (billetesBs["5"]   || 0) * 5 +
+  (billetesBs["1"]   || 0) * 1;
 
-    const limpiarBilletesP = () => {
-    setBilletesP({
-        "100000": "",
-        "50000": "",
-        "20000": "",
-        "10000": "",
-        "5000": "",
-        "2000": "",
-        "1000": "",
-        "500": "",
-        "200": "",
-        "100": ""
-    });
-  };
 
-    const limpiarBilletesD = () => {
-    setBilletesD({
-        "100": "",
-        "50": "",
-        "20": "",
-        "10": "",
-        "5": "",
-        "1": ""
-    });
-  };
+    // eslint-disable-next-line no-useless-computed-key
+setBilletesP({
+  "100000": "",
+  "50000": "",
+  "20000": "",
+  "10000": "",
+  "5000": "",
+  "2000": "",
+  "1000": "",
+  "500": "",
+  "200": "",
+  "100": ""
+});
 
-    const limpiarBilletesBs = () => {
-    setBilletesBs({
-        "100": "",
-        "50": "",
-        "20": "",
-        "10": "",
-        "5": "",
-        "1": ""
-    });
-  };  
+// eslint-disable-next-line no-useless-computed-key
+setBilletesD({
+  "100": "",
+  "50": "",
+  "20": "",
+  "10": "",
+  "5": "",
+  "1": ""
+});
+
+// eslint-disable-next-line no-useless-computed-key
+setBilletesBs({
+  "100": "",
+  "50": "",
+  "20": "",
+  "10": "",
+  "5": "",
+  "1": ""
+});
+
 
     const guardarCaja = async () => {
         if (!fecha) {
