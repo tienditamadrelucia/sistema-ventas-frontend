@@ -488,39 +488,39 @@ const totalBolivaresContados =
 
     const limpiarBilletesP = () => {
     // eslint-disable-next-line no-useless-computed-key
-setBilletesP({
-  "100000": "",
-  "50000": "",
-  "20000": "",
-  "10000": "",
-  "5000": "",
-  "2000": "",
-  "1000": "",
-  "500": "",
-  "200": "",
-  "100": ""
-});
+    setBilletesP({
+    "100000": "",
+    "50000": "",
+    "20000": "",
+    "10000": "",
+    "5000": "",
+    "2000": "",
+    "1000": "",
+    "500": "",
+    "200": "",
+    "100": ""
+    })};
 
     const limpiarBilletesD = () => {
     // eslint-disable-next-line no-useless-computed-key
-setBilletesD({
-  "100": "",
-  "50": "",
-  "20": "",
-  "10": "",
-  "5": "",
-  "1": ""
-});
+    setBilletesD({
+    "100": "",
+    "50": "",
+    "20": "",
+    "10": "",
+    "5": "",
+    "1": ""
+    })};
 
     const limpiarBilletesBs = () => {
     setBilletesBs({
-  "100": "",
-  "50": "",
-  "20": "",
-  "10": "",
-  "5": "",
-  "1": ""
-});
+    "100": "",
+    "50": "",
+    "20": "",
+    "10": "",
+    "5": "",
+    "1": ""
+    })};
 
     const guardarCaja = async () => {
         if (!fecha) {
