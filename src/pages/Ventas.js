@@ -1082,30 +1082,28 @@ const generarNuevaFactura = async () => {
             style={estiloBoton}>Contado</button>
           {mostrarPago && (
             <Pago
-              modoCredito={modoCredito}              
-              fecha={fecha}
-              facturaNumero={numeroFactura}
-              onPagoCompletado={handlePagoCompletado}
-              totalDolar={totalDolar}
-              totalPeso={totalPeso}
-              totalBs={totalBs}
-              tasaP={tasaPeso}
-              tasaD={tasaDolar}
-              pagoExistente={pagoExistente}
-              vueltoExistente={vueltoExistente}
-              idVueltoExistente={idVueltoExistente}  
-              
-              onCerrar={() => setMostrarPago(false)}
-              
-              onPagoCompletado={(dataPago) => { 
-                console.log("Pago registrado:", dataPago); 
-                setPagoData(dataPago);
-                // ⭐⭐ ESTO ES LO QUE FALTABA ⭐⭐
-                setPagoRegistrado(true);                 // activa bloqueo de salida
-                setIdPagoExistente(dataPago.idPago);     // guarda ID del pago
-                setIdVueltoExistente(dataPago.idVuelto); // guarda ID del vuelto
-              }}
-            />
+  modoCredito={modoCredito}
+  fecha={fecha}
+  facturaNumero={numeroFactura}
+  totalDolar={totalDolar}
+  totalPeso={totalPeso}
+  totalBs={totalBs}
+  tasaP={tasaPeso}
+  tasaD={tasaDolar}
+  pagoExistente={pagoExistente}
+  vueltoExistente={vueltoExistente}
+  idVueltoExistente={idVueltoExistente}
+  onCerrar={() => setMostrarPago(false)}
+
+  onPagoCompletado={(dataPago) => { 
+    console.log("Pago registrado:", dataPago); 
+    setPagoData(dataPago);
+    setPagoRegistrado(true);
+    setIdPagoExistente(dataPago.idPago);
+    setIdVueltoExistente(dataPago.idVuelto);
+  }}
+/>
+
           )}          
           {mostrarEditorCliente && clienteSeleccionado && (          
           <EditarCliente
