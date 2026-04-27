@@ -1,19 +1,19 @@
 import Encabezado from "../components/Encabezado";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { obtenerUsuarios } from "../services/usuarios";
-import { crearUsuario } from "../services/usuarios";
-import { eliminarUsuario } from "../services/usuarios";
-import { actualizarUsuario } from "../services/usuarios";
+import { obtenerUsuarios, crearUsuario, eliminarUsuario, actualizarUsuario } from "../services/usuarios";
 import { registrarAccion } from "../utils/registrarAccion";
-import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import { API_URL } from "../config";
 
 function Usuarios() {
-   
-  // Estados principales
+
+  // -----------------------------
+  // 🔹 HOOKS (SIEMPRE VAN ARRIBA)
+  // -----------------------------
+
   const [usuarios, setUsuarios] = useState([]);
-  const navigate = useNavigate();  
-  const [modo, setModo] = useState("crear"); // "crear" | "editar"
+  const navigate = useNavigate();
+  const [modo, setModo] = useState("crear");
   const [usuarioEditando, setUsuarioEditando] = useState(null);
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
@@ -24,156 +24,103 @@ function Usuarios() {
     usuario: "",
     clave: "",
     rol: ""
-  }); 
+  });
 
-  // PAGINACIÓN DE LOGS (BITACORAS DE USUARIO)
+  const inputNombreRef = useRef(null);
 
-  // Solo entra si es el ADMINISTRADOR
+  // Foco inicial
+  useEffect(() => {
+    inputNombreRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    inputNombreRef.current?.focus();
+  }, [modo]);
+
+  // Cargar usuarios
+  useEffect(() => {
+    async function cargar() {
+      const data = await obtenerUsuarios();
+      console.log("🟣 Respuesta backend usuarios:", data);
+
+      let lista = [];
+
+      if (Array.isArray(data)) lista = data;
+      else if (Array.isArray(data.usuarios)) lista = data.usuarios;
+      else if (Array.isArray(data.data)) lista = data.data;
+      else if (Array.isArray(data.results)) lista = data.results;
+      else {
+        const posibleArray = Object.values(data).find(v => Array.isArray(v));
+        if (Array.isArray(posibleArray)) lista = posibleArray;
+      }
+
+      setUsuarios(lista);
+    }
+
+    cargar();
+  }, []);
+
+  // Guardar usuarios en localStorage
+  useEffect(() => {
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+  }, [usuarios]);
+
+  // Cargar logs
+  useEffect(() => {
+    recargarLogs();
+  }, []);
+
+  async function recargarLogs(pagina = 1) {
+    const res = await fetch(`${API_URL}/api/logs?page=${pagina}&limit=20`);
+    const data = await res.json();
+
+    if (Array.isArray(data)) {
+      setLogs(data);
+      setPage(1);
+      setTotalPages(1);
+      return;
+    }
+
+    setLogs(Array.isArray(data.logs) ? data.logs : []);
+    setPage(data.page || 1);
+    setTotalPages(data.totalPages || 1);
+  }
+
+  // -----------------------------
+  // 🔹 VALIDACIÓN DE ROL (DEBE IR DESPUÉS DE LOS HOOKS)
+  // -----------------------------
+
   const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();
 
   if (rol !== "ADMINISTRADOR") {
     return <h2 style={{ color: "red" }}>Acceso denegado</h2>;
   }
 
-  async function recargarLogs(pagina = 1) {
-  const res = await fetch(`${API_URL}/api/logs?page=${pagina}&limit=20`);
-  const data = await res.json();
-  
-  // Si data ES un array → úsalo directamente
-  if (Array.isArray(data)) {
-    setLogs(data);
-    setPage(1);
-    setTotalPages(1);
-    return;
-  }
+  // -----------------------------
+  // 🔹 MANEJO DE FORMULARIO
+  // -----------------------------
 
-  // Si data.logs existe → úsalo
-  setLogs(Array.isArray(data.logs) ? data.logs : []);
-  setPage(data.page || 1);
-  setTotalPages(data.totalPages || 1);
-}
-
-  // Estilos de botones
-  const botonGuardar = {
-    width: "100%",
-    padding: "10px",
-    backgroundColor: "#D98897",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    fontFamily: "Arial Black",
-    cursor: "pointer",
-    marginTop: "10px"
-  };
-
-  const botonAccion = {
-    padding: "6px 12px",
-    border: "none",
-    borderRadius: "4px",
-    cursor: "pointer"
-  };
-
-  const estiloBoton = {
-  width: "15%",
-  padding: "10px",
-  backgroundColor: "#D98897",
-  color: "white",
-  border: "1px solid #ccc",
-  borderRadius: "8px",
-  fontWeight: "900",
-  fontFamily: "Arial Black, Arial, sans-serif",
-  letterSpacing: "1px",
-  cursor: "pointer",
-  marginTop: "10px"
-};
-  // Foco en el primer campo
-  const inputNombreRef = useRef(null);
-
-  useEffect(() => {
-    if (inputNombreRef.current) {
-      inputNombreRef.current.focus();
-    }
-  }, []);
-
-  useEffect(() => {
-    if (inputNombreRef.current) {
-      inputNombreRef.current.focus();
-    }
-  }, [modo]);
-
-  // Cargar usuarios y logs desde localStorage
-  useEffect(() => {
-  async function cargar() {
-    const data = await obtenerUsuarios();
-    console.log("🟣 Respuesta backend usuarios:", data);
-
-    let lista = [];
-
-    // Caso 1: el backend devuelve un array directamente
-    if (Array.isArray(data)) {
-      lista = data;
-    }
-
-    // Caso 2: el backend devuelve { usuarios: [...] }
-    else if (Array.isArray(data.usuarios)) {
-      lista = data.usuarios;
-    }
-
-    // Caso 3: el backend devuelve { data: [...] }
-    else if (Array.isArray(data.data)) {
-      lista = data.data;
-    }
-
-    // Caso 4: el backend devuelve { results: [...] }
-    else if (Array.isArray(data.results)) {
-      lista = data.results;
-    }
-
-    // Caso 5: cualquier otra cosa → intenta detectar arrays dentro
-    else {
-      const posibleArray = Object.values(data).find(v => Array.isArray(v));
-      if (Array.isArray(posibleArray)) {
-        lista = posibleArray;
-      }
-    }
-
-    setUsuarios(lista);
-  }
-
-  cargar();
-}, []);
-
-  // Guardar usuarios y logs cuando cambien
-  useEffect(() => {
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
-  }, [usuarios]); 
-
-  useEffect(() => {
-  recargarLogs();
-}, []);
-
-  // Manejo de formulario
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
-  };  
+  };
 
-  const handleGuardar = async() => {    
-  if (!formData.nombre || !formData.usuario || !formData.clave || !formData.rol) {
-    alert("Complete todos los campos");
-    return;
-  }
+  const handleGuardar = async () => {
+    if (!formData.nombre || !formData.usuario || !formData.clave || !formData.rol) {
+      alert("Complete todos los campos");
+      return;
+    }
 
-  const nuevo = await crearUsuario(formData);
-  setUsuarios([...usuarios, nuevo]);
-  await registrarAccion(`Registró al usuario "${formData.usuario}"`);
-  await recargarLogs();
-  
-  setFormData({ nombre: "", usuario: "", clave: "", rol: "" });
-  setModo("crear");
-};
+    const nuevo = await crearUsuario(formData);
+    setUsuarios([...usuarios, nuevo]);
+    await registrarAccion(`Registró al usuario "${formData.usuario}"`);
+    await recargarLogs();
+
+    setFormData({ nombre: "", usuario: "", clave: "", rol: "" });
+    setModo("crear");
+  };
 
   const handleEditar = (user) => {
     setModo("editar");
@@ -188,17 +135,20 @@ function Usuarios() {
 
   const handleActualizar = async () => {
     await actualizarUsuario(usuarioEditando._id, formData);
+
     const actualizados = usuarios.map((u) =>
       u._id === usuarioEditando._id
-      ? { ...u, ...usuarioEditando, ...formData }
-      : u
+        ? { ...u, ...formData }
+        : u
     );
+
     setUsuarios(actualizados);
     setFormData({ nombre: "", usuario: "", clave: "", rol: "" });
-    setModo("crear");    
-    setUsuarioEditando(null);    
+    setModo("crear");
+    setUsuarioEditando(null);
+
     await registrarAccion(`Actualizó al usuario "${usuarioEditando.usuario}"`);
-    await recargarLogs();    
+    await recargarLogs();
   };
 
   const handleCancelar = () => {
@@ -208,12 +158,15 @@ function Usuarios() {
   };
 
   const handleEliminar = async (id, usuario) => {
-    await eliminarUsuario(id);    
+    await eliminarUsuario(id);
     setUsuarios(usuarios.filter((u) => u._id !== id));
     await registrarAccion(`Eliminó al usuario "${usuario}"`);
     await recargarLogs();
-  }; 
+  };
 
+  // -----------------------------
+  // 🔹 RENDER
+  // -----------------------------
   
   return (
     <div>
