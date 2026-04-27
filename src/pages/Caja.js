@@ -426,7 +426,9 @@ useEffect(() => {
     cargarGastos(fecha);
     cargarCajaChica(fecha);
   }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [modo]);
+
 
 
     const handleBillete = (moneda, valor, cantidad) => {
