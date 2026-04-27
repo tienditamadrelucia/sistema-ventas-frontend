@@ -781,6 +781,7 @@ const totalBolivaresContados =
             value={billetesP["100000"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["100000"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -800,6 +801,7 @@ const totalBolivaresContados =
             value={billetesP["50000"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["50000"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -819,6 +821,7 @@ const totalBolivaresContados =
             value={billetesP["20000"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["20000"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -838,6 +841,7 @@ const totalBolivaresContados =
             value={billetesP["10000"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["10000"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -857,6 +861,7 @@ const totalBolivaresContados =
             value={billetesP["5000"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["5000"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -876,6 +881,7 @@ const totalBolivaresContados =
             value={billetesP["2000"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["2000"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -895,6 +901,7 @@ const totalBolivaresContados =
             value={billetesP["1000"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["1000"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -914,6 +921,7 @@ const totalBolivaresContados =
             value={billetesP["500"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["500"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -933,6 +941,7 @@ const totalBolivaresContados =
             value={billetesP["200"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["200"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -952,6 +961,7 @@ const totalBolivaresContados =
             value={billetesP["100"] || ""}
             onChange={(e) =>
             modo !== "lectura" &&
+            // eslint-disable-next-line no-useless-computed-key
             setBilletesP({ ...billetesP, ["100"]: e.target.value })
             }
             readOnly={modo === "lectura"}
@@ -1024,6 +1034,7 @@ const totalBolivaresContados =
           value={billetesD["100"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesD({ ...billetesD, ["100"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1044,6 +1055,7 @@ const totalBolivaresContados =
           value={billetesD["50"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesD({ ...billetesD, ["50"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1064,6 +1076,7 @@ const totalBolivaresContados =
           value={billetesD["20"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesD({ ...billetesD, ["20"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1084,6 +1097,7 @@ const totalBolivaresContados =
           value={billetesD["10"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesD({ ...billetesD, ["10"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1104,6 +1118,7 @@ const totalBolivaresContados =
           value={billetesD["5"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesD({ ...billetesD, ["5"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1124,6 +1139,7 @@ const totalBolivaresContados =
           value={billetesD["1"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesD({ ...billetesD, ["1"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1209,6 +1225,7 @@ const totalBolivaresContados =
           value={billetesBs["100"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesBs({ ...billetesBs, ["100"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1230,6 +1247,7 @@ const totalBolivaresContados =
           value={billetesBs["50"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesBs({ ...billetesBs, ["50"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1251,6 +1269,7 @@ const totalBolivaresContados =
           value={billetesBs["20"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesBs({ ...billetesBs, ["20"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1272,6 +1291,7 @@ const totalBolivaresContados =
           value={billetesBs["10"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesBs({ ...billetesBs, ["10"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1293,6 +1313,7 @@ const totalBolivaresContados =
           value={billetesBs["5"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesBs({ ...billetesBs, ["5"]: e.target.value })
           }
           readOnly={modo === "lectura"}
@@ -1314,6 +1335,7 @@ const totalBolivaresContados =
           value={billetesBs["1"] || ""}
           onChange={(e) =>
           modo !== "lectura" &&
+          // eslint-disable-next-line no-useless-computed-key
           setBilletesBs({ ...billetesBs, ["1"]: e.target.value })
           }
           readOnly={modo === "lectura"}
