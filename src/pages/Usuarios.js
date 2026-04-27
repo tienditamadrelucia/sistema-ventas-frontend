@@ -28,7 +28,47 @@ function Usuarios() {
 
   const inputNombreRef = useRef(null);
 
-  // Foco inicial
+  // -----------------------------
+  // 🔹 ESTILOS (DEBEN IR ANTES DE LA VALIDACIÓN)
+  // -----------------------------
+
+  const botonGuardar = {
+    width: "100%",
+    padding: "10px",
+    backgroundColor: "#D98897",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    fontFamily: "Arial Black",
+    cursor: "pointer",
+    marginTop: "10px"
+  };
+
+  const botonAccion = {
+    padding: "6px 12px",
+    border: "none",
+    borderRadius: "4px",
+    cursor: "pointer"
+  };
+
+  const estiloBoton = {
+    width: "15%",
+    padding: "10px",
+    backgroundColor: "#D98897",
+    color: "white",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    fontWeight: "900",
+    fontFamily: "Arial Black, Arial, sans-serif",
+    letterSpacing: "1px",
+    cursor: "pointer",
+    marginTop: "10px"
+  };
+
+  // -----------------------------
+  // 🔹 EFECTOS
+  // -----------------------------
+
   useEffect(() => {
     inputNombreRef.current?.focus();
   }, []);
@@ -37,12 +77,9 @@ function Usuarios() {
     inputNombreRef.current?.focus();
   }, [modo]);
 
-  // Cargar usuarios
   useEffect(() => {
     async function cargar() {
       const data = await obtenerUsuarios();
-      console.log("🟣 Respuesta backend usuarios:", data);
-
       let lista = [];
 
       if (Array.isArray(data)) lista = data;
@@ -60,12 +97,10 @@ function Usuarios() {
     cargar();
   }, []);
 
-  // Guardar usuarios en localStorage
   useEffect(() => {
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
   }, [usuarios]);
 
-  // Cargar logs
   useEffect(() => {
     recargarLogs();
   }, []);
@@ -87,7 +122,7 @@ function Usuarios() {
   }
 
   // -----------------------------
-  // 🔹 VALIDACIÓN DE ROL (DEBE IR DESPUÉS DE LOS HOOKS)
+  // 🔹 VALIDACIÓN DE ROL (DEBE IR DESPUÉS DE HOOKS Y ESTILOS)
   // -----------------------------
 
   const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();
