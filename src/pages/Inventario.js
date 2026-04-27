@@ -152,21 +152,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
     setProductos([]);
     setToma({});
   }
-};
-
-
-
-    registrarAccion("Consultó inventario del " + fecha + " / Categoría: " + categoria);
-
-  } catch (error) {
-    manejarError(error);
-    alert("Se mostrará la tabla vacía para continuar trabajando", error);
-
-    // Evitar que la UI muera
-    setProductos([]);
-    setToma([]);
-  }
-};
+}; 
 
   async function cargarInventario() {
     if (!fecha || !categoria) return;
