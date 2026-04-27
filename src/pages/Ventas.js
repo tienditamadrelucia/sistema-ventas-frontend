@@ -194,7 +194,10 @@ const botonGuardar = {
   };
 
   cargarTasas();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [fecha]);
+
 
 
 useEffect(() => {
