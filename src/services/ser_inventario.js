@@ -2,13 +2,13 @@ import axios from "axios";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 // DEFINIR API_URL AQUÍ (no usar config.js)
-const APIURL = '${API_URL}/api';
-const API = '${API_URL}/inventario';
+const APIURL = `${API_URL}/api`;
+const API = `${API_URL}/inventario`;
 
 // Obtener productos + tomas existentes + stock final del sistema
 export const obtenerInventario = async (fecha, categoria) => {
   try {
-    const url = '${APIURL}/inventario?fecha=${fecha}&categoria=${categoria}';
+    const url = `${APIURL}/inventario?fecha=${fecha}&categoria=${categoria}`;
     
   axios.defaults.withCredentials = false;
   axios.defaults.baseURL = "";
