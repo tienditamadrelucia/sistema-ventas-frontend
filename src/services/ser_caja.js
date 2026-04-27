@@ -1,6 +1,6 @@
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
-const API = '${API_URL}/api/caja';
+const API = `${API_URL}/api/caja`;
 
 export const obtenerCuadre = async (fecha) => {
   console.log("fecha ", fecha);
