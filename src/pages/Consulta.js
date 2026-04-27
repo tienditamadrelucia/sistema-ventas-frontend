@@ -95,24 +95,30 @@ const Consulta = () => {
     // USEEFFECT para cargar tasas, clientes, categorías y productos
     // -----------------------------
     useEffect(() => {
-    if (!detalle) return;
-        const cargarTasaDeLaFactura = async () => {
-        try {
-          const fechaFactura = detalle.venta.fecha.substring(0, 10);
-          const res = await fetch(`${API}/tasas/por-fecha/${fechaFactura}`);
-          const data = await res.json();
-        if (data.ok) {
-            setTasaDolar(data.tasa.tasaDolar);
-            setTasaPeso(data.tasa.tasaPeso);
-          } else {
-            alert("No hay tasas registradas para la fecha de esta factura.");
-        }
-        } catch (error) {
-        console.error("Error cargando tasa:", error);
-        }
-    };
-    cargarTasaDeLaFactura();
-    }, [detalle]);
+  if (!detalle) return;
+
+  const cargarTasaDeLaFactura = async () => {
+    try {
+      const fechaFactura = detalle.venta.fecha.substring(0, 10);
+      const res = await fetch(`${API}/tasas/por-fecha/${fechaFactura}`);
+      const data = await res.json();
+
+      if (data.ok) {
+        setTasaDolar(data.tasa.tasaDolar);
+        setTasaPeso(data.tasa.tasaPeso);
+      } else {
+        alert("No hay tasas registradas para la fecha de esta factura.");
+      }
+    } catch (error) {
+      console.error("Error cargando tasa:", error);
+    }
+  };
+
+  cargarTasaDeLaFactura();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [detalle]);
+
 
     const formatoVE = (valor) => {
       if (!valor) return "0,00";

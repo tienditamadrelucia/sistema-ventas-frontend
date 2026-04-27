@@ -218,7 +218,7 @@ useEffect(() => {
     };        
 
     try {
-      const res = await axios.post("${APIURL}/api/inventario/guardar", payload);
+      const res = await axios.post( `${APIURL}/api/inventario/guardar`, payload);
     
 
   } catch (error) {
