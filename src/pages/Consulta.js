@@ -72,7 +72,7 @@ const Consulta = () => {
     const [totalBsPagado, setTotalBsPagado] = useState(0);
     const [totalPPagado, setTotalPPagado] = useState(0);    
 
-    const API = "${API_URL}/api";
+    const API = `${API_URL}/api`;
 
     const estiloBoton = {
         display:"flex",
