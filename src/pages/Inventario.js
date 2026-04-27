@@ -80,8 +80,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   const [productos, setProductos] = useState([]);
   const [categoria, setCategoria] = useState("");
   const [categorias, setCategorias] = useState([]);
-  const [tomas, setTomas] = useState({}); // { idProducto: cantidadFisica }
-  const rolUsuario = localStorage.getItem("rol");
+  const [tomas, setTomas] = useState({}); // { idProducto: cantidadFisica }  
   const APIURL = `${API_URL}/api`;
   
   const [formData, setFormData] = useState({
@@ -481,6 +480,7 @@ useEffect(() => {
                 </p>
                 <button
                   style={estiloBotonAjuste(rol === "ADMINISTRADOR")}
+                  disabled={rol !== "ADMINISTRADOR"}
                   onClick={() => registrarAjuste(producto.codigo, stockSistema)}
                 >
                   Registrar Ajuste
