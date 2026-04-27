@@ -118,7 +118,6 @@ const botonGuardar = {
       if (!res.data || !res.data.tasa) {
         alert("Debe registrar las tasas del día antes de entrar al módulo de Ventas.");
         navigate("/tasas");
-        //window.close();
         return;
       }
       const { tasaD, tasaP, cajachicaD, cajachicaP } = res.data.tasa;
@@ -130,11 +129,13 @@ const botonGuardar = {
       console.error("Error validando tasas del día:", error);
       alert("Error validando tasas del día.");
       navigate("/tasas");
-      //window.close();
     }
   };
   validarTasasDeHoy();
-}, []); // ← SOLO UNA VEZ
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
 
   const UsuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";
   
@@ -166,22 +167,21 @@ const botonGuardar = {
   useEffect(() => {
   const cargarTasas = async () => {
     try {
-      // 1. Tomar la fecha de la factura
-      const fechaFactura = fecha;   // ← TU VARIABLE REAL
+      const fechaFactura = fecha;
       if (!fechaFactura) {
         alert("Debe seleccionar una fecha para la factura.");
         return;
       }
-      // 2. Buscar tasas según la fecha de la factura
+
       const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fechaFactura}`);
       if (!res.data || !res.data.tasa) {
         alert("No existen tasas registradas para esta fecha.");
         navigate("/tasas");
-        //window.clse();
         return;
       }
+
       const { tasaD, tasaP, cajachicaD, cajachicaP } = res.data.tasa;
-      // 3. Cargar tasas en el estado
+
       setTasaDolar(tasaD);
       setTasaPeso(tasaP);
       setCajaDolar(cajachicaD);
@@ -190,18 +190,21 @@ const botonGuardar = {
       console.error("Frontend dice: Error cargando tasas:", error);
       alert("Error cargando tasas.");
       navigate("/tasas");
-      //window.close();
     }
   };
+
   cargarTasas();
-}, [fecha]);   // ← SE EJECUTA CUANDO CAMBIA LA FECHA
+}, [fecha]);
+
 
 useEffect(() => {
-    //reservarFactura();
-    generarHora();
-    cargarClientes();
-    cargarCategoriasYProductos();
+  generarHora();
+  cargarClientes();
+  cargarCategoriasYProductos();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
+
 
   const cargarClientes = async () => {
     try {
@@ -229,23 +232,23 @@ useEffect(() => {
   // Cálculo del total del producto y total de la factura
   // -----------------------------
 
-  useEffect(() => {
-    const subtotal = cantidad * precioVenta;
-    const desc = subtotal * (descuento / 100);
-    setTotalProducto(subtotal - desc);
-  }, [cantidad, precioVenta, descuento]);
-
   useEffect(() => {        
-    const subtotalDolar = listaFactura.reduce(
-      (acc, item) => acc + parseFloat(item.total || 0), 0    
-    );
-    setSubtotalDolar(subtotalDolar);    
-    const ivaDecimal = (parseFloat(iva) || 0) / 100;
-    const totalDolar = subtotalDolar + (subtotalDolar * ivaDecimal);
-    setTotalDolar(totalDolar);
-    setTotalPeso(totalDolar * tasaPeso || 0);
-    setTotalBs(totalDolar * tasaDolar || 0);        
-  }, [listaFactura, iva]);
+  const subtotalDolar = listaFactura.reduce(
+    (acc, item) => acc + parseFloat(item.total || 0), 
+    0
+  );
+
+  setSubtotalDolar(subtotalDolar);
+
+  const ivaDecimal = (parseFloat(iva) || 0) / 100;
+  const totalDolar = subtotalDolar + (subtotalDolar * ivaDecimal);
+
+  setTotalDolar(totalDolar);
+  setTotalPeso(totalDolar * tasaPeso || 0);
+  setTotalBs(totalDolar * tasaDolar || 0);
+
+}, [listaFactura, iva, tasaPeso, tasaDolar]);
+
 
   // Funciones para generación de número de factura y hora  
   const generarHora = () => {
