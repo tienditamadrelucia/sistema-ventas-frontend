@@ -478,7 +478,7 @@ useEffect(() => {
                   </span>
                 </p>
                 <button
-                  style={estiloBotonAjuste(rolUsuario === "ADMINISTRADOR")}
+                  style={estiloBotonAjuste(rol === "ADMINISTRADOR")}
                   onClick={() => registrarAjuste(producto.codigo, stockSistema)}
                 >
                   Registrar Ajuste
