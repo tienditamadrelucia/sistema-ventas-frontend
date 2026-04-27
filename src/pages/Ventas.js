@@ -98,8 +98,7 @@ const botonGuardar = {
     color: "white",
     border: "none",
     borderRadius: "6px",
-    fontFamily: "Arial Black",
-    cursor: "pointer",
+    fontFamily: "Arial Black",    
     marginTop: "8px",
     opacity:procesando ? 0.6 :1,
     cursor: procesando ? "not-allowed":"pointer"
@@ -968,8 +967,7 @@ const generarNuevaFactura = async () => {
                 opacity: editando ? 0.4 : 1,
                 cursor: editando ? "not-allowed" : "pointer",
                 background: "none",
-                border: "none",
-                cursor: "pointer",
+                border: "none",                
                 marginTop: "18px",
                 padding: 0
               }}
