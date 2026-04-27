@@ -480,7 +480,7 @@ useEffect(() => {
                 </p>
                 <button
                   style={estiloBotonAjuste(rol === "ADMINISTRADOR")}
-                  disabled={rol !== "ADMINISTRADOR"}
+                  enabled={rol == "ADMINISTRADOR"}
                   onClick={() => registrarAjuste(producto.codigo, stockSistema)}
                 >
                   Registrar Ajuste
