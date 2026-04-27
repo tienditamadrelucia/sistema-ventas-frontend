@@ -9,10 +9,7 @@ import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 function Usuarios() {
- 
-// Usuario actual (el que inició sesión)
-  const usuarioActual = localStorage.getItem("usuario") || "ADMIN";
-  
+   
   // Estados principales
   const [usuarios, setUsuarios] = useState([]);
   const navigate = useNavigate();  
@@ -211,10 +208,12 @@ function Usuarios() {
   };
 
   // Solo entra si es el ADMINISTRADOR
-  const rol = localStorage.getItem("rol")?.toUpperCase().trim()    
-  if (rol !== "ADMINISTRADOR") {    
-    return <h2 style={{ color: "red" }}>Acceso denegado</h2>;
-  };
+  const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();
+
+if (rol !== "ADMINISTRADOR") {
+  return <h2 style={{ color: "red" }}>Acceso denegado</h2>;
+}
+
   
   return (
     <div>

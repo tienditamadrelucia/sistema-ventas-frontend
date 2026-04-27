@@ -107,16 +107,54 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
  const handleBuscar = async () => {
   try {
-    // Llamada al backend (si falla, data será {})
     const data = await obtenerInventario(formData.fecha, formData.categoria) || {};
 
-    // Productos seguros SIEMPRE
+    // Productos seguros
     const productosSeguros = Array.isArray(data.productos) ? data.productos : [];
     setProductos(productosSeguros);
 
-    // Tomas seguras SIEMPRE
-    const tomasSeguras = Array.isArray(data.tomas) ? data.tomas : [];
+    // Convertir tomas en DICCIONARIO (igual que cargarInventario)
+    const tomasSeguras = {};
+
+    if (Array.isArray(data.tomas)) {
+      data.tomas.forEach(t => {
+        tomasSeguras[t.productoId] = {
+          id: t._id,
+          stockFisico: t.stockFisico,
+          observacion: t.observacion,
+          existe: true,
+          editando: false
+        };
+      });
+    }
+
+    // AGREGAR productos sin toma (AQUÍ VA TU BLOQUE)
+    productosSeguros.forEach(p => {
+      if (!tomasSeguras[p.codigo]) {
+        tomasSeguras[p.codigo] = {
+          stockFisico: "",
+          observacion: "",
+          existe: false,
+          editando: false
+        };
+      }
+    });
+
+    // Guardar en estado
     setToma(tomasSeguras);
+
+    registrarAccion("Consultó inventario del " + fecha + " / Categoría: " + categoria);
+
+  } catch (error) {
+    manejarError(error);
+    alert("Se mostrará la tabla vacía para continuar trabajando", error);
+
+    setProductos([]);
+    setToma({});
+  }
+};
+
+
 
     registrarAccion("Consultó inventario del " + fecha + " / Categoría: " + categoria);
 
