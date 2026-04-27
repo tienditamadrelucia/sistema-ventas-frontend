@@ -126,7 +126,7 @@ function Usuarios() {
   // -----------------------------
 
   const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();
-  alert("rol " + rol);
+  //alert("rol " + rol);
   if (rol !== "ADMINISTRADOR") {
     return <h2 style={{ color: "red" }}>Acceso denegado</h2>;
   }
@@ -149,7 +149,7 @@ function Usuarios() {
     }
 
     const nuevo = await crearUsuario(formData);
-    setUsuarios([...usuarios, nuevo]);
+    setUsuarios([...usuarios, nuevo.usuario]);
     await registrarAccion(`Registró al usuario "${formData.usuario}"`);
     await recargarLogs();
 
