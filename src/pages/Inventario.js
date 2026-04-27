@@ -92,6 +92,8 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
     observacion: ""   //observaciones si hay diferencia
     });
 
+  const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();  
+
   // Cargar inventario al cambiar fecha o categoría
 useEffect(() => {    
   cargarInventario();
