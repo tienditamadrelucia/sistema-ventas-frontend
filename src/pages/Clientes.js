@@ -55,8 +55,7 @@ const Clientes = () => {
     color: "white",
     border: "none",
     borderRadius: "6px",
-    fontFamily: "Arial Black",
-    cursor: "pointer",
+    fontFamily: "Arial Black",    
     marginTop: "8px",
     opacity:procesando ? 0.6 :1,
     cursor: procesando ? "not-allowed":"pointer"
@@ -156,7 +155,7 @@ const Clientes = () => {
       await registrarAccion(`Actualizó al cliente "${formData.nombreCompleto}"`);
     }
     // Recargar lista
-    const res = await fetch("${API_URL}/api/clientes");
+    const res = await fetch(`${API_URL}/api/clientes`);
     const data = await res.json();
     setClientes(data);
     limpiarFormulario();
@@ -207,7 +206,7 @@ const Clientes = () => {
     }
 
     // 🔁 Recargar lista desde el backend
-    const resp = await fetch("${API_URL}/api/clientes");
+    const resp = await fetch(`${API_URL}/api/clientes`);
     const data = await resp.json();
     setClientes(data);
 

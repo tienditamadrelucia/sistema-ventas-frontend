@@ -399,36 +399,35 @@ const Caja = () => {
   };
 
     useEffect(() => {
-        if (modo === "lectura") return; // ← clave
-        const totalEsperadoP = (cuadre.CajaChicaP || 0) + (cuadre.VentasP || 0) - (cuadre.GastosP || 0);
-        setCuadre(prev => ({
-        ...prev, totalEsperadoP
-        }));
-    },[cuadre.CajaChicaP, cuadre.VentasP, cuadre.GastosP]);
-    
-    useEffect(() => {
-        if (modo === "lectura") return; // ← clave
-        const totalEsperadoD = (cuadre.CajaChicaD || 0) + (cuadre.VentasD || 0) - (cuadre.GastosD || 0);
-        setCuadre(prev => ({
-        ...prev, totalEsperadoD
-        }));
-    },[cuadre.CajaChicaD, cuadre.VentasD, cuadre.GastosD]);
+  if (modo === "lectura") return;
+  const totalEsperadoP = (cuadre.CajaChicaP || 0) + (cuadre.VentasP || 0) - (cuadre.GastosP || 0);
+  setCuadre(prev => ({ ...prev, totalEsperadoP }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [cuadre.CajaChicaP, cuadre.VentasP, cuadre.GastosP]);
+
+useEffect(() => {
+  if (modo === "lectura") return;
+  const totalEsperadoD = (cuadre.CajaChicaD || 0) + (cuadre.VentasD || 0) - (cuadre.GastosD || 0);
+  setCuadre(prev => ({ ...prev, totalEsperadoD }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [cuadre.CajaChicaD, cuadre.VentasD, cuadre.GastosD]);
+
+useEffect(() => {
+  if (modo === "lectura") return;
+  const totalEsperadoBs = (cuadre.CajaChicaBs || 0) + (cuadre.VentasBs || 0) - (cuadre.GastosBs || 0);
+  setCuadre(prev => ({ ...prev, totalEsperadoBs }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [cuadre.CajaChicaBs, cuadre.VentasBs, cuadre.GastosBs]);
+
 
     useEffect(() => {
-        if (modo === "lectura") return; // ← clave
-        const totalEsperadoBs = (cuadre.CajaChicaBs || 0) + (cuadre.VentasBs || 0) - (cuadre.GastosBs || 0);
-        setCuadre(prev => ({
-        ...prev, totalEsperadoBs
-        }));
-    },[cuadre.CajaChicaBs, cuadre.VentasBs, cuadre.GastosBs]);
+  if (modo === "modificar") {
+    cargarVentas(fecha);
+    cargarGastos(fecha);
+    cargarCajaChica(fecha);
+  }
+}, [modo]);
 
-    useEffect(() => {
-    if (modo === "modificar") {
-        cargarVentas(fecha);
-        cargarGastos(fecha);
-        cargarCajaChica(fecha);
-    }
-    }, [modo]);
 
     const handleBillete = (moneda, valor, cantidad) => {
         if (modo === "lectura") return; // ← clave

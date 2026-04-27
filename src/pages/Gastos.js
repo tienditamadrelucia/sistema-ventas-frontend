@@ -48,8 +48,7 @@ const Gastos = () => {
     color: "white",
     border: "none",
     borderRadius: "6px",
-    fontFamily: "Arial Black",
-    cursor: "pointer",
+    fontFamily: "Arial Black",    
     marginTop: "8px",
     opacity:procesando ? 0.6 :1,
     cursor: procesando ? "not-allowed":"pointer"

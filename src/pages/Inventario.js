@@ -82,7 +82,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   const [categorias, setCategorias] = useState([]);
   const [tomas, setTomas] = useState({}); // { idProducto: cantidadFisica }
   const rolUsuario = localStorage.getItem("rol");
-  const APIURL = "${API_URL}/api";
+  const APIURL = `${API_URL}/api`;
   
   const [formData, setFormData] = useState({
     fecha: "",        // Fecha de la toma de inventario
@@ -93,9 +93,12 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
     });
 
   // Cargar inventario al cambiar fecha o categoría
-  useEffect(() => {    
-    cargarInventario();
-  }, [fecha, categoria]);
+useEffect(() => {    
+  cargarInventario();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [fecha, categoria]);
+
 
   useEffect(() => {
   async function cargar() {    

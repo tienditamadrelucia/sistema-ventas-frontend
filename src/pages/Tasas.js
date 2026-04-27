@@ -7,7 +7,7 @@ import { obtenerFechaLocal } from "../utils/fechaLocal";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Tasas = () => {
-  const hoy = new Date;  
+  const hoy = new Date();  
   const navigate = useNavigate();      
   const [form, setForm] = useState({
     fecha: hoy,
@@ -79,28 +79,33 @@ const Tasas = () => {
     color: "#B84A4A"
   };
 
-  useEffect(() => {
-    registrarAccion("Ingreso al módulo Tasas de Cambio");
-    const cargar = async () => {
-      const res = await obtenerTasaHoy();
-      if (res.ok && res.tasa) {
-        setExisteHoy(true);
-        setModoModificar(false);
-        setForm({
-          _id: res.tasa._id,
-          fecha: hoy,
-          cajachicaP: res.tasa.cajachicaP,
-          cajachicaD: res.tasa.cajachicaD,
-          tasaP: res.tasa.tasaP,
-          tasaD: res.tasa.tasaD
-        });
-      } else {
-        setExisteHoy(false);
-        setModoModificar(true);
-      }
-    };
-    cargar();
-  }, []);
+useEffect(() => {
+  registrarAccion("Ingreso al módulo Tasas de Cambio");
+
+  const cargar = async () => {
+    const res = await obtenerTasaHoy();
+
+    if (res.ok && res.tasa) {
+      setExisteHoy(true);
+      setModoModificar(false);
+      setForm({
+        _id: res.tasa._id,
+        fecha: hoy,
+        cajachicaP: res.tasa.cajachicaP,
+        cajachicaD: res.tasa.cajachicaD,
+        tasaP: res.tasa.tasaP,
+        tasaD: res.tasa.tasaD
+      });
+    } else {
+      setExisteHoy(false);
+      setModoModificar(true);
+    }
+  };
+
+  cargar();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
 
   const handleChange = (e) => {
     setForm({
