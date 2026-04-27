@@ -486,6 +486,7 @@ const totalBolivaresContados =
   (billetesBs["1"]   || 0) * 1;
 
 
+    const limpiarBilletesP = () => {
     // eslint-disable-next-line no-useless-computed-key
 setBilletesP({
   "100000": "",
@@ -500,7 +501,8 @@ setBilletesP({
   "100": ""
 });
 
-// eslint-disable-next-line no-useless-computed-key
+    const limpiarBilletesD = () => {
+    // eslint-disable-next-line no-useless-computed-key
 setBilletesD({
   "100": "",
   "50": "",
@@ -510,8 +512,8 @@ setBilletesD({
   "1": ""
 });
 
-// eslint-disable-next-line no-useless-computed-key
-setBilletesBs({
+    const limpiarBilletesBs = () => {
+    setBilletesBs({
   "100": "",
   "50": "",
   "20": "",
@@ -519,7 +521,6 @@ setBilletesBs({
   "5": "",
   "1": ""
 });
-
 
     const guardarCaja = async () => {
         if (!fecha) {
