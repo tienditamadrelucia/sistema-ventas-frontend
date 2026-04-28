@@ -112,15 +112,18 @@ useEffect(() => {
  const handleBuscar = async () => {
   try {
     const data = await obtenerInventario(formData.fecha, formData.categoria) || {};
-    // Productos seguros
+
     const productosSeguros = Array.isArray(data.productos) ? data.productos : [];
     setProductos(productosSeguros);
-    // Convertir tomas en DICCIONARIO (igual que cargarInventario)
+
     const tomasSeguras = {};
+
+    // Tomas existentes
     if (Array.isArray(data.tomas)) {
       data.tomas.forEach(t => {
         tomasSeguras[t.productoId] = {
           id: t._id,
+          stockSistema: t.stockSistema,   // ← viene guardado en la toma
           stockFisico: t.stockFisico,
           observacion: t.observacion,
           existe: true,
@@ -129,10 +132,11 @@ useEffect(() => {
       });
     }
 
-    // AGREGAR productos sin toma (AQUÍ VA TU BLOQUE)
+    // Productos sin toma
     productosSeguros.forEach(p => {
-      if (!tomasSeguras[p.id]) {
+      if (!tomasSeguras[p._id]) {
         tomasSeguras[p._id] = {
+          stockSistema: p.stockReal,      // ← NUEVO: viene del backend
           stockFisico: "",
           observacion: "",
           existe: false,
@@ -140,45 +144,57 @@ useEffect(() => {
         };
       }
     });
-    // Guardar en estado
+
     setToma(tomasSeguras);
+
     registrarAccion("Consultó inventario del " + fecha + " / Categoría: " + categoria);
+
   } catch (error) {
     manejarError(error);
     alert("Se mostrará la tabla vacía para continuar trabajando", error);
     setProductos([]);
     setToma({});
   }
-}; 
+};
+
 
   async function cargarInventario() {
-    if (!fecha || !categoria) return;
-    const data = await obtenerInventario(fecha, categoria);
-    setProductos(data.productos);
-    const estadoTomas = {};
-    // Tomas existentes
-    data.tomas.forEach(t => {
-      estadoTomas[t.productoId] = {
-        id: t._id,
-        stockFisico: t.stockFisico,
-        observacion: t.observacion,
-        existe: true,
+  if (!fecha || !categoria) return;
+
+  const data = await obtenerInventario(fecha, categoria);
+
+  setProductos(data.productos);
+
+  const estadoTomas = {};
+
+  // Tomas existentes
+  data.tomas.forEach(t => {
+    estadoTomas[t.productoId] = {
+      id: t._id,
+      stockSistema: t.stockSistema,   // ← viene guardado en la toma
+      stockFisico: t.stockFisico,
+      observacion: t.observacion,
+      existe: true,
+      editando: false
+    };
+  });
+
+  // Productos sin toma
+  data.productos.forEach(p => {
+    if (!estadoTomas[p._id]) {
+      estadoTomas[p._id] = {
+        stockSistema: p.stockReal,     // ← NUEVO: viene del backend
+        stockFisico: "",
+        observacion: "",
+        existe: false,
         editando: false
       };
-    });    
-    // Productos sin toma
-    data.productos.forEach(p => {
-      if (!estadoTomas[p._id]) {
-        estadoTomas[p.id] = {
-          stockFisico: "",
-          observacion: "",
-          existe: false,
-          editando: false
-        };
-      }
-    });
-    setToma(estadoTomas);
-  }
+    }
+  });
+
+  setToma(estadoTomas);
+}
+
 
 
   const handleBorrar = () => {
@@ -280,16 +296,93 @@ useEffect(() => {
     cargarInventario();
   }
 
-  function registrarAjuste(codigo, stockSistema) {
-    const stockFisico = Number(toma[codigo].stockFisico);
-    const diferencia = stockFisico - stockSistema;
+  async function registrarAjuste(productoId) {
+  const registro = toma[productoId];
 
-    if (diferencia === 0) return;
+  const stockSistema = Number(registro.stockSistema);
+  const stockFisico = Number(registro.stockFisico);
 
-    // Aquí llamas a tu módulo de movimientos
-    // Entrada si diferencia > 0
-    // Salida si diferencia < 0
+  const diferencia = stockFisico - stockSistema;
+
+  if (diferencia === 0) {
+    alert("No hay diferencia para ajustar.");
+    return;
   }
+
+  const data = {
+    productoId,
+    cantidad: Math.abs(diferencia),
+    observacion: "AJUSTE"
+  };
+
+  try {
+    if (diferencia > 0) {
+      // AJUSTE POSITIVO → ENTRADA
+      await crearEntrada(data);
+      await registrarAccion(`Ajuste positivo: entrada de ${data.cantidad}`);
+    } else {
+      // AJUSTE NEGATIVO → SALIDA
+      await crearSalida(data);
+      await registrarAccion(`Ajuste negativo: salida de ${data.cantidad}`);
+    }
+
+    alert("Ajuste registrado correctamente.");
+
+    // Recargar inventario actualizado
+    await cargarInventario();
+
+  } catch (error) {
+    console.error("Error registrando ajuste:", error);
+    alert("Error registrando el ajuste.");
+  }
+}
+
+
+export async function crearEntrada({ productoId, cantidad, observacion }) {
+  try {
+    const res = await fetch(`${API_URL}/api/entradas`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productoId,
+        cantidad,
+        observacion
+      })
+    });
+
+    if (!res.ok) throw new Error("Error creando entrada");
+
+    return await res.json();
+
+  } catch (error) {
+    console.error("Error en crearEntrada:", error);
+    throw error;
+  }
+}
+
+export async function crearSalida({ productoId, cantidad, observacion }) {
+  try {
+    const res = await fetch(`${API_URL}/api/salidas`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productoId,
+        cantidad,
+        observacion
+      })
+    });
+
+    if (!res.ok) throw new Error("Error creando salida");
+
+    return await res.json();
+
+  } catch (error) {
+    console.error("Error en crearSalida:", error);
+    throw error;
+  }
+}
+
+
   
   // -------------------------
   // RETURN
