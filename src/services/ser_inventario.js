@@ -30,28 +30,17 @@ export const obtenerInventario = async (categoria) => {
   return data;  
 };
 
+export const buscarInventarioGuardado = async (fecha, categoria) => {
+  const url = `${API_URL}/api/inventario/buscar?fecha=${fecha}&categoria=${categoria}`;
+  const { data } = await axios.get(url);
+  return data;
+};
 
-
-
-// Guardar una toma nueva
-export async function guardarTomaInventario(formData) {
-  const res = await fetch(API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(formData)
-  });
-  return await res.json();
-}
-
-// Editar una toma existente
-export async function editarTomaInventario(id, formData) {
-  const res = await fetch(`${API}/${id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(formData)
-  });
-  return await res.json();
-}
+export const guardarInventario = async (payload) => {
+  const url = `${API_URL}/api/inventario/guardar`;
+  const { data } = await axios.post(url, payload);
+  return data;
+};
 
 // Eliminar una toma existente
 export async function eliminarTomaInventario(id) {

@@ -112,17 +112,39 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   }, []);
 
 const handleBuscar = async () => {
-  const data = await obtenerInventario(formData.categoria);
-  setProductos(Array.isArray(data.productos) ? data.productos : []);
-  //alert("stock "+ producto.stock)
-
-    registrarAccion(
-      "Consultó inventario del " + formData.fecha + " / Categoría: " + formData.categoria
-    );
-
+  await cargarInventario();
 };
 
-
+const cargarInventario = async () => {
+  try {
+    const { fecha, categoria } = formData;
+    if (!fecha || !categoria) return;
+    // 1. Buscar inventario guardado
+    const guardado = await buscarInventarioGuardado(fecha, categoria);
+    if (guardado.inventario.length > 0) {
+      // 2. Si existe → cargarlo
+      const productosConToma = guardado.inventario.map(item => ({
+        _id: item.productoId,
+        stockReal: item.stockReal,
+        stockFisico: item.stockFisico,
+        observacion: item.observacion
+      }));
+      setProductos(productosConToma);
+      registrarAccion(
+        "Cargó inventario GUARDADO del " + fecha + " / Categoría: " + categoria
+      );
+      return;
+    }
+    // 3. Si NO existe → cargar inventario del sistema
+    const data = await obtenerInventario(categoria);
+    setProductos(Array.isArray(data.productos) ? data.productos : []);
+    registrarAccion(
+      "Cargó inventario del sistema del " + fecha + " / Categoría: " + categoria
+    );
+  } catch (error) {
+    manejarError(error);
+  }
+};
 
   const handleBorrar = () => {
   setFormData({
@@ -138,29 +160,23 @@ const handleBuscar = async () => {
   const handleGuardar = async () => {
   try {
     const payload = {
-      fecha: formData.fecha, 
-      categoria: formData.categoria,     
+      fecha: formData.fecha,
+      categoria: formData.categoria,
       items: productos.map(producto => ({
         productoId: producto._id,
-        stockSistema: Number(producto.stockFinalSistema || 0),
-        stockFisico: Number(toma[producto.codigo]?.stockFisico || 0),
-        observacion: toma[producto.codigo]?.observacion || ""
+        stockReal: Number(producto.stockReal || 0),
+        stockFisico: Number(toma[producto._id]?.stockFisico || 0),
+        observacion: toma[producto._id]?.observacion || ""
       }))
-    };        
-
-    try {
-      const res = await axios.post( `${APIURL}/api/inventario/guardar`, payload);
-    
-
-  } catch (error) {
-    alert("ERROR DEL BACKEND:\n" + JSON.stringify(error.response?.data || error.message, null, 2));
-  }
+    };
+    const res = await guardarInventario(payload);
     alert("Inventario guardado correctamente");
-    registrarAccion("Guardó inventario del " + formData.fecha + " (" + productos.length + " productos)");
-
+    registrarAccion(
+      "Guardó inventario del " + formData.fecha + " (" + productos.length + " productos)"
+    );
   } catch (error) {
     manejarError(error);
-    }
+  }
 };
 
 
