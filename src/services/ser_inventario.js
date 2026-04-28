@@ -10,6 +10,7 @@ export const obtenerInventario = async (categoria) => {
   const url = `${API_URL}/api/inventario?categoria=${categoria}`;
   const { data } = await axios.get(url);
   return data;
+  console.log("data obtener inventario ", data);
 };
 
 
