@@ -386,12 +386,12 @@ const cargarInventario = async () => {
           }}
         >
         {formData.categoria && productos.map((producto) => {
-          const stockSistema = Number(producto.stockFinalSistema || 0);
-          const valorToma = toma[producto.codigo]?.stockFisico;
+          const stockSistema = Number(producto.stockReal || 0);
+          const valorToma = toma[producto._id]?.stockFisico;
           const tomaFisica =
-            valorToma === "" || valorToma === undefined
-              ? 0
-              : parseFloat(valorToma);
+          valorToma === "" || valorToma === undefined
+          ? 0
+          : parseFloat(valorToma);
           const diferencia = tomaFisica - stockSistema;
 
           return (          
@@ -422,12 +422,18 @@ const cargarInventario = async () => {
                 <p><strong>Código:</strong> {producto.codigo}</p>
                 <p><strong>Producto:</strong> {producto.descripcion}</p>
                 <p><strong>Stock final (sistema):</strong> {producto.stockReal}</p>
-                <label><strong>Toma física: </strong></label>                
+                <label><strong>Toma física: </strong></label>
                 <input
                   type="number"
                   step="0.10"
-                  value={toma[producto.codigo]?.stockFisico ?? ""}
-                  onChange={(e) => actualizarCampo(producto.codigo, "stockFisico", e.target.value === "" ? "" : Number(e.target.value))}
+                  value={toma[producto._id]?.stockFisico ?? ""}
+                  onChange={(e) =>
+                  actualizarCampo(
+                  producto._id,
+                  "stockFisico",
+                  e.target.value === "" ? "" : Number(e.target.value)
+                  )
+                  }
                   style={{
                     width: "50%",
                     padding: "5px",
@@ -436,11 +442,18 @@ const cargarInventario = async () => {
                     border: "1px solid #ccc"
                   }}
                 />
+
                 <label><strong>Observación: </strong></label>
                 <input
-                  type="text"                  
-                  value={toma[producto.codigo]?.observacion ?? ""}
-                  onChange={(e) => actualizarCampo(producto.codigo, "observacion", e.target.value.toUpperCase())}
+                  type="text"
+                  value={toma[producto._id]?.observacion ?? ""}
+                  onChange={(e) =>
+                  actualizarCampo(
+                  producto._id,
+                  "observacion",
+                  e.target.value.toUpperCase()
+                  )
+                  }
                   style={{
                     width: "50%",
                     padding: "5px",
@@ -449,20 +462,30 @@ const cargarInventario = async () => {
                     border: "1px solid #ccc"
                   }}
                 />
-                <p>
-                  <strong>Diferencia:</strong>{" "}
-                  <span style={{ color: diferencia === 0 ? "green" : diferencia > 0 ? "blue" : "red" }}>
-                    {diferencia.toFixed(2)}
-                  </span>
-                </p>
-                <button
-                  style={estiloBotonAjuste(rol === "ADMINISTRADOR")}
-                  enabled={rol == "ADMINISTRADOR"}
-                  onClick={() => registrarAjuste(producto.codigo, stockSistema)}
-                >
-                  Registrar Ajuste
-                </button>            
-              </div>            
+
+              <p>
+                <strong>Diferencia:</strong>{" "}
+                <span style={{
+                  color:
+                  diferencia === 0
+                  ? "green"
+                  : diferencia > 0
+                  ? "blue"
+                  : "red"
+                  }}>
+                  {diferencia.toFixed(2)}
+                </span>
+              </p>
+
+              <button
+                style={estiloBotonAjuste(rol === "ADMINISTRADOR")}
+                enabled={rol === "ADMINISTRADOR"}
+                onClick={() => registrarAjuste(producto._id, stockSistema)}
+              >
+                Registrar Ajuste
+              </button>
+            </div>
+     
             </div>            
           );
         })}
