@@ -5,9 +5,11 @@ import {
   obtenerInventario,
   guardarTomaInventario,
   editarTomaInventario,
-  eliminarTomaInventario
+  eliminarTomaInventario, 
+  crearEntrada, 
+  crearSalida
 } from "../services/ser_inventario";
-import { cargarCategorias, crearEntrada, crearSalida } from "../services/categorias";
+import { cargarCategorias } from "../services/categorias";
 import axios from "axios";
 import { manejarError } from "../utils/manejarError";
 import { registrarAccion } from "../utils/registrarAccion";
