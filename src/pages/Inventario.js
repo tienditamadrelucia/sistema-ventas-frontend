@@ -7,7 +7,7 @@ import {
   editarTomaInventario,
   eliminarTomaInventario
 } from "../services/ser_inventario";
-import { cargarCategorias } from "../services/categorias";
+import { cargarCategorias, crearEntrada, crearSalida } from "../services/categorias";
 import axios from "axios";
 import { manejarError } from "../utils/manejarError";
 import { registrarAccion } from "../utils/registrarAccion";
