@@ -100,7 +100,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 //  cargarInventario();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [fecha, categoria]);
+//}, [fecha, categoria]);
 
 
   useEffect(() => {
