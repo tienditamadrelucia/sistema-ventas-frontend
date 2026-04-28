@@ -164,7 +164,7 @@ const cargarInventario = async () => {
       categoria: formData.categoria,
       items: productos.map(producto => ({
         productoId: producto._id,
-        stockReal: Number(producto.stockReal || 0),
+        stockReal: Number(producto.stockReal ?? producto.stock ?? 0),
         stockFisico: Number(toma[producto._id]?.stockFisico || 0),
         observacion: toma[producto._id]?.observacion || ""
       }))
