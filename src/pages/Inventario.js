@@ -117,6 +117,7 @@ const handleBuscar = async () => {
     console.log("BACKEND:", data);
     const productosSeguros = Array.isArray(data.productos) ? data.productos : [];
     setProductos(productosSeguros);
+    console.log("BACKEND:", data.productos);
 
     const tomasSeguras = {};
 
