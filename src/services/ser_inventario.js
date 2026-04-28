@@ -10,6 +10,23 @@ export const obtenerInventario = async (categoria) => {
   const url = `${API_URL}/api/inventario?categoria=${categoria}`;
   const { data } = await axios.get(url);
   console.log("data obtener inventario ", data);
+  
+  // Calcular stock final del sistema
+  const productosCalculados = data.productos.map(p => {
+    const stockInicial = Number(p.stock) || 0;
+    const entradas = Number(p.totalEntradas) || 0;
+    const salidas = Number(p.totalSalidas) || 0;
+    const vendidos = Number(p.totalVendidos) || 0;
+    const stockFinal = stockInicial + entradas - salidas - vendidos;
+    return {
+      ...p,
+      stockReal: stockFinal
+    };
+  });
+  return {
+    ok: true,
+    productos: productosCalculados
+  };
   return data;  
 };
 

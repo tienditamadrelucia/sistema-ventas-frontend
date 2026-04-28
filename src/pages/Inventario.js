@@ -405,7 +405,7 @@ const handleBuscar = async () => {
               <div style={{ flex: 1 }}>
                 <p><strong>Código:</strong> {producto.codigo}</p>
                 <p><strong>Producto:</strong> {producto.descripcion}</p>
-                <p><strong>Stock final (sistema):</strong> {producto.stock}</p>
+                <p><strong>Stock final (sistema):</strong> {producto.stockReal}</p>
                 <label><strong>Toma física: </strong></label>                
                 <input
                   type="number"
