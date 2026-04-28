@@ -3,8 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   obtenerInventario,
-  guardarTomaInventario,
-  editarTomaInventario,
+  guardarInventario,
   buscarInventarioGuardado,    
   eliminarTomaInventario, 
   crearEntrada, 
@@ -218,7 +217,7 @@ const cargarInventario = async () => {
       observacion: toma[codigo].observacion
     };
 
-    const res = await guardarTomaInventario(formData);
+    //const res = await guardarTomaInventario(formData);
     //if (res.ok) cargarInventario();
   }
 
@@ -230,7 +229,7 @@ const cargarInventario = async () => {
       observacion: toma[codigo].observacion
     };
 
-    const res = await editarTomaInventario(id, formData);
+  //  const res = await editarTomaInventario(id, formData);
     //if (res.ok) cargarInventario();
   }
 
