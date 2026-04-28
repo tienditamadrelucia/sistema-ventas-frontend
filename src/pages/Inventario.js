@@ -96,8 +96,8 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();  
 
   // Cargar inventario al cambiar fecha o categoría
-useEffect(() => {    
-  cargarInventario();
+//useEffect(() => {    
+//  cargarInventario();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [fecha, categoria]);
@@ -202,7 +202,7 @@ const handleBuscar = async () => {
     };
 
     const res = await guardarTomaInventario(formData);
-    if (res.ok) cargarInventario();
+    //if (res.ok) cargarInventario();
   }
 
   async function editarToma(codigo) {
@@ -214,13 +214,13 @@ const handleBuscar = async () => {
     };
 
     const res = await editarTomaInventario(id, formData);
-    if (res.ok) cargarInventario();
+    //if (res.ok) cargarInventario();
   }
 
   async function eliminarToma(codigo) {
     const id = toma[codigo].id;
     await eliminarTomaInventario(id);
-    cargarInventario();
+    //cargarInventario();
   }
 
   async function registrarAjuste(productoId) {
@@ -256,7 +256,7 @@ const handleBuscar = async () => {
     alert("Ajuste registrado correctamente.");
 
     // Recargar inventario actualizado
-    await cargarInventario();
+    //await cargarInventario();
 
   } catch (error) {
     console.error("Error registrando ajuste:", error);
