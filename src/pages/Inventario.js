@@ -112,9 +112,9 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   }, []);
 
 const handleBuscar = async () => {
-  const data = await obtenerInventario(categoria);
+  const data = await obtenerInventario(formData.categoria);
   setProductos(Array.isArray(data.productos) ? data.productos : []);
-  alert("stock "+ productos.stock)
+  alert("stock "+ producto.stock)
 
     registrarAccion(
       "Consultó inventario del " + formData.fecha + " / Categoría: " + formData.categoria
