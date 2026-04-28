@@ -41,3 +41,47 @@ export async function eliminarTomaInventario(id) {
   });
   return await res.json();
 }
+
+export async function crearEntrada({ productoId, cantidad, observacion }) {
+  try {
+    const res = await fetch(`${API_URL}/api/entradas`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productoId,
+        cantidad,
+        observacion
+      })
+    });
+
+    if (!res.ok) throw new Error("Error creando entrada");
+
+    return await res.json();
+
+  } catch (error) {
+    console.error("Error en crearEntrada:", error);
+    throw error;
+  }
+}
+
+export async function crearSalida({ productoId, cantidad, observacion }) {
+  try {
+    const res = await fetch(`${API_URL}/api/salidas`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        productoId,
+        cantidad,
+        observacion
+      })
+    });
+
+    if (!res.ok) throw new Error("Error creando salida");
+
+    return await res.json();
+
+  } catch (error) {
+    console.error("Error en crearSalida:", error);
+    throw error;
+  }
+}
