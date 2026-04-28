@@ -114,6 +114,7 @@ useEffect(() => {
 const handleBuscar = async () => {
   const data = await obtenerInventario(categoria);
   setProductos(Array.isArray(data.productos) ? data.productos : []);
+  alert("stock "+ productos.stock)
 
     registrarAccion(
       "Consultó inventario del " + formData.fecha + " / Categoría: " + formData.categoria
