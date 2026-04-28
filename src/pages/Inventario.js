@@ -4,8 +4,7 @@ import { useNavigate } from "react-router-dom";
 import {
   obtenerInventario,
   guardarInventario,
-  buscarInventarioGuardado,  
-  editarTomaInventario,
+  buscarInventarioGuardado,    
   eliminarTomaInventario, 
   crearEntrada, 
   crearSalida
