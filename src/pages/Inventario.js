@@ -136,8 +136,8 @@ useEffect(() => {
 
     // Productos sin toma
     productosSeguros.forEach(p => {
-      if (!tomasSeguras[p._id]) {
-        tomasSeguras[p._id] = {
+      if (!tomasSeguras[p._id.toString()]) {
+        tomasSeguras[p._id.toString()] = {
           stockSistema: p.stockReal,      // ← NUEVO: viene del backend
           stockFisico: "",
           observacion: "",
@@ -170,6 +170,7 @@ useEffect(() => {
   const estadoTomas = {};
 
   // Tomas existentes
+  if (Array.isArray(data.tomaas)) {
   data.tomas.forEach(t => {
     estadoTomas[t.productoId] = {
       id: t._id,
@@ -180,19 +181,22 @@ useEffect(() => {
       editando: false
     };
   });
+  }
 
   // Productos sin toma
-  data.productos.forEach(p => {
-    if (!estadoTomas[p._id]) {
-      estadoTomas[p._id] = {
-        stockSistema: p.stockReal,     // ← NUEVO: viene del backend
-        stockFisico: "",
-        observacion: "",
-        existe: false,
-        editando: false
-      };
-    }
-  });
+  productosSeguros.forEach(p => {
+  const key = p._id.toString();
+
+  if (!tomasSeguras[key]) {
+    tomasSeguras[key] = {
+      stockSistema: p.stockReal,
+      stockFisico: "",
+      observacion: "",
+      existe: false,
+      editando: false
+    };
+  }
+});
 
   setToma(estadoTomas);
 }
