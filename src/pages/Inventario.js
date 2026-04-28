@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   obtenerInventario,
-  guardarTomaInventario,
+  guardarInventario,
+  buscarInventarioGuardado,  
   editarTomaInventario,
   eliminarTomaInventario, 
   crearEntrada, 
