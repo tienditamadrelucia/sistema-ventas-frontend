@@ -396,7 +396,7 @@ const cargarInventario = async () => {
 
           return (          
             <div
-              key={producto.codigo}
+              key={producto._id}
               style={{
                 width: "270px",
                 margin: "0 auto 20px auto",
