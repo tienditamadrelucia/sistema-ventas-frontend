@@ -114,46 +114,33 @@ useEffect(() => {
 const handleBuscar = async () => {
   try {
     const data = await obtenerInventario(formData.fecha, formData.categoria) || {};
+
     console.log("BACKEND:", data);
+
+    // 1. Productos completos + stockReal
     const productosSeguros = Array.isArray(data.productos) ? data.productos : [];
     setProductos(productosSeguros);
-    console.log("BACKEND:", data.productos);
 
+    // 2. Crear estructura de tomas SOLO para mostrar stockReal
     const tomasSeguras = {};
 
-    // Tomas existentes
-    if (Array.isArray(data.tomas)) {
-      data.tomas.forEach(t => {
-        const key = t.productoId?.toString();
-        tomasSeguras[key] = {
-          id: t._id,
-          stockSistema: t.stockSistema ?? 0,
-          stockFisico: t.stockFisico ?? "",
-          observacion: t.observacion ?? "",
-          existe: true,
-          editando: false
-        };
-      });
-    }
-
-    // Productos sin toma
     productosSeguros.forEach(p => {
       const key = p._id.toString();
 
-      if (!tomasSeguras[key]) {
-        tomasSeguras[key] = {
-          stockSistema: p.stockReal ?? 0,
-          stockFisico: "",
-          observacion: "",
-          existe: false,
-          editando: false
-        };
-      }
+      tomasSeguras[key] = {
+        stockSistema: p.stockReal ?? 0,   // ← AQUÍ VA EL STOCK REAL
+        stockFisico: "",
+        observacion: "",
+        existe: false,
+        editando: false
+      };
     });
 
     setToma(tomasSeguras);
 
-    registrarAccion("Consultó inventario del " + formData.fecha + " / Categoría: " + formData.categoria);
+    registrarAccion(
+      "Consultó inventario del " + formData.fecha + " / Categoría: " + formData.categoria
+    );
 
   } catch (error) {
     manejarError(error);
@@ -162,6 +149,7 @@ const handleBuscar = async () => {
     setToma({});
   }
 };
+
 
  async function cargarInventario() {
   if (!fecha || !categoria) return;
@@ -173,38 +161,22 @@ const handleBuscar = async () => {
 
   const estadoTomas = {};
 
-  // Tomas existentes
-  if (Array.isArray(data.tomas)) {
-    data.tomas.forEach(t => {
-      const key = t.productoId?.toString();
-      estadoTomas[key] = {
-        id: t._id,
-        stockSistema: t.stockSistema ?? 0,
-        stockFisico: t.stockFisico ?? "",
-        observacion: t.observacion ?? "",
-        existe: true,
-        editando: false
-      };
-    });
-  }
-
-  // Productos sin toma
   productosSeguros.forEach(p => {
     const key = p._id.toString();
 
-    if (!estadoTomas[key]) {
-      estadoTomas[key] = {
-        stockSistema: p.stockReal ?? 0,
-        stockFisico: "",
-        observacion: "",
-        existe: false,
-        editando: false
-      };
-    }
+    estadoTomas[key] = {
+      stockSistema: p.stockReal ?? 0,   // ← STOCK REAL DEL BACKEND
+      stockFisico: "",
+      observacion: "",
+      existe: false,
+      editando: false
+    };
   });
+
   console.log("DATA BACKEND: ", data);
   setToma(estadoTomas);
 }
+
 
   const handleBorrar = () => {
   setFormData({
