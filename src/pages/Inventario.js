@@ -112,14 +112,11 @@ useEffect(() => {
  const handleBuscar = async () => {
   try {
     const data = await obtenerInventario(formData.fecha, formData.categoria) || {};
-
     // Productos seguros
     const productosSeguros = Array.isArray(data.productos) ? data.productos : [];
     setProductos(productosSeguros);
-
     // Convertir tomas en DICCIONARIO (igual que cargarInventario)
     const tomasSeguras = {};
-
     if (Array.isArray(data.tomas)) {
       data.tomas.forEach(t => {
         tomasSeguras[t.productoId] = {
@@ -134,8 +131,8 @@ useEffect(() => {
 
     // AGREGAR productos sin toma (AQUÍ VA TU BLOQUE)
     productosSeguros.forEach(p => {
-      if (!tomasSeguras[p.codigo]) {
-        tomasSeguras[p.codigo] = {
+      if (!tomasSeguras[p.id]) {
+        tomasSeguras[p._id] = {
           stockFisico: "",
           observacion: "",
           existe: false,
@@ -143,16 +140,12 @@ useEffect(() => {
         };
       }
     });
-
     // Guardar en estado
     setToma(tomasSeguras);
-
     registrarAccion("Consultó inventario del " + fecha + " / Categoría: " + categoria);
-
   } catch (error) {
     manejarError(error);
     alert("Se mostrará la tabla vacía para continuar trabajando", error);
-
     setProductos([]);
     setToma({});
   }
@@ -160,13 +153,9 @@ useEffect(() => {
 
   async function cargarInventario() {
     if (!fecha || !categoria) return;
-
     const data = await obtenerInventario(fecha, categoria);
-
     setProductos(data.productos);
-
     const estadoTomas = {};
-
     // Tomas existentes
     data.tomas.forEach(t => {
       estadoTomas[t.productoId] = {
@@ -177,11 +166,10 @@ useEffect(() => {
         editando: false
       };
     });    
-
     // Productos sin toma
     data.productos.forEach(p => {
-      if (!estadoTomas[p.codigo]) {
-        estadoTomas[p.codigo] = {
+      if (!estadoTomas[p._id]) {
+        estadoTomas[p.id] = {
           stockFisico: "",
           observacion: "",
           existe: false,
@@ -189,7 +177,6 @@ useEffect(() => {
         };
       }
     });
-
     setToma(estadoTomas);
   }
 
