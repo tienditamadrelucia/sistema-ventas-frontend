@@ -6,33 +6,12 @@ const APIURL = `${API_URL}/api`;
 const API = `${API_URL}/inventario`;
 
 // Obtener productos + tomas existentes + stock final del sistema
-export const obtenerInventario = async (fecha, categoria) => {
-  console.log("obtener inventario");
-
-  const url = `${APIURL}/inventario?fecha=${fecha}&categoria=${categoria}`;
-  const respuesta = await axios.get(url);
-
-  const data = respuesta.data;
-
-  // Calcular stockReal en el frontend
-  const productosCalculados = data.productos.map(p => {
-    const stockInicial = Number(p.stock) || 0;
-    const entradas = Number(p.totalEntradas) || 0;
-    const salidas = Number(p.totalSalidas) || 0;
-
-    const stockReal = stockInicial + entradas - salidas;
-
-    return {
-      ...p,
-      stockReal
-    };
-  });
-
-  return {
-    ok: true,
-    productos: productosCalculados
-  };
+export const obtenerInventario = async (categoria) => {
+  const url = `${API_URL}/api/inventario?categoria=${categoria}`;
+  const { data } = await axios.get(url);
+  return data;
 };
+
 
 
 

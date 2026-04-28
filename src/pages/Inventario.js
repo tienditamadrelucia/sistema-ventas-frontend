@@ -112,70 +112,15 @@ useEffect(() => {
   }, []);
 
 const handleBuscar = async () => {
-  try {
-    const data = await obtenerInventario(formData.fecha, formData.categoria) || {};
-
-    console.log("BACKEND:", data);
-
-    // 1. Productos completos + stockReal
-    const productosSeguros = Array.isArray(data.productos) ? data.productos : [];
-    setProductos(productosSeguros);
-
-    // 2. Crear estructura de tomas SOLO para mostrar stockReal
-    const tomasSeguras = {};
-
-    productosSeguros.forEach(p => {
-      const key = p._id.toString();
-
-      tomasSeguras[key] = {
-        stockSistema: p.stockReal ?? 0,   // ← AQUÍ VA EL STOCK REAL
-        stockFisico: "",
-        observacion: "",
-        existe: false,
-        editando: false
-      };
-    });
-
-    setToma(tomasSeguras);
+  const data = await obtenerInventario(categoria);
+  setProductos(Array.isArray(data.productos) ? data.productos : []);
 
     registrarAccion(
       "Consultó inventario del " + formData.fecha + " / Categoría: " + formData.categoria
     );
 
-  } catch (error) {
-    manejarError(error);
-    alert("Se mostrará la tabla vacía para continuar trabajando");
-    setProductos([]);
-    setToma({});
-  }
 };
 
-
- async function cargarInventario() {
-  if (!fecha || !categoria) return;
-
-  const data = await obtenerInventario(fecha, categoria);
-
-  const productosSeguros = Array.isArray(data.productos) ? data.productos : [];
-  setProductos(productosSeguros);
-
-  const estadoTomas = {};
-
-  productosSeguros.forEach(p => {
-    const key = p._id.toString();
-
-    estadoTomas[key] = {
-      stockSistema: p.stockReal ?? 0,   // ← STOCK REAL DEL BACKEND
-      stockFisico: "",
-      observacion: "",
-      existe: false,
-      editando: false
-    };
-  });
-
-  console.log("DATA BACKEND: ", data);
-  setToma(estadoTomas);
-}
 
 
   const handleBorrar = () => {
