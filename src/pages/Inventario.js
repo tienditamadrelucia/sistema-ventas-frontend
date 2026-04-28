@@ -114,7 +114,7 @@ useEffect(() => {
 const handleBuscar = async () => {
   try {
     const data = await obtenerInventario(formData.fecha, formData.categoria) || {};
-
+    console.log("BACKEND:", data);
     const productosSeguros = Array.isArray(data.productos) ? data.productos : [];
     setProductos(productosSeguros);
 
@@ -161,8 +161,6 @@ const handleBuscar = async () => {
     setToma({});
   }
 };
-
-
 
  async function cargarInventario() {
   if (!fecha || !categoria) return;
