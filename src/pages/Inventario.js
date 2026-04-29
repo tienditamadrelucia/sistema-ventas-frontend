@@ -133,6 +133,15 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     observacion: item.observacion    
   }));
   setProductos(productosConToma);
+  //reconstruir toma física
+  const nuevoToma = {};
+  guardado.forEach(item => {
+    nuevoToma[item.productoId] = {
+      stockFisico: item.stockFisico,
+      observacion: item.observacion
+    };
+  });
+  setToma(nuevoToma);
   registrarAccion(
     "Cargó inventario GUARDADO del " + fecha + " / Categoría: " + categoria
   );
