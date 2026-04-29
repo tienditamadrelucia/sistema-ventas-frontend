@@ -177,7 +177,11 @@ if (Array.isArray(guardado) && guardado.length > 0) {
       items: productos.map(producto => ({
         productoId: producto._id,
         stockReal: Number(producto.stockReal ?? producto.stock ?? 0),
-        stockFisico: Number(toma[producto._id]?.stockFisico || 0),
+        stockFisico: 
+          toma[producto._id]?.stockFisico === ""  ||
+          toma[producto._id]?.stockFisico === undefined
+          ? ""
+          : Number(toma[producto._id]?.stockFisico),
         observacion: toma[producto._id]?.observacion || ""
       }))      
     };    
