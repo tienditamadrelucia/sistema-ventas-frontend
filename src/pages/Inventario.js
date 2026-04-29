@@ -181,6 +181,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
         observacion: toma[producto._id]?.observacion || ""
       }))      
     };    
+    console.log("ANTES DE GUARDAR:", toma);
     const res = await guardarInventario(payload);
     alert("Inventario guardado correctamente");
     registrarAccion(
