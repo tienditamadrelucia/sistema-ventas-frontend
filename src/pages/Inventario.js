@@ -266,6 +266,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     return;
   }
   const data = {
+    fecha,
     productoId: codigo,
     cantidad: Math.abs(diferencia),
     observacion: "AJUSTE"

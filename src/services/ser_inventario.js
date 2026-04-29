@@ -51,12 +51,13 @@ export async function eliminarTomaInventario(id) {
   return await res.json();
 }
 
-export async function crearEntrada({ productoId, cantidad, observacion }) {
+export async function crearEntrada({ fecha, productoId, cantidad, observacion }) {
   try {
     const res = await fetch(`${API_URL}/api/entradas`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        fecha,
         productoId,
         cantidad,
         observacion
@@ -73,12 +74,14 @@ export async function crearEntrada({ productoId, cantidad, observacion }) {
   }
 }
 
+
 export async function crearSalida({ productoId, cantidad, observacion }) {
   try {
     const res = await fetch(`${API_URL}/api/salidas`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
+        fecha,
         productoId,
         cantidad,
         observacion
