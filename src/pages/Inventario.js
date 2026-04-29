@@ -167,9 +167,8 @@ const cargarInventario = async () => {
         stockReal: Number(producto.stockReal ?? producto.stock ?? 0),
         stockFisico: Number(toma[producto._id]?.stockFisico || 0),
         observacion: toma[producto._id]?.observacion || ""
-      }))
-    };
-    console.log("PAYLOAD FINAL:", JSON.stringify(payload, null, 2));
+      }))      
+    };    
     const res = await guardarInventario(payload);
     alert("Inventario guardado correctamente");
     registrarAccion(
