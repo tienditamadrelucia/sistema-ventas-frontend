@@ -258,14 +258,31 @@ if (Array.isArray(guardado) && guardado.length > 0) {
 
  async function registrarAjuste(codigo) {
   const fecha = formData.fecha; // ← AQUÍ SE DEFINE LA FECHA
-  const registro = toma[codigo];
+  // 1. Buscar el producto real para obtener stockReal
+  const producto = productos.find(p => p._id === codigo);
+  if (!producto) {
+    alert("Producto no encontrado.");
+    return;
+  }
+  //const registro = toma[codigo];
   console.log("STOCK REal:", registro.stockReal);
 console.log("STOCK FISICO:", registro.stockFisico);
 
-  const stockSistema = Number(registro.stockReal);
+  const stockSistema = Number(producto.stockReal ?? 0);
   console.log("STOCK Sistema:", registro.stockSistema);
-  const stockFisico = registro.stockFisico === "" ? 0 : Number(registro.stockFisico);
+
+  // 2. Obtener el stock físico desde la toma
+  const registro = toma[codigo];
+  const stockFisico =
+    registro?.stockFisico === "" || registro?.stockFisico == null
+      ? 0
+      : Number(registro.stockFisico);
+  
   const diferencia = stockFisico - stockSistema;
+  console.log("STOCK Real:", producto.stockReal);
+  console.log("STOCK FISICO:", stockFisico);
+  console.log("STOCK Sistema:", stockSistema);
+  console.log("DIFERENCIA:", diferencia);
   if (diferencia === 0) {
     alert("No hay diferencia para ajustar.");
     return;
