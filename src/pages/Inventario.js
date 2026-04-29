@@ -125,7 +125,7 @@ const cargarInventario = async () => {
       // 2. Si existe → cargarlo
       const productosConToma = guardado.inventario.map(item => ({
         _id: item.productoId,
-        stockReal: item.stockReal,
+        stockReal: item.stockReal ?? item.stock ?? 0,
         stockFisico: item.stockFisico,
         observacion: item.observacion
       }));
