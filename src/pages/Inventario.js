@@ -437,16 +437,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
                 <p><strong>Stock final (sistema):</strong> {producto.stockReal}</p>
                 <label><strong>Toma física: </strong></label>
                 <input
-                  type="number"
-                  step="0.10"
-                  value={toma[producto._id]?.stockFisico ?? ""}
-                  onChange={(e) =>
-                  actualizarCampo(
-                  producto._id,
-                  "stockFisico",
-                  e.target.value === "" ? "" : Number(e.target.value)
-                  )
-                  }
+                  type="text"
                   style={{
                     width: "50%",
                     padding: "5px",
@@ -454,7 +445,21 @@ if (Array.isArray(guardado) && guardado.length > 0) {
                     borderRadius: "6px",
                     border: "1px solid #ccc"
                   }}
-                />
+                  step="0.10"
+                  value={toma[producto._id]?.stockFisico ?? ""}
+                  onChange={(e) => {
+                    const v=e.target.value;
+                    //permitir vacío
+                    if (v === "") {
+                      actualizarCampo(producto._id, "stockFisico", "");
+                      return;
+                    }
+                    // permitir solo números
+                    if (!isNaN(v)) {
+                      actualizarCampo(producto._id, "stockFisico", Number(v));
+                    }
+                  }}
+                  />                
 
                 <label><strong>Observación: </strong></label>
                 <input
