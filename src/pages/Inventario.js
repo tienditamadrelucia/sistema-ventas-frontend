@@ -256,41 +256,39 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     //cargarInventario();
   }
 
-  async function registrarAjuste(productoId) {
-  const registro = toma[productoId];
-
+ async function registrarAjuste(codigo) {
+  const registro = toma[codigo];
   const stockSistema = Number(registro.stockSistema);
-  const stockFisico = Number(registro.stockFisico);
-
+  const stockFisico = registro.stockFisico === "" ? 0 : Number(registro.stockFisico);
   const diferencia = stockFisico - stockSistema;
-
   if (diferencia === 0) {
     alert("No hay diferencia para ajustar.");
     return;
   }
-
   const data = {
-    productoId,
+    productoId: codigo,
     cantidad: Math.abs(diferencia),
     observacion: "AJUSTE"
   };
-
   try {
+    // 1. Registrar ajuste
     if (diferencia > 0) {
-      // AJUSTE POSITIVO → ENTRADA
       await crearEntrada(data);
-      await registrarAccion(`Ajuste positivo: entrada de ${data.cantidad}`);
     } else {
-      // AJUSTE NEGATIVO → SALIDA
       await crearSalida(data);
-      await registrarAccion(`Ajuste negativo: salida de ${data.cantidad}`);
     }
-
-    alert("Ajuste registrado correctamente.");
-
-    // Recargar inventario actualizado
-    //await cargarInventario();
-
+    // 2. Obtener stockReal actualizado
+    const resp = await fetch(`${APIURL}/stock-real/${codigo}`);
+    const info = await resp.json();
+    // 3. Actualizar stockReal en pantalla
+    setProductos(prev =>
+      prev.map(p =>
+        p._id === codigo ? { ...p, stockReal: info.stockReal } : p
+      )
+    );
+    // 4. Guardar automáticamente la toma completa
+    await guardarToma(); // ← AQUÍ VA TU FUNCIÓN DE GUARDAR
+    alert("Ajuste realizado y toma guardada automáticamente.");
   } catch (error) {
     console.error("Error registrando ajuste:", error);
     alert("Error registrando el ajuste.");
