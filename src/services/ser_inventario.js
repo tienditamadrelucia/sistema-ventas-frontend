@@ -76,6 +76,7 @@ export async function crearEntrada({ fecha, productoId, cantidad, observacion })
 
 
 export async function crearSalida({fecha, productoId, cantidad, observacion }) {
+  console.log("DATA AJUSTE:", { fecha, productoId, cantidad, observacion });
   try {
     const res = await fetch(`${API_URL}/api/salidas`, {
       method: "POST",
