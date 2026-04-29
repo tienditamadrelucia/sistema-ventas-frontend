@@ -400,11 +400,12 @@ if (Array.isArray(guardado) && guardado.length > 0) {
         {formData.categoria && productos.map((producto) => {
           const stockSistema = Number(producto.stockReal || 0);
           const valorToma = toma[producto._id]?.stockFisico;
-          const tomaFisica =
-          valorToma === "" || valorToma === undefined
-          ? 0
-          : parseFloat(valorToma);
-          const diferencia = tomaFisica - stockSistema;
+          // Para el cálculo, si está vacío usar 0, pero sin alterar el valor real
+          const tomaParaCalculo =
+            valorToma === "" || valorToma === undefined
+            ? 0
+            : parseFloat(valorToma);
+          const diferencia = tomaParaCalculo - stockSistema;
 
           return (          
             <div
