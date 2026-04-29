@@ -257,6 +257,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   }
 
  async function registrarAjuste(codigo) {
+  const fecha = formData.fecha; // ← AQUÍ SE DEFINE LA FECHA
   const registro = toma[codigo];
   const stockSistema = Number(registro.stockSistema);
   const stockFisico = registro.stockFisico === "" ? 0 : Number(registro.stockFisico);
