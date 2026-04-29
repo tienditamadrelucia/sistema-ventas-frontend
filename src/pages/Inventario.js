@@ -137,7 +137,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   const nuevoToma = {};
   guardado.forEach(item => {
     nuevoToma[item.productoId] = {
-      stockFisico: Number(item.stockFisico),
+      stockFisico: item.stockFisico === "" ? "" : Number(item.stockFisico),
       observacion: item.observacion
     };
   });
