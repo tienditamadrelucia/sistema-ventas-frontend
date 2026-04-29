@@ -259,7 +259,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
  async function registrarAjuste(codigo) {
   const fecha = formData.fecha; // ← AQUÍ SE DEFINE LA FECHA
   const registro = toma[codigo];
-  console.log("STOCK SISTEMA:", registro.stockSistema);
+  console.log("STOCK SISTEMA:", registro.stockReal);
 console.log("STOCK FISICO:", registro.stockFisico);
 
   const stockSistema = Number(registro.stockSistema);
@@ -507,7 +507,7 @@ console.log("STOCK FISICO:", registro.stockFisico);
               <button
                 style={estiloBotonAjuste(rol === "ADMINISTRADOR")}
                 enabled={rol === "ADMINISTRADOR"}
-                onClick={() => registrarAjuste(producto._id, stockSistema)}
+                onClick={() => registrarAjuste(producto._id)}
               >
                 Registrar Ajuste
               </button>
