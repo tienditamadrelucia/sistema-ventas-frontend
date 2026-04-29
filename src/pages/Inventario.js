@@ -259,6 +259,9 @@ if (Array.isArray(guardado) && guardado.length > 0) {
  async function registrarAjuste(codigo) {
   const fecha = formData.fecha; // ← AQUÍ SE DEFINE LA FECHA
   const registro = toma[codigo];
+  console.log("STOCK SISTEMA:", registro.stockSistema);
+console.log("STOCK FISICO:", registro.stockFisico);
+
   const stockSistema = Number(registro.stockSistema);
   const stockFisico = registro.stockFisico === "" ? 0 : Number(registro.stockFisico);
   const diferencia = stockFisico - stockSistema;
@@ -266,6 +269,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     alert("No hay diferencia para ajustar.");
     return;
   }
+  alert("cantidad " + diferencia);
   const data = {
     fecha,
     productoId: codigo,
