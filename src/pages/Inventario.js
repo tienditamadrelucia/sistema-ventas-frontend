@@ -230,7 +230,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
       fecha,
       productoId: codigo,
       stockSistema,
-      stockFisico: Number(toma[codigo].stockFisico),
+      stockFisico: toma[codigo].stockFisico === "" ? "" : Number(toma[codigo].stockFisico),
       observacion: toma[codigo].observacion
     };
 
@@ -242,7 +242,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     const id = toma[codigo].id;
 
     const formData = {
-      stockFisico: Number(toma[codigo].stockFisico),
+      stockFisico: toma[codigo].stockFisico === "" ? "" : Number(toma[codigo].stockFisico),
       observacion: toma[codigo].observacion
     };
 
