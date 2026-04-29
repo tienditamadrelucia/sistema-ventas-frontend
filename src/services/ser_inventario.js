@@ -36,8 +36,7 @@ export const buscarInventarioGuardado = async (fecha, categoria) => {
   return data;
 };
 
-export const guardarInventario = async (payload) => {
-  console.log("PAYLOAD FINAL:", JSON.stringify(payload, null, 2));
+export const guardarInventario = async (payload) => {  
   const url = `${API_URL}/api/inventario/guardar`;
   const { data } = await axios.post(url, payload);
   return data;

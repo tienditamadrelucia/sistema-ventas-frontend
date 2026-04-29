@@ -121,19 +121,19 @@ const cargarInventario = async () => {
     if (!fecha || !categoria) return;
     // 1. Buscar inventario guardado
     const guardado = await buscarInventarioGuardado(fecha, categoria);
-    if (guardado.inventario.length > 0) {
-      // 2. Si existe → cargarlo
-      const productosConToma = guardado.inventario.map(item => ({
-        _id: item.productoId,
-        stockReal: item.stockReal ?? item.stock ?? 0,
-        stockFisico: item.stockFisico,
-        observacion: item.observacion
-      }));
-      setProductos(productosConToma);
-      registrarAccion(
-        "Cargó inventario GUARDADO del " + fecha + " / Categoría: " + categoria
-      );
-      return;
+if (Array.isArray(guardado) && guardado.length > 0) {
+  // 2. Si existe → cargarlo
+  const productosConToma = guardado.map(item => ({
+    _id: item.productoId,
+    stockReal: item.stockReal ?? item.stock ?? 0,
+    stockFisico: item.stockFisico,
+    observacion: item.observacion
+  }));
+  setProductos(productosConToma);
+  registrarAccion(
+    "Cargó inventario GUARDADO del " + fecha + " / Categoría: " + categoria
+  );
+  return;
     }
     // 3. Si NO existe → cargar inventario del sistema
     const data = await obtenerInventario(categoria);
