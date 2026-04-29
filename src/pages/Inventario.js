@@ -125,9 +125,12 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   // 2. Si existe → cargarlo
   const productosConToma = guardado.map(item => ({
     _id: item.productoId,
+    codigo: prod?.codigo || "",
+    descripcion: prod?.descripcion || "",
+    foto: prod?.foto || "",
     stockReal: item.stockReal ?? item.stock ?? 0,
     stockFisico: item.stockFisico,
-    observacion: item.observacion
+    observacion: item.observacion    
   }));
   setProductos(productosConToma);
   registrarAccion(
