@@ -103,6 +103,7 @@ const Productos = () => {
   const [productoEditando, setProductoEditando] = useState(null);
   const [categorias, setCategorias] = useState([]);
   const formularioRef = useRef(null);
+  const [eliminando, setEliminando] = useState([]);
 
   const [formData, setFormData] = useState({
     codigo: 0,
@@ -305,11 +306,13 @@ const Productos = () => {
   // ELIMINAR
   // -------------------------
 
-  const eliminarProducto = async (id, descripcion) => {
+  const eliminarProducto = async (id, descripcion) => {        
   if (window.confirm("¿Eliminar este producto?")) {
+    setEliminando(true);
     await fetch(`${API_URL}/api/productos/${id}`, {
-      method: "DELETE"
+      method: "DELETE"    
     });
+    setEliminando(false);
     await registrarAccion(`Eliminó el producto "${descripcion}"`);
     const res = await fetch(`${API_URL}/api/productos`);
     setProductos(await res.json());
@@ -347,6 +350,12 @@ const Productos = () => {
   // -------------------------
 
   return (
+    <>
+    {eliminando && (
+    <div className="overlay">
+      Eliminando producto, por favor espere...
+    </div>
+    )}
     <div>
       <Encabezado />
 
@@ -538,6 +547,7 @@ const Productos = () => {
       </table>
   </div>
     </div>
+    </>
   );
 };
 
