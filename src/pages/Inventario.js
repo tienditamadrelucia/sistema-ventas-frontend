@@ -525,7 +525,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
               <button
                 style={estiloBotonAjuste(rol === "ADMINISTRADOR")}
                 enabled={rol === "ADMINISTRADOR"}
-                onClick={() => registrarAjuste(producto._id)}
+                onClick={() => registrarAjuste(producto)}
               >
                 Registrar Ajuste
               </button>
