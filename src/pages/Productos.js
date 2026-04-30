@@ -103,7 +103,7 @@ const Productos = () => {
   const [productoEditando, setProductoEditando] = useState(null);
   const [categorias, setCategorias] = useState([]);
   const formularioRef = useRef(null);
-  const [eliminando, setEliminando] = useState([false]);
+  const [eliminando, setEliminando] = useState([true]);
 
   const [formData, setFormData] = useState({
     codigo: 0,
