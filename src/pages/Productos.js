@@ -350,7 +350,13 @@ const Productos = () => {
   // -------------------------
 
   return (    
+    
     <div>
+      {eliminando && (
+      <div className="overlay">
+        Eliminando producto, por favor espere...
+      </div>
+      )}
       <Encabezado />
 
     <div style={{ padding: "1px" }}>
