@@ -270,7 +270,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   //console.log("STOCK Sistema:", registro.stockSistema);
 
   // 2. Obtener el stock físico desde la toma
-  const registro = toma[codigo];
+  //const registro = toma[codigo];
   const stockFisico =
     registro?.stockFisico === "" || registro?.stockFisico == null
       ? 0
