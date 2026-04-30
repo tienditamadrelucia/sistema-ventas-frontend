@@ -480,17 +480,17 @@ if (Array.isArray(guardado) && guardado.length > 0) {
                     border: "1px solid #ccc"
                   }}
                   step="0.10"
-                  value={toma[codigo]?.stockFisico ?? ""}
+                  value={toma[producto.codigo]?.stockFisico ?? ""}
                   onChange={(e) => {
                     const v=e.target.value;
                     //permitir vacío
                     if (v === "") {
-                      actualizarCampo(codigo, "stockFisico", "");
+                      actualizarCampo(producto.codigo, "stockFisico", "");
                       return;
                     }
                     // permitir solo números
                     if (!isNaN(v)) {
-                      actualizarCampo(codigo, "stockFisico", Number(v));
+                      actualizarCampo(producto.codigo, "stockFisico", Number(v));
                     }
                   }}
                   />                
