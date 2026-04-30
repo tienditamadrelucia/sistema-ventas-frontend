@@ -250,7 +250,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     observacion: registro.observacion ?? ""
   };
 
-  await guardarTomaInventario(formData);
+  await guardarInventario(formData);
 }
 
 
