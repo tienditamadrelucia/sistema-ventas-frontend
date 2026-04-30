@@ -123,7 +123,8 @@ const cargarInventario = async () => {
     // 1. Buscar inventario guardado
     const guardado = await buscarInventarioGuardado(fecha, categoria);
 if (Array.isArray(guardado) && guardado.length > 0) {
-  setInventarioGuardado(true);   // ← AQUÍ
+  setInventarioGuardado(true);
+
   // 2. Si existe → cargarlo
   const productosConToma = guardado.map(item => ({
     _id: item.productoId,
@@ -134,7 +135,12 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     stockFisico: item.stockFisico,
     observacion: item.observacion    
   }));
+
+  // ⭐ ORDENAR POR CÓDIGO NUMÉRICO
+  productosConToma.sort((a, b) => Number(a.codigo) - Number(b.codigo));
+
   setProductos(productosConToma);
+
   //reconstruir toma física
   const nuevoToma = {};
   guardado.forEach(item => {
@@ -151,7 +157,11 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     }
     // 3. Si NO existe → cargar inventario del sistema
     const data = await obtenerInventario(categoria);
-    setProductos(Array.isArray(data.productos) ? data.productos : []);
+    setProductos(
+      Array.isArray(data.productos)
+      ? data.productos.sort((a, b) => Number(a.codigo) - Number(b.codigo))
+      : []
+  );
     registrarAccion(
       "Cargó inventario del sistema del " + fecha + " / Categoría: " + categoria
     );
@@ -233,14 +243,14 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   const productoId = producto._id;    // ← PARA GUARDAR EN BACKEND
   const registro = toma[codigo] ?? {}; // ← EVITA EXPLOSIONES
   const formData = {
-    fecha,
+    fecha: formData.fecha,
     productoId,
     stockSistema: Number(producto.stockReal ?? 0),
     stockFisico: registro.stockFisico === "" ? "" : Number(registro.stockFisico ?? 0),
     observacion: registro.observacion ?? ""
   };
 
-  // await guardarTomaInventario(formData);
+  await guardarTomaInventario(formData);
 }
 
 
