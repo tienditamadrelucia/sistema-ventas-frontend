@@ -284,7 +284,9 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   try {
     // 🔹 AQUÍ VA EL NUEVO BLOQUE
     if (!inventarioGuardado) {
+      console.log("NO HAY INVENTARIO GUARDADO, VOY A LLAMAR handleGuardar");
       await handleGuardar();          // guarda toda la toma
+      console.log("handleGuardar TERMINÓ");
       setInventarioGuardado(true);    // marcamos que ya existe inventario
     }
 
