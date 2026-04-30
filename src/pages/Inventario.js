@@ -498,7 +498,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
                 <label><strong>Observación: </strong></label>
                 <input
                   type="text"
-                  value={toma[producto._id]?.observacion ?? ""}
+                  value={toma[producto.codigo]?.observacion ?? ""}
                   onChange={(e) =>
                   actualizarCampo(
                   producto._id,
