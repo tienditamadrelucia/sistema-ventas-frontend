@@ -128,15 +128,32 @@ const Productos = () => {
   // -------------------------
 
   useEffect(() => {
-    const cargarProductos = async () => {
-    const res = await fetch(`${API_URL}/api/productos`);
-    const data = await res.json();
-    setProductos(data);
+  const cargarProductos = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/productos`);
+
+      if (!res.ok) {
+        throw new Error("Error cargando productos");
+      }
+
+      const data = await res.json();
+      setProductos(data);
+
+      // ⭐ Asegurar que eliminando SIEMPRE esté en false al entrar
+      setEliminando(false);
+
+    } catch (error) {
+      console.error("Error cargando productos:", error);
+      setProductos([]);
+      setEliminando(false); // ⭐ evita overlay pegado
+    }
   };
 
   cargarProductos();
   registrarAccion("Ingresó al módulo Productos");
-  }, []);
+}, []);
+
+
 
   useEffect(() => {
   const cargarCategorias = async () => {
