@@ -302,7 +302,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
       await crearSalida(data);
     }
     // 2. Obtener stockReal actualizado
-    const resp = await fetch(`${APIURL}/stock-real/${codigo}`);
+    const resp = await fetch(`${APIURL}/inventario/stock-real/${codigo}`);
     const info = await resp.json();
     // 3. Actualizar stockReal en pantalla
     setProductos(prev =>
