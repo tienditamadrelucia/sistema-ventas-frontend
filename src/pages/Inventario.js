@@ -318,7 +318,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     );
 
     // Guardar toma
-    await guardarToma(producto));
+    await guardarToma(producto);
 
     alert("Ajuste realizado y toma guardada automáticamente.");
 
