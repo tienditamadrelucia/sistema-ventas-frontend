@@ -326,15 +326,28 @@ const Productos = () => {
   const eliminarProducto = async (id, descripcion) => {            
   if (window.confirm("¿Eliminar este producto?")) {
     setEliminando(true);
-    await fetch(`${API_URL}/api/productos/${id}`, {
-      method: "DELETE"    
+
+    const res = await fetch(`${API_URL}/api/productos/${id}`, {
+      method: "DELETE"
     });
-    setEliminando(false);
-    await registrarAccion(`Eliminó el producto "${descripcion}"`);
-    const res = await fetch(`${API_URL}/api/productos`);
-    setProductos(await res.json());
+
+    const data = await res.json(); // ⭐ LEER RESPUESTA
+
+    if (!data.ok) {
+      alert(data.error || "No se pudo eliminar el producto");
+      setEliminando(false);
+      return; // ⭐ DETENER AQUÍ
     }
-  };
+
+    await registrarAccion(`Eliminó el producto "${descripcion}"`);
+
+    const res2 = await fetch(`${API_URL}/api/productos`);
+    setProductos(await res2.json());
+
+    setEliminando(false);
+  }
+};
+
 
   // -------------------------
   // LIMPIAR FORMULARIO
