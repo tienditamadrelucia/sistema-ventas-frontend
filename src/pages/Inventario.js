@@ -78,6 +78,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   const navigate = useNavigate();
 
   const [toma, setToma] = useState({});
+  const [inventarioGuardado, setInventarioGuardado] = useState(false);
   const [fecha, setFecha] = useState("");
   const [productos, setProductos] = useState([]);
   const [categoria, setCategoria] = useState("");
@@ -122,6 +123,7 @@ const cargarInventario = async () => {
     // 1. Buscar inventario guardado
     const guardado = await buscarInventarioGuardado(fecha, categoria);
 if (Array.isArray(guardado) && guardado.length > 0) {
+  setInventarioGuardado(true);   // ← AQUÍ
   // 2. Si existe → cargarlo
   const productosConToma = guardado.map(item => ({
     _id: item.productoId,
@@ -178,16 +180,17 @@ if (Array.isArray(guardado) && guardado.length > 0) {
         productoId: producto._id,
         stockReal: Number(producto.stockReal ?? producto.stock ?? 0),
         stockFisico: 
-          toma[producto._id]?.stockFisico === ""  ||
-          toma[producto._id]?.stockFisico === undefined
+          toma[producto.codigo]?.stockFisico === ""  ||
+          toma[producto.codigo]?.stockFisico === undefined
           ? ""
-          : Number(toma[producto._id]?.stockFisico),
-        observacion: toma[producto._id]?.observacion || ""
+          : Number(toma[producto.codigo]?.stockFisico),
+        observacion: toma[producto.codigo]?.observacion || ""
       }))      
     };    
     console.log("ANTES DE GUARDAR:", toma);
     const res = await guardarInventario(payload);
     alert("Inventario guardado correctamente");
+    setInventarioGuardado(true);
     registrarAccion(
       "Guardó inventario del " + formData.fecha + " (" + productos.length + " productos)"
     );
@@ -261,72 +264,65 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   }
 
  async function registrarAjuste(producto) {
-  const fecha = formData.fecha;
+  const codigo = producto.codigo;
+  const productoId = producto._id;
+  const registro = toma[codigo] ?? {};
 
-  // Identificadores correctos
-  const productoId = producto._id;      // para entradas/salidas
-  const codigo = producto.codigo;       // para la ruta stock-real
-
-  // Registro de la toma
-  const registro = toma[productoId];
-
-  // Stock del sistema (viene del producto real)
   const stockSistema = Number(producto.stockReal ?? 0);
-
-  // Stock físico (viene de la toma)
   const stockFisico =
-    registro?.stockFisico === "" || registro?.stockFisico == null
+    registro.stockFisico === "" || registro.stockFisico == null
       ? 0
       : Number(registro.stockFisico);
 
   const diferencia = stockFisico - stockSistema;
-
-  console.log("STOCK Real:", producto.stockReal);
-  console.log("STOCK FISICO:", stockFisico);
-  console.log("STOCK Sistema:", stockSistema);
-  console.log("DIFERENCIA:", diferencia);
 
   if (diferencia === 0) {
     alert("No hay diferencia para ajustar.");
     return;
   }
 
-  const data = {
-    fecha,
-    productoId,                 // ← este es el _id
-    cantidad: Math.abs(diferencia),
-    observacion: "AJUSTE"
-  };
-
   try {
-    // Registrar entrada o salida
+    // 🔹 AQUÍ VA EL NUEVO BLOQUE
+    if (!inventarioGuardado) {
+      await handleGuardar();          // guarda toda la toma
+      setInventarioGuardado(true);    // marcamos que ya existe inventario
+    }
+
+    const data = {
+      fecha,
+      productoId,
+      cantidad: Math.abs(diferencia),
+      observacion: "AJUSTE"
+    };
+    if (!inventarioGuardado) {
+      await handleGuardar();
+      setInventarioGuardado(true);
+    }
+
     if (diferencia > 0) {
       await crearEntrada(data);
     } else {
       await crearSalida(data);
     }
 
-    // Obtener stockReal actualizado (RUTA CORRECTA)
     const resp = await fetch(`${APIURL}/inventario/stock-real/${codigo}`);
     const info = await resp.json();
 
-    // Actualizar en pantalla
     setProductos(prev =>
       prev.map(p =>
         p._id === productoId ? { ...p, stockReal: info.stockReal } : p
       )
     );
 
-    // Guardar toma
     await guardarToma(producto);
 
-    alert("Ajuste realizado y toma guardada automáticamente.");
-
+    alert("Ajuste realizado correctamente.");
   } catch (error) {
     console.error("Error registrando ajuste:", error);
     alert("Error registrando el ajuste.");
   }
 }
+
 
  
   // -------------------------
@@ -482,17 +478,17 @@ if (Array.isArray(guardado) && guardado.length > 0) {
                     border: "1px solid #ccc"
                   }}
                   step="0.10"
-                  value={toma[producto._id]?.stockFisico ?? ""}
+                  value={toma[codigo]?.stockFisico ?? ""}
                   onChange={(e) => {
                     const v=e.target.value;
                     //permitir vacío
                     if (v === "") {
-                      actualizarCampo(producto._id, "stockFisico", "");
+                      actualizarCampo(codigo, "stockFisico", "");
                       return;
                     }
                     // permitir solo números
                     if (!isNaN(v)) {
-                      actualizarCampo(producto._id, "stockFisico", Number(v));
+                      actualizarCampo(codigo, "stockFisico", Number(v));
                     }
                   }}
                   />                
