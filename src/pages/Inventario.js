@@ -433,7 +433,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
         >
         {formData.categoria && productos.map((producto) => {
           const stockSistema = Number(producto.stockReal || 0);
-          const valorToma = toma[producto._id]?.stockFisico;
+          const valorToma = toma[producto.codigo]?.stockFisico;
           // Para el cálculo, si está vacío usar 0, pero sin alterar el valor real
           const tomaParaCalculo =
             valorToma === "" || valorToma === undefined
