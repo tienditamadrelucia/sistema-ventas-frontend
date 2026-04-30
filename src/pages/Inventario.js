@@ -144,7 +144,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   //reconstruir toma física
   const nuevoToma = {};
   guardado.forEach(item => {
-    nuevoToma[item.productoId] = {
+    nuevoToma[item.codigo] = {
       stockFisico: item.stockFisico === "" ? "" : Number(item.stockFisico),
       observacion: item.observacion
     };
@@ -157,11 +157,11 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     }
     // 3. Si NO existe → cargar inventario del sistema
     const data = await obtenerInventario(categoria);
-    setProductos(
-      Array.isArray(data.productos)
+    const productosOrdenados = Array.isArray(data.productos)
       ? data.productos.sort((a, b) => Number(a.codigo) - Number(b.codigo))
-      : []
-  );
+      : [];
+
+    setProductos(productosOrdenados);  
     registrarAccion(
       "Cargó inventario del sistema del " + fecha + " / Categoría: " + categoria
     );
