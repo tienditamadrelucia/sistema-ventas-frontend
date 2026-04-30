@@ -123,8 +123,7 @@ const cargarInventario = async () => {
     // 1. Buscar inventario guardado
     const guardado = await buscarInventarioGuardado(fecha, categoria);
 if (Array.isArray(guardado) && guardado.length > 0) {
-  setInventarioGuardado(true);
-
+  setInventarioGuardado(true);   // ← AQUÍ
   // 2. Si existe → cargarlo
   const productosConToma = guardado.map(item => ({
     _id: item.productoId,
@@ -135,16 +134,11 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     stockFisico: item.stockFisico,
     observacion: item.observacion    
   }));
-
-  // ⭐ ORDENAR POR CÓDIGO NUMÉRICO
-  productosConToma.sort((a, b) => Number(a.codigo) - Number(b.codigo));
-
   setProductos(productosConToma);
-
   //reconstruir toma física
   const nuevoToma = {};
   guardado.forEach(item => {
-    nuevoToma[item.codigo] = {
+    nuevoToma[item.productoId] = {
       stockFisico: item.stockFisico === "" ? "" : Number(item.stockFisico),
       observacion: item.observacion
     };
@@ -157,11 +151,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     }
     // 3. Si NO existe → cargar inventario del sistema
     const data = await obtenerInventario(categoria);
-    const productosOrdenados = Array.isArray(data.productos)
-      ? data.productos.sort((a, b) => Number(a.codigo) - Number(b.codigo))
-      : [];
-
-    setProductos(productosOrdenados);  
+    setProductos(Array.isArray(data.productos) ? data.productos : []);
     registrarAccion(
       "Cargó inventario del sistema del " + fecha + " / Categoría: " + categoria
     );
@@ -250,7 +240,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     observacion: registro.observacion ?? ""
   };
 
-  await guardarInventario(formData);
+  await guardarTomaInventario(formData);
 }
 
 
