@@ -256,61 +256,68 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     //cargarInventario();
   }
 
- async function registrarAjuste(codigo) {
-  const fecha = formData.fecha; // ← AQUÍ SE DEFINE LA FECHA
-  // 1. Buscar el producto real para obtener stockReal
-  //const codigo = producto.codigo;
-  const productoId=producto._id;
+ async function registrarAjuste(producto) {
+  const fecha = formData.fecha;
 
+  // Identificadores correctos
+  const productoId = producto._id;      // para entradas/salidas
+  const codigo = producto.codigo;       // para la ruta stock-real
+
+  // Registro de la toma
   const registro = toma[productoId];
-  //console.log("STOCK REal:", registro.stockReal);
-  //console.log("STOCK FISICO:", registro.stockFisico);
 
+  // Stock del sistema (viene del producto real)
   const stockSistema = Number(producto.stockReal ?? 0);
-  //console.log("STOCK Sistema:", registro.stockSistema);
 
-  // 2. Obtener el stock físico desde la toma
-  //const registro = toma[codigo];
+  // Stock físico (viene de la toma)
   const stockFisico =
     registro?.stockFisico === "" || registro?.stockFisico == null
       ? 0
       : Number(registro.stockFisico);
-  
+
   const diferencia = stockFisico - stockSistema;
+
   console.log("STOCK Real:", producto.stockReal);
   console.log("STOCK FISICO:", stockFisico);
   console.log("STOCK Sistema:", stockSistema);
   console.log("DIFERENCIA:", diferencia);
+
   if (diferencia === 0) {
     alert("No hay diferencia para ajustar.");
     return;
   }
-  alert("cantidad " + diferencia);
+
   const data = {
     fecha,
-    productoId: codigo,
+    productoId,                 // ← este es el _id
     cantidad: Math.abs(diferencia),
     observacion: "AJUSTE"
   };
+
   try {
-    // 1. Registrar ajuste
+    // Registrar entrada o salida
     if (diferencia > 0) {
       await crearEntrada(data);
     } else {
       await crearSalida(data);
     }
-    // 2. Obtener stockReal actualizado
+
+    // Obtener stockReal actualizado (RUTA CORRECTA)
     const resp = await fetch(`${APIURL}/inventario/stock-real/${codigo}`);
     const info = await resp.json();
-    // 3. Actualizar stockReal en pantalla
+
+    // Actualizar en pantalla
     setProductos(prev =>
       prev.map(p =>
-        p._id === codigo ? { ...p, stockReal: info.stockReal } : p
+        p._id === productoId ? { ...p, stockReal: info.stockReal } : p
       )
     );
-    // 4. Guardar automáticamente la toma completa
-    await guardarToma(); // ← AQUÍ VA TU FUNCIÓN DE GUARDAR
+
+    // Guardar toma
+    await guardarToma();
+
     alert("Ajuste realizado y toma guardada automáticamente.");
+
   } catch (error) {
     console.error("Error registrando ajuste:", error);
     alert("Error registrando el ajuste.");
