@@ -225,18 +225,22 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     }));
   }
 
-  async function guardarToma(codigo, stockSistema) {
-    const formData = {
-      fecha,
-      productoId: codigo,
-      stockSistema,
-      stockFisico: toma[codigo].stockFisico === "" ? "" : Number(toma[codigo].stockFisico),
-      observacion: toma[codigo].observacion
-    };
+  async function guardarToma(producto) {
+  const codigo = producto.codigo;     // ← CLAVE REAL EN TOMA
+  const productoId = producto._id;    // ← PARA GUARDAR EN BACKEND
+  const registro = toma[codigo] ?? {}; // ← EVITA EXPLOSIONES
+  const formData = {
+    fecha,
+    productoId,
+    stockSistema: Number(producto.stockReal ?? 0),
+    stockFisico: registro.stockFisico === "" ? "" : Number(registro.stockFisico ?? 0),
+    observacion: registro.observacion ?? ""
+  };
 
-    //const res = await guardarTomaInventario(formData);
-    //if (res.ok) cargarInventario();
-  }
+  // await guardarTomaInventario(formData);
+}
+
+
 
   async function editarToma(codigo) {
     const id = toma[codigo].id;
@@ -314,7 +318,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     );
 
     // Guardar toma
-    await guardarToma();
+    await guardarToma(producto));
 
     alert("Ajuste realizado y toma guardada automáticamente.");
 
