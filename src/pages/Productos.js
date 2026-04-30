@@ -103,7 +103,7 @@ const Productos = () => {
   const [productoEditando, setProductoEditando] = useState(null);
   const [categorias, setCategorias] = useState([]);
   const formularioRef = useRef(null);
-  const [eliminando, setEliminando] = useState([true]);
+  const [eliminando, setEliminando] = useState([false]);
 
   const [formData, setFormData] = useState({
     codigo: 0,
@@ -128,6 +128,7 @@ const Productos = () => {
   // -------------------------
 
   useEffect(() => {
+    setEliminando(false);
   const cargarProductos = async () => {
     try {
       const res = await fetch(`${API_URL}/api/productos`);
@@ -140,7 +141,7 @@ const Productos = () => {
       setProductos(data);
 
       // ⭐ Asegurar que eliminando SIEMPRE esté en false al entrar
-      setEliminando(false);
+      
 
     } catch (error) {
       console.error("Error cargando productos:", error);
