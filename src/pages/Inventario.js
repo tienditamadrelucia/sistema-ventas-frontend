@@ -501,7 +501,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
                   value={toma[producto.codigo]?.observacion ?? ""}
                   onChange={(e) =>
                   actualizarCampo(
-                  producto._id,
+                  producto.codigo,
                   "observacion",
                   e.target.value.toUpperCase()
                   )
