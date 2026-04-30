@@ -259,12 +259,10 @@ if (Array.isArray(guardado) && guardado.length > 0) {
  async function registrarAjuste(codigo) {
   const fecha = formData.fecha; // ← AQUÍ SE DEFINE LA FECHA
   // 1. Buscar el producto real para obtener stockReal
-  const producto = productos.find(p => p._id === codigo);
-  if (!producto) {
-    alert("Producto no encontrado.");
-    return;
-  }
-  //const registro = toma[codigo];
+  const codigo = producto.codigo;
+  const productoId=producto._id;
+
+  const registro = toma[productoId];
   //console.log("STOCK REal:", registro.stockReal);
   //console.log("STOCK FISICO:", registro.stockFisico);
 
