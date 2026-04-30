@@ -291,7 +291,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     }
 
     const data = {
-      fecha,
+      fecha: formData.fecha,
       productoId,
       cantidad: Math.abs(diferencia),
       observacion: "AJUSTE"
