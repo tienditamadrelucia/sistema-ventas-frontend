@@ -265,8 +265,8 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     return;
   }
   //const registro = toma[codigo];
-  console.log("STOCK REal:", registro.stockReal);
-console.log("STOCK FISICO:", registro.stockFisico);
+  //console.log("STOCK REal:", registro.stockReal);
+  //console.log("STOCK FISICO:", registro.stockFisico);
 
   const stockSistema = Number(producto.stockReal ?? 0);
   console.log("STOCK Sistema:", registro.stockSistema);
