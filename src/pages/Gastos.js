@@ -3,13 +3,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { obtenerGastos, crearGasto, actualizarGasto, eliminarGasto } from "../services/ser_gastos";
 import { registrarAccion } from "../utils/registrarAccion";
-import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import { API_URL } from "../config";
 
 const Gastos = () => {
   const navigate = useNavigate();
   const usuarioActual = localStorage.getItem("usuario") || "ADMIN";
 
   const [gastos, setGastos] = useState([]);
+  const [tiposGasto, setTiposGasto] = useState([]); // ⭐ NUEVO
   const [modo, setModo] = useState("crear");
   const [gastoEditando, setGastoEditando] = useState(null);
   const formularioRef = useRef(null);
@@ -20,14 +21,14 @@ const Gastos = () => {
     descripcion: "",
     moneda: "",
     monto: 0,
-    numeroRecibo:0,
+    numeroRecibo: 0,
     cajaChica: false
   });
- 
+
   // -------------------------
-  // ESTILOS (idénticos a CLIENTES)
+  // ESTILOS
   // -------------------------
- 
+
   const estiloBoton = {
     width: "15%",
     padding: "10px",
@@ -48,10 +49,10 @@ const Gastos = () => {
     color: "white",
     border: "none",
     borderRadius: "6px",
-    fontFamily: "Arial Black",    
+    fontFamily: "Arial Black",
     marginTop: "8px",
-    opacity:procesando ? 0.6 :1,
-    cursor: procesando ? "not-allowed":"pointer"
+    opacity: procesando ? 0.6 : 1,
+    cursor: procesando ? "not-allowed" : "pointer"
   };
 
   const iconoEditar = {
@@ -71,12 +72,27 @@ const Gastos = () => {
   // -------------------------
 
   async function cargarGastos() {
+    setProcesando(true); // ⭐ NUEVO
     const data = await obtenerGastos();
     setGastos(data.lista);
+    setProcesando(false); // ⭐ NUEVO
+  }
+
+  // -------------------------
+  // CARGAR TIPOS DE GASTO
+  // -------------------------
+
+  async function cargarTiposGasto() {
+    setProcesando(true); // ⭐ NUEVO
+    const res = await fetch(`${API_URL}/api/tipogastos`);
+    const data = await res.json();
+    setTiposGasto(data);
+    setProcesando(false); // ⭐ NUEVO
   }
 
   useEffect(() => {
     cargarGastos();
+    cargarTiposGasto(); // ⭐ NUEVO
   }, []);
 
   // -------------------------
@@ -97,10 +113,9 @@ const Gastos = () => {
   // -------------------------
 
   const guardarGasto = async () => {
-    if (procesando) return; //evita doble clic
-    setProcesando(true);
-  
-    try {
+    if (procesando) return;
+    setProcesando(true); // ⭐ NUEVO
+
     try {
       if (!formData.fecha || !formData.descripcion || !formData.moneda || !formData.monto) {
         alert("Debe completar todos los campos obligatorios");
@@ -115,16 +130,14 @@ const Gastos = () => {
         await registrarAccion(`Actualizó un gasto: ${formData.descripcion}`);
       }
 
-      cargarGastos();
+      await cargarGastos();
       limpiarFormulario();
 
     } catch (error) {
       console.error("Error guardando gasto:", error);
-    }
     } finally {
-        // ⭐ SIEMPRE se ejecuta, incluso si hubo return arriba
-        setProcesando(false);
-      } 
+      setProcesando(false); // ⭐ NUEVO
+    }
   };
 
   // -------------------------
@@ -140,6 +153,7 @@ const Gastos = () => {
       descripcion: g.descripcion || "",
       moneda: g.moneda || "",
       monto: g.monto || "",
+      numeroRecibo: g.numeroRecibo || "",
       cajaChica: g.cajaChica || false
     });
 
@@ -153,11 +167,13 @@ const Gastos = () => {
   // -------------------------
 
   const eliminar = async (id) => {
-    if (window.confirm("¿Eliminar este gasto?")) {
-      await eliminarGasto(id);
-      await registrarAccion("Eliminó un gasto");
-      cargarGastos();
-    }
+    if (!window.confirm("¿Eliminar este gasto?")) return;
+
+    setProcesando(true); // ⭐ NUEVO
+    await eliminarGasto(id);
+    await registrarAccion("Eliminó un gasto");
+    await cargarGastos();
+    setProcesando(false); // ⭐ NUEVO
   };
 
   // -------------------------
@@ -172,6 +188,7 @@ const Gastos = () => {
       descripcion: "",
       moneda: "",
       monto: "",
+      numeroRecibo: "",
       cajaChica: false
     });
   };
@@ -183,6 +200,24 @@ const Gastos = () => {
   return (
     <div>
       <Encabezado />
+
+      {/* ⭐ MENSAJE DE PROCESANDO */}
+      {procesando && (
+        <div style={{
+          background: "#6699FF",
+          color: "white",
+          padding: "8px",
+          textAlign: "center",
+          fontWeight: "bold",
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 1000
+        }}>
+          Procesando, por favor espere...
+        </div>
+      )}
 
       <div style={{ padding: "20px" }}>
         <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
@@ -204,67 +239,72 @@ const Gastos = () => {
           <h3 style={{ textAlign: "center", marginBottom: "35px", fontWeight: "bold" }}>
             {modo === "crear" ? "Registrar Gasto" : "Editar Gasto"}
           </h3>
-          
-          <div style={{ display: "flex", flexDirection: "row", gap: "40px", alignItems: "center", marginBottom:"20px"}}>
 
-            {/* FECHA */}
-            <div style={{ display: "flex", flexDirection: "row", gap:"10px" }}>
-                <label style={{ fontWeight: "bold", marginTop:"12px" }}>Fecha</label>
-                <input
-                    type="date"
-                    name="fecha"
-                    value={formData.fecha}
-                    onChange={handleChange}
-                    style={{ width: "160px", padding: "5px" }}
-                />
+          {/* FECHA + RECIBO */}
+          <div style={{ display: "flex", flexDirection: "row", gap: "40px", alignItems: "center", marginBottom: "20px" }}>
+            <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+              <label style={{ fontWeight: "bold", marginTop: "12px" }}>Fecha</label>
+              <input
+                type="date"
+                name="fecha"
+                value={formData.fecha}
+                onChange={handleChange}
+                style={{ width: "160px", padding: "5px" }}
+              />
             </div>
-            {/* NÚMERO DE RECIBO */}
-            <div style={{ display: "flex", flexDirection: "row", gap:"10px" }}>
-                <label style={{ fontWeight: "bold", marginTop:"12px" }}>N° Recibo (opcional)</label>
-                <input
-                    type="text"
-                    name="numeroRecibo"
-                    placeholder="Ej: 00125"
-                    value={formData.numeroRecibo}
-                    onChange={handleChange}
-                    style={{ width: "100px", padding: "5px" }}
-                />
+
+            <div style={{ display: "flex", flexDirection: "row", gap: "10px" }}>
+              <label style={{ fontWeight: "bold", marginTop: "12px" }}>N° Recibo (opcional)</label>
+              <input
+                type="text"
+                name="numeroRecibo"
+                placeholder="Ej: 00125"
+                value={formData.numeroRecibo}
+                onChange={handleChange}
+                style={{ width: "100px", padding: "5px" }}
+              />
             </div>
           </div>
 
+          {/* ⭐ SELECT DINÁMICO DE TIPOS DE GASTO */}
           <select
             name="descripcion"
             value={formData.descripcion}
             onChange={handleChange}
             style={{ width: "100%", marginBottom: "20px", padding: "5px" }}
           >
-            <option value="">Seleccione un gasto</option>
-            <option value="PAPELERÍA">PAPELERÍA</option>
-            <option value="LIMPIEZA">LIMPIEZA</option>
-            <option value="MANTENIMIENTO">MANTENIMIENTO</option>
-            <option value="SERVICIOS">SERVICIOS</option>
-            <option value="OTRO">OTRO</option>
+            <option value="">Seleccione un tipo de gasto</option>
+
+            {tiposGasto.map((t) => (
+              <option key={t._id} value={t.descripcion}>
+                {t.descripcion}
+              </option>
+            ))}
           </select>
+
+          {/* MONEDA + MONTO + CAJA CHICA */}
           <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
             <select
-                name="moneda"
-                value={formData.moneda}
-                onChange={handleChange}
-                style={{ width: "20%", marginBottom: "10px", padding: "5px" }}
+              name="moneda"
+              value={formData.moneda}
+              onChange={handleChange}
+              style={{ width: "20%", marginBottom: "10px", padding: "5px" }}
             >
-                <option value="">Moneda</option>
-                <option value="D">Dólares</option>
-                <option value="P">Pesos</option>
-                <option value="Bs">Bolívares</option>
+              <option value="">Moneda</option>
+              <option value="D">Dólares</option>
+              <option value="P">Pesos</option>
+              <option value="Bs">Bolívares</option>
             </select>
+
             <input
-                type="number"
-                name="monto"
-                placeholder="Monto"
-                value={formData.monto}
-                onChange={handleChange}
-                style={{ width: "30%", marginBottom: "10px", padding: "5px" }}
-            />          
+              type="number"
+              name="monto"
+              placeholder="Monto"
+              value={formData.monto}
+              onChange={handleChange}
+              style={{ width: "30%", marginBottom: "10px", padding: "5px" }}
+            />
+
             <input
               type="checkbox"
               name="cajaChica"
@@ -272,8 +312,9 @@ const Gastos = () => {
               onChange={handleChange}
               style={{ marginRight: "10px" }}
             />
-            ¿Salió de Caja Chica?        
-        </div>
+            ¿Salió de Caja Chica?
+          </div>
+
           <div style={{ display: "flex", justifyContent: "center" }}>
             <button style={botonGuardar} onClick={guardarGasto}>
               {modo === "crear" ? "Guardar Gasto" : "Actualizar Gasto"}
