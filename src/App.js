@@ -21,6 +21,7 @@ import Caja from "./pages/Caja";
 import Gastos from "./pages/Gastos";
 import Diario from "./pages/Diario";
 import Repcredito from "./pages/ReporCredito";
+import TipoGastos from "./pages/TipoGastos";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -71,7 +72,7 @@ function App() {
         <Route path="/gastos" element={<ProtectedRoute><Gastos /></ProtectedRoute>} />
         <Route path="/diario" element={<ProtectedRoute><Diario /></ProtectedRoute>} />
         <Route path="/repcredito" element={<ProtectedRoute><Repcredito /></ProtectedRoute>} />
-
+        <Route path="/tipogasto" element={<ProtectedRoute><TipoGastos /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

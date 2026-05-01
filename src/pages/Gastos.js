@@ -27,7 +27,7 @@ const Gastos = () => {
   // -------------------------
   // ESTILOS (idénticos a CLIENTES)
   // -------------------------
-
+ 
   const estiloBoton = {
     width: "15%",
     padding: "10px",

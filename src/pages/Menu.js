@@ -232,7 +232,15 @@ function Menu() {
                   navigate("/tasas")}}
               >
                 Tasas
-              </button>            
+              </button>     
+              <button 
+                style={botonSubmenu}
+                onClick={async() => {
+                  await registrarAccion("Ingresó al módulo Tipo de Gastos");
+                  navigate("/tipogastos")}}
+              >
+                Tipo de Gastos
+              </button>                     
               <button 
                 style={botonSubmenu}
                 onClick={async() => {

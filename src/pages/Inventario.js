@@ -106,6 +106,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   }, []);
 
 const handleBuscar = async () => {
+  setProcesando(true);
   await cargarInventario();
 };
 
@@ -151,6 +152,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   } catch (error) {
     manejarError(error);
   }
+  setProcesando(false);
 };
 
   const handleBorrar = () => {
@@ -238,8 +240,6 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   await guardarInventario(formData);
 }
 
-
-
   async function editarToma(codigo) {
     const id = toma[codigo].id;
 
@@ -259,6 +259,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   }
 
  async function registrarAjuste(producto) {
+  setProcesando(true);
   const codigo = producto.codigo;
   const productoId = producto._id;
   const registro = toma[codigo] ?? {};
@@ -314,13 +315,12 @@ if (Array.isArray(guardado) && guardado.length > 0) {
     await guardarToma(producto);
 
     alert("Ajuste realizado correctamente.");
+    setProcesando(false);
   } catch (error) {
     console.error("Error registrando ajuste:", error);
     alert("Error registrando el ajuste.");
   }
 }
-
-
  
   // -------------------------
   // RETURN
