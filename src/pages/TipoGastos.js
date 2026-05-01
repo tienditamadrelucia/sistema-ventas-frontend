@@ -185,6 +185,23 @@ const TipoGastos = () => {
 
   return (
     <div>
+        {procesando && (
+        <div style={{
+          background: "#6699FF",
+          color: "white",
+          padding: "8px",
+          textAlign: "center",
+          fontWeight: "bold",
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",      
+          zIndex: 1000
+        }}>
+            Procesando, por favor espere...
+        </div>
+        )}
+
       <Encabezado />
 
       <div style={{ padding: "1px" }}>
@@ -258,7 +275,7 @@ const TipoGastos = () => {
           Lista de Tipos de Gastos
         </h3>
 
-        <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
+        <table border="1" cellPadding="8" style={{ width: "50%", textAlign: "center" }}>
           <thead>
             <tr>
               <th>Descripción</th>
