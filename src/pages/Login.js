@@ -27,8 +27,10 @@ function Login() {
   const [contraseña, setContraseña] = useState("");
   const [mensaje, setMensaje] = useState("");
   const [mostrarContraseña, setMostrarContraseña] = useState(false);  
+  const [procesando, setProcesando] = useState(false);
 
-  const manejarLogin = async (e) => {       
+  const manejarLogin = async (e) => {
+  setProcesando(true);     
   e.preventDefault();    
 
   const encontrado = await buscarUsuario(nombre, contraseña);  
@@ -46,11 +48,27 @@ function Login() {
     navigate("/tasas", { replace: true });
     return;
   }
-
+  setProcesando(false);
   navigate("/menu", { replace: true });
 };
 
   return (
+    <div>
+      {procesando && (
+      <div style={{
+        background: "#333",
+        color: "white",
+        padding: "8px",
+        textAlign: "center",
+        fontWeight: "bold",
+        position: "sticky",
+        top: 0,
+        zIndex: 1000
+      }}>
+        Procesando, por favor espere...
+      </div>
+      )}
+
     <div style={{
       width: "350px",
       margin: "80px auto",
@@ -193,6 +211,7 @@ function Login() {
         </button>      
       </form>
       {mensaje && <p>{mensaje}</p>}
+    </div>
     </div>
   );
 }
