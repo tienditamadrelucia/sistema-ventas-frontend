@@ -275,7 +275,7 @@ const TipoGastos = () => {
           Lista de Tipos de Gastos
         </h3>
 
-        <table border="1" cellPadding="8" style={{ width: "50%", textAlign: "center" }}>
+        <table border="1" cellPadding="8" style={{ width: "50%", textAlign: "center", margin: "0 auto" }}>
           <thead>
             <tr>
               <th>Descripción</th>
