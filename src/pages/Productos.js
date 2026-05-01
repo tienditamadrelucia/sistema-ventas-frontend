@@ -145,8 +145,7 @@ const Productos = () => {
 
     } catch (error) {
       console.error("Error cargando productos:", error);
-      setProductos([]);
-      setEliminando(false); // ⭐ evita overlay pegado
+      setProductos([]);      
     }
   };
 
@@ -409,24 +408,14 @@ const Productos = () => {
     }}>
       Procesando, por favor espere...
     </div>
-  )}
-      {eliminando && (
-      <div className="overlay">
-        Eliminando producto, por favor espere...
-      </div>
-      )}
+  )}      
       <Encabezado />
 
     <div style={{ padding: "1px" }}>
 
       <h2 style={{ textAlign: "center", marginBottom: "1px", fontWeight: "bold" }}>
         Gestión de Productos
-      </h2>
-      {eliminando && (
-      <div className="overlay">
-        Eliminando producto, por favor espere...
-      </div>
-      )}
+      </h2>      
 
       {/* FORMULARIO */}
       <div
