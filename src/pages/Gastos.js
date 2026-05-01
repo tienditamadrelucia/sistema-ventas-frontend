@@ -83,12 +83,27 @@ const Gastos = () => {
   // -------------------------
 
   async function cargarTiposGasto() {
-    setProcesando(true); // ⭐ NUEVO
+  try {
+    setProcesando(true);
     const res = await fetch(`${API_URL}/api/tipogastos`);
     const data = await res.json();
-    setTiposGasto(data);
-    setProcesando(false); // ⭐ NUEVO
+
+    console.log("TIPOS GASTO DESDE API:", data); // 👀
+
+    if (Array.isArray(data)) {
+      setTiposGasto(data);
+    } else {
+      setTiposGasto([]);
+      console.error("Respuesta inesperada en /api/tipogastos:", data);
+    }
+  } catch (err) {
+    console.error("Error cargando tipos de gasto:", err);
+    setTiposGasto([]);
+  } finally {
+    setProcesando(false);
   }
+}
+
 
   useEffect(() => {
     cargarGastos();
