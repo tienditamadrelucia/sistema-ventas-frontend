@@ -389,7 +389,7 @@ const Productos = () => {
     <div>
       {procesando && (
     <div style={{
-      background: "#333",
+      background: "#6699FF",
       color: "white",
       padding: "8px",
       textAlign: "center",
