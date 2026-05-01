@@ -102,8 +102,7 @@ const Productos = () => {
   const [modo, setModo] = useState("crear");
   const [productoEditando, setProductoEditando] = useState(null);
   const [categorias, setCategorias] = useState([]);
-  const formularioRef = useRef(null);
-  const [eliminando, setEliminando] = useState([false]);
+  const formularioRef = useRef(null);  
   const [procesando, setProcesando] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -129,7 +128,7 @@ const Productos = () => {
   // -------------------------
 
   useEffect(() => {
-    setEliminando(false);
+    setProcesando(true);    
   const cargarProductos = async () => {
     try {
       const res = await fetch(`${API_URL}/api/productos`);
@@ -153,6 +152,7 @@ const Productos = () => {
 
   cargarProductos();
   registrarAccion("Ingresó al módulo Productos");
+  setProcesando(false);
 }, []);
 
 
@@ -328,12 +328,9 @@ const Productos = () => {
   // ELIMINAR
   // -------------------------
 
-  const eliminarProducto = async (id, descripcion) => {
-    console.log("ID a eliminar:", id);
-    console.log("Descripción del producto:", descripcion);
-  
+  const eliminarProducto = async (id, descripcion) => {      
     if (window.confirm("¿Eliminar este producto?")) {
-        setEliminando(true);
+        setProcesando(true);
   
         try {
             const res = await fetch(`${API_URL}/api/productos/${id}`, {
@@ -341,12 +338,11 @@ const Productos = () => {
                 headers: { "Content-Type": "application/json" } // Asegúrate de establecer bien los encabezados
             });
             
-            const data = await res.json(); // Leer respuesta
-            console.log("Respuesta de eliminación:", data); // Registro de respuesta
+            const data = await res.json(); // Leer respuesta 
   
             if (!data.ok) {
                 alert(data.error || "No se pudo eliminar el producto");
-                setEliminando(false);
+                setProcesando(false);
                 return; // Detener aquí
             }
   
@@ -359,7 +355,7 @@ const Productos = () => {
             console.error("Error al eliminar el producto:", error);
             alert("Ocurrió un error al intentar eliminar el producto");
         } finally {
-            setEliminando(false);
+            setProcesando(false);
         }
     }
 };
@@ -405,8 +401,10 @@ const Productos = () => {
       padding: "8px",
       textAlign: "center",
       fontWeight: "bold",
-      position: "sticky",
-      top: 0,
+      position: "fixed",
+      bottom: 0,
+      left: 0,
+      width: "100%",      
       zIndex: 1000
     }}>
       Procesando, por favor espere...
