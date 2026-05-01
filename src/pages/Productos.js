@@ -110,10 +110,10 @@ const Productos = () => {
     categoria: "",
     descripcion: "",
     medida: "",
-    stock: 0,
-    fechaIngreso: "",
-    costo: 0,
-    venta: 0,
+    stock: "",
+    fechaIngreso: new Date().toISOString().split("T")[0], // ⭐ fecha de hoy
+    costo: "",
+    venta: "",
     foto: ""
   });
 
@@ -148,13 +148,10 @@ const Productos = () => {
       setProductos([]);      
     }
   };
-
   cargarProductos();
   registrarAccion("Ingresó al módulo Productos");
   setProcesando(false);
 }, []);
-
-
 
   useEffect(() => {
   const cargarCategorias = async () => {
@@ -162,13 +159,44 @@ const Productos = () => {
     const data = await res.json();
     setCategorias(data);
   };
-
   cargarCategorias();
   }, []);
 
   useEffect(() => {
   limpiarFormulario();   // 👈 genera el primer código al iniciar  
   }, []);
+
+  const optimizarImagen = (file) => {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.src = URL.createObjectURL(file);
+
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+
+      // ⭐ Tamaño máximo recomendado
+      const MAX_WIDTH = 800;
+
+      // Mantener proporción
+      const scale = MAX_WIDTH / img.width;
+
+      canvas.width = MAX_WIDTH;
+      canvas.height = img.height * scale;
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+      // ⭐ Convertir a JPEG con calidad 70%
+      canvas.toBlob(
+        (blob) => {
+          resolve(new File([blob], file.name, { type: "image/jpeg" }));
+        },
+        "image/jpeg",
+        0.7
+      );
+    };
+  });
+};
 
   // -------------------------
   // MANEJO DE FORMULARIO
@@ -219,7 +247,7 @@ const Productos = () => {
   // GUARDAR / ACTUALIZAR
   // -------------------------
 
-  const guardarProducto = async () => {    
+  const guardarProducto = async () => {
   // -------------------------
   // VALIDAR CAMPOS OBLIGATORIOS
   // -------------------------
@@ -227,7 +255,7 @@ const Productos = () => {
     !formData.descripcion ||
     !formData.categoria ||
     !formData.venta ||
-    !formData.stock === "" ||
+    formData.stock === "" ||
     !formData.medida ||
     !formData.fechaIngreso
   ) {
@@ -243,59 +271,103 @@ const Productos = () => {
     return;
   }
 
-  // -------------------------
-  // CREAR PRODUCTO
-  // -------------------------
-  if (modo === "crear") {
-       setProcesando(true);
+  setProcesando(true);
 
-    // No enviamos el código porque lo genera el backend
-    const { codigo, ...productoSinCodigo } = formData;
-
-    const respuesta = await fetch(`${API_URL}/api/productos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(productoSinCodigo)
-    });
-
-    const data = await respuesta.json();
-
-    // 👇 AQUÍ guardas el código generado
-    setFormData((prev) => ({
-      ...prev,
-      codigo: data.producto.codigo
-    }));
-
-    await registrarAccion(`Registró el producto "${formData.descripcion}"`);
-
-  } else {
-    if (!productoEditando) {
-    alert("Error interno: no hay producto seleccionado para editar.");
-    return;
-  }    
+  try {
     // -------------------------
-    // EDITAR PRODUCTO
+    // OPTIMIZAR IMAGEN SI EXISTE
     // -------------------------
-    await fetch(`${API_URL}/api/productos/${productoEditando}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
-    });
+    let imagenOptimizada = formData.foto;
 
-    await registrarAccion(`Actualizó el producto "${formData.descripcion}"`);
+    if (formData.foto instanceof File) {
+      imagenOptimizada = await optimizarImagen(formData.foto);
+    }
+
+    // -------------------------
+    // ARMAR FORMDATA
+    // -------------------------
+    const formDataToSend = new FormData();
+
+    if (imagenOptimizada) {
+      formDataToSend.append("foto", imagenOptimizada);
+    }
+
+    formDataToSend.append("descripcion", formData.descripcion);
+    formDataToSend.append("categoria", formData.categoria);
+    formDataToSend.append("medida", formData.medida);
+    formDataToSend.append("stock", formData.stock || 0);
+    formDataToSend.append("fechaIngreso", formData.fechaIngreso);
+    formDataToSend.append("costo", formData.costo || 0);
+    formDataToSend.append("venta", formData.venta || 0);
+
+    // -------------------------
+    // CREAR PRODUCTO
+    // -------------------------
+    if (modo === "crear") {
+      const respuesta = await fetch(`${API_URL}/api/productos`, {
+        method: "POST",
+        body: formDataToSend
+      });
+
+      const data = await respuesta.json();
+
+      if (!data.ok) {
+        alert(data.error || "No se pudo guardar el producto");
+        setProcesando(false);
+        return;
+      }
+
+      // Guardar código generado
+      setFormData((prev) => ({
+        ...prev,
+        codigo: data.producto.codigo
+      }));
+
+      await registrarAccion(`Registró el producto "${formData.descripcion}"`);
+
+    } else {
+      // -------------------------
+      // EDITAR PRODUCTO
+      // -------------------------
+      if (!productoEditando) {
+        alert("Error interno: no hay producto seleccionado para editar.");
+        setProcesando(false);
+        return;
+      }
+
+      const respuesta = await fetch(`${API_URL}/api/productos/${productoEditando}`, {
+        method: "PUT",
+        body: formDataToSend
+      });
+
+      const data = await respuesta.json();
+
+      if (!data.ok) {
+        alert(data.error || "No se pudo actualizar el producto");
+        setProcesando(false);
+        return;
+      }
+
+      await registrarAccion(`Actualizó el producto "${formData.descripcion}"`);
+    }
+
+    // -------------------------
+    // RECARGAR LISTA DE PRODUCTOS
+    // -------------------------
+    const res = await fetch(`${API_URL}/api/productos`);
+    setProductos(await res.json());
+
+    // -------------------------
+    // LIMPIAR FORMULARIO
+    // -------------------------
+    limpiarFormulario();
+
+  } catch (error) {
+    console.error("Error al guardar producto:", error);
+    alert("Ocurrió un error al guardar el producto");
+  } finally {
+    setProcesando(false);
   }
-
-  // -------------------------
-  // RECARGAR LISTA DE PRODUCTOS
-  // -------------------------
-  const res = await fetch(`${API_URL}/api/productos`);
-  setProductos(await res.json());
-
-  // -------------------------
-  // LIMPIAR FORMULARIO
-  // -------------------------
-  limpiarFormulario();
-  setProcesando(false);
 };
 
   // -------------------------
@@ -486,7 +558,7 @@ const Productos = () => {
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <input
             name="stock"
-            placeholder="Stock"
+            placeholder="Stock Inicial"
             type="number"
             step="0.1"
             value={formData.stock}
@@ -496,7 +568,7 @@ const Productos = () => {
 
           <input
             name="costo"
-            placeholder="Costo"
+            placeholder="Precio de Costo"
             type="number"
             step="0.1"
             value={formData.costo}
@@ -506,7 +578,7 @@ const Productos = () => {
 
           <input
             name="venta"
-            placeholder="Venta"
+            placeholder="Precio de Venta"
             type="number"
             step="0.1"
             value={formData.venta}
