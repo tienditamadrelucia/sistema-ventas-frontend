@@ -104,6 +104,7 @@ const Productos = () => {
   const [categorias, setCategorias] = useState([]);
   const formularioRef = useRef(null);
   const [eliminando, setEliminando] = useState([false]);
+  const [procesando, setProcesando] = useState(false);
 
   const [formData, setFormData] = useState({
     codigo: 0,
@@ -219,7 +220,7 @@ const Productos = () => {
   // GUARDAR / ACTUALIZAR
   // -------------------------
 
-  const guardarProducto = async () => {
+  const guardarProducto = async () => {    
   // -------------------------
   // VALIDAR CAMPOS OBLIGATORIOS
   // -------------------------
@@ -247,6 +248,8 @@ const Productos = () => {
   // CREAR PRODUCTO
   // -------------------------
   if (modo === "crear") {
+       setProcesando(true);
+
     // No enviamos el código porque lo genera el backend
     const { codigo, ...productoSinCodigo } = formData;
 
@@ -293,6 +296,7 @@ const Productos = () => {
   // LIMPIAR FORMULARIO
   // -------------------------
   limpiarFormulario();
+  setProcesando(false);
 };
 
   // -------------------------
@@ -383,6 +387,20 @@ const Productos = () => {
   return (    
     
     <div>
+      {procesando && (
+    <div style={{
+      background: "#333",
+      color: "white",
+      padding: "8px",
+      textAlign: "center",
+      fontWeight: "bold",
+      position: "sticky",
+      top: 0,
+      zIndex: 1000
+    }}>
+      Procesando, por favor espere...
+    </div>
+  )}
       {eliminando && (
       <div className="overlay">
         Eliminando producto, por favor espere...
