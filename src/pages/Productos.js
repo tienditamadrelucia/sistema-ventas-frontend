@@ -268,12 +268,13 @@ const Productos = () => {
     // -------------------------
     // EDITAR PRODUCTO
     // -------------------------
+    setProcesando(true);
     await fetch(`${API_URL}/api/productos/${productoEditando}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData)
     });
-
+    setProcesando(false);
     await registrarAccion(`Actualizó el producto "${formData.descripcion}"`);
   }
 
