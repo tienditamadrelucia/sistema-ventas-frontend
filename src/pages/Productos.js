@@ -203,35 +203,37 @@ const Productos = () => {
   // -------------------------
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    // Imagen
-    if (name === "foto") {
-      const file = files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = () => {
-          setFormData({ ...formData, foto: reader.result });
-        };
-        reader.readAsDataURL(file);
-      }
-      return;
-    }
+  const { name, value, files } = e.target;
 
-    // Campos numéricos SIN formatear
-  const camposNumericos = ["stock", "costo", "venta"];
-  if (camposNumericos.includes(name)) {
-    // Permitir vacío mientras escribe
-    if (value === "") {
-      setFormData({ ...formData, [name]: "" });
-      return;
-    }
-    // Convertir a número real
-    const numero = Number(value);
-    if (!isNaN(numero)) {
-      setFormData({ ...formData, [name]: numero });
+  // ⭐ Imagen
+  if (name === "foto") {
+    const file = files[0];
+    if (file) {
+      setFormData((prev) => ({
+        ...prev,
+        foto: file   // Guardamos el File, no base64
+      }));
     }
     return;
   }
+
+  // ⭐ Campos numéricos SIN convertir a número
+  const camposNumericos = ["stock", "costo", "venta"];
+  if (camposNumericos.includes(name)) {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value   // ⭐ Mantener como string
+    }));
+    return;
+  }
+
+  // ⭐ Otros campos
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value
+  }));
+};
+
 
     // Texto a mayúsculas
     const valorFinal =
