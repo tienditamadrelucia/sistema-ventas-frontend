@@ -203,7 +203,7 @@ const Productos = () => {
   // ⭐ Otros campos
   setFormData((prev) => ({
     ...prev,
-    [name]: value
+    [name]: valorFinal
   }));
 };
   
@@ -370,7 +370,7 @@ const Productos = () => {
     descripcion: "",
     medida: "",
     stock: "",
-    fechaIngreso: "",
+    fechaIngreso: new Date().toISOString().split("T")[0], // ⭐ fecha de hoy
     costo: "",
     venta: "",
     foto: ""
