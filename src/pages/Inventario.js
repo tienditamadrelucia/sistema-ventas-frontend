@@ -85,6 +85,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   const [categorias, setCategorias] = useState([]);
   const [tomas, setTomas] = useState({}); // { idProducto: cantidadFisica }  
   const APIURL = `${API_URL}/api`;
+  const [procesando, setProcesando] = useState(false);
   
   const [formData, setFormData] = useState({
     fecha: "",        // Fecha de la toma de inventario
@@ -95,14 +96,6 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
     });
 
   const rol = localStorage.getItem("rolUsuario")?.toUpperCase().trim();  
-
-  // Cargar inventario al cambiar fecha o categoría
-//useEffect(() => {    
-//  cargarInventario();
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-//}, [fecha, categoria]);
-
 
   useEffect(() => {
   async function cargar() {    
@@ -172,6 +165,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   };
 
   const handleGuardar = async () => {
+    setProcesando(true);
   try {
     const payload = {
       fecha: formData.fecha,
@@ -197,6 +191,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   } catch (error) {
     manejarError(error);
   }
+  setProcesando(false);
 };
 
 
@@ -333,6 +328,21 @@ if (Array.isArray(guardado) && guardado.length > 0) {
 
   return (  
   <div>    
+    {procesando && (
+    <div style={{
+      background: "#333",
+      color: "white",
+      padding: "8px",
+      textAlign: "center",
+      fontWeight: "bold",
+      position: "sticky",
+      top: 0,
+      zIndex: 1000
+    }}>
+      Procesando, por favor espere...
+    </div>
+  )}
+
     <Encabezado />
 
     <div style={{ padding: "20px" }}>
