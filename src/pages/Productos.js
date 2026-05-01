@@ -328,31 +328,40 @@ const Productos = () => {
   // ELIMINAR
   // -------------------------
 
-  const eliminarProducto = async (id, descripcion) => {   
-    alert("id "+ id);
-    alert("descripción " + descripcion);         
-  if (window.confirm("¿Eliminar este producto?")) {
-    setEliminando(true);
-
-    const res = await fetch(`${API_URL}/api/productos/${id}`, {
-      method: "DELETE"
-    });
-
-    const data = await res.json(); // ⭐ LEER RESPUESTA
-
-    if (!data.ok) {
-      alert(data.error || "No se pudo eliminar el producto");
-      setEliminando(false);
-      return; // ⭐ DETENER AQUÍ
+  const eliminarProducto = async (id, descripcion) => {
+    console.log("ID a eliminar:", id);
+    console.log("Descripción del producto:", descripcion);
+  
+    if (window.confirm("¿Eliminar este producto?")) {
+        setEliminando(true);
+  
+        try {
+            const res = await fetch(`${API_URL}/api/productos/${id}`, {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" } // Asegúrate de establecer bien los encabezados
+            });
+            
+            const data = await res.json(); // Leer respuesta
+            console.log("Respuesta de eliminación:", data); // Registro de respuesta
+  
+            if (!data.ok) {
+                alert(data.error || "No se pudo eliminar el producto");
+                setEliminando(false);
+                return; // Detener aquí
+            }
+  
+            await registrarAccion(`Eliminó el producto "${descripcion}"`);
+  
+            // Actualiza la lista de productos después de la eliminación
+            const res2 = await fetch(`${API_URL}/api/productos`);
+            setProductos(await res2.json());
+        } catch (error) {
+            console.error("Error al eliminar el producto:", error);
+            alert("Ocurrió un error al intentar eliminar el producto");
+        } finally {
+            setEliminando(false);
+        }
     }
-
-    await registrarAccion(`Eliminó el producto "${descripcion}"`);
-
-    const res2 = await fetch(`${API_URL}/api/productos`);
-    setProductos(await res2.json());
-
-    setEliminando(false);
-  }
 };
 
 
