@@ -449,10 +449,10 @@ const Productos = () => {
     categoria: "",
     descripcion: "",
     medida: "",
-    stock: 0,
+    stock: "",
     fechaIngreso: "",
-    costo: 0,
-    venta: 0,
+    costo: "",
+    venta: "",
     foto: ""
   });
   if (inputFotoRef.current) inputFotoRef.current.value = "";
