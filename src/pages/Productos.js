@@ -233,17 +233,6 @@ const Productos = () => {
     [name]: value
   }));
 };
-
-
-    // Texto a mayúsculas
-    const valorFinal =
-      typeof value === "string" ? value.toUpperCase() : value;
-
-    setFormData({
-      ...formData,
-      [name]: valorFinal
-    });
-  };
   
   // -------------------------
   // GUARDAR / ACTUALIZAR
