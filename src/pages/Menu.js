@@ -328,7 +328,7 @@ function Menu() {
           </button>
 
           {openReportes && (
-            <>
+            <> 
               <button 
                 style={botonSubmenu}
                 onClick={async() => {
@@ -346,7 +346,7 @@ function Menu() {
               <button style={botonSubmenu}
                 onClick={async() => {
                   await registrarAccion("Entró al módulo Reporte de Crédito")
-                  window.open("/rep_credito", "_blank")}}
+                  window.open("/ReporCredito", "_blank")}}
               >
                 Crédito
               </button>
