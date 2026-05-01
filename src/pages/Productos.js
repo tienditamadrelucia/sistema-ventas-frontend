@@ -328,7 +328,9 @@ const Productos = () => {
   // ELIMINAR
   // -------------------------
 
-  const eliminarProducto = async (id, descripcion) => {            
+  const eliminarProducto = async (id, descripcion) => {   
+    alert("id "+ id);
+    alert("descripción " + descripcion);         
   if (window.confirm("¿Eliminar este producto?")) {
     setEliminando(true);
 
