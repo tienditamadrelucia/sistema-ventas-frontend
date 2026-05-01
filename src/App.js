@@ -72,7 +72,7 @@ function App() {
         <Route path="/gastos" element={<ProtectedRoute><Gastos /></ProtectedRoute>} />
         <Route path="/diario" element={<ProtectedRoute><Diario /></ProtectedRoute>} />
         <Route path="/repcredito" element={<ProtectedRoute><Repcredito /></ProtectedRoute>} />
-        <Route path="/tipogasto" element={<ProtectedRoute><TipoGastos /></ProtectedRoute>} />
+        <Route path="/tipogastos" element={<ProtectedRoute><TipoGastos /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
