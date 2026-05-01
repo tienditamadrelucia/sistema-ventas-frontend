@@ -211,7 +211,8 @@ const Productos = () => {
     if (file) {
       setFormData((prev) => ({
         ...prev,
-        foto: file   // Guardamos el File, no base64
+        foto: URL.createObjectURL(file),
+        fotoFile: file   // guardamos el File REAL para enviarlo al backend
       }));
     }
     return;
@@ -268,11 +269,12 @@ const Productos = () => {
     // -------------------------
     // OPTIMIZAR IMAGEN SI EXISTE
     // -------------------------
-    let imagenOptimizada = formData.foto;
+    let imagenOptimizada = formData.fotoFile;
 
-    if (formData.foto instanceof File) {
-      imagenOptimizada = await optimizarImagen(formData.foto);
+    if (formData.fotoFile instanceof File) {
+      imagenOptimizada = await optimizarImagen(formData.fotoFile);
     }
+
 
     // -------------------------
     // ARMAR FORMDATA
