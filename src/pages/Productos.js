@@ -228,6 +228,10 @@ const Productos = () => {
     return;
   }
 
+  // Texto a mayúsculas
+  const valorFinal =
+    typeof value === "string" ? value.toUpperCase() : value;
+
   // ⭐ Otros campos
   setFormData((prev) => ({
     ...prev,
