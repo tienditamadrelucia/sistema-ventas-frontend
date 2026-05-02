@@ -2,6 +2,7 @@ import Encabezado from "../components/Encabezado";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import { registrarAccion } from "../utils/registrarAccion";
 
 const Categorias = () => {
   const navigate = useNavigate();
@@ -111,6 +112,7 @@ const Categorias = () => {
         return;
       }
       // ⭐ SOLO SI TODO ESTÁ BIEN → AGREGAR
+      await registrarAccion("Registró una categoria nueva");
       setCategorias([...categorias, data]);
     } else {
       // ⭐ actualizar
@@ -176,6 +178,7 @@ const Categorias = () => {
     return;
   }
   // ⭐ ACTUALIZAR SIN DUPLICAR
+  await registrarAccion("modificó categorias");
   setCategorias((prev) =>
     prev.map((c) =>
       c._id === categoriaEditando ? data : c
@@ -201,6 +204,7 @@ const Categorias = () => {
       return;
     }
     // ⭐ SOLO SI ELIMINÓ → actualizar lista
+    await registrarAccion("Eliminó una categoria");
     setCategorias(categorias.filter((c) => c._id !== id));
   } catch (error) {
     alert("Error eliminando categoría");

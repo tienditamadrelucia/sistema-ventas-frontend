@@ -2,6 +2,7 @@ import Encabezado from "../components/Encabezado";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
+import { registrarAccion } from "../utils/registrarAccion";
 
 const TipoGastos = () => {
   const navigate = useNavigate();
