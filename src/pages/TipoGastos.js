@@ -87,7 +87,6 @@ const TipoGastos = () => {
   const guardar = async () => {
     if (procesando) return;
     setProcesando(true);
-
     try {
       if (!formData.descripcion.trim()) {
         alert("Debe ingresar una descripción");
@@ -99,40 +98,32 @@ const TipoGastos = () => {
             t.descripcion.trim().toUpperCase() === formData.descripcion.trim().toUpperCase() &&
             t._id !== editando
         );
-
         if (existe) {
             alert("Ya existe un tipo de gasto con esa descripción");
             setProcesando(false);
             return;
         }
-
-
       if (modo === "crear") {
         const res = await fetch(`${API_URL}/api/tipogastos`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData)
         });
-
         const nueva = await res.json();
         setTipos([...tipos, nueva.tipo]);
-
       } else {
         const res = await fetch(`${API_URL}/api/tipogastos/${editando}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formData)
         });
-
         const actualizado = await res.json();
-
         setTipos(
           tipos.map((t) =>
             t._id === editando ? actualizado.tipo : t
           )
         );
       }
-
       limpiarFormulario();
     } finally {
       setProcesando(false);
@@ -146,11 +137,9 @@ const TipoGastos = () => {
   const editar = (tipo) => {
     setModo("editar");
     setEditando(tipo._id);
-
     setFormData({
       descripcion: tipo.descripcion
     });
-
     setTimeout(() => {
       formularioRef.current?.scrollIntoView({ behavior: "smooth" });
     }, 50);
@@ -175,7 +164,7 @@ const TipoGastos = () => {
     }
     // ⭐ SOLO SI ELIMINÓ → recargar lista
     await registrarAccion("Eliminó un tipo de gasto");
-    await cargarGastos();
+    await cargarTipos();
   } catch (error) {
     alert("Error eliminando tipo de gasto");
   } finally {
