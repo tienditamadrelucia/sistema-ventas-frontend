@@ -1,6 +1,6 @@
+import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
-import React, { useState, useEffect } from "react";
 
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
@@ -25,38 +25,17 @@ import TipoGastos from "./pages/TipoGastos";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
-function App() {
-  const [zoom, setZoom] = useState(1);
-  useEffect(() => {
-    const saved = localStorage.getItem("zoom");
-    if (saved) setZoom(Number(saved));
-  }, []);
 
+function App() {
   useEffect(() => {
-    localStorage.setItem("zoom", zoom);
-  }, [zoom]);
+  function handleZoom(e) {
+    setZoom(e.detail);
+  }
+  window.addEventListener("setZoom", handleZoom);
+  return () => window.removeEventListener("setZoom", handleZoom);
+}, []);
 
   return (
-    <>
-      {/* ⭐ BOTONES DE ZOOM SIEMPRE VISIBLES ⭐ */}
-      <div style={{
-        position: "fixed",
-        top: "90px",
-        left: "100px",          // ⭐ AHORA A LA IZQUIERDA
-        display: "flex",
-        flexDirection: "column",
-        gap: "8px",
-        zIndex: 999999999,     // ⭐ POR ENCIMA DE TODO
-        pointerEvents: "auto"
-      }}>
-      <button onClick={() => setZoom(1)}>100%</button>
-      <button onClick={() => setZoom(0.85)}>85%</button>
-      <button onClick={() => setZoom(0.75)}>75%</button>
-    </div>
-
-    {/* ⭐ TODA LA APP ESCALA AQUÍ ⭐ */}
-    <div style={{ zoom: zoom }}>
-
     <BrowserRouter>
       <Routes>
 
@@ -105,8 +84,6 @@ function App() {
         <Route path="/tipogastos" element={<ProtectedRoute><TipoGastos /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
-    </div>
-    </>
   );
 }
 
