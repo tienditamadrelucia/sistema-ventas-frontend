@@ -41,7 +41,7 @@ function App() {
       {/* ⭐ BOTONES DE ZOOM SIEMPRE VISIBLES ⭐ */}
       <div style={{
         position: "fixed",
-        top: "10px",
+        top: "90px",
         left: "10px",          // ⭐ AHORA A LA IZQUIERDA
         display: "flex",
         flexDirection: "column",
