@@ -139,8 +139,9 @@ function Menu() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#ffffff", 
+                backgroundColor: "#6699FF", 
                 border: "1px solid #cccccc", 
+                color: "white",
                 borderRadius: "4px",
                 marginRight: "5px"
               }}>
@@ -151,8 +152,9 @@ function Menu() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#ffffff", 
+                backgroundColor: "#6699FF", 
                 border: "1px solid #cccccc", 
+                color: "white",
                 borderRadius: "4px",
                 marginRight: "5px"
               }}>
@@ -163,8 +165,9 @@ function Menu() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#ffffff", 
+                backgroundColor: "#6699FF", 
                 border: "1px solid #cccccc", 
+                color: "white",
                 borderRadius: "4px"
               }}>
               75%
@@ -172,7 +175,7 @@ function Menu() {
           </div>
         </div>
       </div>
-      
+
       {/* ← ESTE CIERRE ERA EL QUE FALTABA */}
       {/* 🌟 BARRA LATERAL */}
       <div style={{
