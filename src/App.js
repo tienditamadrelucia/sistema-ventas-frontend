@@ -42,7 +42,7 @@ function App() {
       <div style={{
         position: "fixed",
         top: "90px",
-        left: "10px",          // ⭐ AHORA A LA IZQUIERDA
+        left: "100px",          // ⭐ AHORA A LA IZQUIERDA
         display: "flex",
         flexDirection: "column",
         gap: "8px",
