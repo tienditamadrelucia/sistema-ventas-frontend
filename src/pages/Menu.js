@@ -102,39 +102,42 @@ function Menu() {
           marginLeft:"30px"
           }}>
           Bienvenida, {nombre}, hoy es — {hoy}
-          {/* Botones de Zoom */}
-          <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 1 }))} 
-            style={{
-              padding: "6px 10px", 
-              fontSize: "14px", 
-              backgroundColor: "#ffffff", 
-              border: "1px solid #cccccc", 
-              borderRadius: "4px"
-            }}>
-            100%
-          </button>
+          <div style={{ fontSize: "16px" }}>
+            <label>Reducción de pantalla </label>
+            {/* Botones de Zoom */}
+            <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 1 }))} 
+              style={{
+                padding: "6px 10px", 
+                fontSize: "14px", 
+                backgroundColor: "#ffffff", 
+                border: "1px solid #cccccc", 
+                borderRadius: "4px"
+              }}>
+              100%
+            </button>
 
-          <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 0.85 }))} 
-            style={{
-              padding: "6px 10px", 
-              fontSize: "14px", 
-              backgroundColor: "#ffffff", 
-              border: "1px solid #cccccc", 
-              borderRadius: "4px"
-            }}>
-            85%
-          </button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 0.85 }))} 
+              style={{
+                padding: "6px 10px", 
+                fontSize: "14px", 
+                backgroundColor: "#ffffff", 
+                border: "1px solid #cccccc", 
+                borderRadius: "4px"
+              }}>
+              85%
+            </button>
 
-          <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 0.75 }))} 
-            style={{
-              padding: "6px 10px", 
-              fontSize: "14px", 
-              backgroundColor: "#ffffff", 
-              border: "1px solid #cccccc", 
-              borderRadius: "4px"
-            }}>
-            75%
-          </button>
+            <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 0.75 }))} 
+              style={{
+                padding: "6px 10px", 
+                fontSize: "14px", 
+                backgroundColor: "#ffffff", 
+                border: "1px solid #cccccc", 
+                borderRadius: "4px"
+              }}>
+              75%
+            </button>
+          </div>
         </div>
       </div>
 
