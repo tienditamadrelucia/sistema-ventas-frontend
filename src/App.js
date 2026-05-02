@@ -38,6 +38,7 @@ function App() {
 
   return (
     <>
+      {/* ⭐ BOTONES DE ZOOM SIEMPRE VISIBLES ⭐ */}
       <div style={{
         position: "fixed",
         top: "10px",
@@ -51,6 +52,7 @@ function App() {
       <button onClick={() => setZoom(0.75)}>75%</button>
     </div>
 
+    {/* ⭐ TODA LA APP ESCALA AQUÍ ⭐ */}
     <div style={{ zoom: zoom }}>
 
     <BrowserRouter>
