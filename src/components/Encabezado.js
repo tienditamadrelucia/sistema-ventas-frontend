@@ -96,7 +96,7 @@ return (
 
   {/* ⭐ BOTONES DE ZOOM DENTRO DEL ENCABEZADO ⭐ */}
   <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 1 }))} 
-    style={{ padding: "4px 6px", fontSize: "12px" }}>
+    style={{ textAlign: "right", padding: "4px 6px", fontSize: "12px" }}>
     100%
   </button>
 
