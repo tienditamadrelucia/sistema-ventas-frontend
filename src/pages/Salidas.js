@@ -405,6 +405,9 @@ const eliminarSalida = async (id) => {
           <option value="">Seleccione motivo</option>
           <option value="VENTA">VENTA</option>
           <option value="CONSUMO INTERNO">CONSUMO INTERNO</option>
+          <option value="CONSUMO INTERNO">OBSEQUIO O DONACIÓN</option>
+          <option value="CONSUMO INTERNO">DETERIORO</option>
+          <option value="CONSUMO INTERNO">SOLICITADO POR EL MONASTERIO</option>
           <option value="AJUSTE">AJUSTE</option>
           <option value="OTROS">OTROS</option>
         </select>

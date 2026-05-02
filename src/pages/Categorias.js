@@ -91,41 +91,51 @@ const Categorias = () => {
   // -------------------------
 
   const guardarCategoria = async () => {
-    if (procesando) return; //evita doble clic
-    setProcesando(true);
-  
-    try {
-  if (!formData.codigo || !formData.descripcion) {
-    alert("Debe ingresar código y descripción");
-    return;
-  }
-
-  if (modo === "crear") {
-    const res = await fetch(`${API_URL}/api/categorias`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
-    });
-
-    const nueva = await res.json();   // 🔥 ahora sí existe
-
-    setCategorias([...categorias, nueva]);  // 🔥 agrega la categoría real
-
-  } else {
-    // 🔥 actualizar
-    setCategorias(
-      categorias.map((c) =>
-        c._id === categoriaEditando ? { ...c, ...formData } : c
-      )
-    );
-  }
-
-  limpiarFormulario();
-  } finally {
-        // ⭐ SIEMPRE se ejecuta, incluso si hubo return arriba
-        setProcesando(false);
+  if (procesando) return;
+  setProcesando(true);
+  try {
+    if (!formData.codigo || !formData.descripcion) {
+      alert("Debe ingresar código y descripción");
+      return;
+    }
+    if (modo === "crear") {
+      const res = await fetch(`${API_URL}/api/categorias`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      // ⭐ SI EL BACKEND DICE ERROR → NO AGREGAR
+      if (!res.ok) {
+        alert(data.error || "No se pudo crear la categoría");
+        return;
       }
+      // ⭐ SOLO SI TODO ESTÁ BIEN → AGREGAR
+      setCategorias([...categorias, data]);
+    } else {
+      // ⭐ actualizar
+      const res = await fetch(`${API_URL}/api/categorias/${categoriaEditando}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "No se pudo actualizar la categoría");
+        return;
+      }
+      setCategorias(
+        categorias.map((c) =>
+          c._id === categoriaEditando ? data : c
+        )
+      );
+    }
+    limpiarFormulario();
+  } finally {
+    setProcesando(false);
+  }
 };
+
 
   // -------------------------
   // EDITAR
@@ -150,37 +160,54 @@ const Categorias = () => {
   // -------------------------
 
   const actualizarCategoria = async () => {    
-    if (!categoriaEditando) return;
+  if (!categoriaEditando) return;
+  const res = await fetch(
+    `${API_URL}/api/categorias/${categoriaEditando}`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    }
+  );
+  const data = await res.json();
+  // ⭐ SI EL BACKEND DICE ERROR → NO ACTUALIZAR
+  if (!res.ok) {
+    alert(data.error || "No se pudo actualizar la categoría");
+    return;
+  }
+  // ⭐ ACTUALIZAR SIN DUPLICAR
+  setCategorias((prev) =>
+    prev.map((c) =>
+      c._id === categoriaEditando ? data : c
+    )
+  );
+  limpiarFormulario();
+};
 
-    const res = await fetch(        
-      `${API_URL}/api/categorias/${categoriaEditando}`,
-      {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      }
-    );    
-
-    const nueva = await res.json();      
-
-    setCategorias((prev) => [...prev, nueva]);
- 
-    limpiarFormulario();
-  };
 
   // -------------------------
   // ELIMINAR EN DB
   // -------------------------
 
   const eliminarCategoria = async (id) => {
-    if (window.confirm("¿Eliminar esta categoría?")) {
-      await fetch(`${API_URL}/api/categorias/${id}`, {
-        method: "DELETE"
-      });
-
-      setCategorias(categorias.filter((c) => c._id !== id));
+  if (!window.confirm("¿Eliminar esta categoría?")) return;
+  try {
+    const res = await fetch(`${API_URL}/api/categorias/${id}`, {
+      method: "DELETE"
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      alert(data.error || "No se pudo eliminar la categoría");
+      return; // ⭐ NO BORRAR DEL ESTADO
     }
-  };
+    // ⭐ SOLO si el backend dice OK → eliminar del estado
+    setCategorias(categorias.filter((c) => c._id !== id));
+  } catch (error) {
+    console.log("Error eliminando categoría:", error);
+    alert("Error eliminando categoría");
+  }
+};
+
 
   // -------------------------
   // LIMPIAR FORMULARIO

@@ -26,15 +26,7 @@ import TipoGastos from "./pages/TipoGastos";
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
 
-function App() {
-  const [zoom, setZoom] = useState(1);
-  useEffect(() => {
-  function handleZoom(e) {
-    setZoom(e.detail);
-  }
-  window.addEventListener("setZoom", handleZoom);
-  return () => window.removeEventListener("setZoom", handleZoom);
-}, []);
+function App() { 
 
   return (
     <BrowserRouter>
