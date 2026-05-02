@@ -102,7 +102,7 @@ function Menu() {
           marginLeft:"30px"
           }}>
           Bienvenida, {nombre}, hoy es — {hoy}
-          <div style={{ fontSize: "16px" }}>
+          <div style={{ alignItems: "right", fontSize: "16px" }}>
             <label>Reducción de pantalla </label>
             {/* Botones de Zoom */}
             <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 1 }))} 
