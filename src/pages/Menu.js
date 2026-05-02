@@ -20,9 +20,23 @@ function Menu() {
 
   // 🔹 Usuario y fecha
   // 🔹 Leer usuario desde localStorage
-  const nombre = localStorage.getItem("usuarioNombre") || "Usuario";
+  useEffect(() => {
+    const nombre = localStorage.getItem("usuarioNombre") || "Usuario";
 
-  const hoy = new Date().toLocaleDateString("es-VE");          // "2026-04-17"  
+    const hoy = new Date().toLocaleDateString("es-VE");          // "2026-04-17"  
+    
+    // Manejar el evento de zoom
+    const handleZoom = (event) => {
+      document.body.style.zoom = event.detail; // Establece el zoom según el detalle del evento
+    };
+
+    window.addEventListener("setZoom", handleZoom);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("setZoom", handleZoom);
+    };
+  }, []);
 
   // 🔹 Estilos
   const botonPrincipal = {
@@ -92,18 +106,30 @@ function Menu() {
            }}>           
         </div>
 
-        {/* Usuario + Fecha en la MISMA línea */}
+        {/* Usuario + Fecha + Botones de Zoom en la MISMA línea */}
         <div style={{
           marginTop: "8px",
           fontFamily: "Arial",
           fontSize: "16px",
           fontWeight: "bold",
           color: "#444",
-          marginLeft:"30px"
+          marginLeft: "30px",
+          display: "flex", // Usamos flexbox para alinear en una sola línea
+          justifyContent: "space-between", // Distribuir espacio entre elementos
+          alignItems: "center", // Alinear verticalmente al centro
           }}>
-          Bienvenida, {nombre}, hoy es — {hoy}
-          <div style={{ alignItems: "right", fontSize: "16px" }}>
-            <label>Reducción de pantalla </label>
+          <div>
+            Bienvenida, {nombre}, hoy es — {hoy}
+          </div>
+  
+          {/* Contenedor para los botones de reducción de pantalla */}
+          <div style={{
+            display: "flex", // Usamos flexbox para los botones también
+            alignItems: "center", // Alinear verticalmente al centro
+            marginLeft: "auto", // Empujar este contenedor a la derecha
+            }}>
+            <label style={{ marginRight: "10px" }}>Reducción de pantalla</label>
+    
             {/* Botones de Zoom */}
             <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 1 }))} 
               style={{
@@ -111,8 +137,9 @@ function Menu() {
                 fontSize: "14px", 
                 backgroundColor: "#ffffff", 
                 border: "1px solid #cccccc", 
-                borderRadius: "4px"
-              }}>
+                borderRadius: "4px",
+                marginRight: "5px" // Espaciado entre botones
+                }}>
               100%
             </button>
 
@@ -122,7 +149,8 @@ function Menu() {
                 fontSize: "14px", 
                 backgroundColor: "#ffffff", 
                 border: "1px solid #cccccc", 
-                borderRadius: "4px"
+                borderRadius: "4px",
+                marginRight: "5px" // Espaciado entre botones
               }}>
               85%
             </button>
@@ -140,7 +168,6 @@ function Menu() {
           </div>
         </div>
       </div>
-
       {/* ← ESTE CIERRE ERA EL QUE FALTABA */}
       {/* 🌟 BARRA LATERAL */}
       <div style={{
