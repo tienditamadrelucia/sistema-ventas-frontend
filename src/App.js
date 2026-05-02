@@ -42,10 +42,12 @@ function App() {
       <div style={{
         position: "fixed",
         top: "10px",
-        right: "10px",
+        left: "10px",          // ⭐ AHORA A LA IZQUIERDA
         display: "flex",
-        gap: "5px",
-        zIndex: 9999
+        flexDirection: "column",
+        gap: "8px",
+        zIndex: 999999999,     // ⭐ POR ENCIMA DE TODO
+        pointerEvents: "auto"
       }}>
       <button onClick={() => setZoom(1)}>100%</button>
       <button onClick={() => setZoom(0.85)}>85%</button>
