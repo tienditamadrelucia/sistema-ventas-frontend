@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import encabezado from "../assets/encabezado.png";
 import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../utils/registrarAccion";
@@ -17,19 +17,24 @@ function Menu() {
   const [openUsuarios, setOpenUsuarios] = useState(false);
   const [openProductos, setOpenProductos] = useState(false);
   const [openAdministracion, setOpenAdministracion] = useState(false);
+  
+  // 🔹 Estados para el usuario y fecha
+  const [nombre, setNombre] = useState("");
+  const [hoy, setHoy] = useState("");
 
-  // 🔹 Usuario y fecha
-  // 🔹 Leer usuario desde localStorage
   useEffect(() => {
-    const nombre = localStorage.getItem("usuarioNombre") || "Usuario";
+    // 🔹 Leer usuario desde localStorage
+    const usuarioNombre = localStorage.getItem("usuarioNombre") || "Usuario";
+    setNombre(usuarioNombre);
 
-    const hoy = new Date().toLocaleDateString("es-VE");          // "2026-04-17"  
+    // Obtener la fecha actual
+    const fechaActual = new Date().toLocaleDateString("es-VE");  // Formato de fecha local
+    setHoy(fechaActual);
     
     // Manejar el evento de zoom
     const handleZoom = (event) => {
       document.body.style.zoom = event.detail; // Establece el zoom según el detalle del evento
     };
-
     window.addEventListener("setZoom", handleZoom);
 
     // Cleanup
@@ -76,7 +81,6 @@ function Menu() {
   };
 
   return (  
-
     <div style={{ display: "flex", height: "100vh" }}>
 
       {/* 🌟 ENCABEZADO SUPERIOR */}
@@ -90,7 +94,7 @@ function Menu() {
           textAlign: "left",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           zIndex: 10
-          }}>
+        }}>
         <img 
             src={encabezado}
             alt="Encabezado"
@@ -114,20 +118,20 @@ function Menu() {
           fontWeight: "bold",
           color: "#444",
           marginLeft: "30px",
-          display: "flex", // Usamos flexbox para alinear en una sola línea
-          justifyContent: "space-between", // Distribuir espacio entre elementos
-          alignItems: "center", // Alinear verticalmente al centro
-          }}>
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
           <div>
             Bienvenida, {nombre}, hoy es — {hoy}
           </div>
   
           {/* Contenedor para los botones de reducción de pantalla */}
           <div style={{
-            display: "flex", // Usamos flexbox para los botones también
-            alignItems: "center", // Alinear verticalmente al centro
-            marginLeft: "auto", // Empujar este contenedor a la derecha
-            }}>
+            display: "flex",
+            alignItems: "center",
+            marginLeft: "auto",
+          }}>
             <label style={{ marginRight: "10px" }}>Reducción de pantalla</label>
     
             {/* Botones de Zoom */}
@@ -138,8 +142,8 @@ function Menu() {
                 backgroundColor: "#ffffff", 
                 border: "1px solid #cccccc", 
                 borderRadius: "4px",
-                marginRight: "5px" // Espaciado entre botones
-                }}>
+                marginRight: "5px"
+              }}>
               100%
             </button>
 
@@ -150,7 +154,7 @@ function Menu() {
                 backgroundColor: "#ffffff", 
                 border: "1px solid #cccccc", 
                 borderRadius: "4px",
-                marginRight: "5px" // Espaciado entre botones
+                marginRight: "5px"
               }}>
               85%
             </button>
@@ -168,6 +172,7 @@ function Menu() {
           </div>
         </div>
       </div>
+      
       {/* ← ESTE CIERRE ERA EL QUE FALTABA */}
       {/* 🌟 BARRA LATERAL */}
       <div style={{
