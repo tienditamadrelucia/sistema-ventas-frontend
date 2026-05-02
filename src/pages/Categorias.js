@@ -184,7 +184,6 @@ const Categorias = () => {
   limpiarFormulario();
 };
 
-
   // -------------------------
   // ELIMINAR EN DB
   // -------------------------
@@ -196,14 +195,14 @@ const Categorias = () => {
       method: "DELETE"
     });
     const data = await res.json();
+    // ⭐ SI EL BACKEND DICE ERROR → MOSTRAR EL MENSAJE REAL
     if (!res.ok) {
-      alert(data.error || "No se pudo eliminar la categoría");
-      return; // ⭐ NO BORRAR DEL ESTADO
+      alert(data.error);   // ← AQUÍ SALE: "No se puede eliminar la categoría porque tiene productos asociados"
+      return;
     }
-    // ⭐ SOLO si el backend dice OK → eliminar del estado
+    // ⭐ SOLO SI ELIMINÓ → actualizar lista
     setCategorias(categorias.filter((c) => c._id !== id));
   } catch (error) {
-    console.log("Error eliminando categoría:", error);
     alert("Error eliminando categoría");
   }
 };

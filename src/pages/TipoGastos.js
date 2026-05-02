@@ -160,14 +160,27 @@ const TipoGastos = () => {
   // -------------------------
 
   const eliminar = async (id) => {
-    if (!window.confirm("¿Eliminar este tipo de gasto?")) return;
-
-    await fetch(`${API_URL}/api/tipogastos/${id}`, {
+  if (!window.confirm("¿Eliminar este tipo de gasto?")) return;
+  setProcesando(true);
+  try {
+    const res = await fetch(`${API_URL}/api/tipogastos/${id}`, {
       method: "DELETE"
     });
-
-    setTipos(tipos.filter((t) => t._id !== id));
-  };
+    const data = await res.json();
+    // ⭐ SI EL BACKEND DICE ERROR → NO ELIMINAR
+    if (!res.ok) {
+      alert(data.error);
+      return;
+    }
+    // ⭐ SOLO SI ELIMINÓ → recargar lista
+    await registrarAccion("Eliminó un tipo de gasto");
+    await cargarGastos();
+  } catch (error) {
+    alert("Error eliminando tipo de gasto");
+  } finally {
+    setProcesando(false);
+  }
+};
 
   // -------------------------
   // LIMPIAR FORMULARIO
