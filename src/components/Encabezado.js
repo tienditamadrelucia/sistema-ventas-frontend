@@ -82,11 +82,35 @@ return (
         {nombre}
       </div>
 
-      {/* Fecha a la derecha */}
-      <div style={{ marginLeft:"auto", fontSize:"16px", fontWeight: "bold", textTransform: "capitalize" }}>
-        {hoy} &nbsp;&nbsp;&nbsp;
-      </div>
-    </div>
+      {/* Fecha + BOTONES DE ZOOM */}
+<div style={{ 
+  marginLeft:"auto", 
+  fontSize:"16px", 
+  fontWeight: "bold", 
+  textTransform: "capitalize",
+  display: "flex",
+  alignItems: "center",
+  gap: "10px"
+}}>
+  <span>{hoy}</span>
+
+  {/* ⭐ BOTONES DE ZOOM DENTRO DEL ENCABEZADO ⭐ */}
+  <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 1 }))} 
+    style={{ padding: "4px 6px", fontSize: "12px" }}>
+    100%
+  </button>
+
+  <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 0.85 }))} 
+    style={{ padding: "4px 6px", fontSize: "12px" }}>
+    85%
+  </button>
+
+  <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 0.75 }))} 
+    style={{ padding: "4px 6px", fontSize: "12px" }}>
+    75%
+  </button>
+</div>
+
 
     {/* ─────────────── LÍNEA 2 ─────────────── */}
     <div
