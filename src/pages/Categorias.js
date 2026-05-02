@@ -192,7 +192,7 @@ const Categorias = () => {
   // -------------------------
 
   const eliminarCategoria = async (id) => {
-    console.log("id ", id);
+    alert("id " + id);
   if (!window.confirm("¿Eliminar esta categoría?")) return;
   try {
     const res = await fetch(`${API_URL}/api/categorias/${id}`, {
