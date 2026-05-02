@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { dateToDDMMYYYY, obtenerFechaLocalComoDate } from "../utils/fechaLocal";
+import { obtenerFechaLocalComoDate } from "../utils/fechaLocal";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Encabezado = () => {
   const nombre = localStorage.getItem("usuarioNombre") || "Usuario";
-
+  
   const hoy = obtenerFechaLocalComoDate().toLocaleDateString("es-VE", {
     weekday: "long",
     year: "numeric",
@@ -70,29 +70,45 @@ const Encabezado = () => {
           {nombre}
         </div>
 
+        {/* Contenedor para Fecha y Botones de Zoom */}
         <div style={{ 
-          marginLeft: "auto", 
-          fontSize: "16px", 
-          fontWeight: "bold", 
-          textTransform: "capitalize",
-          display: "flex",
-          alignItems: "center",
-          gap: "15px" /* Aumentar espacio */
+          display: "flex", 
+          alignItems: "center", 
+          gap: "10px", // Espacio entre la fecha y los botones
         }}>
-          <span>{hoy}</span>
+          <span style={{ fontSize: "16px" }}>{hoy}</span>
 
+          {/* Botones de Zoom */}
           <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 1 }))} 
-            style={{ textAlign: "right", padding: "6px 10px", fontSize: "14px" }}>
+            style={{
+              padding: "6px 10px", 
+              fontSize: "14px", 
+              backgroundColor: "#ffffff", 
+              border: "1px solid #cccccc", 
+              borderRadius: "4px"
+            }}>
             100%
           </button>
 
           <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 0.85 }))} 
-            style={{ padding: "6px 10px", fontSize: "14px" }}>
+            style={{
+              padding: "6px 10px", 
+              fontSize: "14px", 
+              backgroundColor: "#ffffff", 
+              border: "1px solid #cccccc", 
+              borderRadius: "4px"
+            }}>
             85%
           </button>
 
           <button onClick={() => window.dispatchEvent(new CustomEvent("setZoom", { detail: 0.75 }))} 
-            style={{ padding: "6px 10px", fontSize: "14px" }}>
+            style={{
+              padding: "6px 10px", 
+              fontSize: "14px", 
+              backgroundColor: "#ffffff", 
+              border: "1px solid #cccccc", 
+              borderRadius: "4px"
+            }}>
             75%
           </button>
         </div>
