@@ -367,19 +367,40 @@ const buscarClientePorIdentificacion = async (cedula) => {
   }
 };
 
- const buscarProductoPorCodigo = (codigo) => {
-    const codigoNormalizado = codigo.trim().toUpperCase();
-    const producto = listaProductos.find(p => String(p.codigo).trim().toUpperCase() === codigoNormalizado);
-    if (producto) {
-      setCategoriaSeleccionada(producto.categoria);
-      setProductoSeleccionado(producto._id);
-      setNombreProducto(producto.descripcion);
-      setStockActual(producto.stock);
-      setPrecioVenta(producto.venta);
+ const buscarProductoPorCodigo = async (codigo) => {
+  const codigoNormalizado = codigo.trim().toUpperCase();
+  const producto = listaProductos.find(
+    p => String(p.codigo).trim().toUpperCase() === codigoNormalizado
+  );
+
+  if (!producto) {
+    alert("Producto no encontrado");
+    return;
+  }
+
+  // 🔹 Mantengo TODO lo tuyo, sin cambiar nada
+  setCategoriaSeleccionada(producto.categoria);
+  setProductoSeleccionado(producto._id);
+  setNombreProducto(producto.descripcion);
+  setPrecioVenta(producto.venta);
+
+  // 🔹 YA NO usamos producto.stock (stock inicial)
+  // 🔹 Ahora consultamos el stock REAL al backend
+  try {
+    const res = await fetch(`${API_URL}/api/inventario/stock-real/${codigoNormalizado}`);
+    const data = await res.json();
+
+    if (data.ok) {
+      setStockActual(data.stockReal); // ⭐ AHORA SÍ ES EL REAL
     } else {
-      alert("Producto no encontrado");
+      setStockActual(producto.stock); // fallback
     }
-  };
+  } catch (error) {
+    console.error("Error obteniendo stock real:", error);
+    setStockActual(producto.stock); // fallback
+  }
+};
+
 
   // -----------------------------
   // Validaciones
@@ -875,17 +896,29 @@ const generarNuevaFactura = async () => {
                     appearance: "auto"
                     }}
                 value={productoSeleccionado}
-                onChange={(e) => {
+                onChange={async (e) => {
                   const id = e.target.value;
                   setProductoSeleccionado(id);
                   const producto = listaProductos.find(p => String(p._id) === String(id));
                   if (producto) {
                     setCategoriaSeleccionada(producto.categoria);
                     setCodigoProducto(producto.codigo);
-                    setNombreProducto(producto.descripcion);
-                    setStockActual(producto.stock);
-                    setPrecioVenta(producto.venta);                    
-                  }
+                    setNombreProducto(producto.descripcion);                    
+                    setPrecioVenta(producto.venta);         
+                    // ⭐⭐ CONSULTAR STOCK REAL AL BACKEND
+                    try {
+                    const res = await fetch(`${API_URL}/api/inventario/stock-real/${producto.codigo}`);
+                    const data = await res.json();
+                    if (data.ok) {
+                      setStockActual(data.stockReal);   // ⭐ STOCK REAL
+                    } else {
+                      setStockActual(producto.stock);   // fallback
+                    }
+                      } catch (error) {
+                        console.error("Error obteniendo stock real:", error);
+                        setStockActual(producto.stock);     // fallback
+                      }
+                    }                  
                 }}
                 disabled={editando}
               >
@@ -913,6 +946,12 @@ const generarNuevaFactura = async () => {
                   height: "16px"
                 }}
               />
+              {/* ⭐ MOSTRAR STOCK REAL EN TEXTO (opcional pero útil) */}
+              {stockActual !== "" && (
+              <span style={{ fontSize: "11px", color: "#3366CC", fontWeight: "bold" }}>
+                Real: {stockActual}
+              </span>
+              )}
               {errorStock && <span style={{ color: "red", fontSize: "12px" }}>{errorStock}</span>}
             </div>
 
