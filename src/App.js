@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
 
@@ -27,6 +27,7 @@ import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
 
 function App() {
+  const [zoom, setZoom] = useState(1);
   useEffect(() => {
   function handleZoom(e) {
     setZoom(e.detail);
