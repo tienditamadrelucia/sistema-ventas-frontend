@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./App.css";
+import React, { useState, useEffect } from "react";
 
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
@@ -26,7 +27,33 @@ import TipoGastos from "./pages/TipoGastos";
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
 function App() {
+  const [zoom, setZoom] = useState(1);
+  useEffect(() => {
+    const saved = localStorage.getItem("zoom");
+    if (saved) setZoom(Number(saved));
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("zoom", zoom);
+  }, [zoom]);
+
   return (
+    <>
+      <div style={{
+        position: "fixed",
+        top: "10px",
+        right: "10px",
+        display: "flex",
+        gap: "5px",
+        zIndex: 9999
+      }}>
+      <button onClick={() => setZoom(1)}>100%</button>
+      <button onClick={() => setZoom(0.85)}>85%</button>
+      <button onClick={() => setZoom(0.75)}>75%</button>
+    </div>
+
+    <div style={{ zoom: zoom }}>
+
     <BrowserRouter>
       <Routes>
 
@@ -75,6 +102,8 @@ function App() {
         <Route path="/tipogastos" element={<ProtectedRoute><TipoGastos /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
+    </div>
+    </>
   );
 }
 
