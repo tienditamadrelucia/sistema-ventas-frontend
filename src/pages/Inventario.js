@@ -443,6 +443,7 @@ const cargarInventario = async () => {
           }}
         >
         {formData.categoria && productos.map((producto) => {
+          console.log("STOCK REAL:", producto.stockReal, typeof producto.stockReal);
           const stockSistema = producto.stockReal === "" || producto.stockReal === undefined
             ? 0
             : parseFloat(producto.stockReal);
