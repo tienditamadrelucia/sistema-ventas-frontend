@@ -466,13 +466,13 @@ const cargarInventario = async () => {
             let diferencia;
             if (stockSistema > valorToma) {
               // Caso normal: hay existencias en sistema
-              diferencia = stockSistema - toma;
+              diferencia = stockSistema - valorToma;
             } else {
               // Caso especial: sistema negativo = faltante
               // faltanteSistema = -stockSistema
               // faltanteReal = faltanteSistema - toma
               // y lo mostramos como negativo
-              diferencia = toma - stockSistema; // ej: -5.04 + 0.56 = -4.48
+              diferencia = valorToma - stockSistema; // ej: -5.04 + 0.56 = -4.48
             }
 
           return (          
