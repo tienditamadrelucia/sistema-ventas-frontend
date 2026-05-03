@@ -463,7 +463,7 @@ const cargarInventario = async () => {
             valorToma === "" || valorToma === undefined
             ? 0
             : parseFloat(valorToma);            
-              diferencia = valorToma - stockSistema; // ej: -5.04 + 0.56 = -4.48            
+          const diferencia = valorToma - stockSistema; // ej: -5.04 + 0.56 = -4.48            
 
           return (          
             <div
