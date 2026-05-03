@@ -261,11 +261,9 @@ const cargarInventario = async () => {
     stockFisico,
     observacion: registro.observacion ?? ""
   };
-
+  console.log("PAYLOAD INVENTARIO:", payload); // 👈 AÑADE ESTO
   await guardarInventario(payload);
 }
-
-
 
   async function editarToma(codigo) {
     const id = toma[codigo].id;
@@ -320,6 +318,7 @@ const cargarInventario = async () => {
       await handleGuardar();
       setInventarioGuardado(true);
     }
+    console.log("DATA AJUSTE: ", data);
     if (diferencia < 0) {
       // SALIDA → cantidad siempre positiva
       data.cantidad = Math.abs(diferencia);
