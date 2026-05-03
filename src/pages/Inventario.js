@@ -343,8 +343,10 @@ const cargarInventario = async () => {
       textAlign: "center",
       fontWeight: "bold",
       position: "fixed",
-      top: 0,
-      zIndex: 1000
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      zIndex: 999999
     }}>
       Procesando, por favor espere...
     </div>
