@@ -464,7 +464,7 @@ const cargarInventario = async () => {
             ? 0
             : parseFloat(valorToma);
             let diferencia;
-            if (stockSistema >= 0) {
+            if (stockSistema > valorToma) {
               // Caso normal: hay existencias en sistema
               diferencia = stockSistema - toma;
             } else {
@@ -472,7 +472,7 @@ const cargarInventario = async () => {
               // faltanteSistema = -stockSistema
               // faltanteReal = faltanteSistema - toma
               // y lo mostramos como negativo
-              diferencia = stockSistema + toma; // ej: -5.04 + 0.56 = -4.48
+              diferencia = toma - stockSistema; // ej: -5.04 + 0.56 = -4.48
             }
 
           return (          
