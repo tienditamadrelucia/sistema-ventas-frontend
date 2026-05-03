@@ -125,7 +125,11 @@ const cargarInventario = async () => {
         descripcion: item.descripcion || "",
         foto: item.foto || "",
         stockReal: item.stockReal ?? item.stock ?? 0,
-        stockFisico: item.stockFisico,
+        stockFisico:
+          item.stockFisico === null ||
+          item.stockFisico === undefined
+          ? ""
+          : String(item.stockFisico),
         observacion: item.observacion    
       }));
       // ⭐ ORDENAR POR CÓDIGO NUMÉRICO
@@ -442,8 +446,7 @@ const cargarInventario = async () => {
           justifyContent: "center"
           }}
         >
-        {formData.categoria && productos.map((producto) => {
-          console.log("STOCK REAL:", producto.stockReal, typeof producto.stockReal);
+        {formData.categoria && productos.map((producto) => {          
           const stockSistema = producto.stockReal === "" || producto.stockReal === undefined
             ? 0
             : parseFloat(producto.stockReal);
