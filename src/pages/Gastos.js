@@ -121,7 +121,7 @@ const Gastos = () => {
       ...formData,
       [name]: type === "checkbox" ? checked : value
     });
-  };
+  }; 
 
   // -------------------------
   // GUARDAR / ACTUALIZAR

@@ -116,36 +116,42 @@ const cargarInventario = async () => {
     if (!fecha || !categoria) return;
     // 1. Buscar inventario guardado
     const guardado = await buscarInventarioGuardado(fecha, categoria);
-if (Array.isArray(guardado) && guardado.length > 0) {
-  setInventarioGuardado(true);   // ← AQUÍ
-  // 2. Si existe → cargarlo
-  const productosConToma = guardado.map(item => ({
-    _id: item.productoId,
-    codigo: item.codigo || "",
-    descripcion: item.descripcion || "",
-    foto: item.foto || "",
-    stockReal: item.stockReal ?? item.stock ?? 0,
-    stockFisico: item.stockFisico,
-    observacion: item.observacion    
-  }));
-  setProductos(productosConToma);
-  //reconstruir toma física
-  const nuevoToma = {};
-  guardado.forEach(item => {
-    nuevoToma[item.productoId] = {
-      stockFisico: item.stockFisico === "" ? "" : Number(item.stockFisico),
-      observacion: item.observacion
-    };
-  });
-  setToma(nuevoToma);
-  registrarAccion(
-    "Cargó inventario GUARDADO del " + fecha + " / Categoría: " + categoria
-  );
-  return;
+    if (Array.isArray(guardado) && guardado.length > 0) {
+      setInventarioGuardado(true);
+      // 2. Convertir items guardados a productos
+      const productosConToma = guardado.map(item => ({
+        _id: item.productoId,
+        codigo: item.codigo || "",
+        descripcion: item.descripcion || "",
+        foto: item.foto || "",
+        stockReal: item.stockReal ?? item.stock ?? 0,
+        stockFisico: item.stockFisico,
+        observacion: item.observacion    
+      }));
+      // ⭐ ORDENAR POR CÓDIGO NUMÉRICO
+      productosConToma.sort((a, b) => Number(a.codigo) - Number(b.codigo));
+      setProductos(productosConToma);
+      // ⭐ RECONSTRUIR TOMA
+      const nuevoToma = {};
+      guardado.forEach(item => {
+        nuevoToma[item.productoId] = {
+          stockFisico: item.stockFisico === "" ? "" : Number(item.stockFisico),
+          observacion: item.observacion
+        };
+      });
+      setToma(nuevoToma);
+      registrarAccion(
+        "Cargó inventario GUARDADO del " + fecha + " / Categoría: " + categoria
+      );
+      return;
     }
     // 3. Si NO existe → cargar inventario del sistema
     const data = await obtenerInventario(categoria);
-    setProductos(Array.isArray(data.productos) ? data.productos : []);
+    // ⭐ ORDENAR INVENTARIO DEL SISTEMA TAMBIÉN
+    const productosOrdenados = Array.isArray(data.productos)
+      ? data.productos.sort((a, b) => Number(a.codigo) - Number(b.codigo))
+      : [];
+    setProductos(productosOrdenados);
     registrarAccion(
       "Cargó inventario del sistema del " + fecha + " / Categoría: " + categoria
     );
@@ -154,6 +160,7 @@ if (Array.isArray(guardado) && guardado.length > 0) {
   }
   setProcesando(false);
 };
+
 
   const handleBorrar = () => {
   setFormData({
