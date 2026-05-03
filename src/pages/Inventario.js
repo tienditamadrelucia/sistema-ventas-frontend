@@ -304,7 +304,7 @@ const cargarInventario = async () => {
     const data = {
       fecha: formData.fecha,
       productoId,
-      cantidad: Math.abs(diferencia),
+      cantidad: diferencia,
       observacion: "AJUSTE"
     };
     if (!inventarioGuardado) {
@@ -463,7 +463,7 @@ const cargarInventario = async () => {
             valorToma === "" || valorToma === undefined
             ? 0
             : parseFloat(valorToma);
-          const diferencia = tomaParaCalculo - stockSistema;
+          const diferencia = stockSistema - tomaParaCalculo;
 
           return (          
             <div
