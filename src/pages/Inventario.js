@@ -244,20 +244,27 @@ const cargarInventario = async () => {
   }
 
   async function guardarToma(producto) {
-  const codigo = producto.codigo;     // ← CLAVE REAL EN TOMA
-  const productoId = producto._id;    // ← PARA GUARDAR EN BACKEND
-  const registro = toma[codigo] ?? {}; // ← EVITA EXPLOSIONES
+  const codigo = producto.codigo;     
+  const productoId = producto._id;    
+  const registro = toma[codigo] ?? {}; 
+
+  // ✔ stockFisico siempre será un número válido
+  const stockFisico =
+    registro.stockFisico === "" || registro.stockFisico == null
+      ? 0
+      : Number(registro.stockFisico);
 
   const payload = {
-    fecha, // ← usa la fecha del scope superior
+    fecha, // ← viene del scope superior
     productoId,
     stockSistema: Number(producto.stockReal ?? 0),
-    stockFisico: registro.stockFisico === "" ? "" : Number(registro.stockFisico ?? 0),
+    stockFisico,
     observacion: registro.observacion ?? ""
   };
 
   await guardarInventario(payload);
 }
+
 
 
   async function editarToma(codigo) {
