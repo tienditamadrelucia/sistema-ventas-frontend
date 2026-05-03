@@ -311,11 +311,22 @@ const cargarInventario = async () => {
       await handleGuardar();
       setInventarioGuardado(true);
     }
-    if (diferencia > 0) {
-      await crearEntrada(data);
-    } else {
+    if (diferencia < 0) {
+      // SALIDA → cantidad siempre positiva
+      data.cantidad = Math.abs(diferencia);
       await crearSalida(data);
+
+      } else if (diferencia > 0) {
+        // ENTRADA → cantidad positiva
+        data.cantidad = diferencia;
+        await crearEntrada(data);
+
+      } else {
+        // diferencia === 0
+        alert("No hay diferencia para ajustar.");
+        return;
     }
+
     const resp = await fetch(`${APIURL}/inventario/stock-real/${codigo}`);
     const info = await resp.json();
     setProductos(prev =>
