@@ -286,13 +286,10 @@ const cargarInventario = async () => {
 
   try {
     // 🔹 AQUÍ VA EL NUEVO BLOQUE
-    if (!inventarioGuardado) {
-      console.log("NO HAY INVENTARIO GUARDADO, VOY A LLAMAR handleGuardar");
-      await handleGuardar();          // guarda toda la toma
-      console.log("handleGuardar TERMINÓ");
+    if (!inventarioGuardado) {      
+      await handleGuardar();          // guarda toda la toma      
       setInventarioGuardado(true);    // marcamos que ya existe inventario
     }
-
     const data = {
       fecha: formData.fecha,
       productoId,
@@ -303,24 +300,19 @@ const cargarInventario = async () => {
       await handleGuardar();
       setInventarioGuardado(true);
     }
-
     if (diferencia > 0) {
       await crearEntrada(data);
     } else {
       await crearSalida(data);
     }
-
     const resp = await fetch(`${APIURL}/inventario/stock-real/${codigo}`);
     const info = await resp.json();
-
     setProductos(prev =>
       prev.map(p =>
         p._id === productoId ? { ...p, stockReal: info.stockReal } : p
       )
     );
-
     await guardarToma(producto);
-
     alert("Ajuste realizado correctamente.");
     setProcesando(false);
   } catch (error) {
@@ -451,7 +443,9 @@ const cargarInventario = async () => {
           }}
         >
         {formData.categoria && productos.map((producto) => {
-          const stockSistema = Number(producto.stockReal || 0);
+          const stockSistema = producto.stockReal === "" || producto.stockReal === undefined
+            ? 0
+            : parseFloat(producto.stockReal);
           const valorToma = toma[producto.codigo]?.stockFisico;
           // Para el cálculo, si está vacío usar 0, pero sin alterar el valor real
           const tomaParaCalculo =
