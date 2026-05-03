@@ -462,18 +462,8 @@ const cargarInventario = async () => {
           const tomaParaCalculo =
             valorToma === "" || valorToma === undefined
             ? 0
-            : parseFloat(valorToma);
-            let diferencia;
-            if (stockSistema > valorToma) {
-              // Caso normal: hay existencias en sistema
-              diferencia = stockSistema - valorToma;
-            } else {
-              // Caso especial: sistema negativo = faltante
-              // faltanteSistema = -stockSistema
-              // faltanteReal = faltanteSistema - toma
-              // y lo mostramos como negativo
-              diferencia = valorToma - stockSistema; // ej: -5.04 + 0.56 = -4.48
-            }
+            : parseFloat(valorToma);            
+              diferencia = valorToma - stockSistema; // ej: -5.04 + 0.56 = -4.48            
 
           return (          
             <div
