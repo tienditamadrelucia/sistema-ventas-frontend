@@ -507,11 +507,11 @@ const cargarInventario = async () => {
                       actualizarCampo(producto.codigo, "stockFisico", "");
                       return;
                     }
-                    // permitir solo números
-                    if (!isNaN(v)) {
-                      actualizarCampo(producto.codigo, "stockFisico", Number(v));
-                    }
-                  }}
+                    // ⭐ permitir solo números con decimales (regex)
+                    if (/^\d*\.?\d*$/.test(v)) {
+                      actualizarCampo(producto.codigo, "stockFisico", v);
+                      }
+                    }}
                   />                
 
                 <label><strong>Observación: </strong></label>
