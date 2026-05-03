@@ -337,12 +337,12 @@ const cargarInventario = async () => {
   <div>    
     {procesando && (
     <div style={{
-      background: "#333",
+      background: "#6699FF",
       color: "white",
       padding: "8px",
       textAlign: "center",
       fontWeight: "bold",
-      position: "sticky",
+      position: "fixed",
       top: 0,
       zIndex: 1000
     }}>
