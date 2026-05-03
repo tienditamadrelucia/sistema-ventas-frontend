@@ -157,12 +157,13 @@ const cargarInventario = async () => {
       : [];
     setProductos(productosOrdenados);
     registrarAccion(
-      "Cargó inventario del sistema del " + fecha + " / Categoría: " + categoria
-    );
+      "Cargó inventario del sistema del " + fecha + " / Categoría: " + categoria      
+    );    
   } catch (error) {
     manejarError(error);
-  }
-  setProcesando(false);
+    } finally {
+    setProcesando(false);
+    }    
 };
 
 
