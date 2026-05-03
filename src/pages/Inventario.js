@@ -138,10 +138,16 @@ const cargarInventario = async () => {
       // ⭐ RECONSTRUIR TOMA
       const nuevoToma = {};
       guardado.forEach(item => {
-        nuevoToma[item.productoId] = {
-          stockFisico: item.stockFisico === "" ? "" : Number(item.stockFisico),
-          observacion: item.observacion
-        };
+      nuevoToma[item.codigo] = {
+        stockFisico:
+          item.stockFisico === "" ||
+          item.stockFisico === null ||
+          item.stockFisico === undefined
+          ? ""
+          : String(item.stockFisico),
+          observacion: item.observacion ?? ""
+      };
+
       });
       setToma(nuevoToma);
       registrarAccion(

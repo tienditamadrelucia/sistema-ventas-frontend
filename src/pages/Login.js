@@ -60,12 +60,14 @@ function Login() {
         color: "white",
         padding: "8px",
         textAlign: "center",
-        fontWesight: "bold",
-        position: "sticky",
-        top: 0,
-        zIndex: 1000
-      }}>
-        Procesando, por favor espere...
+        fontWeight: "bold",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 999999
+        }}>
+          Procesando, por favor espere...
       </div>
       )}
 
