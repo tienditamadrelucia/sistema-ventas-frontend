@@ -247,16 +247,18 @@ const cargarInventario = async () => {
   const codigo = producto.codigo;     // ← CLAVE REAL EN TOMA
   const productoId = producto._id;    // ← PARA GUARDAR EN BACKEND
   const registro = toma[codigo] ?? {}; // ← EVITA EXPLOSIONES
-  const formData = {
-    fecha: formData.fecha,
+
+  const payload = {
+    fecha, // ← usa la fecha del scope superior
     productoId,
     stockSistema: Number(producto.stockReal ?? 0),
     stockFisico: registro.stockFisico === "" ? "" : Number(registro.stockFisico ?? 0),
     observacion: registro.observacion ?? ""
   };
 
-  await guardarInventario(formData);
+  await guardarInventario(payload);
 }
+
 
   async function editarToma(codigo) {
     const id = toma[codigo].id;
