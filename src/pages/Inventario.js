@@ -514,7 +514,7 @@ const cargarInventario = async () => {
               <div style={{ flex: 1 }}>
                 <p><strong>Código:</strong> {producto.codigo}</p>
                 <p><strong>Producto:</strong> {producto.descripcion}</p>
-                <p><strong>Stock final (sistema):</strong> {producto.stockReal}</p>
+                <p><strong>Stock final (sistema):</strong> {Number(producto.stockReal).toFixed(2)}</p>
                 <label><strong>Toma física: </strong></label>
                 <input
                   type="text"
