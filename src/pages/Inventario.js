@@ -255,11 +255,11 @@ const cargarInventario = async () => {
       : Number(registro.stockFisico);
 
   const payload = {
-    fecha, // ← viene del scope superior
+    fecha: formData.fecha,    // ← viene del scope superior
     productoId,
     stockSistema: Number(producto.stockReal ?? 0),
     stockFisico,
-    observacion: registro.observacion ?? ""
+    observacion: formData.observacion
   };
   console.log("PAYLOAD INVENTARIO:", payload); // 👈 AÑADE ESTO
   await guardarInventario(payload);
