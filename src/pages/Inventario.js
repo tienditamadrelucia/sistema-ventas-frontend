@@ -114,8 +114,8 @@ const cargarInventario = async () => {
   try {
     const { fecha, categoria } = formData;
     if (!fecha || !categoria) return;
-    // 1. Buscar inventario guardado
-    const guardado = await buscarInventarioGuardado(fecha, categoria);
+      // 1. Buscar inventario guardado
+      const guardado = await buscarInventarioGuardado(fecha, categoria);
     if (Array.isArray(guardado) && guardado.length > 0) {
       setInventarioGuardado(true);
       // 2. Convertir items guardados a productos
@@ -485,7 +485,7 @@ const cargarInventario = async () => {
             valorToma === "" || valorToma === undefined
             ? 0
             : parseFloat(valorToma);            
-          const diferencia = valorToma - stockSistema; // ej: -5.04 + 0.56 = -4.48            
+          const diferencia = tomaParaCalculo - stockSistema; // ej: -5.04 + 0.56 = -4.48            
 
           return (          
             <div
