@@ -257,13 +257,15 @@ const cargarInventario = async () => {
   const payload = {
     fecha: formData.fecha,    // ← viene del scope superior
     categoria: formData.categoria,
-    productoId,
-    stockReal: Number(producto.stockReal ?? 0),
-    stockFisico,    
-    observacion: registro.observacion || ""   // ✔ ahora sí llega
+    items: productos.map(p => ({
+      productoId: p._id,
+      stockReal: p.stockReal,
+      stockFisico: toma[p.codigo]?.stockFisico ?? "",
+      observacion: toma[p.codigo]?.observacion ?? ""
+    }))
   };
   console.log("PAYLOAD INVENTARIO:", payload); // 👈 AÑADE ESTO
-  const res = await guardarInventario(payload);
+  await guardarInventario(payload);
 }
 
   async function editarToma(codigo) {
