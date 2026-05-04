@@ -118,20 +118,24 @@ const cargarInventario = async () => {
       const guardado = await buscarInventarioGuardado(fecha, categoria);
     if (Array.isArray(guardado) && guardado.length > 0) {
       setInventarioGuardado(true);
-      // 2. Convertir items guardados a productos
-      const productosConToma = guardado.map(item => ({
-        _id: item.productoId,
-        codigo: item.codigo || "",
-        descripcion: item.descripcion || "",
-        foto: item.foto || "",
-        stockReal: item.stockReal ?? item.stock ?? 0,
-        stockFisico:
-          item.stockFisico === null ||
-          item.stockFisico === undefined
-          ? ""
-          : String(item.stockFisico),
-        observacion: item.observacion    
-      }));
+      // ⭐ 1.1 Recalcular stockReal del sistema
+      const { productos } = await obtenerInventario(categoria);
+      // ⭐ 1.2 Mezclar productos con la toma guardada
+      const productosConToma = productos.map(p => {
+        const item = guardado.find(g => g.productoId === p._id);
+
+        return {
+          ...p,
+          stockReal: p.stockReal, // ← recalculado del sistema
+          stockFisico:
+            item?.stockFisico === "" ||
+            item?.stockFisico === null ||
+            item?.stockFisico === undefined
+              ? ""
+              : String(item.stockFisico),
+          observacion: item?.observacion || ""
+        };
+      });
       // ⭐ ORDENAR POR CÓDIGO NUMÉRICO
       productosConToma.sort((a, b) => Number(a.codigo) - Number(b.codigo));
       setProductos(productosConToma);
@@ -201,7 +205,6 @@ const cargarInventario = async () => {
         observacion: toma[producto.codigo]?.observacion || ""
       }))      
     };    
-    console.log("ANTES DE GUARDAR:", toma);
     const res = await guardarInventario(payload);
     alert("Inventario guardado correctamente");
     setInventarioGuardado(true);
@@ -252,8 +255,7 @@ const cargarInventario = async () => {
   const stockFisico =
     registro.stockFisico === "" || registro.stockFisico == null
       ? 0
-      : Number(registro.stockFisico);
-    alert("observación " + registro.observacion);
+      : Number(registro.stockFisico);    
   const payload = {
     fecha: formData.fecha,    // ← viene del scope superior
     categoria: formData.categoria,
@@ -320,8 +322,7 @@ const cargarInventario = async () => {
     if (!inventarioGuardado) {
       await handleGuardar();
       setInventarioGuardado(true);
-    }
-    console.log("DATA AJUSTE: ", data);
+    }    
     if (diferencia < 0) {
       // SALIDA → cantidad siempre positiva
       data.cantidad = Math.abs(diferencia);
