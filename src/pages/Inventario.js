@@ -242,7 +242,7 @@ const cargarInventario = async () => {
       }
     }));
   }
-
+ 
   async function guardarToma(producto) {
   const codigo = producto.codigo;     
   const productoId = producto._id;    
@@ -256,8 +256,9 @@ const cargarInventario = async () => {
     alert("observación " + registro.observacion);
   const payload = {
     fecha: formData.fecha,    // ← viene del scope superior
+    categoria: producto.categoria,
     productoId,
-    stockSistema: Number(producto.stockReal ?? 0),
+    stockReal: Number(producto.stockReal ?? 0),
     stockFisico,    
     observacion: registro.observacion || ""   // ✔ ahora sí llega
   };
