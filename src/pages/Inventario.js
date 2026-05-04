@@ -253,7 +253,7 @@ const cargarInventario = async () => {
     registro.stockFisico === "" || registro.stockFisico == null
       ? 0
       : Number(registro.stockFisico);
-    alert("observación " + observacion);
+    alert("observación " + registro.observacion);
   const payload = {
     fecha: formData.fecha,    // ← viene del scope superior
     productoId,
