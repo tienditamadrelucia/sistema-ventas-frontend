@@ -256,7 +256,7 @@ const cargarInventario = async () => {
     alert("observación " + registro.observacion);
   const payload = {
     fecha: formData.fecha,    // ← viene del scope superior
-    categoria: producto.categoria,
+    categoria: formData.categoria,
     productoId,
     stockReal: Number(producto.stockReal ?? 0),
     stockFisico,    
