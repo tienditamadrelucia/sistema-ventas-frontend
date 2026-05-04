@@ -4,7 +4,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 // DEFINIR API_URL AQUÍ (no usar config.js)
 const APIURL = `${API_URL}/api`;
 const API = `${API_URL}/inventario`;
-
+ 
 // Obtener productos + tomas existentes + stock final del sistema
 export const obtenerInventario = async (categoria) => {
   const url = `${API_URL}/api/inventario?categoria=${categoria}`;
@@ -52,6 +52,7 @@ export async function eliminarTomaInventario(id) {
 }
 
 export async function crearEntrada({ fecha, productoId, cantidad, observacion }) {
+  console.log("DATA AJUSTE:", { fecha, productoId, cantidad, observacion });
   try {
     const res = await fetch(`${API_URL}/api/entradas`, {
       method: "POST",
@@ -63,11 +64,8 @@ export async function crearEntrada({ fecha, productoId, cantidad, observacion })
         observacion
       })
     });
-
     if (!res.ok) throw new Error("Error creando entrada");
-
     return await res.json();
-
   } catch (error) {
     console.error("Error en crearEntrada:", error);
     throw error;
@@ -88,11 +86,8 @@ export async function crearSalida({fecha, productoId, cantidad, observacion }) {
         observacion
       })
     });
-
     if (!res.ok) throw new Error("Error creando salida");
-
     return await res.json();
-
   } catch (error) {
     console.error("Error en crearSalida:", error);
     throw error;
