@@ -67,7 +67,7 @@ export async function crearEntrada({ fecha, productoId, cantidad, observacion })
     if (!res.ok) throw new Error("Error creando entrada");
     return await res.json();
   } catch (error) {
-    console.error("Error en crearEntrada:", error);
+    console.error("ERROR CREAR ENTRADA:", error.response?.data || error.message);
     throw error;
   }
 }

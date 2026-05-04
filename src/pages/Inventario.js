@@ -214,7 +214,6 @@ const cargarInventario = async () => {
   setProcesando(false);
 };
 
-
   function handleToma(idProducto, valor) {
   setTomas((prev) => ({
     ...prev,
@@ -263,7 +262,8 @@ const cargarInventario = async () => {
     observacion: registro.observacion || ""   // ✔ ahora sí llega
   };
   console.log("PAYLOAD INVENTARIO:", payload); // 👈 AÑADE ESTO
-  await guardarInventario(payload);
+  const res = await guardarInventario(payload);
+  alert("Inventario guardado correctamente");    
 }
 
   async function editarToma(codigo) {
