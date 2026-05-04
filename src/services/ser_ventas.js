@@ -9,3 +9,9 @@ export const guardarVentaService = (data) => axios.post(API_VENTAS, data);
 
 export const guardarProductoVendidoService = (data) =>
   axios.post(API_VENDIDOS, data); 
+
+export const buscarVentasDelDia = async (fecha) => {
+  const url = `${API_URL}/api/ventas/${fecha}`;
+  const { data } = await axios.get(url);
+  return data;
+};

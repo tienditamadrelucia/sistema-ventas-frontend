@@ -1,4 +1,5 @@
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import { buscarVentasDelDia } from "../../routes/rou_ventas"; 
 
 const API_TASAS = `${API_URL}/api/tasas`;
 

@@ -5,6 +5,8 @@ import { registrarAccion } from "../services/logs";
 import { obtenerTasaHoy, guardarTasas, modificarTasas } from "../services/ser_tasas";
 import { obtenerFechaLocal } from "../utils/fechaLocal";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import { buscarVentasDelDia } from "../../routes/rou_ventas"; 
+
 
 const Tasas = () => {
   const hoy = new Date();  
@@ -54,37 +56,12 @@ const Tasas = () => {
     cursor: "pointer",
     marginTop: "8px",
     marginLeft:"40px"
-  };
-
-  const inputEstilo = {
-    width: "100%",
-    padding: "5px",
-    marginBottom: "10px",
-    borderRadius: "6px",
-    border: "1px solid #ccc",
-    backgroundColor: "white",
-    fontFamily: "Arial",
-    fontSize: "14px"
-  };
-
-  const iconoEditar = {
-    fontSize: "22px",
-    cursor: "pointer",
-    marginRight: "10px"
-  };
-
-  const iconoEliminar = {
-    fontSize: "22px",
-    cursor: "pointer",
-    color: "#B84A4A"
-  };
+  };  
 
 useEffect(() => {
   registrarAccion("Ingreso al módulo Tasas de Cambio");
-
   const cargar = async () => {
     const res = await obtenerTasaHoy();
-
     if (res.ok && res.tasa) {
       setExisteHoy(true);
       setModoModificar(false);
@@ -101,9 +78,7 @@ useEffect(() => {
       setModoModificar(true);
     }
   };
-
   cargar();
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
 
@@ -139,7 +114,12 @@ useEffect(() => {
       } else {
         alert(res.mensaje || "Error al guardar");
       }    
-    } else {    
+    } else {  
+        const ventas = await buscarVentasDelDia(hoy);
+        if ((ventas.VentasP + ventas.VentasD + ventas.VentasBs) > 0) {
+          alert("No se pueden modificar las tasas porque ya existen ventas registradas hoy.");
+          return;
+    }
       res = await modificarTasas({
         ...form,
         fecha: hoy // Asegurándose de que la fecha se use en la modificación

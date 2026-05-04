@@ -74,6 +74,7 @@ const Encabezado = () => {
         <div style={{ 
           display: "flex", 
           alignItems: "center", 
+          fontWeight: "bold",
           gap: "10px", // Espacio entre la fecha y los botones
         }}>
           <span style={{ fontSize: "16px" }}>{hoy}</span>          
