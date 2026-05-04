@@ -259,7 +259,7 @@ const cargarInventario = async () => {
     productoId,
     stockSistema: Number(producto.stockReal ?? 0),
     stockFisico,
-    observacion: formData.observacion
+    observacion: registro.observacion || ""   // ✔ ahora sí llega
   };
   console.log("PAYLOAD INVENTARIO:", payload); // 👈 AÑADE ESTO
   await guardarInventario(payload);
@@ -342,7 +342,7 @@ const cargarInventario = async () => {
         p._id === productoId ? { ...p, stockReal: info.stockReal } : p
       )
     );
-    await guardarToma(producto);
+    setTimeout(() => guardarToma(producto), 50);
     alert("Ajuste realizado correctamente.");
     setProcesando(false);
   } catch (error) {
