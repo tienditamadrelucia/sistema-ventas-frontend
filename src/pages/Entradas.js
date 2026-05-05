@@ -112,7 +112,7 @@ const Entradas = () => {
 
   useEffect(() => {
   const cargarPorFecha = async () => {
-    const res = await cargarEntradas(paginaActual, formData.fecha || "");
+    const res = await cargarEntradas(paginaActual, formData.fecha || "", 20);
     setEntradas(res.entradas);
     setPaginaActual(res.paginaActual);
     setTotalPaginas(res.totalPaginas);
