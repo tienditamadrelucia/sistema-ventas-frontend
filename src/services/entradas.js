@@ -9,7 +9,9 @@ const API_ENTRADAS = `${API_URL}/api/entradas`;
 // ===============================
 export async function cargarEntradas(page = 1, fecha = "", limit=20) {
   try {
-    const res = await fetch(`${API_ENTRADAS}?page=${page}&limit=${limit}&fecha=${fecha}`);
+    const res = await fetch(
+      `${API_ENTRADAS}?page=${page}&limit=${limit}&fecha=${fecha}`
+    );
     const data = await res.json();
 
     if (!data.entradas) {
