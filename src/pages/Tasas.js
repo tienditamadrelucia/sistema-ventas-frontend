@@ -2,7 +2,7 @@ import Encabezado from "../components/Encabezado";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../services/logs";
-import { obtenerTasaHoy, guardarTasas, modificarTasas } from "../services/ser_tasas";
+import { obtenerTasaHoy, guardarTasas, modificarTasas } from "../services/ser_tasas.js";
 import { obtenerFechaLocal } from "../utils/fechaLocal";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 import { buscarVentasDelDia } from "../services/ser_ventas.js";
