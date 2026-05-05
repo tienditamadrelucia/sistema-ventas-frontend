@@ -466,13 +466,13 @@ const Entradas = () => {
             <th>Observación</th>
             <th>Acciones</th>
           </tr>
-        </thead>
+        </thead> 
 
         <tbody>
           {entradas.map((e) => (
             <tr key={e._id}>
               <td>{new Date(e.fecha).toLocaleDateString("es-VE")}</td>
-              <td>{e.categoria}</td>
+              <td>{e.productoId?.categoria}</td>
               <td>{e.productoId?.codigo}</td>
               <td>{e.productoId?.descripcion}</td>
               <td>{e.cantidad}</td>
