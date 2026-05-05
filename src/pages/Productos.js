@@ -127,32 +127,27 @@ const Productos = () => {
   // -------------------------
   // LOCALSTORAGE
   // -------------------------
-
-  useEffect(() => {
-    setProcesando(true);    
   const cargarProductos = async () => {
     try {
       const res = await fetch(`${API_URL}/api/productos`);
-
       if (!res.ok) {
         throw new Error("Error cargando productos");
       }
-
       const data = await res.json();
       setProductos(data);
-
       // ⭐ Asegurar que eliminando SIEMPRE esté en false al entrar
-      
-
     } catch (error) {
       console.error("Error cargando productos:", error);
       setProductos([]);      
     }
   };
-  cargarProductos();
-  registrarAccion("Ingresó al módulo Productos");
-  setProcesando(false);
-}, []);
+
+  useEffect(() => {
+    setProcesando(true);
+    cargarProductos(); // ahora sí existe
+    registrarAccion("Ingresó al módulo Productos");
+    setProcesando(false);
+  }, []);  
 
   useEffect(() => {
   const cargarCategorias = async () => {
@@ -493,8 +488,8 @@ const Productos = () => {
             step="0.1"
             value={formData.stock}
             onChange={handleChange}
-            style={input25}
-            disabled={usuario.rol !== "ADMINISTRADOR"}   // ⭐ ESTA ES LA VALIDACIÓN
+            style={input25}            
+            disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
           />
 
 
