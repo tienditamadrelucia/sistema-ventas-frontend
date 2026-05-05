@@ -5,7 +5,7 @@ import { registrarAccion } from "../services/logs";
 import { obtenerTasaHoy, guardarTasas, modificarTasas } from "../services/ser_tasas";
 import { obtenerFechaLocal } from "../utils/fechaLocal";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
-import { buscarVentasDelDia } from "../../services/ser_ventas.js";
+import { buscarVentasDelDia } from "../services/ser_ventas.js";
 
 const Tasas = () => {
   const hoy = new Date();  
