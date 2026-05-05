@@ -7,7 +7,7 @@ const API_TASAS = `${API_URL}/api/tasas`;
 export const obtenerTasaHoy = async () => {
   const res = await fetch(`${API_TASAS}/hoy`);
   return await res.json();
-};
+}; 
 
 // 📌 Guardar tasas del día
 export const guardarTasas = async (datos) => {
