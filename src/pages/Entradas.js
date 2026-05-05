@@ -483,8 +483,31 @@ const Entradas = () => {
               </td>
             </tr>
           ))}
-        </tbody>
+        </tbody>        
       </table>
+      <div style={{ marginTop: "20px", textAlign: "center" }}>  
+        <button onClick={() => setPaginaActual(1)}>
+          Inicio ⏮️
+        </button>
+        <button
+          disabled={paginaActual === 1}
+          onClick={() => setPaginaActual(paginaActual - 1)}
+        >
+          ◀ Anterior
+        </button>
+        <span style={{ margin: "0 15px" }}>
+          Página {paginaActual} de {totalPaginas}
+        </span>
+        <button
+          disabled={paginaActual === totalPaginas}
+          onClick={() => setPaginaActual(paginaActual + 1)}
+        >
+          Siguiente ▶
+        </button>
+        <button onClick={() => setPaginaActual(totalPaginas)}>
+          Ir al final ⏭️
+        </button>
+      </div>
     </div>
     </div>    
   );
