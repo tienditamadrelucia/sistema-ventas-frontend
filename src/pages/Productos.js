@@ -127,20 +127,17 @@ const Productos = () => {
   // -------------------------
   // LOCALSTORAGE
   // -------------------------
-  const cargarProductos = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/productos`);
-      if (!res.ok) {
-        throw new Error("Error cargando productos");
-      }
-      const data = await res.json();
-      setProductos(data);
-      // ⭐ Asegurar que eliminando SIEMPRE esté en false al entrar
-    } catch (error) {
-      console.error("Error cargando productos:", error);
-      setProductos([]);      
-    }
-  };
+  const cargarProductos = async (categoria = "") => {
+  const res = await fetch(`${API_URL}/api/productos`);
+  const data = await res.json();
+
+  if (categoria) {
+    setProductos(data.filter(p => p.categoria === categoria));
+  } else {
+    setProductos(data);
+  }
+};
+
 
   useEffect(() => {
     setProcesando(true);
@@ -287,8 +284,13 @@ const Productos = () => {
   // -------------------------
   // LIMPIAR FORMULARIO
   // -------------------------
+  const cat = categoriaSeleccionada || formData.categoria;
   limpiarFormulario();
   setProcesando(false);
+  setFormData(prev => ({
+  ...prev,
+  categoria: cat
+}));
 };
 
   // -------------------------
@@ -322,24 +324,19 @@ const Productos = () => {
 
   const eliminarProducto = async (id, descripcion) => {      
     if (window.confirm("¿Eliminar este producto?")) {
-        setProcesando(true);
-  
+        setProcesando(true);  
         try {
             const res = await fetch(`${API_URL}/api/productos/${id}`, {
                 method: "DELETE",
                 headers: { "Content-Type": "application/json" } // Asegúrate de establecer bien los encabezados
-            });
-            
-            const data = await res.json(); // Leer respuesta 
-  
+            });            
+            const data = await res.json(); // Leer respuesta   
             if (!data.ok) {
                 alert(data.error || "No se pudo eliminar el producto");
                 setProcesando(false);
                 return; // Detener aquí
-            }
-  
-            await registrarAccion(`Eliminó el producto "${descripcion}"`);
-  
+            }  
+            await registrarAccion(`Eliminó el producto "${descripcion}"`);  
             // Actualiza la lista de productos después de la eliminación
             const res2 = await fetch(`${API_URL}/api/productos`);
             setProductos(await res2.json());
@@ -352,7 +349,6 @@ const Productos = () => {
     }
 };
 
-
   // -------------------------
   // LIMPIAR FORMULARIO
   // -------------------------
@@ -360,7 +356,6 @@ const Productos = () => {
   const limpiarFormulario = async () => {
   setModo("crear");
   setProductoEditando(null);
-
   // pedir el próximo código al backend
   const res = await fetch(`${API_URL}/api/productos/proximo-codigo`);
   const data = await res.json();
