@@ -485,7 +485,9 @@ const Productos = () => {
             value={formData.stock}
             onChange={handleChange}
             style={input25}
+            disabled={usuario.rol !== "ADMINISTRADOR"}   // ⭐ ESTA ES LA VALIDACIÓN
           />
+
 
           <input
             name="costo"
