@@ -104,6 +104,7 @@ const Productos = () => {
   const [categorias, setCategorias] = useState([]);
   const formularioRef = useRef(null);  
   const [procesando, setProcesando] = useState(false);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
 
   const [formData, setFormData] = useState({
     codigo: 0,
@@ -281,8 +282,12 @@ const Productos = () => {
   // -------------------------
   // RECARGAR LISTA DE PRODUCTOS
   // -------------------------
-  const res = await fetch(`${API_URL}/api/productos`);
-  setProductos(await res.json());
+  // ⭐ Recargar productos de la categoría actual
+  if (categoriaSeleccionada) {
+    cargarProductos(categoriaSeleccionada);
+  } else {
+    cargarProductos(formData.categoria);
+  }
 
   // -------------------------
   // LIMPIAR FORMULARIO
@@ -434,7 +439,11 @@ const Productos = () => {
         <select
           name="categoria"
           value={formData.categoria}
-          onChange={handleChange}
+          onChange={(e) => {
+            handleChange(e);
+            setCategoriaSeleccionada(e.target.value);   // ⭐ Guardar categoría activa
+            cargarProductos(e.target.value);            // ⭐ Cargar solo esa categoría
+          }}
           style={selectEstilo}
         >
           <option value="">Seleccione una categoría</option>
