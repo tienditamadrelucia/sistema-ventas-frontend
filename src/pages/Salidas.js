@@ -247,7 +247,6 @@ const editarSalida = (salida) => {
   }
 };
 
-
   // -------------------------
   // LIMPIAR FORMULARIO
   // -------------------------
