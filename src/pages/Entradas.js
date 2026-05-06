@@ -121,14 +121,15 @@ const Entradas = () => {
   }, [formData.fecha, paginaActual]);
 
   useEffect(() => {
-  const cargar = async () => {
-    const prods = await cargarProductos();
-    console.log("PRODUCTOS:", prods);
-    setProductos(prods);
-  };
+    const cargar = async () => {
+    const recarga = await cargarEntradas(paginaActual, 20);
+      setEntradas(recarga.entradas);
+      setPaginaActual(recarga.page);
+      setTotalPaginas(recarga.totalPages);
+    };
+    cargar();
+  }, [paginaActual]);
 
-  cargar();
-  }, []);
 
   // -------------------------
   // MANEJO DE ERRORES
@@ -486,27 +487,27 @@ const Entradas = () => {
         </tbody>        
       </table>
       <div style={{ marginTop: "20px", textAlign: "center" }}>  
-        <button onClick={() => setPaginaActual(1)}>
-          Inicio ⏮️
-        </button>
-        <button
-          disabled={paginaActual === 1}
-          onClick={() => setPaginaActual(paginaActual - 1)}
-        >
-          ◀ Anterior
-        </button>
-        <span style={{ margin: "0 15px" }}>
-          Página {paginaActual} de {totalPaginas}
-        </span>
-        <button
-          disabled={paginaActual === totalPaginas}
-          onClick={() => setPaginaActual(paginaActual + 1)}
-        >
-          Siguiente ▶
-        </button>
-        <button onClick={() => setPaginaActual(totalPaginas)}>
-          Ir al final ⏭️
-        </button>
+      <button onClick={() => setPaginaActual(1)}>
+        Inicio ⏮️
+      </button>
+      <button
+        disabled={paginaActual === 1}
+        onClick={() => setPaginaActual(p => p - 1)}
+      >
+        ◀ Anterior
+      </button>
+      <span style={{ margin: "0 15px" }}>
+        Página {paginaActual} de {totalPaginas}
+      </span>
+      <button
+        disabled={paginaActual === totalPaginas}
+        onClick={() => setPaginaActual(p => p + 1)}
+      >
+        Siguiente ▶
+      </button>
+      <button onClick={() => setPaginaActual(totalPaginas)}>
+        Ir al final ⏭️
+      </button>
       </div>
     </div>
     </div>    
