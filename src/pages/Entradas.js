@@ -288,13 +288,12 @@ const Entradas = () => {
     codigo: entrada.productoId.codigo,
     descripcion: entrada.productoId.descripcion,
     cantidad: entrada.cantidad,
-    observacion: entrada.observacion
+    observacion: entrada.observacion    
   });
-  
+  console.log("data ", formData)
   if (formularioRef.current) {
     formularioRef.current.scrollIntoView({ behavior: "smooth" });
-  }
-  console.log("data ", formData)
+  }  
 };
 
 
