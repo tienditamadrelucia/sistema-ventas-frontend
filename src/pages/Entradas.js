@@ -72,8 +72,7 @@ const Entradas = () => {
   // ESTADOS
   // -------------------------
 
-  const [productos, setProductos] = useState([]);
-  const [productosFiltrados, setProductosFiltrados] = useState([]);
+  const [productos, setProductos] = useState([]);  
   const [entradas, setEntradas] = useState([]);
   const [modo, setModo] = useState("crear");
   const [entradaEditando, setEntradaEditando] = useState(null);
@@ -147,9 +146,9 @@ const Entradas = () => {
   // FILTRO DE PRODUCTOS POR CATEGORÍA
   // -------------------------
 
-  const productosFiltrados = formData.categoria
-    ? productos.filter((p) => p.categoria === formData.categoria)
-    : [];
+  //const productosFiltrados = formData.categoria
+   // ? productos.filter((p) => p.categoria === formData.categoria)
+    //: [];
 
   // -------------------------
   // MANEJO DE FORMULARIO
