@@ -740,27 +740,37 @@ const generarNuevaFactura = async () => {
  
   const volverAlMenu = async () => {
   try {
-    // 1. Borrar la reserva activa
     if (reservaId) {
-      await fetch(`${API_URL}/api/facturas/eliminar/${reservaId}`, {
-        method: "DELETE"
-      });
+
+      // Si NO hay pago → cancelar sin pago (rollback del contador)
+      if (!pagoRegistrado) {
+        await fetch(`${API_URL}/api/facturas/cancelar-sin-pago/${reservaId}`, {
+          method: "DELETE"
+        });
+      }
+      // Si hay pago → cancelar con pago (NO rollback)
+      else {
+        await fetch(`${API_URL}/api/facturas/cancelar-con-pago/${reservaId}`, {
+          method: "DELETE"
+        });
+      }
     }
-    // 2. Refrescar la ventana padre (el menú)
+    // Refrescar ventana padre
     if (window.opener) {
       window.opener.location.reload();
     }
-    // 3. Cerrar esta ventana emergente
+    // Cerrar ventana actual
     window.close();
   } catch (error) {
     console.error("Error eliminando reserva activa:", error);
-    // Aun si falla, cerrar la ventana
     if (window.opener) {
       window.opener.location.reload();
     }
     window.close();
   }
 };
+
+
 
   // -----------------------------
   // Render
