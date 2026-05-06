@@ -763,9 +763,12 @@ const generarNuevaFactura = async () => {
                   value={fecha}
                   onChange={async (e) => {
                   const nuevaFecha = e.target.value;
+                  console.log("🟡 onChange fecha, nuevaFecha:", nuevaFecha);
                   setFecha(nuevaFecha);
                   const tasa = await cargarTasasPorFecha(nuevaFecha);
+                  console.log("🟣 Resultado de cargarTasasPorFecha:", tasa);
                   if (!tasa) {
+                    console.log("🔴 No hay tasa → debería abrir modal");
                     setMostrarModalTasas(true);
                     return;
                   }
