@@ -273,7 +273,7 @@ const Entradas = () => {
   // -------------------------
 
   const editarEntrada = (entrada) => {
-  const categoria = entrada.productoId.categoria;
+  const categoria = entrada.productoId.descripcionCategoria;
 
   const filtrados = productos.filter((p) => p.categoria === categoria);
   setProductosFiltrados(filtrados);
