@@ -68,24 +68,24 @@ export default function ModalCliente({ identificacionInicial = "", onCerrar, onG
   };
 
   const guardar = async () => {
-    if (!form.nombreCompleto || !form.identificacion) {
-      alert("Debe ingresar nombre y cédula");
+  if (!form.nombreCompleto || !form.identificacion) {
+    alert("Debe ingresar nombre y cédula");
+    return;
+  }
+  try {
+    const res = await crearCliente(form); // fetch devuelve JSON directo
+    if (!res.ok) {
+      alert("Error guardando cliente");
       return;
     }
+    // ⭐ AQUÍ ESTÁ EL CLIENTE CREADO
+    onGuardado(res.cliente);
+  } catch (error) {
+    console.error("Error guardando cliente:", error);
+    alert("Error guardando cliente");
+  }
+};
 
-    try {
-      const res = await crearCliente(form); // tu servicio debe devolver { ok: true, cliente }
-      if (!res.data.ok) {
-        alert("Error guardando cliente");
-        return;
-      }
-
-      onGuardado(res.data.cliente); // ← devuelve el cliente recién creado
-    } catch (error) {
-      console.error("Error guardando cliente:", error);
-      alert("Error guardando cliente");
-    }
-  };
 
   return (
     <div style={modalFondo}>
