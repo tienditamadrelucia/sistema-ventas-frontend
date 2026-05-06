@@ -136,19 +136,14 @@ const Entradas = () => {
   const { name, value } = e.target;
 
   // -----------------------------
-  // 1. CANTIDAD (decimales)
+  // 1. CANTIDAD (decimales libres)
   // -----------------------------
   if (name === "cantidad") {
+    // permitir escribir vacío, punto, coma, etc.
     let numero = value.replace(",", ".");
-    if (numero === "") {
-      setFormData({ ...formData, cantidad: "" });
-      return;
-    }
-    let num = parseFloat(numero);
-    if (!isNaN(num)) {
-      const formateado = num.toFixed(2);
-      setFormData({ ...formData, cantidad: formateado });
-    }
+
+    // guardar tal cual lo escribe el usuario
+    setFormData({ ...formData, cantidad: numero });
     return;
   }
 
