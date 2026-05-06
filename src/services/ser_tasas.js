@@ -38,9 +38,12 @@ export const obtenerHistorialTasas = async () => {
 export const cargarTasasPorFecha = async (fecha) => {
   try {
     const res = await axios.get(`${API_TASAS}/por-fecha/${fecha}`);
-    if (!res.data.ok) return null;
-    return res.data.tasa;   // { fecha, tasaD, tasaP, cajachicaD, cajachicaP, ... }
+    return res.data.tasa;   // si existe, la devuelve
   } catch (error) {
+    // ⭐ SI ES 404 → NO HAY TASAS → devolver null
+    if (error.response && error.response.status === 404) {
+      return null;
+    }
     console.error("Error cargando tasas por fecha:", error);
     return null;
   }
