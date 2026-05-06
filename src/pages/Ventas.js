@@ -345,7 +345,7 @@ const buscarClientePorIdentificacion = async (cedula) => {
     if (res.status === 404) {
       console.log("❌ Cliente NO encontrado → abrir modal");
       setIdentificacion(cedula);          // prellenar la cédula
-      setMostrarModalCliente(true);       // abrir modal
+      setMostrarEditorCliente(true);       // abrir modal
       return;
     }
 
