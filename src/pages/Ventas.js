@@ -1181,7 +1181,7 @@ const generarNuevaFactura = async () => {
 
           {mostrarModalTasas && (
           <ModalTasas
-            fecha={fecha}
+            fecha={String(fecha)}
             onCerrar={() => setMostrarModalTasas(false)}
             onGuardado={(tasaNueva) => {
             const { tasaD, tasaP, cajachicaD, cajachicaP } = tasaNueva;
