@@ -102,6 +102,19 @@ const [formData, setFormData] = useState({
 // ===============================
 useEffect(() => {
   const cargar = async () => {
+    await cargarCategorias();   // ⬅⬅⬅ AQUI
+    await cargarProductos();    // ⬅⬅⬅ AQUI
+
+    const res = await cargarSalidas(paginaActual, 20);
+    setSalidas(res.salidas);
+    setTotalPaginas(res.totalPages || 1);
+  };
+
+  cargar();
+}, [paginaActual]);
+
+useEffect(() => {
+  const cargar = async () => {
     const res = await cargarSalidas(paginaActual, 20);
     setSalidas(res.salidas);
     setTotalPaginas(res.totalPages || 1);
@@ -326,8 +339,7 @@ console.log("VALOR DEL SELECT:", formData.categoria);
           onChange={handleChange}
           style={{ width: "25%", marginBottom: "10px", padding: "5px" }}
         />
-
-        {categorias.length > 0 && (
+        
         <select
           name="categoria"
           value={formData.categoria}
@@ -341,7 +353,6 @@ console.log("VALOR DEL SELECT:", formData.categoria);
             {c.descripcion}</option>          
           ))}
         </select>
-        )}
 
         <select
           name="productoId"
