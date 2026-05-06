@@ -12,7 +12,7 @@ import EditarCliente from "../components/Clientes/EditarCliente";
 import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 import ModalTasas from "../components/Tasas/ModalTasas";
-import { cargarTasasPorFecha } from "../../services/ser_tasas";
+import { cargarTasasPorFecha } from "../services/ser_tasas";
 
 
 const Ventas = () => {
