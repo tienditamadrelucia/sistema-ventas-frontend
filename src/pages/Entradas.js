@@ -290,10 +290,11 @@ const Entradas = () => {
     cantidad: entrada.cantidad,
     observacion: entrada.observacion
   });
-
+  
   if (formularioRef.current) {
     formularioRef.current.scrollIntoView({ behavior: "smooth" });
   }
+  console.log("data ", formData)
 };
 
 
