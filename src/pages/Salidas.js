@@ -102,8 +102,11 @@ const [formData, setFormData] = useState({
 // ===============================
 useEffect(() => {
   const cargar = async () => {
-    await cargarCategorias();   // ⬅⬅⬅ AQUI
-    await cargarProductos();    // ⬅⬅⬅ AQUI
+    const cats = await cargarCategorias();   // ⬅ trae los datos
+    setCategorias(cats.categorias || cats);  // ⬅ GUARDA LOS DATOS
+
+    const prods = await cargarProductos();
+    setProductos(prods.productos || prods);
 
     const res = await cargarSalidas(paginaActual, 20);
     setSalidas(res.salidas);
@@ -112,6 +115,7 @@ useEffect(() => {
 
   cargar();
 }, [paginaActual]);
+
 
 //useEffect(() => {
  // const cargar = async () => {
