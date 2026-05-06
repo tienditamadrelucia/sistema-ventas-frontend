@@ -9,6 +9,7 @@ import { cargarCategorias } from "../services/categorias";
 import { cargarProductos } from "../services/productos";
 import {buscarVueltoPorFactura, buscarPagoPorFactura, eliminarMoneda} from "../services/ser_moneda"
 import EditarCliente from "../components/Clientes/EditarCliente";
+import ModalCliente from "../components/Clientes/ModalCliente";
 import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 import ModalTasas from "../components/Tasas/ModalTasas";
