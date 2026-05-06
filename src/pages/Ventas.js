@@ -332,7 +332,7 @@ useEffect(() => {
     return `${y}-${m}-${d}`;
   }
 
-// Buscar cliente por identificación (una sola función async)
+
 // buscarClientePorIdentificacion
 const buscarClientePorIdentificacion = async (cedula) => {
   cedula = cedula.trim().toUpperCase();
@@ -345,7 +345,7 @@ const buscarClientePorIdentificacion = async (cedula) => {
     if (res.status === 404) {
       console.log("❌ Cliente NO encontrado → abrir modal");
       setIdentificacion(cedula);          // prellenar la cédula
-      setMostrarEditorCliente(true);       // abrir modal
+      setMostrarModalCliente(true);       // abrir modal
       return;
     }
 
@@ -1198,6 +1198,24 @@ const generarNuevaFactura = async () => {
           }}
       />
         )}
+        {mostrarModalCliente && (
+          <ModalCliente
+          identificacionInicial={identificacion}
+          onCerrar={() => setMostrarModalCliente(false)}
+          onGuardado={(clienteNuevo) => {
+          setClienteSeleccionado(clienteNuevo);
+          setNombreCliente(clienteNuevo.nombreCompleto);
+          setIdentificacion(clienteNuevo.identificacion);
+          // agregar a la lista si no existe
+          setListaClientes(prev => {
+          const existe = prev.some(c => c._id === clienteNuevo._id);
+          return existe ? prev : [...prev, clienteNuevo];
+          });
+          setMostrarModalCliente(false);
+          }}
+        />
+        )}
+
           <button onClick={() => {
             registrarAccion("Abrió modal de pago a Crédito");
             pagoCredito();
