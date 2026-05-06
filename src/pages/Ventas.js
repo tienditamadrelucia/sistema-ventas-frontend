@@ -23,6 +23,7 @@ const Ventas = () => {
   const [numeroFactura, setNumeroFactura] = useState(0);
   const [hora, setHora] = useState("");
   const [fecha, setFecha] = useState(toYMD(new Date()));
+  const [fechaFactura, setFechaFactura] = useState(formatearFecha(new Date()));
   const [fechaString, setFechaString] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
   const [mostrarModalCliente, setMostrarModalCliente] = useState(false);
@@ -263,6 +264,14 @@ useEffect(() => {
   // -----------------------------
   // Funciones de búsqueda y filtros
   // -----------------------------  
+  const handleFechaFactura = async (e) => {
+  const nuevaFecha = e.target.value;
+  setFechaFactura(nuevaFecha);
+
+  const tasas = await cargarTasasPorFecha(nuevaFecha);
+  setTasas(tasas);
+};
+
   const handlePagoCompletado = async (dataPago) => {    
     console.log("Pago registrado:", dataPago);
     const { idPago, idVuelto, totalAbonado, modoCredito } = 
@@ -763,7 +772,12 @@ const generarNuevaFactura = async () => {
                 <input
                   type="date"
                   value={fecha}
-                  onChange={(e) => {setFecha(e.target.value)}}
+                  onChange={async (e) => {
+                  const nuevaFecha = e.target.value;
+                  setFecha(nuevaFecha);
+                  const tasas = await cargarTasasPorFecha(nuevaFecha);
+                  setTasas(tasas);
+                  }}
                 />
               </div>
               <div style={{ display: "flex", flexDirection: "column", width: "100px" }}>

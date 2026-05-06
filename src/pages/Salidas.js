@@ -117,17 +117,7 @@ useEffect(() => {
 }, [paginaActual]);
 
 
-//useEffect(() => {
- // const cargar = async () => {
-   // const res = await cargarSalidas(paginaActual, 20);
-    //setSalidas(res.salidas);
-    //setTotalPaginas(res.totalPages || 1);
-  //};
-
-  //cargar();
-//}, [paginaActual]);
-
-  
+ 
 // ===============================
 // FILTRO DE PRODUCTOS POR CATEGORÍA
 // ===============================
@@ -245,8 +235,7 @@ const guardarSalida = async () => {
 // ===============================
 // EDITAR SALIDA
 // ===============================
-const editarSalida = (salida) => {
-  console.log("ENTRADA QUE LLEGA A EDITAR:", JSON.stringify(salida, null, 2));
+const editarSalida = (salida) => {  
   const prod = productos.find(
     (p) => p._id === (salida.productoId._id || salida.productoId)
   );
@@ -304,11 +293,6 @@ const eliminarSalida = async (id) => {
   // -------------------------
   // RETURN
   // -------------------------
-// ⬇⬇⬇ PÉGALO AQUÍ ⬇⬇⬇
-console.log("CATEGORIAS:", categorias);
-console.log("VALOR DEL SELECT:", formData.categoria);
-
-// ⬆⬆⬆ JUSTO ANTES DEL RETURN ⬆⬆⬆
 
   return (
     <div>
