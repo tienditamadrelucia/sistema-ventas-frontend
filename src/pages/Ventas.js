@@ -11,6 +11,7 @@ import {buscarVueltoPorFactura, buscarPagoPorFactura, eliminarMoneda} from "../s
 import EditarCliente from "../components/Clientes/EditarCliente";
 import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import ModalTasas from "../components/Tasas/ModalTasas";
 
 const Ventas = () => {
   const navigate = useNavigate();
@@ -22,8 +23,7 @@ const Ventas = () => {
   // VARIABLES FACTURA
   const [numeroFactura, setNumeroFactura] = useState(0);
   const [hora, setHora] = useState("");
-  const [fecha, setFecha] = useState(toYMD(new Date()));
-  const [fechaFactura, setFechaFactura] = useState(formatearFecha(new Date()));
+  const [fecha, setFecha] = useState(toYMD(new Date()));  
   const [fechaString, setFechaString] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
   const [mostrarModalCliente, setMostrarModalCliente] = useState(false);
@@ -55,6 +55,7 @@ const Ventas = () => {
   const [mostrarPago, setMostrarPago] = useState(false);
   const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
   //VARIABLES TASAS
+  const [mostrarModalTasas, setMostrarModalTasas] = useState(false);
   const [tasaDolar, setTasaDolar] = useState(0);
   const [tasaPeso, setTasaPeso] = useState(0);
   const [cajaDolar, setCajaDolar] = useState(0);
@@ -264,14 +265,7 @@ useEffect(() => {
   // -----------------------------
   // Funciones de búsqueda y filtros
   // -----------------------------  
-  const handleFechaFactura = async (e) => {
-  const nuevaFecha = e.target.value;
-  setFechaFactura(nuevaFecha);
-
-  const tasas = await cargarTasasPorFecha(nuevaFecha);
-  setTasas(tasas);
-};
-
+  
   const handlePagoCompletado = async (dataPago) => {    
     console.log("Pago registrado:", dataPago);
     const { idPago, idVuelto, totalAbonado, modoCredito } = 
@@ -776,7 +770,11 @@ const generarNuevaFactura = async () => {
                   const nuevaFecha = e.target.value;
                   setFecha(nuevaFecha);
                   const tasas = await cargarTasasPorFecha(nuevaFecha);
-                  setTasas(tasas);
+                  if (!tasas) {
+                    setMostrarModalTasas(true);
+                    return;
+                    }
+                    setTasas(tasas);
                   }}
                 />
               </div>
@@ -1178,12 +1176,19 @@ const generarNuevaFactura = async () => {
             registrarAccion("Abrió modal de pago a Crédito");
             pagoCredito();
           }} style={{ ...estiloBoton, backgroundColor: "#6699FF" }}>Crédito</button>
+
+          {mostrarModalTasas && (
+            <ModalTasas
+              fecha={fecha}
+              onCerrar={() => setMostrarModalTasas(false)}
+              onGuardado={(tasaNueva) => setTasas(tasaNueva)}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 };
-
 
 
 const formatoVE = (valor) => {
