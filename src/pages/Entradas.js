@@ -257,7 +257,7 @@ const Entradas = () => {
     setFormData({
       fecha: entrada.fecha.slice(0, 10),
       categoria: entrada.productoId?.categoria || "",
-      productoId: entrada.productoId._id || salida.productoId,
+      productoId: entrada.productoId._id || entrada.productoId,
       codigo: entrada.productoId?.codigo || "",
       descripcion: entrada.productoId?.descripcion || "",
       cantidad: entrada.cantidad,
@@ -456,8 +456,8 @@ const Entradas = () => {
               <td>{Number(e.cantidad).toFixed(2)}</td>
               <td>{e.observacion}</td>
               <td>
-                <span onClick={() => editarSalida(s)} style={iconoEditar}>✏️</span>
-                <span onClick={() => eliminarSalida(s._id)} style={iconoEliminar}>🗑️</span>
+                <span onClick={() => editarEntrada(e)} style={iconoEditar}>✏️</span>
+                <span onClick={() => eliminarEntrada(e._id)} style={iconoEliminar}>🗑️</span>
               </td>
             </tr>
           ))}
