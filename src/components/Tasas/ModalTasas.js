@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { API_URL } from "../config"; 
+import { API_URL } from "../../config"; 
 
 // ⭐ ESTILOS (igual que EditarCliente)
 const modalFondo = {
