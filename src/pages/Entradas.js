@@ -277,9 +277,9 @@ const Entradas = () => {
   setEntradaEditando(entrada._id); // ahora viene de Mongo  
   setFormData({
     fecha: entrada.fecha.slice(0, 10), // input date
-    categoria: entrada.categoria,
-    productoId: entrada.productoId._id || entrada.productoId,
-    codigo: prod ? prod.codigo : "",
+    categoria: entrada.productoId?.categoria,
+    productoId: entrada._id || entrada.productoId,
+    codigo: entrada.productoId?codigo,
     cantidad: entrada.cantidad,
     observacion: entrada.observacion
   });
