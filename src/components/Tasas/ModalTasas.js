@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
+import { API_URL } from "../config"; 
 
 // ⭐ ESTILOS (igual que EditarCliente)
 const modalFondo = {
@@ -78,7 +79,7 @@ export default function ModalTasas({ fecha, onCerrar, onGuardado }) {
 
     try {
       const res = await axios.post(
-        "https://sistema-ventas-backend-tx2t.onrender.com/api/tasas/guardar",
+        `${API_URL}/api/tasas/guardar`,
         {
           fecha,
           tasaD: Number(form.tasaD),
