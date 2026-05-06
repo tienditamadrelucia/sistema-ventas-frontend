@@ -448,7 +448,7 @@ const Entradas = () => {
               <td>{e.productoId?.categoria}</td>
               <td>{e.productoId?.codigo}</td>
               <td>{e.productoId?.descripcion}</td>
-              <td>{Number(e.cantidad).toFixed(2)}</td>
+              <td>{Number(e.cantidad).toFixed(3)}</td>
               <td>{e.observacion}</td>
               <td>
                 <span onClick={() => editarEntrada(e)} style={iconoEditar}>✏️</span>
