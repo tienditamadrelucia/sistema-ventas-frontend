@@ -123,8 +123,7 @@ const Entradas = () => {
   useEffect(() => {
     const cargar = async () => {
     const recarga = await cargarEntradas(paginaActual, 20);
-      setEntradas(recarga.entradas);
-      setPaginaActual(recarga.page);
+      setEntradas(recarga.entradas);      
       setTotalPaginas(recarga.totalPages);
     };
     cargar();
