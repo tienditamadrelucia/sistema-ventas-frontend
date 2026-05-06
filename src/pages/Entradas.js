@@ -91,37 +91,7 @@ const Entradas = () => {
     cantidad: 0,
     observacion: ""
   });
-
-  // -------------------------
-  // CARGAR PRODUCTOS Y ENTRADAS
-  // -------------------------
-
-  //useEffect(() => {
-  //const cargarTodo = async () => {
-    //const cats = await cargarCategorias();
-    //setCategorias(cats);
-
-//    const prods = await cargarProductos();
-  //  setProductos(prods);
-    
-    //const resEntradas = await cargarEntradas(1, "");
-    ///setEntradas(resEntradas.entradas);
-    ///setPaginaActual(resEntradas.paginaActual);
-    //setTotalPaginas(resEntradas.totalPaginas);
-//  };
-  //cargarTodo();
-  //}, []);
-
-  //useEffect(() => {
-  ///const cargarPorFecha = async () => {
-    //const res = await cargarEntradas(paginaActual, formData.fecha || "", 20);
-    //setEntradas(res.entradas);
-    ///setPaginaActual(res.paginaActual);
-    //setTotalPaginas(res.totalPaginas);
-    //};
-    //cargarPorFecha();
-  //}, [formData.fecha, paginaActual]);
-
+  
   useEffect(() => {
   const cargar = async () => {
     const cats = await cargarCategorias();
@@ -156,9 +126,9 @@ const Entradas = () => {
   // FILTRO DE PRODUCTOS POR CATEGORÍA
   // -------------------------
 
-  //const productosFiltrados = formData.categoria
-   // ? productos.filter((p) => p.categoria === formData.categoria)
-    //: [];
+  const productosFiltrados = formData.categoria
+    ? productos.filter((p) => p.categoria === formData.categoria)
+    : [];
 
   // -------------------------
   // MANEJO DE FORMULARIO
@@ -281,34 +251,29 @@ const Entradas = () => {
   // -------------------------
 
   const editarEntrada = (entrada) => {
-  const categoria = entrada.productoId.descripcionCategoria;
-
-  const filtrados = productos.filter((p) => p.categoria === categoria);
-  setProductosFiltrados(filtrados);
-
-  setModo("editar");
-  setEntradaEditando(entrada._id);
-
-  setFormData({
-    fecha: entrada.fecha.slice(0, 10),
-    categoria: setCategoriaSeleccionada,
-    productoId: entrada.productoId._id,
-    codigo: entrada.productoId.codigo,
-    descripcion: entrada.productoId.descripcion,
-    cantidad: entrada.cantidad,
-    observacion: entrada.observacion    
-  });
-  console.log("data ", formData)
-  if (formularioRef.current) {
-    formularioRef.current.scrollIntoView({ behavior: "smooth" });
-  }  
-};
-
+    const prod = productos.find(
+    (p) => p._id === (entrada.productoId._id || entrada.productoId)
+    );
+    setModo("editar");
+    setEntradaEditando(entrada._id);
+    setFormData({
+      fecha: entrada.fecha.slice(0, 10),
+      categoria: entrada.productoId?.categoria || "",
+      productoId: entrada.productoId._id || salida.productoId,
+      codigo: entrada.productoId?.codigo || "",
+      descripcion: entrada.productoId?.descripcion || "",
+      cantidad: entrada.cantidad,
+      observacion: entrada.observacion || ""   
+    });
+    
+    if (formularioRef.current) {
+      formularioRef.current.scrollIntoView({ behavior: "smooth" });
+    }  
+  };
 
   // -------------------------
   // LIMPIAR FORMULARIO
   // -------------------------
-
   const limpiarFormulario = () => {
     setModo("crear");
     setEntradaEditando(null);
@@ -493,17 +458,8 @@ const Entradas = () => {
               <td>{Number(e.cantidad).toFixed(2)}</td>
               <td>{e.observacion}</td>
               <td>
-                <span
-  onClick={() => {
-    editarEntrada(e);
-    setCategoriaSeleccionada(e.productoId.categoria);
-  }}
-  style={iconoEditar}
->
-  ✏️
-</span>
-
-                <span onClick={() => eliminarEntrada(e._id)} style={iconoEliminar}>🗑️</span>
+                <span onClick={() => editarSalida(s)} style={iconoEditar}>✏️</span>
+                <span onClick={() => eliminarSalida(s._id)} style={iconoEliminar}>🗑️</span>
               </td>
             </tr>
           ))}
