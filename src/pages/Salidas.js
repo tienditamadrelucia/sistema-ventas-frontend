@@ -229,22 +229,24 @@ const guardarSalida = async () => {
 // EDITAR SALIDA
 // ===============================
 const editarSalida = (salida) => {
-  const prod = productos.find((p) => p._id === (salida.productoId._id || salida.productoId));
+  const prod = productos.find(
+    (p) => p._id === (salida.productoId._id || salida.productoId)
+  );
   setModo("editar");
   setSalidaEditando(salida._id);
   setFormData({
-    fecha: salida.fecha.slice(0, 10),
-    categoria: salida.categoria,
-    productoId: salida.productoId_id,
-    codigo: prod ? prod.codigo : "",
-    cantidad: salida.cantidad,
-    observacion: salida.observacion
+    fecha: salida.fecha.slice(0, 10),                 // ✔ editable
+    categoria: salida.productoId?.categoria || "",    // ✔ solo mostrar
+    productoId: salida.productoId._id || salida.productoId, // ✔ correcto
+    codigo: prod ? prod.codigo : "",                  // ✔ solo mostrar
+    cantidad: salida.cantidad,                        // ✔ editable
+    observacion: salida.observacion                   // ✔ solo mostrar
   });
-
   if (formularioRef.current) {
     formularioRef.current.scrollIntoView({ behavior: "smooth" });
   }
 };
+
 
   // -------------------------
   // LIMPIAR FORMULARIO
