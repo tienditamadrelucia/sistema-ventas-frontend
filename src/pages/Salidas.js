@@ -293,10 +293,6 @@ console.log("VALOR DEL SELECT:", formData.categoria);
 
 // ⬆⬆⬆ JUSTO ANTES DEL RETURN ⬆⬆⬆
 
-return (
-  <form>
-    ...
-
   return (
     <div>
       <Encabezado />
