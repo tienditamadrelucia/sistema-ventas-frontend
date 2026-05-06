@@ -76,6 +76,7 @@ export default function ModalTasas({ fecha, onCerrar, onGuardado }) {
       alert("Debe ingresar la tasa del dólar y del peso.");
       return;
     }
+console.log("🟢 BOTÓN GUARDAR PRESIONADO");
 
     try {
       const res = await axios.post(
