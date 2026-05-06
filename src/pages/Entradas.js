@@ -276,13 +276,15 @@ const Entradas = () => {
   setModo("editar");
   setEntradaEditando(entrada._id); // ahora viene de Mongo  
   setFormData({
-    fecha: entrada.fecha.slice(0, 10), // input date
-    categoria: entrada.productoId?.categoria,
-    productoId: entrada.productoId._id || entrada.productoId,
-    codigo: prod?.codigo || "",
-    cantidad: entrada.cantidad,
-    observacion: entrada.observacion
-  });
+  fecha: entrada.fecha.slice(0, 10),
+  categoria: entrada.productoId.categoria,
+  productoId: entrada.productoId._id,
+  codigo: entrada.productoId.codigo,
+  descripcion: entrada.productoId.descripcion,
+  cantidad: entrada.cantidad,
+  observacion: entrada.observacion
+});
+
 
   if (formularioRef.current) {
     formularioRef.current.scrollIntoView({ behavior: "smooth" });

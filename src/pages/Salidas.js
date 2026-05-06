@@ -236,13 +236,15 @@ const editarSalida = (salida) => {
   setModo("editar");
   setSalidaEditando(salida._id);
   setFormData({
-    fecha: salida.fecha.slice(0, 10),                 // ✔ editable
-    categoria: salida.productoId?.categoria || "",    // ✔ solo mostrar
-    productoId: salida.productoId._id || salida.productoId, // ✔ correcto
-    codigo: prod?.codigo || "",                  // ✔ solo mostrar
-    cantidad: salida.cantidad,                        // ✔ editable
-    observacion: salida.observacion                   // ✔ solo mostrar
-  });
+  fecha: salida.fecha.slice(0, 10),
+  categoria: salida.productoId?.categoria || "",
+  productoId: salida.productoId?._id || salida.productoId,
+  codigo: salida.productoId?.codigo || "",
+  descripcion: salida.productoId?.descripcion || "",
+  cantidad: salida.cantidad,
+  observacion: salida.observacion || ""
+});
+
   if (formularioRef.current) {
     formularioRef.current.scrollIntoView({ behavior: "smooth" });
   }
