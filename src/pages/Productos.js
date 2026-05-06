@@ -118,16 +118,7 @@ const Productos = () => {
     foto: ""
   });
 
-  const productosFiltrados = formData.categoria
-    ? productos.filter((p) => p.categoria === formData.categoria)
-    : productos;
-
-  const inputFotoRef = useRef(null);
-
-  // -------------------------
-  // LOCALSTORAGE
-  // -------------------------
-   useEffect(() => {
+  useEffect(() => {
   const cargarCategorias = async () => {
     const res = await fetch(`${API_URL}/api/categorias`);
     const data = await res.json();
@@ -135,6 +126,12 @@ const Productos = () => {
   };
   cargarCategorias();
   }, []);
+
+  const productosFiltrados = formData.categoria
+    ? productos.filter((p) => p.categoria === formData.categoria)
+    : productos;
+
+  const inputFotoRef = useRef(null);
   
   const cargarProductos = async (categoria = "") => {
   const res = await fetch(`${API_URL}/api/productos`);

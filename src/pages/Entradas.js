@@ -124,12 +124,20 @@ const Entradas = () => {
 
   useEffect(() => {
   const cargar = async () => {
-    const recarga = await cargarEntradas(paginaActual, 20);
-    setEntradas(recarga.entradas);
-    setTotalPaginas(recarga.totalPages || 1);
+    const cats = await cargarCategorias();
+    setCategorias(cats.categorias || cats);
+
+    const prods = await cargarProductos();
+    setProductos(prods.productos || prods);
+
+    const res = await cargarEntradas(paginaActual, 20);
+    setEntradas(res.entradas);
+    setTotalPaginas(res.totalPages || 1);
   };
+
   cargar();
 }, [paginaActual]);
+
 
   // -------------------------
   // MANEJO DE ERRORES
