@@ -179,24 +179,23 @@ const botonGuardar = {
     if (!fecha) return;
     try {
       const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fecha}`);
-      if (!res.data || !res.data.tasa) {
-        // No hay tasas → NO navegar, NO alertar, NO romper
-        return;
-      }
       const { tasaD, tasaP, cajachicaD, cajachicaP } = res.data.tasa;
       setTasaDolar(tasaD);
       setTasaPeso(tasaP);
       setCajaDolar(cajachicaD);
       setCajaPeso(cajachicaP);
     } catch (error) {
-      console.error("Frontend dice: Error cargando tasas:", error);
-      // NO navegar
-      // NO alertar
-      // NO romper
+      // ⭐ SI ES 404 → NO HAY TASAS → NO ES ERROR
+      if (error.response && error.response.status === 404) {
+        return; // dejar que el input abra el modal
+      }
+      // ⭐ SOLO SI ES OTRO ERROR REAL
+      console.error("Error REAL cargando tasas:", error);
     }
   };
   cargarTasas();
 }, [fecha]);
+
 
 useEffect(() => {
   generarHora();
