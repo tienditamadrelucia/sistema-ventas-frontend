@@ -229,6 +229,7 @@ const guardarSalida = async () => {
 // EDITAR SALIDA
 // ===============================
 const editarSalida = (salida) => {
+  console.log("EDITAR ENTRADA: ", entrada);
   const prod = productos.find(
     (p) => p._id === (salida.productoId._id || salida.productoId)
   );
