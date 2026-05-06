@@ -12,6 +12,8 @@ import EditarCliente from "../components/Clientes/EditarCliente";
 import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 import ModalTasas from "../components/Tasas/ModalTasas";
+import { cargarTasasPorFecha } from "../../services/der_tasas";
+
 
 const Ventas = () => {
   const navigate = useNavigate();
@@ -768,12 +770,15 @@ const generarNuevaFactura = async () => {
                   onChange={async (e) => {
                   const nuevaFecha = e.target.value;
                   setFecha(nuevaFecha);
-                  const tasas = await cargarTasasPorFecha(nuevaFecha);
-                  if (!tasas) {
+                  const tasa = await cargarTasasPorFecha(nuevaFecha);
+                  if (!tasa) {
                     setMostrarModalTasas(true);
                     return;
-                    }
-                    setTasas(tasas);
+                  }
+                  setTasaD(tasa.tasaD);
+                  setTasaP(tasa.tasaP);
+                  setCajaD(tasa.cajachicaD);
+                  setCajaP(tasa.cajachicaP);
                   }}
                 />
               </div>
