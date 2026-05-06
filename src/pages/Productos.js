@@ -127,6 +127,15 @@ const Productos = () => {
   // -------------------------
   // LOCALSTORAGE
   // -------------------------
+   useEffect(() => {
+  const cargarCategorias = async () => {
+    const res = await fetch(`${API_URL}/api/categorias`);
+    const data = await res.json();
+    setCategorias(data);
+  };
+  cargarCategorias();
+  }, []);
+  
   const cargarProductos = async (categoria = "") => {
   const res = await fetch(`${API_URL}/api/productos`);
   const data = await res.json();
@@ -138,22 +147,12 @@ const Productos = () => {
   }
 };
 
-
   useEffect(() => {
     setProcesando(true);
     cargarProductos(); // ahora sí existe
     registrarAccion("Ingresó al módulo Productos");
     setProcesando(false);
-  }, []);  
-
-  useEffect(() => {
-  const cargarCategorias = async () => {
-    const res = await fetch(`${API_URL}/api/categorias`);
-    const data = await res.json();
-    setCategorias(data);
-  };
-  cargarCategorias();
-  }, []);
+  }, []);    
 
   useEffect(() => {
   limpiarFormulario();   // 👈 genera el primer código al iniciar  

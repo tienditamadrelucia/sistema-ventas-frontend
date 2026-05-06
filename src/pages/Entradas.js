@@ -74,7 +74,7 @@ const Entradas = () => {
 
   const [productos, setProductos] = useState([]);  
   const [productosFiltrados, setProductosFiltrados] = useState([]);
-
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   const [entradas, setEntradas] = useState([]);
   const [modo, setModo] = useState("crear");
   const [entradaEditando, setEntradaEditando] = useState(null);
@@ -283,7 +283,7 @@ const Entradas = () => {
 
   setFormData({
     fecha: entrada.fecha.slice(0, 10),
-    categoria: categoria,
+    categoria: setCategoriaSeleccionada,
     productoId: entrada.productoId._id,
     codigo: entrada.productoId.codigo,
     descripcion: entrada.productoId.descripcion,
@@ -485,7 +485,16 @@ const Entradas = () => {
               <td>{Number(e.cantidad).toFixed(2)}</td>
               <td>{e.observacion}</td>
               <td>
-                <span onClick={() => editarEntrada(e)} style={iconoEditar}>✏️</span>
+                <span
+  onClick={() => {
+    editarEntrada(e);
+    setCategoriaSeleccionada(e.productoId.categoria);
+  }}
+  style={iconoEditar}
+>
+  ✏️
+</span>
+
                 <span onClick={() => eliminarEntrada(e._id)} style={iconoEliminar}>🗑️</span>
               </td>
             </tr>
