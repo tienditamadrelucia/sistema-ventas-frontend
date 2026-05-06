@@ -231,6 +231,13 @@ useEffect(() => {
   // -----------------------------
   // Cálculo del total del producto y total de la factura
   // -----------------------------
+  useEffect(() => {
+    const precioNum = parseFloat(precioVenta) || 0;
+    const descNum = parseFloat(descuento) || 0;
+    const cantNum = parseFloat(cantidad) || 0;
+    const total = (cantNum * precioNum) - (cantNum * precioNum * (descNum / 100));
+    setTotalProducto(total);
+  }, [cantidad, precioVenta, descuento]);
 
   useEffect(() => {        
   const subtotalDolar = listaFactura.reduce(
@@ -598,6 +605,7 @@ const generarNuevaFactura = async () => {
         total: totalCalc
     };
     // Actualiza la lista de factura y restablece los estados
+    setTotalProducto(totalCalc);
     setListaFactura(nuevos);
     limpiarProducto(); // Limpia los campos relacionados al producto
     setEditando(false);
