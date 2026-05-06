@@ -287,6 +287,15 @@ const eliminarSalida = async (id) => {
   // -------------------------
   // RETURN
   // -------------------------
+// ⬇⬇⬇ PÉGALO AQUÍ ⬇⬇⬇
+console.log("CATEGORIAS:", categorias);
+console.log("VALOR DEL SELECT:", formData.categoria);
+
+// ⬆⬆⬆ JUSTO ANTES DEL RETURN ⬆⬆⬆
+
+return (
+  <form>
+    ...
 
   return (
     <div>
@@ -322,6 +331,7 @@ const eliminarSalida = async (id) => {
           style={{ width: "25%", marginBottom: "10px", padding: "5px" }}
         />
 
+        {categorias.length > 0 && (
         <select
           name="categoria"
           value={formData.categoria}
@@ -335,6 +345,7 @@ const eliminarSalida = async (id) => {
             {c.descripcion}</option>          
           ))}
         </select>
+        )}
 
         <select
           name="productoId"
