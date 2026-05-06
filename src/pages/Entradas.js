@@ -320,9 +320,9 @@ const Entradas = () => {
     }
 
     const recarga = await cargarEntradas(paginaActual, formData.fecha || "");
-    setEntradas(recarga.entradas);
-    setPaginaActual(recarga.paginaActual);
-    setTotalPaginas(recarga.totalPaginas);
+      setEntradas(recarga.entradas);
+      setPaginaActual(recarga.page);          // ✔ backend devuelve "page"
+      setTotalPaginas(recarga.totalPages);    // ✔ backend devuelve "totalPages"
 
     await registrarAccion(`Eliminó una entrada`);
   }
