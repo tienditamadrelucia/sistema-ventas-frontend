@@ -271,25 +271,29 @@ const Entradas = () => {
   // -------------------------
 
   const editarEntrada = (entrada) => {
-  const prod = productos.find((p) => p._id === (entrada.productoId._id || entrada.productoId));
+  const categoria = entrada.productoId.categoria;
+
+  const filtrados = productos.filter((p) => p.categoria === categoria);
+  setProductosFiltrados(filtrados);
 
   setModo("editar");
-  setEntradaEditando(entrada._id); // ahora viene de Mongo  
-  setFormData({
-  fecha: entrada.fecha.slice(0, 10),
-  categoria: entrada.productoId.categoria,
-  productoId: entrada.productoId._id,
-  codigo: entrada.productoId.codigo,
-  descripcion: entrada.productoId.descripcion,
-  cantidad: entrada.cantidad,
-  observacion: entrada.observacion
-});
+  setEntradaEditando(entrada._id);
 
+  setFormData({
+    fecha: entrada.fecha.slice(0, 10),
+    categoria: categoria,
+    productoId: entrada.productoId._id,
+    codigo: entrada.productoId.codigo,
+    descripcion: entrada.productoId.descripcion,
+    cantidad: entrada.cantidad,
+    observacion: entrada.observacion
+  });
 
   if (formularioRef.current) {
     formularioRef.current.scrollIntoView({ behavior: "smooth" });
   }
-  };
+};
+
 
   // -------------------------
   // LIMPIAR FORMULARIO
