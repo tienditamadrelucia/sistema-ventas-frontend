@@ -429,11 +429,11 @@ const eliminarSalida = async (id) => {
         <tbody>
           {salidas.map((s) => (
             <tr key={s._id}>
-              <td>{new Date(s.fecha).toLocaleDateString("es-VE")}</td>
-              <td>{s.categoria}</td>
-              <td>{s.codigo}</td>
+              <td>{s.fecha.slice(0, 10)}</td>
+              <td>{s.productoId.categoria}</td>
+              <td>{s.productoId.codigo}</td>
               <td>{s.productoId?.descripcion}</td>
-              <td>{s.cantidad}</td>
+              <td>{Number(s.cantidad).toFixed(2)}</td>
               <td>{s.observacion}</td>
               <td>
                 <span onClick={() => editarSalida(s)} style={iconoEditar}>✏️</span>
