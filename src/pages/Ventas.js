@@ -775,10 +775,11 @@ const generarNuevaFactura = async () => {
                     setMostrarModalTasas(true);
                     return;
                   }
-                  setTasaDolar(tasa.tasaD);
-                  setTasaPeso(tasa.tasaP);
-                  setCajaDolar(tasa.cajachicaD);
-                  setCajaPeso(tasa.cajachicaP);
+                  const { tasaD, tasaP, cajachicaD, cajachicaP } = res;
+                  setTasaDolar(tasaD);
+                  setTasaPeso(tasaP);
+                  setCajaDolar(cajachicaD);
+                  setCajaPeso(cajachicaP);
                   }}
                 />
               </div>
@@ -1182,11 +1183,18 @@ const generarNuevaFactura = async () => {
           }} style={{ ...estiloBoton, backgroundColor: "#6699FF" }}>Crédito</button>
 
           {mostrarModalTasas && (
-            <ModalTasas
-              fecha={fecha}
-              onCerrar={() => setMostrarModalTasas(false)}
-              onGuardado={(tasaNueva) => setTasas(tasaNueva)}
-            />
+          <ModalTasas
+            fecha={fecha}
+            onCerrar={() => setMostrarModalTasas(false)}
+            onGuardado={(tasaNueva) => {
+            const { tasaD, tasaP, cajachicaD, cajachicaP } = tasaNueva;
+            setTasaDolar(tasaD);
+            setTasaPeso(tasaP);
+            setCajaDolar(cajachicaD);
+            setCajaPeso(cajachicaP);
+            setMostrarModalTasas(false);
+            }}
+          />
           )}
         </div>
       </div>
