@@ -4,21 +4,23 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 const API_SALIDAS = `${API_URL}/api/salidas`;
 
 // GET paginado
-export async function cargarSalidas(page = 1, fecha = "") {
+export async function cargarSalidas(page = 1, limit = 20) {
   try {
-    const res = await fetch(`${API_SALIDAS}?page=${page}&fecha=${fecha}`);
+    const res = await fetch(`${API_SALIDAS}?page=${page}&limit=${limit}`);
     const data = await res.json();
-    // El backend NO devuelve "ok" en el GET
-    if (!data.salidasdb) {
+
+    if (!data.salidas) {
       console.error("Error cargando salidas", data);
-      return { salidasdb: [], paginaActual: 1, totalPaginas: 1 };
+      return { salidas: [], page: 1, totalPages: 1 };
     }
-    return data;
+
+    return data; // { total, page, totalPages, salidas }
   } catch (error) {
-    alert(error + "Error cargando salidas");
-    return { salidasdb: [], paginaActual: 1, totalPaginas: 1 };
+    alert(error + " Error cargando salidas");
+    return { salidas: [], page: 1, totalPages: 1 };
   }
 }
+
 
 // POST crear
 export async function crearSalida(data) {

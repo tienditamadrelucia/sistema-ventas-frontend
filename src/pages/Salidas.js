@@ -20,7 +20,7 @@ const Salidas = () => {
   // -------------------------
   // ESTILOS GLOBALES
   // -------------------------
-
+ 
   const estiloBoton = {
     width: "15%",
     padding: "10px",
@@ -74,63 +74,42 @@ const Salidas = () => {
   // ESTADOS
   // -------------------------
 
-  const [productos, setProductos] = useState([]);
-  const [salidas, setSalidas] = useState([]);
-  const [modo, setModo] = useState("crear");
-  const [salidaEditando, setSalidaEditando] = useState(null);
-  const [paginaActual, setPaginaActual] = useState(1);
-  const [totalPaginas, setTotalPaginas] = useState(1);
-  const formularioRef = React.useRef(null);
-  const usuarioActual = "ADMIN"; // o desde contexto/auth
-  const [categorias, setCategorias] = useState([]);
-  
-  const [formData, setFormData] = useState({
-    fecha: new Date().toISOString().substring(0, 10),
-    categoria: "",
-    productoId: "",
-    codigo: 0,
-    cantidad: 0,
-    observacion: ""
-  });
+const [productos, setProductos] = useState([]);
+const [salidas, setSalidas] = useState([]);
+const [modo, setModo] = useState("crear");
+const [salidaEditando, setSalidaEditando] = useState(null);
+
+const [paginaActual, setPaginaActual] = useState(1);
+const [totalPaginas, setTotalPaginas] = useState(1);
+
+const formularioRef = React.useRef(null);
+const usuarioActual = "ADMIN";
+
+const [categorias, setCategorias] = useState([]);
+
+const [formData, setFormData] = useState({
+  fecha: new Date().toISOString().substring(0, 10),
+  categoria: "",
+  productoId: "",
+  codigo: 0,
+  cantidad: 0,
+  observacion: ""
+});
+
 
 // ===============================
 // CARGA INICIAL: PRODUCTOS + CATEGORÍAS + SALIDAS
 // ===============================
 useEffect(() => {
-const cargarTodo = async () => {
-  const cats = await cargarCategorias();  
-  setCategorias(cats);
-  
-
-  const prods = await cargarProductos();
-    setProductos(prods);
-  
-  const resSalidas = await cargarSalidas(1, "");
-      setSalidas(resSalidas.salidasdb);
-      setPaginaActual(resSalidas.paginaActual);
-      setTotalPaginas(resSalidas.totalPaginas);
-};
-cargarTodo();
-}, []);
-
-useEffect(() => {
-const cargarPorFecha = async () => {
-    const res = await cargarSalidas(paginaActual, formData.fecha  || "");
-    setSalidas(res.salidasdb);
-    setPaginaActual(res.paginaActual);
-    setTotalPaginas(res.totalPaginas);
-};
-  cargarPorFecha();
-}, [formData.fecha, paginaActual]);
-
-useEffect(() => {
   const cargar = async () => {
-    const prods = await cargarProductos();
-    console.log("PRODUCTOS:", prods);
-    setProductos(prods);
+    const res = await cargarSalidas(paginaActual, 20);
+    setSalidas(res.salidas);
+    setTotalPaginas(res.totalPages || 1);
   };
+
   cargar();
-  }, []);
+}, [paginaActual]);
+
   
 // ===============================
 // FILTRO DE PRODUCTOS POR CATEGORÍA
@@ -235,11 +214,10 @@ const guardarSalida = async () => {
         }
         await registrarAccion(`Actualizó salida del producto ${formData.codigo}`);
       }
-      const recarga = await cargarSalidas(paginaActual, formData.fecha || "");
-      setSalidas(recarga.salidasdb);
-      setPaginaActual(recarga.paginaActual);
-      setTotalPaginas(recarga.totalPaginas);
-      limpiarFormulario();
+      const recarga = await cargarSalidas(paginaActual, 20);
+        setSalidas(recarga.salidas || recarga.salidasdb || []);
+        setTotalPaginas(recarga.totalPages || 1);
+        limpiarFormulario();
   
     } finally {
         // ⭐ SIEMPRE se ejecuta, incluso si hubo return arriba
@@ -257,7 +235,7 @@ const editarSalida = (salida) => {
   setFormData({
     fecha: salida.fecha.slice(0, 10),
     categoria: salida.categoria,
-    productoId: salida.productoId_id || salida.productoId,
+    productoId: salida.productoId_id,
     codigo: prod ? prod.codigo : "",
     cantidad: salida.cantidad,
     observacion: salida.observacion
@@ -294,10 +272,10 @@ const eliminarSalida = async (id) => {
       alert(res.error || "No se pudo eliminar la salida");
       return;
     }
-    const recarga = await cargarSalidas(paginaActual, formData.fecha || "");
-    setSalidas(recarga.salidasdb);
-    setPaginaActual(recarga.paginaActual);
-    setTotalPaginas(recarga.totalPaginas);
+    const recarga = await cargarSalidas(paginaActual, 20);
+      setSalidas(recarga.salidas || recarga.salidasdb || []);
+      setTotalPaginas(recarga.totalPages || 1);
+
     await registrarAccion(`Eliminó una salida`);
   }
 }; 
@@ -465,6 +443,29 @@ const eliminarSalida = async (id) => {
           ))}
         </tbody>
       </table>
+      <div style={{ marginTop: "20px", textAlign: "center" }}>
+        <button onClick={() => setPaginaActual(1)}>
+          Inicio ⏮️
+        </button>
+        <button
+          disabled={paginaActual === 1}
+          onClick={() => setPaginaActual(p => Math.max(1, p - 1))}
+        >
+          ◀ Anterior
+        </button>
+        <span style={{ margin: "0 15px" }}>
+          Página {paginaActual} de {totalPaginas}
+        </span>
+        <button
+          disabled={paginaActual === totalPaginas}
+          onClick={() => setPaginaActual(p => Math.min(totalPaginas, p + 1))}
+        >
+          Siguiente ▶
+        </button>
+        <button onClick={() => setPaginaActual(totalPaginas)}>
+          Ir al final ⏭️
+        </button>
+      </div>
     </div>    
     </div>
     
