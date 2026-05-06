@@ -238,7 +238,7 @@ const editarSalida = (salida) => {
     fecha: salida.fecha.slice(0, 10),                 // ✔ editable
     categoria: salida.productoId?.categoria || "",    // ✔ solo mostrar
     productoId: salida.productoId._id || salida.productoId, // ✔ correcto
-    codigo: prod ? prod.codigo : "",                  // ✔ solo mostrar
+    codigo: prod?.codigo || "",                  // ✔ solo mostrar
     cantidad: salida.cantidad,                        // ✔ editable
     observacion: salida.observacion                   // ✔ solo mostrar
   });
@@ -380,6 +380,7 @@ const eliminarSalida = async (id) => {
           name="observacion"
           value={formData.observacion}
           onChange={handleChange}
+          disabled={modo === "editar"}
           style={selectEstilo}
         >
           <option value="">Seleccione motivo</option>
