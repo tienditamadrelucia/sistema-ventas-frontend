@@ -73,6 +73,8 @@ const Entradas = () => {
   // -------------------------
 
   const [productos, setProductos] = useState([]);  
+  const [productosFiltrados, setProductosFiltrados] = useState([]);
+
   const [entradas, setEntradas] = useState([]);
   const [modo, setModo] = useState("crear");
   const [entradaEditando, setEntradaEditando] = useState(null);
