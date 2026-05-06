@@ -319,7 +319,7 @@ const Entradas = () => {
       return;
     }
 
-    const recarga = await cargarEntradas(paginaActual, formData.fecha || "");
+    const recarga = await cargarEntradas(paginaActual); //formData.fecha || "");
       setEntradas(recarga.entradas);
       setPaginaActual(recarga.page);          // ✔ backend devuelve "page"
       setTotalPaginas(recarga.totalPages);    // ✔ backend devuelve "totalPages"
