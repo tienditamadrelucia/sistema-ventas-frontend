@@ -337,18 +337,32 @@ useEffect(() => {
 const buscarClientePorIdentificacion = async (cedula) => {
   cedula = cedula.trim().toUpperCase();
   if (!cedula) return;
+
   try {
     const res = await fetch(`${API_URL}/api/clientes/cedula/${cedula}`);
-    if (!res.ok) {
-      alert("Cliente no encontrado");
+
+    // ⭐ SI NO EXISTE EL CLIENTE → ABRIR MODAL
+    if (res.status === 404) {
+      console.log("❌ Cliente NO encontrado → abrir modal");
+      setIdentificacion(cedula);          // prellenar la cédula
+      setMostrarModalCliente(true);       // abrir modal
       return;
     }
-    const data = await res.json(); // si tu backend devuelve { ok: true, cliente: {...} } usa data.cliente
+
+    if (!res.ok) {
+      alert("Error buscando cliente");
+      return;
+    }
+
+    // ⭐ Cliente encontrado
+    const data = await res.json();
     const cliente = data.cliente ?? data;
+
     if (!cliente || !cliente._id) {
       alert("Respuesta inválida del servidor");
-      return;    }
-    // Guardar el objeto cliente (no solo el id)
+      return;
+    }
+    // Guardar el objeto cliente
     setClienteSeleccionado(cliente);
     // Actualizar campos visibles
     setNombreCliente(cliente.nombreCompleto || "");
@@ -364,8 +378,10 @@ const buscarClientePorIdentificacion = async (cedula) => {
         cliente.nombreCompleto === "CLIENTE POR ACTUALIZAR" ||
         cliente.direccion === "DIRECCIÓN POR ACTUALIZAR" ||
         cliente.telefono === "TELÉFONO POR ACTUALIZAR";
+
       if (incompleto) setMostrarEditorCliente(true);
     }, 0);
+
   } catch (error) {
     console.error("Error buscando cliente:", error);
     alert("Error buscando cliente");
