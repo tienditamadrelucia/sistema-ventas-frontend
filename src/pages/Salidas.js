@@ -229,7 +229,7 @@ const guardarSalida = async () => {
 // EDITAR SALIDA
 // ===============================
 const editarSalida = (salida) => {
-  alert("EDITAR ENTRADA: " + salida);
+  console.log("ENTRADA QUE LLEGA A EDITAR:", JSON.stringify(salida, null, 2));
   const prod = productos.find(
     (p) => p._id === (salida.productoId._id || salida.productoId)
   );
