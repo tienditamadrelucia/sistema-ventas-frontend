@@ -278,8 +278,8 @@ const Entradas = () => {
   setFormData({
     fecha: entrada.fecha.slice(0, 10), // input date
     categoria: entrada.productoId?.categoria,
-    productoId: entrada._id || entrada.productoId,
-    codigo: entrada.productoId?codigo,
+    productoId: entrada.productoId._id || entrada.productoId,
+    codigo: prod?.codigo || "",
     cantidad: entrada.cantidad,
     observacion: entrada.observacion
   });
