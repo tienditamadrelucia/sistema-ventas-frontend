@@ -148,57 +148,55 @@ const botonGuardar = {
       const res = await fetch(`${API_URL}/api/facturas/reservar`, {
         method: "POST"
       });
+
       if (!res.ok) {
         alert("No se pudo reservar número de factura");
         return;
       }
+
       const data = await res.json();
+
       if (!data.ok) {
         alert(data.msg || "Error reservando factura");
         return;
       }
+
       setReservaId(data.reservaId);
       setNumeroFactura(data.numeroFactura);
+
     } catch (error) {
       console.error("Error reservando factura:", error);
       alert("Error reservando factura");
     }
   };
+
   reservarFactura();
-  }, []);
+}, []);
+
 
   useEffect(() => {
   const cargarTasas = async () => {
+    if (!fecha) return;
     try {
-      const fechaFactura = fecha;
-      if (!fechaFactura) {
-        alert("Debe seleccionar una fecha para la factura.");
-        return;
-      }
-
-      const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fechaFactura}`);
+      const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fecha}`);
       if (!res.data || !res.data.tasa) {
-        
+        // No hay tasas → NO navegar, NO alertar, NO romper
         return;
       }
-
       const { tasaD, tasaP, cajachicaD, cajachicaP } = res.data.tasa;
-
       setTasaDolar(tasaD);
       setTasaPeso(tasaP);
       setCajaDolar(cajachicaD);
       setCajaPeso(cajachicaP);
     } catch (error) {
-      console.error("Frontend dice: Error cargando tasas:", error);      
+      console.error("Frontend dice: Error cargando tasas:", error);
+      // NO navegar
+      // NO alertar
+      // NO romper
     }
   };
-
   cargarTasas();
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [fecha]);
-
-
 
 useEffect(() => {
   generarHora();
