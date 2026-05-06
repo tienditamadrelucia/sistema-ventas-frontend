@@ -60,8 +60,7 @@ const Ventas = () => {
   const [tasaPeso, setTasaPeso] = useState(0);
   const [cajaDolar, setCajaDolar] = useState(0);
   const [cajaPeso, setCajaPeso] = useState(0);
-  const [tasaBs, setTasaBs] = useState(0);
-  const [mostrarModalTasas, setMostrarModalTasas] = useState(false);
+  const [tasaBs, setTasaBs] = useState(0);  
 
   const [pagoExistente, setPagoExistente] = useState(null);
   const [vueltoExistente, setVueltoExistente] = useState(null);  
