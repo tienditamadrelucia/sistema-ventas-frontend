@@ -94,31 +94,31 @@ const Entradas = () => {
   // CARGAR PRODUCTOS Y ENTRADAS
   // -------------------------
 
-  useEffect(() => {
-  const cargarTodo = async () => {
-    const cats = await cargarCategorias();
-    setCategorias(cats);
+  //useEffect(() => {
+  //const cargarTodo = async () => {
+    //const cats = await cargarCategorias();
+    //setCategorias(cats);
 
-    const prods = await cargarProductos();
-    setProductos(prods);
+//    const prods = await cargarProductos();
+  //  setProductos(prods);
     
-    const resEntradas = await cargarEntradas(1, "");
-    setEntradas(resEntradas.entradas);
-    setPaginaActual(resEntradas.paginaActual);
-    setTotalPaginas(resEntradas.totalPaginas);
-  };
-  cargarTodo();
-  }, []);
+    //const resEntradas = await cargarEntradas(1, "");
+    ///setEntradas(resEntradas.entradas);
+    ///setPaginaActual(resEntradas.paginaActual);
+    //setTotalPaginas(resEntradas.totalPaginas);
+//  };
+  //cargarTodo();
+  //}, []);
 
-  useEffect(() => {
-  const cargarPorFecha = async () => {
-    const res = await cargarEntradas(paginaActual, formData.fecha || "", 20);
-    setEntradas(res.entradas);
-    setPaginaActual(res.paginaActual);
-    setTotalPaginas(res.totalPaginas);
-    };
-    cargarPorFecha();
-  }, [formData.fecha, paginaActual]);
+  //useEffect(() => {
+  ///const cargarPorFecha = async () => {
+    //const res = await cargarEntradas(paginaActual, formData.fecha || "", 20);
+    //setEntradas(res.entradas);
+    ///setPaginaActual(res.paginaActual);
+    //setTotalPaginas(res.totalPaginas);
+    //};
+    //cargarPorFecha();
+  //}, [formData.fecha, paginaActual]);
 
   useEffect(() => {
   const cargar = async () => {
@@ -126,7 +126,6 @@ const Entradas = () => {
     setEntradas(recarga.entradas);
     setTotalPaginas(recarga.totalPages || 1);
   };
-
   cargar();
 }, [paginaActual]);
 
