@@ -429,8 +429,8 @@ const eliminarSalida = async (id) => {
         <tbody>
           {salidas.map((s) => (
             <tr key={s._id}>
-              <td>{s.fecha.slice(0, 10)}</td>
-              <td>{s.productoId.categoria}</td>
+              <td>{s.fecha.slice(0, 10)}</td> 
+              <td>{s.productoId?.categoria}</td>
               <td>{s.productoId.codigo}</td>
               <td>{s.productoId?.descripcion}</td>
               <td>{Number(s.cantidad).toFixed(2)}</td>
