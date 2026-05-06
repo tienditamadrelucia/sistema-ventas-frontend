@@ -230,3 +230,27 @@ select, option {
   font-weight: bold;
   z-index: 9999;
 }
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* ⭐ IMPORTANTE */
+  overflow-y: auto;        /* ⭐ NECESARIO */
+  padding-top: 20px;       /* ⭐ Para que no quede pegado arriba */
+  z-index: 9999;
+}
+
+.modal-contenido {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 900px;
+  max-height: 90vh;   /* ⭐ evita que se salga */
+  overflow-y: auto;   /* ⭐ permite scroll interno */
+}

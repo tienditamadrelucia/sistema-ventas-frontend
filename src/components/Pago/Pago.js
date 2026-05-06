@@ -344,8 +344,33 @@ const facturaCancelada = modoCredito
   };
 
   return (
-    <div className="modal">
-      <div className="modal-contenido" style={{ width: "900px" }}>
+    <div className="modal"
+      style={{
+      position: "fixed",
+      top: 0,
+      left: 0,
+      width: "100vw",
+      height: "100vh",
+      backgroundColor: "rgba(0,0,0,0.5)",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "flex-start",
+      overflowY: "auto",
+      paddingTop: "20px",
+      zIndex: 9999
+      }}
+    >
+      <div className="modal-contenido" 
+        style={{
+          width: "900px",
+          backgroundColor: "white",
+          padding: "20px",
+          borderRadius: "8px",
+          maxHeight: "90vh",
+          overflowY: "auto",
+          boxShadow: "0 0 10px rgba(0,0,0,0.3)"
+          }}
+        >
 
         <h2 style={{ textAlign: "center", marginBottom: "1px" }}>
           REGISTRO DE PAGO
