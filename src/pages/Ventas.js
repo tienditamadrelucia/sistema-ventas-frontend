@@ -775,7 +775,7 @@ const generarNuevaFactura = async () => {
                     setMostrarModalTasas(true);
                     return;
                   }
-                  const { tasaD, tasaP, cajachicaD, cajachicaP } = res;
+                  const { tasaD, tasaP, cajachicaD, cajachicaP } = tasa;
                   setTasaDolar(tasaD);
                   setTasaPeso(tasaP);
                   setCajaDolar(cajachicaD);
