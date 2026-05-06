@@ -178,8 +178,7 @@ const botonGuardar = {
 
       const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fechaFactura}`);
       if (!res.data || !res.data.tasa) {
-        alert("No existen tasas registradas para esta fecha.");
-        navigate("/tasas");
+        
         return;
       }
 
@@ -190,9 +189,7 @@ const botonGuardar = {
       setCajaDolar(cajachicaD);
       setCajaPeso(cajachicaP);
     } catch (error) {
-      console.error("Frontend dice: Error cargando tasas:", error);
-      alert("Error cargando tasas.");
-      navigate("/tasas");
+      console.error("Frontend dice: Error cargando tasas:", error);      
     }
   };
 

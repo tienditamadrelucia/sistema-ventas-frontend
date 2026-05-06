@@ -40,6 +40,7 @@ export const cargarTasasPorFecha = async (fecha) => {
     const res = await axios.get(`${API_TASAS}/por-fecha/${fecha}`);
     return res.data.tasa;   // si existe, la devuelve
   } catch (error) {
+    console.log("🔥 ERROR COMPLETO:", error.response?.status, error.response?.data);
     // ⭐ SI ES 404 → NO HAY TASAS → devolver null
     if (error.response && error.response.status === 404) {
       return null;
