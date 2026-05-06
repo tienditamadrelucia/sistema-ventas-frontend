@@ -113,15 +113,15 @@ useEffect(() => {
   cargar();
 }, [paginaActual]);
 
-useEffect(() => {
-  const cargar = async () => {
-    const res = await cargarSalidas(paginaActual, 20);
-    setSalidas(res.salidas);
-    setTotalPaginas(res.totalPages || 1);
-  };
+//useEffect(() => {
+ // const cargar = async () => {
+   // const res = await cargarSalidas(paginaActual, 20);
+    //setSalidas(res.salidas);
+    //setTotalPaginas(res.totalPages || 1);
+  //};
 
-  cargar();
-}, [paginaActual]);
+  //cargar();
+//}, [paginaActual]);
 
   
 // ===============================
