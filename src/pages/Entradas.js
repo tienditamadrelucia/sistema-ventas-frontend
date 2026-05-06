@@ -470,7 +470,7 @@ const Entradas = () => {
         <tbody>
           {entradas.map((e) => (
             <tr key={e._id}>
-              <td>{new Date(e.fecha).toLocaleDateString("es-VE")}</td>
+              <td>{e.fecha.slice(0, 10)}</td>
               <td>{e.productoId?.categoria}</td>
               <td>{e.productoId?.codigo}</td>
               <td>{e.productoId?.descripcion}</td>
