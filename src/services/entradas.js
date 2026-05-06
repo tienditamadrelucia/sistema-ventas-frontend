@@ -13,17 +13,19 @@ export async function cargarEntradas(page = 1, limit = 20) {
       `${API_ENTRADAS}?page=${page}&limit=${limit}`
     );
     const data = await res.json();
-    // Si no vienen entradas, devolvemos estructura compatible con el backend
+
     if (!data.entradas) {
       console.error("Error cargando entradas:", data);
       return { entradas: [], page: 1, totalPages: 1 };
     }
-    return data; // ✔ devuelve { total, page, totalPages, entradas }
+
+    return data; // { total, page, totalPages, entradas }
   } catch (error) {
-    alert(error + "Error cargando entradas");
+    alert(error + " Error cargando entradas");
     return { entradas: [], page: 1, totalPages: 1 };
   }
 }
+
 
 //export async function cargarEntradas(page = 1, fecha = "", limit = 20) {
   //try {
