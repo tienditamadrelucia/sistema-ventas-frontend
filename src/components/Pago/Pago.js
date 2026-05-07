@@ -897,8 +897,7 @@ const facturaCancelada = modoCredito
           // ============================          
           onPagoCompletado({
             idPago: respuestaPago.data.moneda._id,
-            idVuelto: respuestaVuelto?.data?.moneda?._id || null,
-            factura: facturaNumero,
+            idVuelto: respuestaVuelto?.data?.moneda?._id || null,            
             totalAbonado,
             modoCredito
             });
