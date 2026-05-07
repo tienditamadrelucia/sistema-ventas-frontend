@@ -3,15 +3,22 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../services/logs";
 import { obtenerTasaHoy, guardarTasas, modificarTasas } from "../services/ser_tasas.js";
-import { obtenerFechaLocal } from "../utils/fechaLocal";
-import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 import { buscarVentasDelDia } from "../services/ser_ventas.js";
 
 const Tasas = () => {
-  const hoy = new Date();  
-  const navigate = useNavigate();      
+  const navigate = useNavigate();
+
+  // ⭐ Fecha de hoy en UTC (00:00:00)
+  const hoy = new Date();
+  const fechaUTC = new Date(Date.UTC(
+    hoy.getFullYear(),
+    hoy.getMonth(),
+    hoy.getDate(),
+    0, 0, 0
+  ));
+
   const [form, setForm] = useState({
-    fecha: hoy,
+    fecha: fechaUTC,
     cajachicaP: "",
     cajachicaD: "",
     tasaP: "",
@@ -20,15 +27,14 @@ const Tasas = () => {
 
   const [existeHoy, setExisteHoy] = useState(false);
   const [modoModificar, setModoModificar] = useState(false);
-  const [refrescarHeader, setRefrescarHeader] = useState(false);
 
   const formularioinput = {
-    width: "550px", 
-    margin: "0 auto 20px auto", 
-    padding: "20px", 
-    border: "1px solid #ccc", 
-    borderRadius: "8px", 
-    backgroundColor: "white" 
+    width: "550px",
+    margin: "0 auto 20px auto",
+    padding: "20px",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    backgroundColor: "white"
   };
 
   const estiloBoton = {
@@ -41,7 +47,7 @@ const Tasas = () => {
     fontWeight: "900",
     fontFamily: "Arial Black",
     cursor: "pointer",
-    marginTop: "10px"    
+    marginTop: "10px"
   };
 
   const botonGuardar = {
@@ -54,33 +60,42 @@ const Tasas = () => {
     fontFamily: "Arial Black",
     cursor: "pointer",
     marginTop: "8px",
-    marginLeft:"40px"
-  };  
-
-useEffect(() => {
-  registrarAccion("Ingreso al módulo Tasas de Cambio");
-  const cargar = async () => {
-    const res = await obtenerTasaHoy();
-    if (res.ok && res.tasa) {
-      setExisteHoy(true);
-      setModoModificar(false);
-      setForm({
-        _id: res.tasa._id,
-        fecha: hoy,
-        cajachicaP: res.tasa.cajachicaP,
-        cajachicaD: res.tasa.cajachicaD,
-        tasaP: res.tasa.tasaP,
-        tasaD: res.tasa.tasaD
-      });
-    } else {
-      setExisteHoy(false);
-      setModoModificar(true);
-    }
+    marginLeft: "40px"
   };
-  cargar();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, []);
 
+  // ============================
+  // CARGAR TASA DEL DÍA
+  // ============================
+  useEffect(() => {
+    registrarAccion("Ingreso al módulo Tasas de Cambio");
+
+    const cargar = async () => {
+      const res = await obtenerTasaHoy();
+
+      if (res.ok && res.tasa) {
+        setExisteHoy(true);
+        setModoModificar(false);
+
+        setForm({
+          _id: res.tasa._id,
+          fecha: fechaUTC,
+          cajachicaP: res.tasa.cajachicaP,
+          cajachicaD: res.tasa.cajachicaD,
+          tasaP: res.tasa.tasaP,
+          tasaD: res.tasa.tasaD
+        });
+      } else {
+        setExisteHoy(false);
+        setModoModificar(true);
+      }
+    };
+
+    cargar();
+  }, []);
+
+  // ============================
+  // HANDLERS
+  // ============================
   const handleChange = (e) => {
     setForm({
       ...form,
@@ -92,70 +107,59 @@ useEffect(() => {
     if (!form.cajachicaP || !form.cajachicaD || !form.tasaP || !form.tasaD) {
       alert("Debe completar todos los campos");
       return;
-    }    
-    let res;    
+    }
+
+    let res;
+
+    // ⭐ GUARDAR NUEVA TASA
     if (!existeHoy) {
       res = await guardarTasas({
         ...form,
-        fecha: hoy // Asegurándose de que la fecha se guarde correctamente
-      });    
+        fecha: fechaUTC   // ⭐ SIEMPRE UTC
+      });
+
       if (res.ok) {
         registrarAccion("Registró tasas del día");
         alert(res.mensaje);
-        setExisteHoy(true);
-        // ⭐ LIMPIAR LOCALSTORAGE Y GUARDAR NUEVAS TASAS        
+
         localStorage.setItem("tasaDolar", form.tasaD);
         localStorage.setItem("tasaPeso", form.tasaP);
         localStorage.setItem("cajaDolar", form.cajachicaD);
         localStorage.setItem("cajaPeso", form.cajachicaP);
-        //localStorage.setItem("fechaTasa", hoy);
+
         window.location.reload();
       } else {
         alert(res.mensaje || "Error al guardar");
-      }    
-    } else {  
-        const ventas = await buscarVentasDelDia(hoy);
-        if ((ventas.VentasP + ventas.VentasD + ventas.VentasBs) > 0) {
-          alert("No se pueden modificar las tasas porque ya existen ventas registradas hoy.");
-          return;
+      }
     }
+
+    // ⭐ MODIFICAR TASA EXISTENTE
+    else {
+      const ventas = await buscarVentasDelDia(fechaUTC);
+
+      if ((ventas.VentasP + ventas.VentasD + ventas.VentasBs) > 0) {
+        alert("No se pueden modificar las tasas porque ya existen ventas registradas hoy.");
+        return;
+      }
+
       res = await modificarTasas({
         ...form,
-        fecha: hoy // Asegurándose de que la fecha se use en la modificación
-      });    
+        fecha: fechaUTC
+      });
+
       if (res.ok) {
         registrarAccion("Modificó tasas del día");
-        alert(res.mensaje);        
+        alert(res.mensaje);
+
         localStorage.setItem("tasaDolar", form.tasaD);
         localStorage.setItem("tasaPeso", form.tasaP);
         localStorage.setItem("cajaDolar", form.cajachicaD);
         localStorage.setItem("cajaPeso", form.cajachicaP);
-        //localStorage.setItem("fechaTasa", hoy);
+
         window.location.reload();
       } else {
         alert(res.mensaje || "Error al modificar");
       }
-    }
-    // Reiniciar el formulario después de guardar/modificar
-    setForm({
-      fecha: hoy,
-      cajachicaP: "",
-      cajachicaD: "",
-      tasaP: "",
-      tasaD: ""
-    });
-    
-    // Recargar los datos actualizados
-    const nueva = await obtenerTasaHoy();
-    if (nueva.ok && nueva.tasa) {
-      setForm({
-        _id: nueva.tasa._id,
-        fecha: hoy,
-        cajachicaP: nueva.tasa.cajachicaP,
-        cajachicaD: nueva.tasa.cajachicaD,
-        tasaP: nueva.tasa.tasaP,
-        tasaD: nueva.tasa.tasaD        
-      });
     }
   };
 
@@ -167,7 +171,7 @@ useEffect(() => {
   const handleBorrar = () => {
     registrarAccion("Limpió formulario de tasas");
     setForm({
-      fecha: hoy,
+      fecha: fechaUTC,
       cajachicaP: "",
       cajachicaD: "",
       tasaP: "",
@@ -182,19 +186,24 @@ useEffect(() => {
 
   const inputsHabilitados = !existeHoy || modoModificar;
 
+  // ============================
+  // RENDER
+  // ============================
   return (
     <div>
-      <Encabezado refrescar={refrescarHeader} />
+      <Encabezado />
       <div style={{ padding: "20px" }}>
         <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
           Gestión de Tasas de Cambio y Caja Chica
         </h2>
+
         <div style={formularioinput}>
           <h3 style={{ height: "55px", textAlign: "center", marginBottom: "15px", fontWeight: "bold" }}>
-            {"Registrar Datos"}
+            Registrar Datos
           </h3>
+
           <div>
-            <label style={{ textAlign: "left", marginLeft: "10px" }}>Caja Chica Pesos: </label>
+            <label style={{ marginLeft: "10px" }}>Caja Chica Pesos: </label>
             <input
               type="number"
               name="cajachicaP"
@@ -202,9 +211,10 @@ useEffect(() => {
               value={form.cajachicaP}
               style={{ width: "20%", marginBottom: "10px", padding: "5px", marginLeft: "10px" }}
               onChange={handleChange}
-              disabled={existeHoy && !modoModificar}
+              disabled={!inputsHabilitados}
             />
-            <label style={{ textAlign: "left", marginLeft: "10px" }}>Caja Chica Dólares: </label>
+
+            <label style={{ marginLeft: "10px" }}>Caja Chica Dólares: </label>
             <input
               type="number"
               name="cajachicaD"
@@ -212,10 +222,12 @@ useEffect(() => {
               value={form.cajachicaD}
               style={{ width: "20%", marginBottom: "10px", padding: "5px", marginLeft: "10px" }}
               onChange={handleChange}
-              disabled={existeHoy && !modoModificar}
+              disabled={!inputsHabilitados}
             />
           </div>
+
           <div style={{ height: "25px" }}></div>
+
           <div>
             <label style={{ marginLeft: "10px" }}>Tasa Pesos: </label>
             <input
@@ -225,8 +237,9 @@ useEffect(() => {
               value={form.tasaP}
               style={{ width: "20%", marginBottom: "10px", padding: "5px", marginLeft: "50px" }}
               onChange={handleChange}
-              disabled={existeHoy && !modoModificar}
+              disabled={!inputsHabilitados}
             />
+
             <label style={{ marginLeft: "10px" }}>Tasa Dólares: </label>
             <input
               type="number"
@@ -235,22 +248,27 @@ useEffect(() => {
               value={form.tasaD}
               style={{ width: "20%", marginBottom: "10px", padding: "5px", marginLeft: "50px" }}
               onChange={handleChange}
-              disabled={existeHoy && !modoModificar}
+              disabled={!inputsHabilitados}
             />
+
             <div style={{ height: "20px" }}></div>
-            <div style={{ display: "flex", width: "85%", marginBottom: "5px", justifyContent: "center", marginLeft: "20px" }}>
-              <button style={botonGuardar} onClick={handleGuardar} disabled={existeHoy && !modoModificar}>
+
+            <div style={{ display: "flex", width: "85%", justifyContent: "center", marginLeft: "20px" }}>
+              <button style={botonGuardar} onClick={handleGuardar} disabled={!inputsHabilitados}>
                 Guardar
               </button>
+
               <button style={botonGuardar} onClick={handleModificar} disabled={!existeHoy}>
                 Modificar
               </button>
+
               <button style={botonGuardar} onClick={handleBorrar}>
                 Borrar
               </button>
             </div>
           </div>
         </div>
+
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
           <button onClick={handleVolver} style={estiloBoton}>
             Volver al MENÚ PRINCIPAL

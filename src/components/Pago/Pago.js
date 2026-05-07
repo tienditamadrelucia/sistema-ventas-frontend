@@ -4,7 +4,6 @@ import { registrarMoneda, buscarPagoPorFactura,
 
 const Pago = ({
   modoCredito,
-  facturaNumero,
   fecha,
   totalDolar,
   totalPeso,
@@ -15,7 +14,8 @@ const Pago = ({
   vueltoExistente,
   onCerrar,
   onPagoCompletado
-}) => {  
+}) => {
+
   const [total, setTotal] = useState(0);
 
   const [efectivoP, setEfectivoP] = useState(0);
@@ -76,7 +76,6 @@ const formatoVE = new Intl.NumberFormat("es-VE", {
 
 const dataMoneda = {
   fecha,
-  factura: facturaNumero,
   operacion: modoCredito ? "ABONO DE CREDITO" : "VENTA",
   total: totalDolar,
   // ⭐ COP
@@ -100,9 +99,9 @@ const dataMoneda = {
   bancoZ: bancoUsdZelle || ""
 };
 
+
   const dataVuelto = {
-  fecha,
-  factura: facturaNumero,
+  fecha,  
   operacion: "VUELTOS",
   montoUsd: Number(vueltoUsdUsuario || 0),
   montoBs: Number(vueltoBsUsuario || 0),
@@ -307,8 +306,7 @@ const vueltoCorrecto =
 const facturaCancelada = modoCredito
   ? totalAbonado>0
   : totalPagadoUSD >= totalDolar && vueltoCorrecto;  
-  const limpiarTodo = () => {
-    const limpiarTodo = () => {
+  const limpiarTodo = () => {    
     // USD
     setPagoUsdEfectivo("");
     setPagoUsdZelle("");
@@ -339,8 +337,7 @@ const facturaCancelada = modoCredito
     setVueltoCopUsuario("");
     setVueltoBsUsuario("");
     // ESTADOS INTERNOS    
-    setTotalAbonado(0);    
-    };
+    setTotalAbonado(0);        
   };
 
   return (
@@ -812,8 +809,7 @@ const facturaCancelada = modoCredito
               const fechaDate = new Date(y, m - 1, d);
               const dataMoneda = {
               fecha: fechaDate,
-              operacion: modoCredito ? "ABONO DE CREDITO" : "VENTA",
-              factura: facturaNumero,
+              operacion: modoCredito ? "ABONO DE CREDITO" : "VENTA",              
               total: modoCredito ? totalAbonado : totalDolar,
               // COP
               efectivoP: Number(pagoCopEfectivo || 0),
@@ -861,8 +857,7 @@ const facturaCancelada = modoCredito
             if (hayVueltoNuevo) {
               const dataVuelto = {
               fecha: fecha,
-              operacion: "VUELTOS",
-              factura: facturaNumero,
+              operacion: "VUELTOS",              
               total: 0,
               efectivoP: -(Number(vueltoCopUsuario || 0)),
               transferenciaP: 0,

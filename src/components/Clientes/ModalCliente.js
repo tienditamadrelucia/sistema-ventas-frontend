@@ -86,7 +86,6 @@ export default function ModalCliente({ identificacionInicial = "", onCerrar, onG
   }
 };
 
-
   return (
     <div style={modalFondo}>
       <div style={modalCaja}>
