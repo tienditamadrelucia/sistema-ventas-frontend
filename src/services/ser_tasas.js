@@ -1,7 +1,7 @@
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 import axios from "axios";
 
-const API_TASAS = `${API_URL}/api/tasas`;
+const API_TASAS = `${API_URL}/api/tasas`; 
 
 // 📌 Consultar tasa del día
 export const obtenerTasaHoy = async () => {

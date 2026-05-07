@@ -686,12 +686,7 @@ const Ventas = () => {
                 />
               </div>
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100px"
-                }}
-              >
+                style={{display: "flex", flexDirection: "column", width: "100px" }}>
                 <label>N° Factura</label>
                 <input
                   type="text"
