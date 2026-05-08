@@ -462,8 +462,9 @@ const Ventas = () => {
     return;
   }
   // ⭐ Obtener número actual SIN incrementarlo
-  const numero = await obtenerFacturaNro(); 
-  setNumeroFactura(numero);
+  const fact = await obtenerFacturaNro(); 
+  const factSiguiente = numero + 1;
+  setNumeroFactura(factSiguiente);
   // ⭐ Validar pago existente
   const pago = await buscarPagoPorFactura(numero);
   const vuelto = await buscarVueltoPorFactura(numero);
