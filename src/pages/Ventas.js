@@ -23,16 +23,7 @@ const Ventas = () => {
 
   // FACTURA
   const [numeroFactura, setNumeroFactura] = useState(0);
-  const [hora, setHora] = useState("");
-    const hoyLocal = new Date();
-    const hoyUTC = new Date(Date.UTC(
-      hoyLocal.getFullYear(),
-      hoyLocal.getMonth(),
-      hoyLocal.getDate(),
-      0, 0, 0
-      ));
-    const [fecha, setFecha] = useState(hoyUTC.toISOString().slice(0, 10));
-
+  const [hora, setHora] = useState("");    
   const [fechaString, setFechaString] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
   const [mostrarModalCliente, setMostrarModalCliente] = useState(false);
@@ -124,7 +115,7 @@ const Ventas = () => {
     0, 0, 0
     ));
   const hoy = hoyUTC.toISOString().slice(0, 10); // "YYYY-MM-DD"
-
+  const [fecha, setFecha] = useState(hoyUTC.toISOString().slice(0, 10));
 
   // -----------------------------
   // VALIDAR TASAS DEL DÍA
