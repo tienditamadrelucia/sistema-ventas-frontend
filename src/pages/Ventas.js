@@ -463,11 +463,11 @@ const Ventas = () => {
   }
   // ⭐ Obtener número actual SIN incrementarlo
   const fact = await obtenerFacturaNro(); 
-  const factSiguiente = numero + 1;
+  const factSiguiente = fact + 1;
   setNumeroFactura(factSiguiente);
   // ⭐ Validar pago existente
-  const pago = await buscarPagoPorFactura(numero);
-  const vuelto = await buscarVueltoPorFactura(numero);
+  const pago = await buscarPagoPorFactura(factSiguiente);
+  const vuelto = await buscarVueltoPorFactura(factSiguiente);
   if (!pago.ok) {
     alert("Error al buscar pagos.");
     return;
