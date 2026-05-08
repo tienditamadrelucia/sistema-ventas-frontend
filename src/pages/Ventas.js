@@ -108,7 +108,15 @@ const Ventas = () => {
 
   const API = `${API_URL}/api`;
   const UsuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";
-  const hoy = toYMD(new Date());
+  const hoyLocal = new Date();
+  const hoyUTC = new Date(Date.UTC(
+    hoyLocal.getFullYear(),
+    hoyLocal.getMonth(),
+    hoyLocal.getDate(),
+    0, 0, 0
+    ));
+  const hoy = hoyUTC.toISOString().slice(0, 10); // "YYYY-MM-DD"
+
 
   // -----------------------------
   // VALIDAR TASAS DEL DÍA
@@ -116,7 +124,7 @@ const Ventas = () => {
   useEffect(() => {
     const validarTasasDeHoy = async () => {
       try {
-        const res = await axios.get(`${API}/tasas/hoy`);
+        const res = await axios.get(`${API}/tasas/por-fecha/${hoy}`);
         if (!res.data || !res.data.tasa) {
           alert("Debe registrar las tasas del día antes de entrar al módulo de Ventas.");
           navigate("/tasas");
@@ -144,7 +152,15 @@ const Ventas = () => {
     const cargarTasas = async () => {
       if (!fecha) return;
       try {
-        const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fecha}`);
+        const fechaLocal = new Date(fecha);
+        const fechaUTC = new Date(Date.UTC(
+          fechaLocal.getFullYear(),
+          fechaLocal.getMonth(),
+          fechaLocal.getDate(),
+          0, 0, 0
+          ));
+        const fechaStr = fechaUTC.toISOString().slice(0, 10);
+        const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fechaStr}`);
         const { tasaD, tasaP, cajachicaD, cajachicaP } = res.data.tasa;
         setTasaDolar(tasaD);
         setTasaPeso(tasaP);
@@ -1484,7 +1500,12 @@ const Ventas = () => {
 
           {mostrarModalTasas && (
             <ModalTasas
-              fecha={String(fecha)}
+              fecha={new Date(Date.UTC(
+                new Date(fecha).getFullYear(),
+                new Date(fecha).getMonth(),
+                new Date(fecha).getDate(),
+                0, 0, 0
+                )).toISOString().slice(0, 10)}
               onCerrar={() => setMostrarModalTasas(false)}
               onGuardado={(tasaNueva) => {
                 const {
