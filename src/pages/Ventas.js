@@ -24,7 +24,15 @@ const Ventas = () => {
   // FACTURA
   const [numeroFactura, setNumeroFactura] = useState(0);
   const [hora, setHora] = useState("");
-  const [fecha, setFecha] = useState(toYMD(new Date()));
+    const hoyLocal = new Date();
+    const hoyUTC = new Date(Date.UTC(
+      hoyLocal.getFullYear(),
+      hoyLocal.getMonth(),
+      hoyLocal.getDate(),
+      0, 0, 0
+      ));
+    const [fecha, setFecha] = useState(hoyUTC.toISOString().slice(0, 10));
+
   const [fechaString, setFechaString] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
   const [mostrarModalCliente, setMostrarModalCliente] = useState(false);
@@ -457,41 +465,38 @@ const Ventas = () => {
   // PAGOS
   // -----------------------------
   const pagoContado = async () => {
-    if (listaFactura.length === 0) {
-      alert("Aún no hay productos ingresados");
-      return;
-    }
+  if (listaFactura.length === 0) {
+    alert("Aún no hay productos ingresados");
+    return;
+  }
+  // ⭐ Obtener número actual SIN incrementarlo
+  const numero = await obtenerFacturaNro(); 
+  setNumeroFactura(numero);
+  // ⭐ Validar pago existente
+  const pago = await buscarPagoPorFactura(numero);
+  const vuelto = await buscarVueltoPorFactura(numero);
+  if (!pago.ok) {
+    alert("Error al buscar pagos.");
+    return;
+  }
+  if (pago.pago) {
+    const confirmar = window.confirm(
+      "Ya existe un pago registrado para esta factura.\n¿Desea modificarlo?"
+    );
+    if (!confirmar) return;
+    setPagoExistente(pago.pago);
+  } else {
+    setPagoExistente(null);
+  }
+  if (vuelto.ok && vuelto.vuelto) {
+    setVueltoExistente(vuelto.vuelto);
+  } else {
+    setVueltoExistente(null);
+  }
+  setModoCredito(false);
+  setMostrarPago(true);
+};
 
-    const numero = await obtenerFacturaNro();
-    setNumeroFactura(numero);
-
-    const pago = await buscarPagoPorFactura(numero);
-    const vuelto = await buscarVueltoPorFactura(numero);
-
-    if (!pago.ok) {
-      alert("Error al buscar pagos.");
-      return;
-    }
-
-    if (pago.pago) {
-      const confirmar = window.confirm(
-        "Ya existe un pago registrado para esta factura.\n¿Desea modificarlo?"
-      );
-      if (!confirmar) return;
-      setPagoExistente(pago.pago);
-    } else {
-      setPagoExistente(null);
-    }
-
-    if (vuelto.ok && vuelto.vuelto) {
-      setVueltoExistente(vuelto.vuelto);
-    } else {
-      setVueltoExistente(null);
-    }
-
-    setModoCredito(false);
-    setMostrarPago(true);
-  };
 
   const pagoCredito = async () => {
     if (listaFactura.length === 0) {
@@ -1449,6 +1454,7 @@ const Ventas = () => {
             <Pago
               modoCredito={modoCredito}
               fecha={fecha}
+              facturaNumero={numeroFactura}
               totalDolar={totalDolar}
               totalPeso={totalPeso}
               totalBs={totalBs}
