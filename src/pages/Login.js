@@ -41,7 +41,15 @@ function Login() {
   localStorage.setItem("usuarioNombre", encontrado.usuario.usuario);
   localStorage.setItem("rolUsuario", encontrado.usuario.rol);
   // 🔹 Verificar si existen tasas de hoy
-  const res = await fetch(`${API_URL}/api/tasas/hoy`);
+  // Normalizar fecha local a UTC 00:00:00
+  const hoy = new Date();
+  const fechaUTC = new Date(Date.UTC(
+    hoy.getFullYear(),
+    hoy.getMonth(),
+    hoy.getDate(),
+    0, 0, 0
+    ));
+  const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fechaUTC.toISOString().slice(0,10)}`);
   const data = await res.json();
   if (!data.tasa) {
     alert("⚠️ No hay tasas registradas para hoy. Por favor regístrelas antes de continuar.");
