@@ -7,17 +7,16 @@ export default function PorStock() {
   const [stockRealLista, setStockRealLista] = useState([]);
   const [filtroStockReal, setFiltroStockReal] = useState("");
 
-  // -----------------------------
-  // CARGAR PRODUCTOS
-  // -----------------------------
-  const cargarProductos = async () => {
-    console.log("➡️ Cargando productos...");
-console.log("API:", `${API_URL}/api/productos`);
+  const [categorias, setCategorias] = useState([]);
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
 
+  // ---------------------------------------------------
+  // CARGAR PRODUCTOS
+  // ---------------------------------------------------
+  const cargarProductos = async () => {
     try {
       const res = await fetch(`${API_URL}/api/productos`);
       const data = await res.json();
-console.log("Productos recibidos:", data);
 
       setProductos(data);
       cargarStockReal(data); // ⭐ cargar stock real
@@ -26,13 +25,25 @@ console.log("Productos recibidos:", data);
     }
   };
 
-  // -----------------------------
-  // CARGAR STOCK REAL POR PRODUCTO
-  // -----------------------------
-  const cargarStockReal = async (lista) => {
-    console.log("➡️ Cargando stock real...");
-console.log("Lista base:", lista);
+  // ---------------------------------------------------
+  // CARGAR CATEGORÍAS
+  // ---------------------------------------------------
+  const cargarCategorias = async () => {
+    try {
+      const res = await fetch(`${API_URL}/api/categorias`);
+      const data = await res.json();
 
+      // Puede venir como {categorias: [...] } o como [...]
+      setCategorias(data.categorias || data);
+    } catch (error) {
+      console.error("Error cargando categorías:", error);
+    }
+  };
+
+  // ---------------------------------------------------
+  // CARGAR STOCK REAL POR PRODUCTO
+  // ---------------------------------------------------
+  const cargarStockReal = async (lista) => {
     const resultado = [];
 
     for (const p of lista) {
@@ -42,13 +53,12 @@ console.log("Lista base:", lista);
 
         resultado.push({
           ...p,
-          stockReal: data.ok ? data.stockReal : p.stock
+          stockReal: data.ok ? data.stockReal : p.stock,
         });
-
       } catch (error) {
         resultado.push({
           ...p,
-          stockReal: p.stock
+          stockReal: p.stock,
         });
       }
     }
@@ -58,22 +68,50 @@ console.log("Lista base:", lista);
 
   useEffect(() => {
     cargarProductos();
+    cargarCategorias();
   }, []);
 
-  // -----------------------------
-  // FILTRO POR STOCK REAL
-  // -----------------------------
-  const productosFiltrados = filtroStockReal
-    ? stockRealLista.filter(
-        (p) => Number(p.stockReal) === Number(filtroStockReal)
-      )
-    : stockRealLista;
+  // ---------------------------------------------------
+  // FILTROS: CATEGORÍA + STOCK REAL
+  // ---------------------------------------------------
+  let productosFiltrados = stockRealLista;
+
+  // ⭐ Filtrar por categoría
+  if (categoriaSeleccionada) {
+    productosFiltrados = productosFiltrados.filter(
+      (p) => p.categoria === categoriaSeleccionada
+    );
+  }
+
+  // ⭐ Filtrar por stock real
+  if (filtroStockReal) {
+    productosFiltrados = productosFiltrados.filter(
+      (p) => Number(p.stockReal) === Number(filtroStockReal)
+    );
+  }
 
   return (
     <div style={{ padding: "20px" }}>
       <h2 style={{ textAlign: "center" }}>Reporte por Stock Real</h2>
 
-      {/* FILTRO */}
+      {/* SELECT DE CATEGORÍAS */}
+      <div style={{ textAlign: "center", marginBottom: "15px" }}>
+        <label>Categoría: </label>
+        <select
+          value={categoriaSeleccionada}
+          onChange={(e) => setCategoriaSeleccionada(e.target.value)}
+          style={{ padding: "5px", marginLeft: "10px" }}
+        >
+          <option value="">Todas</option>
+          {categorias.map((c) => (
+            <option key={c._id} value={c.codigo}>
+              {c.descripcion}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* FILTRO POR STOCK REAL */}
       <div style={{ textAlign: "center", marginBottom: "15px" }}>
         <label>Filtrar por Stock Real: </label>
         <input
