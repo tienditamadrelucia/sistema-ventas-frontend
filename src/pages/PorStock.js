@@ -9,22 +9,7 @@ export default function PorStock() {
 
   const [categorias, setCategorias] = useState([]);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
-
-  // ---------------------------------------------------
-  // CARGAR PRODUCTOS
-  // ---------------------------------------------------
-  const cargarProductos = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/productos`);
-      const data = await res.json();
-
-      setProductos(data);
-      cargarStockReal(data); // ⭐ cargar stock real
-    } catch (error) {
-      console.error("Error cargando productos:", error);
-    }
-  };
-
+  
   // ---------------------------------------------------
   // CARGAR CATEGORÍAS
   // ---------------------------------------------------
@@ -37,6 +22,23 @@ export default function PorStock() {
       setCategorias(data.categorias || data);
     } catch (error) {
       console.error("Error cargando categorías:", error);
+    }
+  };
+
+  // ---------------------------------------------------
+  // CARGAR PRODUCTOS
+  // ---------------------------------------------------
+  const cargarProductos = async () => {
+    console.log("➡️ Llamando a:", `${API_URL}/api/productos`);
+
+    try {
+      const res = await fetch(`${API_URL}/api/productos`);
+      const data = await res.json();
+
+      setProductos(data);
+      cargarStockReal(data); // ⭐ cargar stock real
+    } catch (error) {
+      console.error("Error cargando productos:", error);
     }
   };
 
