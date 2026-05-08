@@ -11,9 +11,13 @@ export default function PorStock() {
   // CARGAR PRODUCTOS
   // -----------------------------
   const cargarProductos = async () => {
+    console.log("➡️ Cargando productos...");
+console.log("API:", `${API_URL}/api/productos`);
+
     try {
       const res = await fetch(`${API_URL}/api/productos`);
       const data = await res.json();
+console.log("Productos recibidos:", data);
 
       setProductos(data);
       cargarStockReal(data); // ⭐ cargar stock real
@@ -26,6 +30,9 @@ export default function PorStock() {
   // CARGAR STOCK REAL POR PRODUCTO
   // -----------------------------
   const cargarStockReal = async (lista) => {
+    console.log("➡️ Cargando stock real...");
+console.log("Lista base:", lista);
+
     const resultado = [];
 
     for (const p of lista) {
