@@ -447,7 +447,7 @@ const Ventas = () => {
   // OBTENER NÚMERO DE FACTURA (SOLO LECTURA)
   // -----------------------------
   const obtenerFacturaNro = async () => {
-    const res = await fetch(`${API_URL}/api/facturas/factura-actual`);
+    const res = await fetch(`${API_URL}/api/ventas/factura-actual`);
     const data = await res.json();
     return data.numero; // número actual del contador, SIN incrementar
   };
