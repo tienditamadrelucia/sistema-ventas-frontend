@@ -215,6 +215,14 @@ function Menu() {
           >
             Categorias
           </button>
+          <button 
+            style={botonSubmenu}
+            onClick={async()=> {
+            await registrarAccion("Ingresó al módulo Stock");
+            navigate("/PorStock");}}
+          >
+            Productos por Stock
+          </button>
 
             </>
           )}                
