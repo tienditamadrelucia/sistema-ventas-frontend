@@ -13,6 +13,7 @@ import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config";
 import ModalTasas from "../components/Tasas/ModalTasas";
 import { cargarTasasPorFecha } from "../services/ser_tasas";
+import { guardarVenta, guardarVendidos} from "../services/ser_ventas";
 
 const Ventas = () => {
   const navigate = useNavigate();
@@ -239,7 +240,7 @@ const Ventas = () => {
   const generarHora = () => {
     const ahora = new Date();
     const h = ahora.toLocaleTimeString("es-VE", { hour12: false });
-    setHoraActual(h);
+    setHora(h);
   };
 
   // -----------------------------
@@ -717,7 +718,7 @@ const Ventas = () => {
     // ============================
     // GUARDAR VENTA
     // ============================
-    const respVenta = await crearVenta(ventaData);
+    const respVenta = await guardarVenta(ventaData);
     if (!respVenta.ok) {
       alert("Error guardando la venta");
       return;
@@ -734,7 +735,7 @@ const Ventas = () => {
         dscto: item.dscto || 0,
         total: item.total
       };
-      await crearVendido(vendidoData);
+      await guardarVendido(vendidoData);
     }
     // ============================
     // ALERTAR AL USUARIO
