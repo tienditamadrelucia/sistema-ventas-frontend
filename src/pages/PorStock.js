@@ -166,10 +166,10 @@ export default function PorStock() {
             >
             <thead>
               <tr style={{ background: "#D98897" }}>
-              <th style={{ border: "1px solid #D98897", padding: "8px" }}>Código</th>
-              <th style={{ border: "1px solid #D98897", padding: "8px" }}>Descripción</th>
-              <th style={{ border: "1px solid #D98897", padding: "8px" }}>Categoría</th>
-              <th style={{ border: "1px solid #D98897", padding: "8px" }}>Stock Real</th>
+              <th style={{ border: "1px solid #D98897", padding: "8px", color: "white" }}>Código</th>
+              <th style={{ border: "1px solid #D98897", padding: "8px", color: "white" }}>Descripción</th>
+              <th style={{ border: "1px solid #D98897", padding: "8px", color: "white" }}>Categoría</th>
+              <th style={{ border: "1px solid #D98897", padding: "8px", color: "white" }}>Stock Real</th>
               </tr>
             </thead>
 
