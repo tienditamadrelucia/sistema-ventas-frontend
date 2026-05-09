@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Encabezado from "../components/Encabezado";
 import carritoImg from "../assets/carrito.png";
 import { useNavigate } from "react-router-dom";
@@ -239,23 +239,12 @@ const Ventas = () => {
   const generarHora = () => {
     const ahora = new Date();
     const h = ahora.toLocaleTimeString("es-VE", { hour12: false });
-    setHora(h);
+    setHoraActual(h);
   };
 
   // -----------------------------
   // UTILIDADES
-  // -----------------------------
-  function toYMD(date) {
-    if (typeof date === "string") return date;
-    const y = date.getFullYear();
-    const m = String(date.getMonth() + 1).padStart(2, "0");
-    const d = String(date.getDate()).padStart(2, "0");
-    return `${y}-${m}-${d}`;
-  }
-
-  // -----------------------------
-  // CLIENTE
-  // -----------------------------
+  // -----------------------------  
   const buscarClientePorIdentificacion = async (cedula) => {
     cedula = cedula.trim().toUpperCase();
     if (!cedula) return;
@@ -472,7 +461,6 @@ const Ventas = () => {
     alert("Aún no hay productos ingresados");
     return;
   }
-
   let facturaNumero = numeroFactura;
   // ⭐ 1) DETERMINAR NÚMERO DE FACTURA
   if (!facturaNumero || facturaNumero === "") {
@@ -716,14 +704,14 @@ const Ventas = () => {
     // ============================
     setProcesando(true);
     const ventaData = {
-      fecha: new Date(),
-      hora: horaActual,       // ya lo tienes en tu módulo
+      fecha: fecha,
+      hora: hora,       // ya lo tienes en tu módulo
       factura: facturaNumero,
-      cliente: cliente,       // NO se puede cambiar luego
-      subtotal: subtotal,
+      cliente: clienteSeleccionado,       // NO se puede cambiar luego
+      subtotal: subtotalDolar,
       IVA: IVA,
       total: totalDolar,
-      usuario: usuarioActual, // ya lo tienes
+      usuario: UsuarioActual, // ya lo tienes
       estado: "CREDITO"       // ⭐ PENDIENTE DE PAGO
     };
     // ============================
@@ -756,7 +744,15 @@ const Ventas = () => {
     // ============================
     // LIMPIAR PANTALLA
     // ============================
-    limpiarFactura(); // ya lo tienes
+    limpiarCliente();
+    setPagoData(null);
+    setPagoRegistrado(false);
+    setIdPagoExistente(null);
+    setIdVueltoExistente(null);
+    setListaFactura([]);
+    setClienteSeleccionado("");
+    setModoCredito(false);
+    setNumeroFactura(0);
   } catch (error) {
     console.error("Error guardando sin pago:", error);
     alert("Error inesperado al guardar la factura sin pago");
@@ -906,18 +902,27 @@ const cargarFacturaParaPago = async (venta) => {
                   type="date"
                   value={fecha}
                   onChange={async (e) => {
-                    const nuevaFecha = e.target.value;
-                    setFecha(nuevaFecha);
-                    const tasa = await cargarTasasPorFecha(nuevaFecha);
-                    if (!tasa) {
-                      setMostrarModalTasas(true);
-                      return;
-                    }
-                    const { tasaD, tasaP, cajachicaD, cajachicaP } = tasa;
-                    setTasaDolar(tasaD);
-                    setTasaPeso(tasaP);
-                    setCajaDolar(cajachicaD);
-                    setCajaPeso(cajachicaP);
+                  const f = new Date(e.target.value); // fecha elegida por el usuario
+                  // ⭐ Normalizar a UTC 00:00:00
+                  const fUTC = new Date(Date.UTC(
+                  f.getFullYear(),
+                  f.getMonth(),
+                  f.getDate(),
+                  0, 0, 0
+                  ));
+                  const fechaNormalizada = fUTC.toISOString().slice(0, 10);
+                  setFecha(fechaNormalizada);
+                  // ⭐ Cargar tasas usando la fecha UTC
+                  const tasa = await cargarTasasPorFecha(fechaNormalizada);
+                  if (!tasa) {
+                    setMostrarModalTasas(true);
+                    return;
+                  }
+                  const { tasaD, tasaP, cajachicaD, cajachicaP } = tasa;
+                  setTasaDolar(tasaD);
+                  setTasaPeso(tasaP);
+                  setCajaDolar(cajachicaD);
+                  setCajaPeso(cajachicaP);
                   }}
                 />
               </div>
