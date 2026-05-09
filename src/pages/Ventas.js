@@ -874,7 +874,7 @@ const cargarFacturaParaPago = async (venta) => {
               border: "1px solid #ccc",
               padding: "1px",
               borderRadius: "8px",
-              width: "340px",
+              width: "440px",
               marginBottom: "1px"
             }}
           >
@@ -934,12 +934,7 @@ const cargarFacturaParaPago = async (venta) => {
                 />
               </div>
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100px"
-                }}
-              >
+                style={{display: "flex", flexDirection: "column", width: "100px"}}>
                 <label>Hora</label>
                 <input
                   type="text"
@@ -947,16 +942,12 @@ const cargarFacturaParaPago = async (venta) => {
                   readOnly
                   style={{ backgroundColor: "#EDC5CD" }}
                 />
-              </div>
+              </div>            
+              <button onClick={Buscar} style={estiloBoton}>
+                Pagar Factura
+              </button>            
             </div>
-            <button
-              onClick={pagarFactura}
-              style={estiloBoton}
-            >
-              Pagar Factura
-            </button>            
           </div>
-
           {/* B) DATOS DEL CLIENTE */}
           <div
             style={{
