@@ -455,8 +455,7 @@ const Ventas = () => {
   // -----------------------------
   // PAGOS
   // -----------------------------
-  const pagoContado = async () => {
-    alert("pago contado");
+  const pagoContado = async () => {    
   if (listaFactura.length === 0) {
     alert("Aún no hay productos ingresados");
     return;
