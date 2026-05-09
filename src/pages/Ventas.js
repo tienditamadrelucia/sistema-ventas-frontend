@@ -948,13 +948,13 @@ const cargarFacturaParaPago = async (venta) => {
                   style={{ backgroundColor: "#EDC5CD" }}
                 />
               </div>
-              <button
-                onClick={pagarFactura}
-                style={estiloBoton}
-              >
-                Pagar Factura
-              </button>
             </div>
+            <button
+              onClick={pagarFactura}
+              style={estiloBoton}
+            >
+              Pagar Factura
+            </button>            
           </div>
 
           {/* B) DATOS DEL CLIENTE */}
@@ -1676,8 +1676,7 @@ const cargarFacturaParaPago = async (venta) => {
           >
             Crédito
           </button>
-          
-          <div style={{width: "1115px", display: "flex", justifyContent: "flex-end", marginTop: "1px", gap: "5px"}}>       
+          <div></div>          
           <button
             onClick={() => {
               registrarAccion("Guardó factura sin pago");
@@ -1686,8 +1685,7 @@ const cargarFacturaParaPago = async (venta) => {
             style={estiloBoton}
           >
             GRABAR sin pago
-          </button>
-        </div>
+          </button>        
 
           {mostrarPago && (            
             <Pago            
