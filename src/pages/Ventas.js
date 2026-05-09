@@ -13,7 +13,7 @@ import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config";
 import ModalTasas from "../components/Tasas/ModalTasas";
 import { cargarTasasPorFecha } from "../services/ser_tasas";
-import { guardarVenta, guardarVendidos} from "../services/ser_ventas";
+import { guardarVenta, guardarVendido} from "../services/ser_ventas";
 
 const Ventas = () => {
   const navigate = useNavigate();
@@ -57,6 +57,7 @@ const Ventas = () => {
   const [listaFactura, setListaFactura] = useState([]);
   const [mostrarPago, setMostrarPago] = useState(false);
   const [categoriasDisponibles, setCategoriasDisponibles] = useState([]);
+  const [venta, setVenta] = useState(null);
 
   // TASAS
   const [mostrarModalTasas, setMostrarModalTasas] = useState(false);
