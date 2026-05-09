@@ -1653,7 +1653,7 @@ const cargarFacturaParaPago = async (venta) => {
             Crédito
           </button>
         </div>
-        <div style={{display: "flex", justifyContent:"center"}}>
+        <div style={{width: "1115", display: "flex", justifyContent:"flex-end"}}>
           <button
             onClick={() => {
               registrarAccion("Guardó factura sin pago");
