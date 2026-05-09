@@ -16,6 +16,8 @@ const Pago = ({
   onCerrar,
   onPagoCompletado
 }) => {
+  console.log("📥 <Pago /> recibió facturaNumero:", facturaNumero);
+
 
   const [total, setTotal] = useState(0);
 
@@ -842,6 +844,7 @@ const facturaCancelada = modoCredito
             if (idPagoExistente) {
               respuestaPago = await actualizarMoneda(idPagoExistente, dataMoneda);
             } else {
+              
               respuestaPago = await registrarMoneda(dataMoneda);
             }
             if (!respuestaPago.ok) {

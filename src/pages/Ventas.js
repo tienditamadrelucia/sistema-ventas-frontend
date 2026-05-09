@@ -1443,7 +1443,9 @@ const Ventas = () => {
           </button>
 
           {mostrarPago && (
+            
             <Pago
+            
               modoCredito={modoCredito}
               fecha={fecha}
               facturaNumero={numeroFactura}
@@ -1462,6 +1464,8 @@ const Ventas = () => {
                 setPagoRegistrado(true);
                 setIdPagoExistente(dataPago.idPago);
                 setIdVueltoExistente(dataPago.idVuelto);
+                console.log("➡️ Enviando facturaNumero a <Pago />:", numeroFactura);
+
               }}
             />
           )}
