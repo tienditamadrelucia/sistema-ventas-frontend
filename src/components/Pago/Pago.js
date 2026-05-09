@@ -526,8 +526,8 @@ const facturaCancelada = modoCredito
           ))}
         </datalist>
         <label>Recibo del Punto-------</label>                
-        <input type="number" step="1" value={pagoBsEfectivo}              
-          onChange={(e) => setPagoBsEfectivo(e.target.value)}
+        <input type="number" step="1" value={refPunto}              
+          onChange={(e) => setRefPunto(e.target.value)}
           style={{ width: "76px", padding: "8px", borderRadius: "6px", border: "1px solid #bbb" }}
         />
       </div>
@@ -561,8 +561,8 @@ const facturaCancelada = modoCredito
           ))}
         </datalist>
         <label>Lote del Punto No.-----</label>                
-        <input type="number" step="1" value={pagoBsEfectivo}              
-          onChange={(e) => setPagoBsEfectivo(e.target.value)}
+        <input type="number" step="1" value={lotePunto}              
+          onChange={(e) => setLotePunto(e.target.value)}
           style={{ width: "76px", padding: "8px", borderRadius: "6px", border: "1px solid #bbb" }}
         />
       </div>        
