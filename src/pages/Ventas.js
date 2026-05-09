@@ -888,12 +888,7 @@ const cargarFacturaParaPago = async (venta) => {
               }}
             >
               <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "210px"
-                }}
-              >
+                style={{display: "flex", flexDirection: "column", width: "210px"}}>
                 <label>Fecha</label>
                 <input
                   type="date"
@@ -943,8 +938,8 @@ const cargarFacturaParaPago = async (venta) => {
                   style={{ backgroundColor: "#EDC5CD" }}
                 />
               </div>            
-              <button onClick={Buscar} style={estiloBoton}>
-                Pagar Factura
+              <button onClick={pagarFactura} style={estiloBoton}>
+                Buscar
               </button>            
             </div>
           </div>
@@ -960,12 +955,7 @@ const cargarFacturaParaPago = async (venta) => {
           >
             <h3 style={{ marginTop: 0, marginLeft: "5px" }}>Datos del Cliente</h3>
             <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                marginBottom: "10px"
-              }}
-            >
+              style={{display: "flex", gap: "10px", marginBottom: "10px"}}>
               <div
                 style={{
                   display: "flex",
