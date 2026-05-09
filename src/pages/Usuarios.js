@@ -18,6 +18,7 @@ function Usuarios() {
   const [logs, setLogs] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [procesando, setProcesando] = useState(false);
 
   const [formData, setFormData] = useState({
     nombre: "",
@@ -77,11 +78,11 @@ function Usuarios() {
     inputNombreRef.current?.focus();
   }, [modo]);
 
-  useEffect(() => {
+  useEffect(() => {  
+    setProcesando(true);  
     async function cargar() {
       const data = await obtenerUsuarios();
       let lista = [];
-
       if (Array.isArray(data)) lista = data;
       else if (Array.isArray(data.usuarios)) lista = data.usuarios;
       else if (Array.isArray(data.data)) lista = data.data;
@@ -90,11 +91,10 @@ function Usuarios() {
         const posibleArray = Object.values(data).find(v => Array.isArray(v));
         if (Array.isArray(posibleArray)) lista = posibleArray;
       }
-
       setUsuarios(lista);
     }
-
     cargar();
+    setProcesando(false);
   }, []);
 
   useEffect(() => {
@@ -106,19 +106,19 @@ function Usuarios() {
   }, []);
 
   async function recargarLogs(pagina = 1) {
+    setProcesando(true);
     const res = await fetch(`${API_URL}/api/logs?page=${pagina}&limit=20`);
     const data = await res.json();
-
     if (Array.isArray(data)) {
       setLogs(data);
       setPage(1);
       setTotalPages(1);
       return;
     }
-
     setLogs(Array.isArray(data.logs) ? data.logs : []);
     setPage(data.page || 1);
     setTotalPages(data.totalPages || 1);
+    setProcesando(false);
   }
 
   // -----------------------------
@@ -205,6 +205,22 @@ function Usuarios() {
   
   return (
     <div>
+      {procesando && (
+      <div style={{
+        background: "#6699FF",
+        color: "white",
+        padding: "8px",
+        textAlign: "center",
+        fontWeight: "bold",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 999999
+      }}>
+        Procesando, por favor espere...
+      </div>
+      )}
       <Encabezado />
 
     <div style={{ padding: "20px" }}>       
