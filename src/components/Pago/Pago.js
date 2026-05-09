@@ -5,6 +5,7 @@ import { registrarMoneda, buscarPagoPorFactura,
 const Pago = ({
   modoCredito,
   fecha,
+  facturaNumero,
   totalDolar,
   totalPeso,
   totalBs,
@@ -76,6 +77,7 @@ const formatoVE = new Intl.NumberFormat("es-VE", {
 
 const dataMoneda = {
   fecha,
+  factura: facturaNumero,
   operacion: modoCredito ? "ABONO DE CREDITO" : "VENTA",
   total: totalDolar,
   // ⭐ COP
