@@ -891,7 +891,7 @@ const cargarFacturaParaPago = async (venta) => {
                 style={{
                   display: "flex",
                   flexDirection: "column",
-                  width: "110px"
+                  width: "210px"
                 }}
               >
                 <label>Fecha</label>
