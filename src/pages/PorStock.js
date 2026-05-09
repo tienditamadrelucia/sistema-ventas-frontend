@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
-const API_URL = process.env.REACT_APP_API_URL;
+const API = `${API_URL}`;
 
 export default function PorStock() {
   const [productos, setProductos] = useState([]);
