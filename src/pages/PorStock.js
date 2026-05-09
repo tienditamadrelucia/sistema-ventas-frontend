@@ -20,7 +20,6 @@ export default function PorStock() {
     try {
       const res = await fetch(`${API_URL}/api/categorias`);
       const data = await res.json();
-
       // Puede venir como {categorias: [...] } o como [...]
       setCategorias(data.categorias || data);
     } catch (error) {
@@ -32,14 +31,12 @@ export default function PorStock() {
   // CARGAR PRODUCTOS
   // ---------------------------------------------------
   const cargarProductos = async () => {
-    setProcesando(true);
+    
     try {
       const res = await fetch(`${API_URL}/api/productos`);
       const data = await res.json();
-
       setProductos(data);
-      cargarStockReal(data); // ⭐ cargar stock real
-      setProcesando(false);
+      cargarStockReal(data); // ⭐ cargar stock real      
     } catch (error) {
       console.error("Error cargando productos:", error);
     }
@@ -51,14 +48,11 @@ export default function PorStock() {
   const cargarStockReal = async (lista) => {
     setProcesando(true);
     const resultado = [];
-
     for (const p of lista) {
       try {
         const res = await fetch(`${API_URL}/api/inventario/stock-real/${p.codigo}`);
         const data = await res.json();
-
-        resultado.push({
-          ...p,
+        resultado.push({          ...p,
           stockReal: data.ok ? data.stockReal : p.stock,
         });
       } catch (error) {
@@ -68,12 +62,12 @@ export default function PorStock() {
         });
       }
     }
-
     setStockRealLista(resultado);
     setProcesando(false);
   };
 
   useEffect(() => {
+    setProcesando(true);
     cargarProductos();
     cargarCategorias();
   }, []);
