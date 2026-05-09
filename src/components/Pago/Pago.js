@@ -813,7 +813,7 @@ const facturaCancelada = modoCredito
               const fechaDate = new Date(y, m - 1, d);
               const dataMoneda = {
               fecha: fechaDate,
-              factura: facturaNumero
+              factura: facturaNumero,
               operacion: modoCredito ? "ABONO DE CREDITO" : "VENTA",              
               total: modoCredito ? totalAbonado : totalDolar,
               // COP
