@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Encabezado from "../components/Encabezado";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const API = `${API_URL}`;
@@ -31,14 +32,14 @@ export default function PorStock() {
   // CARGAR PRODUCTOS
   // ---------------------------------------------------
   const cargarProductos = async () => {
-    console.log("➡️ Llamando a:", `${API_URL}/api/productos`);
-
+    setProcesando(true);
     try {
       const res = await fetch(`${API_URL}/api/productos`);
       const data = await res.json();
 
       setProductos(data);
       cargarStockReal(data); // ⭐ cargar stock real
+      setProcesando(false);
     } catch (error) {
       console.error("Error cargando productos:", error);
     }
@@ -48,6 +49,7 @@ export default function PorStock() {
   // CARGAR STOCK REAL POR PRODUCTO
   // ---------------------------------------------------
   const cargarStockReal = async (lista) => {
+    setProcesando(true);
     const resultado = [];
 
     for (const p of lista) {
@@ -68,6 +70,7 @@ export default function PorStock() {
     }
 
     setStockRealLista(resultado);
+    setProcesando(false);
   };
 
   useEffect(() => {
