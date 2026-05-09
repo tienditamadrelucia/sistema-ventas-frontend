@@ -709,7 +709,7 @@ const Ventas = () => {
       factura: facturaNumero,
       cliente: clienteSeleccionado,       // NO se puede cambiar luego
       subtotal: subtotalDolar,
-      IVA: IVA,
+      IVA: iva,
       total: totalDolar,
       usuario: UsuarioActual, // ya lo tienes
       estado: "CREDITO"       // ⭐ PENDIENTE DE PAGO
@@ -717,7 +717,7 @@ const Ventas = () => {
     // ============================
     // GUARDAR VENTA
     // ============================
-    const respVenta = await registrarVenta(ventaData);
+    const respVenta = await crearVenta(ventaData);
     if (!respVenta.ok) {
       alert("Error guardando la venta");
       return;
@@ -734,7 +734,7 @@ const Ventas = () => {
         dscto: item.dscto || 0,
         total: item.total
       };
-      await registrarVendido(vendidoData);
+      await crearVendido(vendidoData);
     }
     // ============================
     // ALERTAR AL USUARIO
@@ -798,14 +798,10 @@ const pagarFactura = async () => {
 
 const cargarFacturaParaPago = async (venta) => {
   try {
-    // Cargar datos principales
-    setNumeroFactura(venta.factura);
-    setCliente(venta.cliente);
-    setClienteBloqueado(true); // ⭐ NO editable
-    setSubtotal(venta.subtotal);
-    setIVA(venta.IVA);
-    setTotalDolar(venta.total);
-    setHoraActual(venta.hora);
+    setVenta(data.venta);
+    setCliente(datosCliente);
+    setListaFactura(detalle);
+
     // ============================
     // CARGAR PRODUCTOS VENDIDOS
     // ============================
