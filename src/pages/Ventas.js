@@ -799,10 +799,9 @@ const pagarFactura = async () => {
 
 const cargarFacturaParaPago = async (venta) => {
   try {
-    setVenta(data.venta);
-    setCliente(datosCliente);
-    setListaFactura(detalle);
-
+    setVenta(venta);
+    setClienteSeleccionado(venta.cliente || "");
+    
     // ============================
     // CARGAR PRODUCTOS VENDIDOS
     // ============================
