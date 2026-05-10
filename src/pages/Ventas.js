@@ -1614,7 +1614,7 @@ const cargarFacturaParaPago = async (venta) => {
         </div>
 
         {/* BOTONES DE PAGO Y MODALES */}
-        <div style={{marginLeft: "815px", padding: "10px", gap: "5px"}}>
+        <div style={{marginLeft: "815px", padding: "15px", gap: "5px"}}>
           <button
             onClick={() => {
               registrarAccion("Abrió modal de pago");
@@ -1636,7 +1636,7 @@ const cargarFacturaParaPago = async (venta) => {
           >
             Crédito
           </button>
-          <div style={{marginLeft: "10cm"}}>
+          <div style={{marginRight: "10cm", padding: "15px"}}>
             <button
               onClick={() => {
                 registrarAccion("Guardó factura sin pago");
