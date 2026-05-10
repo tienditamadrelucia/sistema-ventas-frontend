@@ -84,7 +84,7 @@ const Ventas = () => {
   const [procesando, setProcesando] = useState(false);
 
   const estiloBoton = {
-    width: "15%",
+    width: "20%",
     padding: "5px",
     backgroundColor: "#D98897",
     color: "white",
@@ -1609,7 +1609,7 @@ const cargarFacturaParaPago = async (venta) => {
         </div>
 
         {/* BOTONES DE PAGO Y MODALES */}
-        <div style={{marginLeft: "815px", padding: "1px", gap: "15px"}}>
+        <div style={{marginLeft: "800px", padding: "1px", gap: "15px"}}>
           <button
             onClick={() => {
               registrarAccion("Abrió modal de pago");
