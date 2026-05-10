@@ -732,10 +732,10 @@ const Ventas = () => {
     for (const item of listaFactura) {
       const vendidoData = {
         factura: facturaNumero,
-        productoId: item._id,
+        productoId: item.idProducto,
         cantidad: item.cantidad,
         precio: item.precioVenta,
-        dscto: item.dscto || 0,
+        dscto: item.descuento || 0,
         total: item.total
       };
       console.log("VENDIDO QUE SE ENVÍA:", vendidoData);
