@@ -711,10 +711,13 @@ const Ventas = () => {
       usuario: UsuarioActual, // ya lo tienes
       estado: "CREDITO"       // ⭐ PENDIENTE DE PAGO
     };
+    console.log("VENTA QUE SE ENVÍA:", ventaData);
     // ============================
     // GUARDAR VENTA
     // ============================
     const respVenta = await guardarVta(ventaData);
+    console.log("RESPUESTA DEL BACKEND:", respVenta.data);
+    console.log("RESPUESTA AXIOS COMPLETA:", respVenta);
     console.log("RESPUESTA DEL BACKEND:", respVenta.data);
     if (!respVenta.data || respVenta.data.ok !== true) {
       alert("Error guardando la venta");
