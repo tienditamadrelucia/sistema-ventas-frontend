@@ -508,10 +508,8 @@ const Ventas = () => {
       alert("Debe seleccionar un cliente para crédito");
       return;
     }
-
     const numero = await obtenerFacturaNro();
     setNumeroFactura(numero);
-
     setModoCredito(true);
     setPagoExistente(null);
     setVueltoExistente(null);
@@ -519,14 +517,14 @@ const Ventas = () => {
     console.log("Procesando venta a CRÉDITO...");
   };
 
-  const validarPagoAntes = () => {
-    if (!validarCliente()) return;
-    if (!pagoRegistrado) {
-      alert("Debe registrar el pago antes de guardar la venta.");
-      return;
-    }
-    guardarVenta();
-  };
+  //const validarPagoAntes = () => {
+  //  if (!validarCliente()) return;
+  //  if (!pagoRegistrado) {
+  //    alert("Debe registrar el pago antes de guardar la venta.");
+  //    return;
+  //  }
+  //  guardarVenta();
+  //};
 
   // -----------------------------
   // GUARDAR VENTA
@@ -1614,7 +1612,7 @@ const cargarFacturaParaPago = async (venta) => {
         </div>
 
         {/* BOTONES DE PAGO Y MODALES */}
-        <div style={{marginLeft: "815px", padding: "20px", gap: "15px"}}>
+        <div style={{marginLeft: "815px", padding: "10px", gap: "15px"}}>
           <button
             onClick={() => {
               registrarAccion("Abrió modal de pago");
@@ -1636,7 +1634,7 @@ const cargarFacturaParaPago = async (venta) => {
           >
             Crédito
           </button>
-          <div style={{marginRight: "10cm", padding: "35px"}}>
+          <div style={{marginRight: "10cm", padding: "5px", width:"50px"}}>
             <button
               onClick={() => {
                 registrarAccion("Guardó factura sin pago");
