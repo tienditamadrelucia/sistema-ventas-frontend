@@ -719,6 +719,7 @@ const Ventas = () => {
     console.log("RESPUESTA DEL BACKEND:", respVenta.data);
     console.log("RESPUESTA AXIOS COMPLETA:", respVenta);
     console.log("RESPUESTA DEL BACKEND:", respVenta.data);
+    console.log("LISTA FACTURA COMPLETA:", listaFactura);
     if (!respVenta.data || respVenta.data.ok !== true) {
       alert("Error guardando la venta");
       return;
