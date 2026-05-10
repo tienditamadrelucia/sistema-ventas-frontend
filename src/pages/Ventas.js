@@ -704,7 +704,7 @@ const Ventas = () => {
       fecha: fecha,
       hora: hora,       // ya lo tienes en tu módulo
       factura: facturaNumero,
-      cliente: clienteSeleccionado,       // NO se puede cambiar luego
+      cliente: identificacion,       // NO se puede cambiar luego
       subtotal: subtotalDolar,
       IVA: iva,
       total: totalDolar,
@@ -737,6 +737,7 @@ const Ventas = () => {
         total: item.total
       };
       await guardarVendido(vendidoData);
+      
     }
     // ============================
     // ALERTAR AL USUARIO
