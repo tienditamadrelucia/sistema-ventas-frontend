@@ -1630,39 +1630,38 @@ const cargarFacturaParaPago = async (venta) => {
             gap: "5px"
           }}
         >
-          <button
-            onClick={() => {
-              registrarAccion("Abrió modal de pago");
-              pagoContado();
-            }}
-            style={estiloBoton}
-          >
-            Contado
-          </button>
-
-          <button
-            onClick={() => {
-              registrarAccion("Abrió modal de pago a Crédito");
-              pagoCredito();
-            }}
-            style={{
-              ...estiloBoton,
-              backgroundColor: "#6699FF"
-            }}
-          >
-            Crédito
-          </button>
-        </div>
-        <div style={{marginLeft: "515", display: "flex" }}>
-          <button
-            onClick={() => {
-              registrarAccion("Guardó factura sin pago");
-              guardarSinPago();
-            }}
-            style={estiloBoton}
-          >
-            Grabar sin pago
-          </button>        
+          {/* Fila 1: Contado + Crédito */}
+          <div style={{display: "flex", justifyContent: "flex-end", gap: "5px"}}>
+            <button
+              onClick={() => {
+                registrarAccion("Abrió modal de pago");
+                pagoContado();
+                }}
+              style={estiloBoton}
+            >
+              Contado
+            </button>
+            <button
+              onClick={() => {
+                registrarAccion("Abrió modal de pago a Crédito");
+                pagoCredito();
+                }}
+              style={{...estiloBoton, backgroundColor: "#6699FF"}}
+            >
+              Crédito
+            </button>
+          </div>
+          <div style={{marginLeft: "515px", display: "flex" }}>
+            <button
+              onClick={() => {
+                registrarAccion("Guardó factura sin pago");
+                guardarSinPago();
+                }}
+              style={estiloBoton}
+            >
+              Grabar sin pago
+            </button>        
+          </div>
         </div>
           {mostrarPago && (            
             <Pago            
