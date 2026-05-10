@@ -736,6 +736,7 @@ const Ventas = () => {
         dscto: item.dscto || 0,
         total: item.total
       };
+      console.log("VENDIDO QUE SE ENVÍA:", vendidoData);
       await guardarVendido(vendidoData);
       
     }
