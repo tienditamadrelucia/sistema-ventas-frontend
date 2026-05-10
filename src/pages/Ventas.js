@@ -753,9 +753,11 @@ const Ventas = () => {
     setModoCredito(false);
     setNumeroFactura(0);
   } catch (error) {
-    console.error("Error guardando sin pago:", error);
-    alert("Error inesperado al guardar la factura sin pago");
-  }
+  console.error("ERROR COMPLETO:", error);
+  console.error("RESPUESTA DEL SERVIDOR:", error.response?.data);
+  alert("Error inesperado al guardar la factura sin pago");
+}
+
 };
 
 const pagarFactura = async () => {
