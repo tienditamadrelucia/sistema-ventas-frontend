@@ -13,7 +13,7 @@ import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config";
 import ModalTasas from "../components/Tasas/ModalTasas";
 import { cargarTasasPorFecha } from "../services/ser_tasas";
-import { guardarVenta, guardarVendido} from "../services/ser_ventas";
+import { guardarVta, guardarVendido} from "../services/ser_ventas";
 
 const Ventas = () => {
   const navigate = useNavigate();
@@ -714,7 +714,7 @@ const Ventas = () => {
     // ============================
     // GUARDAR VENTA
     // ============================
-    const respVenta = await guardarVenta(ventaData);
+    const respVenta = await guardarVta(ventaData);
     if (!respVenta.data || respVenta.data.ok !== true) {
       alert("Error guardando la venta");
       return;
