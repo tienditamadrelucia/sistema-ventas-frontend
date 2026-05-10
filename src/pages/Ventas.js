@@ -600,7 +600,7 @@ const Ventas = () => {
           factura: facturaNumero,
           productoId: item._id,
           cantidad: item.cantidad,
-          precio: item.precio,
+          precio: item.precioVenta,
           dscto: item.dscto || 0,
           total: item.total
         })
@@ -727,12 +727,13 @@ const Ventas = () => {
     // ============================
     // GUARDAR PRODUCTOS VENDIDOS
     // ============================
+    console.log("LISTA FACTURA COMPLETA:", listaFactura);
     for (const item of listaFactura) {
       const vendidoData = {
         factura: facturaNumero,
-        productoId: item._id,
+        productoId: producto._id,
         cantidad: item.cantidad,
-        precio: item.precio,
+        precio: item.precioVenta,
         dscto: item.dscto || 0,
         total: item.total
       };
