@@ -1630,39 +1630,40 @@ const cargarFacturaParaPago = async (venta) => {
             gap: "5px"
           }}
         >
-          {/* Fila 1: Contado + Crédito */}
-          <div style={{display: "flex", justifyContent: "flex-end", gap: "5px"}}>
-            <button
-              onClick={() => {
-                registrarAccion("Abrió modal de pago");
-                pagoContado();
-                }}
-              style={estiloBoton}
-            >
-              Contado
-            </button>
-            <button
-              onClick={() => {
-                registrarAccion("Abrió modal de pago a Crédito");
-                pagoCredito();
-                }}
-              style={{...estiloBoton, backgroundColor: "#6699FF"}}
-            >
-              Crédito
-            </button>
-          </div>
-          {/* Fila 2: Grabar sin pago centrado ENTRE los de arriba */}          
+          <button
+            onClick={() => {
+              registrarAccion("Abrió modal de pago");
+              pagoContado();
+            }}
+            style={estiloBoton}
+          >
+            Contado
+          </button>
+
+          <button
+            onClick={() => {
+              registrarAccion("Abrió modal de pago a Crédito");
+              pagoCredito();
+            }}
+            style={{
+              ...estiloBoton,
+              backgroundColor: "#6699FF"
+            }}
+          >
+            Crédito
+          </button>        
+          <div style={{marginLeft:"10cm"}}>
             <button
               onClick={() => {
                 registrarAccion("Guardó factura sin pago");
                 guardarSinPago();
-                }}
-              style={{...estiloBoton, alignSelf: "center", marginTop:"5px"}}
+              }}
+              style={estiloBoton}
             >
               Grabar sin pago
-            </button>        
+            </button>
           </div>
-        
+        </div>
           {mostrarPago && (            
             <Pago            
               modoCredito={modoCredito}
