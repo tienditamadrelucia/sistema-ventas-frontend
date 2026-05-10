@@ -694,6 +694,7 @@ const Ventas = () => {
     // ASIGNAR NÚMERO DE FACTURA
     // ============================
     const numeroActual = await obtenerFacturaNro();
+    alert("factura "+numeroActual);
     const facturaNumero = numeroActual + 1;
     // ============================
     // ARMAR OBJETO DE VENTA
@@ -1630,8 +1631,7 @@ const cargarFacturaParaPago = async (venta) => {
           >
             Crédito
           </button>
-          <div style={{marginRight: "10cm", padding: "1px", width:"50px"}}>
-            <button
+          <button
               onClick={() => {
                 registrarAccion("Guardó factura sin pago");
                 guardarSinPago();
@@ -1639,8 +1639,7 @@ const cargarFacturaParaPago = async (venta) => {
               style={estiloBoton}
             >
               Grabar sin pago
-            </button>        
-          </div>
+            </button>                 
 
           {mostrarPago && (            
             <Pago            
