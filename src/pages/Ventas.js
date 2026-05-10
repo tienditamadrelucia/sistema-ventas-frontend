@@ -715,10 +715,11 @@ const Ventas = () => {
     // GUARDAR VENTA
     // ============================
     const respVenta = await guardarVenta(ventaData);
-    if (!respVenta.ok) {
+    if (!respVenta.data || respVenta.data.ok !== true) {
       alert("Error guardando la venta");
       return;
-    }
+      }
+
     // ============================
     // GUARDAR PRODUCTOS VENDIDOS
     // ============================
@@ -1609,7 +1610,7 @@ const cargarFacturaParaPago = async (venta) => {
         </div>
 
         {/* BOTONES DE PAGO Y MODALES */}
-        <div style={{marginLeft: "800px", padding: "1px", gap: "15px"}}>
+        <div style={{marginLeft: "700px", padding: "1px", gap: "15px"}}>
           <button
             onClick={() => {
               registrarAccion("Abrió modal de pago");
