@@ -1621,15 +1621,7 @@ const cargarFacturaParaPago = async (venta) => {
         </div>
 
         {/* BOTONES DE PAGO Y MODALES */}
-        <div
-          style={{
-            width: "1115px",
-            display: "flex",
-            justifyContent: "flex-end",
-            marginTop: "1px",
-            gap: "5px"
-          }}
-        >
+        <div style={{width: "1115px", display: "flex", justifyContent: "flex-end", marginTop: "1px", gap: "5px"}}>
           <button
             onClick={() => {
               registrarAccion("Abrió modal de pago");
@@ -1639,7 +1631,6 @@ const cargarFacturaParaPago = async (venta) => {
           >
             Contado
           </button>
-
           <button
             onClick={() => {
               registrarAccion("Abrió modal de pago a Crédito");
@@ -1651,19 +1642,19 @@ const cargarFacturaParaPago = async (venta) => {
             }}
           >
             Crédito
-          </button>        
-          <div style={{marginLeft:"10cm"}}>
+          </button>
+          <div style={{marginLeft: "10cm"}}>
             <button
               onClick={() => {
                 registrarAccion("Guardó factura sin pago");
                 guardarSinPago();
-              }}
+                }}
               style={estiloBoton}
             >
               Grabar sin pago
-            </button>
+            </button>        
           </div>
-        </div>
+
           {mostrarPago && (            
             <Pago            
               modoCredito={modoCredito}
@@ -1745,7 +1736,8 @@ const cargarFacturaParaPago = async (venta) => {
             />
           )}
         </div>
-      </div>    
+      </div>
+    </div>
   );
 };
 
