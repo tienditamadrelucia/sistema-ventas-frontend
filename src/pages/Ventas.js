@@ -598,7 +598,7 @@ const Ventas = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           factura: facturaNumero,
-          productoId: item._id,
+          productoId:productoSeleccionado._id,
           cantidad: item.cantidad,
           precio: item.precioVenta,
           dscto: item.dscto || 0,
@@ -731,7 +731,7 @@ const Ventas = () => {
     for (const item of listaFactura) {
       const vendidoData = {
         factura: facturaNumero,
-        productoId: producto._id,
+        productoId: productoSeleccionado._id,
         cantidad: item.cantidad,
         precio: item.precioVenta,
         dscto: item.dscto || 0,
