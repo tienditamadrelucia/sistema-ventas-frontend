@@ -894,16 +894,9 @@ const cargarFacturaParaPago = async (venta) => {
                   type="date"
                   value={fecha}
                   onChange={async (e) => {
-                  const f = new Date(e.target.value); // fecha elegida por el usuario
-                  // ⭐ Normalizar a UTC 00:00:00
-                  const fUTC = new Date(Date.UTC(
-                  f.getFullYear(),
-                  f.getMonth(),
-                  f.getDate(),
-                  0, 0, 0
-                  ));
-                  const fechaNormalizada = fUTC.toISOString().slice(0, 10);
+                  const fechaNormalizada = e.target.value; // fecha elegida por el usuario
                   setFecha(fechaNormalizada);
+                  
                   // ⭐ Cargar tasas usando la fecha UTC
                   const tasa = await cargarTasasPorFecha(fechaNormalizada);
                   if (!tasa) {
@@ -1621,7 +1614,7 @@ const cargarFacturaParaPago = async (venta) => {
         </div>
 
         {/* BOTONES DE PAGO Y MODALES */}
-        <div style={{marginLeft: "1200px", padding: "1px", gap: "5px"}}>
+        <div style={{marginLeft: "1115px", padding: "10px", gap: "5px"}}>
           <button
             onClick={() => {
               registrarAccion("Abrió modal de pago");
