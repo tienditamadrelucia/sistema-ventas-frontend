@@ -695,7 +695,7 @@ const Ventas = () => {
     // ============================
     const numeroActual = await obtenerFacturaNro();
     alert("factura "+numeroActual);
-    const facturaNumero = numeroActual + 1;
+    const facturaNumero = Number(numeroActual) + 1;
     // ============================
     // ARMAR OBJETO DE VENTA
     // ============================
@@ -715,6 +715,7 @@ const Ventas = () => {
     // GUARDAR VENTA
     // ============================
     const respVenta = await guardarVta(ventaData);
+    console.log("RESPUESTA DEL BACKEND:", respVenta.data);
     if (!respVenta.data || respVenta.data.ok !== true) {
       alert("Error guardando la venta");
       return;
