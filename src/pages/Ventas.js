@@ -101,7 +101,18 @@ const Ventas = () => {
     cursor: "pointer",
     marginTop: "5px"
   };
-
+  const estiloBotonVerde = {
+    width: "20%",
+    padding: "5px",
+    backgroundColor: "#6699FF",
+    color: "white",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    fontWeight: "800",
+    fontFamily: "Arial Black",
+    cursor: "pointer",
+    marginTop: "5px"
+  };
   const botonGuardar = {
     width: "15%",
     padding: "6px",
@@ -1744,9 +1755,9 @@ const cargarFacturaParaPago = async (dataVenta) => {
                 registrarAccion("Guardó factura sin pago");
                 guardarSinPago();
                 }}
-              style={estiloBoton}
+              style={estiloBotonVerde}
             >
-              Grabar sin pago
+              Guardar sin pago
             </button>                 
 
           {mostrarPago && (            
