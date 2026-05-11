@@ -16,9 +16,6 @@ const Pago = ({
   onCerrar,
   onPagoCompletado
 }) => {
-  console.log("📥 <Pago /> recibió facturaNumero:", facturaNumero);
-
-
   const [total, setTotal] = useState(0);
 
   const [efectivoP, setEfectivoP] = useState(0);
@@ -173,6 +170,7 @@ const dataMoneda = {
     (Number(pagoUsdZelle || 0) *tasaD)+
     ((Number(pagoCopEfectivo || 0) / tasaP))*tasaD +
     ((Number(pagoCopTransferencia || 0) / tasaP))*tasaD;
+    alert("total pagado Bs. "+ totalPagadoBs);
 
   const totalPagadoCOP =
     Number(pagoCopEfectivo || 0) + Number(pagoCopTransferencia || 0)+
