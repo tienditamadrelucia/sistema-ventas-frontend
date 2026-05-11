@@ -470,6 +470,9 @@ const Ventas = () => {
     return;
   }
   let facturaNumero = numeroFactura;
+  console.log("numeroFactura:", numeroFactura);
+console.log("facturaNumero:", facturaNumero);
+
   // ⭐ 1) DETERMINAR NÚMERO DE FACTURA
   if (!facturaNumero || facturaNumero === "") {
     // Venta nueva → generar número
