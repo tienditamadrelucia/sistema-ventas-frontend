@@ -74,6 +74,10 @@ const Ventas = () => {
   const [idVueltoExistente, setIdVueltoExistente] = useState(null);
   const [modoCredito, setModoCredito] = useState(false);
   const [pagoData, setPagoData] = useState(null);
+  const [esCredito, setEsCredito] = useState(false);
+  const [abono, setAbono] = useState(0);
+  const [saldo, setSaldo] = useState(0);
+  const [cliente, setCliente] = useState({});
 
   // CLIENTE
   const [mostrarEditorCliente, setMostrarEditorCliente] = useState(false);
