@@ -102,7 +102,6 @@ const Consulta = () => {
       const fechaFactura = detalle.venta.fecha.substring(0, 10);
       const res = await fetch(`${API}/tasas/por-fecha/${fechaFactura}`);
       const data = await res.json();
-
       if (data.ok) {
         setTasaDolar(data.tasa.tasaDolar);
         setTasaPeso(data.tasa.tasaPeso);
@@ -113,12 +112,9 @@ const Consulta = () => {
       console.error("Error cargando tasa:", error);
     }
   };
-
   cargarTasaDeLaFactura();
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [detalle]);
-
 
     const formatoVE = (valor) => {
       if (!valor) return "0,00";

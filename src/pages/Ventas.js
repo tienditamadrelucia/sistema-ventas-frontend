@@ -773,8 +773,9 @@ const Ventas = () => {
   const pagarFactura = async () => {
   const numero = prompt("Ingrese el número de factura a pagar:");
   if (!numero) return;
-  setProcesando(true);
+    setProcesando(true);
   try {
+    setNumeroFactura(numero)
     // 1. Verificar si ya tiene pago
     const respPago = await fetch(`${API_URL}/api/moneda/factura/${numero}`);
     const dataPago = await respPago.json();
