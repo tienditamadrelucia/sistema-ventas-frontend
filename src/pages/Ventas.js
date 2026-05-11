@@ -808,7 +808,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
   try {
     // dataVenta viene de /detalle/:factura
     const venta = dataVenta.venta;
-    const detalle = dataVenta.detalle; // ⭐ AQUÍ ESTÁN LOS PRODUCTOS
+    const detalle = dataVenta.detalle;
     setVenta(venta);
     setClienteSeleccionado(venta.cliente || "");
     // ============================
@@ -830,8 +830,6 @@ const cargarFacturaParaPago = async (dataVenta) => {
     alert("Error inesperado al cargar la factura.");
   }
 };
-
-
 
   // -----------------------------
   // RENDER
