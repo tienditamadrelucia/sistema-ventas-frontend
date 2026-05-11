@@ -785,7 +785,7 @@ const pagarFactura = async () => {
     // ============================
     // 2) BUSCAR VENTA EN DBVENTAS
     // ============================
-    const respVenta = await fetch(`${API_URL}/api/ventas/${numero}`);
+    const respVenta = await fetch(`${API_URL}/api/ventas/detalle/${numero}`);
     const dataVenta = await respVenta.json();
     if (!dataVenta.ok || !dataVenta.venta) {
       alert("Factura no existe.");
