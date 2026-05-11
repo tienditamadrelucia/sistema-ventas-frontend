@@ -794,7 +794,8 @@ const Ventas = () => {
     setVenta(data.venta);    
     // 5. Buscar cliente
     const cedula = data.venta.cliente;
-    const datosCliente = await obtenerDatosCliente(cedula);
+    alert("cliente "+cedula);
+    const datosCliente = await obtenerDatosCliente(cedula);    
     setCliente(datosCliente);
     // 6. Cargar detalle (productos)
     await cargarDetalleFacturaParaPago(data.detalle);
