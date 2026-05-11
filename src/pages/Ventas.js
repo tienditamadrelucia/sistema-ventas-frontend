@@ -812,7 +812,7 @@ const cargarFacturaParaPago = async (venta) => {
     // ============================
     // CARGAR PRODUCTOS VENDIDOS
     // ============================
-    const respVendidos = await fetch(`${API_URL}/api/vendidos/${venta.factura}`);
+    const respVendidos = await fetch(`${API_URL}/api/ventas/vendidos/${venta.factura}`);
     const dataVendidos = await respVendidos.json();
     if (!dataVendidos.ok) {
       alert("Error cargando productos vendidos");
