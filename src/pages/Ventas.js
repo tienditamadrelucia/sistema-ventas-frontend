@@ -795,7 +795,7 @@ const Ventas = () => {
     // 5. Buscar cliente
     const cedula = data.venta.cliente;
     alert("cliente "+cedula);
-    const datosCliente = await obtenerDatosCliente(cedula);    
+    const datosCliente = await buscarClientePorIdentificacion(cedula);    
     setCliente(datosCliente);
     // 6. Cargar detalle (productos)
     await cargarDetalleFacturaParaPago(data.detalle);
@@ -805,30 +805,6 @@ const Ventas = () => {
     alert("Frontend dice: Error consultando factura");
   } finally {
     setProcesando(false);
-  }
-};
-
-const obtenerDatosCliente = async (cedula) => {
-  try {
-    const res = await fetch(`${API_URL}/api/clientes/cedula/${cedula}`);
-    if (!res.ok) {
-       return {
-       identificacion: cedula,
-       nombreCompleto: "Cliente no encontrado"
-       };
-     }
-    const data = await res.json();
-    const cliente = data.cliente ?? data;
-    return {
-    identificacion: cliente.identificacion || cedula,
-    nombreCompleto: cliente.nombreCompleto || "Sin nombre"
-    };
-  } catch (error) {
-    console.error("Error buscando cliente:", error);
-    return {
-    identificacion: cedula,
-    nombreCompleto: "Error al buscar cliente"
-    };
   }
 };
 
