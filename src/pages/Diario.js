@@ -77,7 +77,7 @@ const ReporteVentas = () => {
   // CARGAR REPORTE
   // -------------------------
   const cargarReporte = async () => {
-  setProcesando("true");
+  setProcesando(true);
   if (!desde || !hasta) {
     alert("Debe seleccionar un rango de fechas");
     return;
@@ -100,10 +100,10 @@ const ReporteVentas = () => {
         totalEfectivoD: 0,
         totalZelle: 0
       });
-      setProcesando("false");
+      setProcesando(false);
       return;
     }
-    setProcesando("false");
+    setProcesando(false);
     setReporte(data.reporte || []);
     setTotales(data.totales || {});
     formularioRef.current?.scrollIntoView({ behavior: "smooth" });    
