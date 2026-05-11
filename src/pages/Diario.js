@@ -72,43 +72,57 @@ const ReporteVentas = () => {
       maximumFractionDigits: 2
     });
   };
+  
+  const normalizarFechaInicio = (fecha) => {
+    return `${fecha}T00:00:00.000Z`;
+  };
+
+  const normalizarFechaFin = (fecha) => {
+    return `${fecha}T23:59:59.999Z`;
+  };
+
 
   // -------------------------
   // CARGAR REPORTE
   // -------------------------
   const cargarReporte = async () => {
-    setProcesando("true");
-    if (!desde || !hasta) {
-      alert("Debe seleccionar un rango de fechas");
+  setProcesando("true");
+  if (!desde || !hasta) {
+    alert("Debe seleccionar un rango de fechas");
+    return;
+  }
+  const desdeUTC = normalizarFechaInicio(desde);
+  const hastaUTC = normalizarFechaFin(hasta);
+  try {
+    const res = await fetch(
+      `${API_URL}/api/ventas/reporte/${desdeUTC}/${hastaUTC}`
+    );
+    const data = await res.json();
+    if (!data.ok) {
+      alert(data.msg || "No hay datos para este rango");
+      setReporte([]);
+      setTotales({
+        totalEfectivoP: 0,
+        totalTransferenciaP: 0,
+        totalEfectivoBs: 0,
+        totalTransferenciaBs: 0,
+        totalPuntoBs: 0,
+        totalPagomovilBs: 0,
+        totalEfectivoD: 0,
+        totalZelle: 0
+      });
       return;
     }
-    try {
-      const res = await fetch(`${API_URL}/api/ventas/reporte/${desde}/${hasta}`);
-      const data = await res.json();
-      if (!data.ok) {
-        alert(data.msg || "No hay datos para este rango");
-        setReporte([]);
-        setTotales({
-          totalEfectivoP: 0,
-          totalTransferenciaP: 0,
-          totalEfectivoBs: 0,
-          totalTransferenciaBs: 0,
-          totalPuntoBs: 0,
-          totalPagomovilBs: 0,
-          totalEfectivoD: 0,
-          totalZelle: 0
-        });
-        return;
-      }
-      setReporte(data.reporte || []);
-      setTotales(data.totales || {});
-      formularioRef.current?.scrollIntoView({ behavior: "smooth" });
-      setProcesando("false");
-    } catch (error) {
-      console.error("Error cargando reporte:", error);
-      alert("Error cargando reporte");
-    }
-  };
+    setReporte(data.reporte || []);
+    setTotales(data.totales || {});
+    formularioRef.current?.scrollIntoView({ behavior: "smooth" });
+    setProcesando("false");
+  } catch (error) {
+    console.error("Error cargando reporte:", error);
+    alert("Error cargando reporte");
+  }
+};
+
 
   const eliminarFacturaDesdeDiario = async (factura) => {
   const confirmar = window.confirm(
