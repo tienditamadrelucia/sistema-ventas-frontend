@@ -104,7 +104,7 @@ const Ventas = () => {
   const estiloBotonVerde = {
     width: "20%",
     padding: "5px",
-    backgroundColor: "#6699FF",
+    backgroundColor: "#74c769",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
