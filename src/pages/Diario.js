@@ -100,12 +100,12 @@ const ReporteVentas = () => {
         totalEfectivoD: 0,
         totalZelle: 0
       });
+      setProcesando("false");
       return;
     }
     setReporte(data.reporte || []);
     setTotales(data.totales || {});
-    formularioRef.current?.scrollIntoView({ behavior: "smooth" });
-    setProcesando("false");
+    formularioRef.current?.scrollIntoView({ behavior: "smooth" });    
   } catch (error) {
     console.error("Error cargando reporte:", error);
     alert("Error cargando reporte");
@@ -314,78 +314,77 @@ const ReporteVentas = () => {
         <td colSpan="11" style={{ textAlign: "right", background: "#f0f0f0" }}>          
         <strong>
           {item.pagos && (
-  <div style={{ fontFamily: "Roboto Mono", whiteSpace: "pre" }}>
+          <div style={{ fontFamily: "Roboto Mono", whiteSpace: "pre" }}>
 
-    {item.pagos.efectivoP > 0 && (
-      <div>{"E-Pesos:".padEnd(15) + formatoVE(item.pagos.efectivoP)}</div>
-    )}
+            {item.pagos.efectivoP > 0 && (
+            <div>{"E-Pesos:".padEnd(15) + formatoVE(item.pagos.efectivoP)}</div>
+            )}
 
-    {item.pagos.transferenciaP > 0 && (
-      <div>{"T-Pesos:".padEnd(15) + formatoVE(item.pagos.transferenciaP)}</div>
-    )}
+            {item.pagos.transferenciaP > 0 && (
+            <div>{"T-Pesos:".padEnd(15) + formatoVE(item.pagos.transferenciaP)}</div>
+            )}
 
-    {item.pagos.efectivoBs > 0 && (
-      <div>{"E-Bs:".padEnd(15) + formatoVE(item.pagos.efectivoBs)}</div>
-    )}
+            {item.pagos.efectivoBs > 0 && (
+            <div>{"E-Bs:".padEnd(15) + formatoVE(item.pagos.efectivoBs)}</div>
+            )}
 
-    {item.pagos.transferenciaBs > 0 && (
-      <div>{"T-Bs:".padEnd(15) + formatoVE(item.pagos.transferenciaBs)}</div>
-    )}
+            {item.pagos.transferenciaBs > 0 && (
+            <div>{"T-Bs:".padEnd(15) + formatoVE(item.pagos.transferenciaBs)}</div>
+            )}
 
-    {item.pagos.puntoBs > 0 && (
-      <div>{"Punto:".padEnd(15) + formatoVE(item.pagos.puntoBs)}</div>
-    )}
+            {item.pagos.puntoBs > 0 && (
+            <div>{"Punto:".padEnd(15) + formatoVE(item.pagos.puntoBs)}</div>
+            )}
 
-    {item.pagos.pagomovilBs > 0 && (
-      <div>{"PagoMóvil:".padEnd(15) + formatoVE(item.pagos.pagomovilBs)}</div>
-    )}
+            {item.pagos.pagomovilBs > 0 && (
+            <div>{"PagoMóvil:".padEnd(15) + formatoVE(item.pagos.pagomovilBs)}</div>
+            )}
 
-    {item.pagos.efectivoD > 0 && (
-      <div>{"E-$:".padEnd(15) + formatoVE(item.pagos.efectivoD)}</div>
-    )}
+            {item.pagos.efectivoD > 0 && (
+            <div>{"E-$:".padEnd(15) + formatoVE(item.pagos.efectivoD)}</div>
+            )}
 
-    {item.pagos.zelle > 0 && (
-      <div>{"Zelle:".padEnd(15) + formatoVE(item.pagos.zelle)}</div>
-    )}
+            {item.pagos.zelle > 0 && (
+            <div>{"Zelle:".padEnd(15) + formatoVE(item.pagos.zelle)}</div>
+            )}
 
-  </div>
-)}
+            </div>
+            )}
 
           </strong>
           {/* ⭐ VUELTOS (YA VIENEN EN NEGATIVO) ⭐ */}
-{item.pagos && (
-  <>
-    {(item.pagos.vueltoP !== 0 ||
-      item.pagos.vueltoBs !== 0 ||
-      item.pagos.vueltoD !== 0) && (
-      <div style={{ fontFamily: "Roboto Mono", whiteSpace: "pre" }}>
-        <br />
-        <strong>
+          {item.pagos && (
+          <>
+          {(item.pagos.vueltoP !== 0 ||
+            item.pagos.vueltoBs !== 0 ||
+            item.pagos.vueltoD !== 0) && (
+            <div style={{ fontFamily: "Roboto Mono", whiteSpace: "pre" }}>
+            <br />
+              <strong>
 
-        {item.pagos.vueltoP !== 0 && (
-          <div>{"Vuelto-Pesos:".padEnd(15) + formatoVE(item.pagos.vueltoP)}</div>
-        )}
+              {item.pagos.vueltoP !== 0 && (
+              <div>{"Vuelto-Pesos:".padEnd(15) + formatoVE(item.pagos.vueltoP)}</div>
+              )}
 
-        {item.pagos.vueltoBs !== 0 && (
-          <div>{"Vuelto-Bs:".padEnd(15) + formatoVE(item.pagos.vueltoBs)}</div>
-        )}
+              {item.pagos.vueltoBs !== 0 && (
+              <div>{"Vuelto-Bs:".padEnd(15) + formatoVE(item.pagos.vueltoBs)}</div>
+              )}
 
-        {item.pagos.vueltoD !== 0 && (
-          <div>{"Vuelto-$:".padEnd(15) + formatoVE(item.pagos.vueltoD)}</div>
-        )}
-        </strong>{"\n"}
-      </div>
-    )}
-  </>
-)}
-
+              {item.pagos.vueltoD !== 0 && (
+              <div>{"Vuelto-$:".padEnd(15) + formatoVE(item.pagos.vueltoD)}</div>
+              )}
+              </strong>{"\n"}
+            </div>
+          )}
+          </>
+          )}
 
         </td>
       </tr>
 
     </React.Fragment>
-  ))}
-</tbody>
+    ))}
+    </tbody>
 
       </table>
 
