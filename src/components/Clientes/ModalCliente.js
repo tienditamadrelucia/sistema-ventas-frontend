@@ -74,6 +74,8 @@ export default function ModalCliente({ identificacionInicial = "", onCerrar, onG
   }
   try {
     const res = await crearCliente(form); // fetch devuelve JSON directo
+    console.log("RESPUESTA DEL BACKEND:", res);
+
     if (!res.ok) {
       alert("Error guardando cliente");
       return;
