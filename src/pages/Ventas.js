@@ -607,7 +607,7 @@ const Ventas = () => {
     for (const item of listaFactura) {
         const vendidoData = {            
           factura: facturaNumero,
-          productoId:item._idProducto, 
+          productoId:item.idProducto, 
           cantidad: item.cantidad,
           precio: item.precioVenta,
           dscto: item.descuento || 0, 
