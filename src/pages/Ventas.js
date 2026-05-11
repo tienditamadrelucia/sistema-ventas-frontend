@@ -611,6 +611,8 @@ const Ventas = () => {
           dscto: item.descuento || 0,
           total: item.total
           };
+          console.log("➡️ ENVIANDO VENDIDO:", vendidoData);
+
     await guardarVendido(vendidoData)      
     }
     alert(`Venta guardada correctamente.\nFactura N° ${facturaNumero}`);
