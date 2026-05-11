@@ -642,6 +642,7 @@ const Ventas = () => {
     setClienteSeleccionado("");
     setModoCredito(false);
     setNumeroFactura(0);
+    setIva(0)
     
   } catch (error) {
     console.error("Error guardando venta:", error);
