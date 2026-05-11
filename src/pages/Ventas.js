@@ -403,6 +403,8 @@ const Ventas = () => {
       total: totalProducto
     };
     setListaFactura([...listaFactura, nuevoItem]);
+    console.log("🟩 listaFactura:", listaFactura);
+
     limpiarProducto();
     if (codigoProductoRef.current) {
       codigoProductoRef.current.focus();
@@ -1057,8 +1059,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                       const valor = e.target.value.trim().toUpperCase();
                       buscarClientePorIdentificacion(valor);
                     }
-                  }}
-                  onBlur={(e) => buscarClientePorIdentificacion(e.target.value)}   // ⭐ CORRECTO
+                  }}                  
                 />
               </div>
               <div
@@ -1151,8 +1152,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                   if (e.key === "Enter") {
                     buscarProductoPorCodigo(codigoProducto);                    
                   }
-                }}
-                onBlur={(e) => buscarProductoPorCodigo(e.target.value)}  // ⭐ CORRECTO 
+                }}                
                 ref={codigoProductoRef}
               />
             </div>
