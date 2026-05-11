@@ -678,31 +678,21 @@ const Ventas = () => {
     window.close();
   };
 
-  const volverAlMenu = async () => {
-    try {
-      if (reservaId) {
-        if (!pagoRegistrado) {
-          await fetch(`${API_URL}/api/facturas/cancelar-sin-pago/${reservaId}`, {
-            method: "DELETE"
-          });
-        } else {
-          await fetch(`${API_URL}/api/facturas/cancelar-con-pago/${reservaId}`, {
-            method: "DELETE"
-          });
-        }
-      }
-      if (window.opener) {
-        window.opener.location.reload();
-      }
-      window.close();
-    } catch (error) {
-      console.error("Error eliminando reserva activa:", error);
-      if (window.opener) {
-        window.opener.location.reload();
-      }
-      window.close();
+  const volverAlMenu = () => {
+  try {
+    if (window.opener) {
+      window.opener.location.reload(); // refresca el menú
     }
-  };
+    window.close(); // cierra esta ventana
+  } catch (error) {
+    console.error("Error al volver al menú:", error);
+    if (window.opener) {
+      window.opener.location.reload();
+    }
+    window.close();
+  }
+};
+
 
   const guardarSinPago = async () => {
   try {
