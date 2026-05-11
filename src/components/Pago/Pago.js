@@ -169,8 +169,7 @@ const dataMoneda = {
     (Number(pagoUsdEfectivo || 0) * tasaD)+
     (Number(pagoUsdZelle || 0) *tasaD)+
     ((Number(pagoCopEfectivo || 0) / tasaP))*tasaD +
-    ((Number(pagoCopTransferencia || 0) / tasaP))*tasaD;
-    alert("total pagado Bs. "+ totalPagadoBs);
+    ((Number(pagoCopTransferencia || 0) / tasaP))*tasaD;    
 
   const totalPagadoCOP =
     Number(pagoCopEfectivo || 0) + Number(pagoCopTransferencia || 0)+
