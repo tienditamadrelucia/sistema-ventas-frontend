@@ -768,7 +768,6 @@ const Ventas = () => {
   console.error("RESPUESTA DEL SERVIDOR:", error.response?.data);
   alert("Error inesperado al guardar la factura sin pago");
 }
-
 };
 
   const pagarFactura = async () => {
@@ -795,7 +794,7 @@ const Ventas = () => {
     // 5. Buscar cliente
     const cedula = data.venta.cliente;
     alert("cliente "+cedula);
-    const datosCliente = await buscarClientePorIdentificacion(cedula);    
+    const datosCliente = await buscarCliente(cedula);    
     setCliente(datosCliente);
     // 6. Cargar detalle (productos)
     await cargarDetalleFacturaParaPago(data.detalle);
@@ -807,6 +806,47 @@ const Ventas = () => {
     setProcesando(false);
   }
 };
+
+  const buscarCliente = async (cedula) => {
+    cedula = cedula.trim().toUpperCase();
+    if (!cedula) return;
+    try {
+      const res = await fetch(`${API_URL}/api/clientes/cedula/${cedula}`);
+      if (res.status === 404) {
+        console.log("❌ Cliente NO encontrado → abrir modal");
+        setIdentificacion(cedula);
+        setMostrarModalCliente(true);
+        return;
+      }
+      if (!res.ok) {
+        alert("Error buscando cliente");
+        return;
+      }
+      const data = await res.json();
+      const cliente = data.cliente ?? data;
+      if (!cliente || !cliente._id) {
+        alert("Respuesta inválida del servidor");
+        return;
+      }
+      setClienteSeleccionado(cliente);
+      setNombreCliente(cliente.nombreCompleto || "");
+      setIdentificacion(cliente.identificacion || "");
+      setListaClientes((prev) => {
+        const existe = prev.some((c) => c._id === cliente._id);
+        return existe ? prev : [...prev, cliente];
+      });
+      setTimeout(() => {
+        const incompleto =
+          cliente.nombreCompleto === "CLIENTE POR ACTUALIZAR" ||
+          cliente.direccion === "DIRECCIÓN POR ACTUALIZAR" ||
+          cliente.telefono === "TELÉFONO POR ACTUALIZAR";
+        if (incompleto) setMostrarEditorCliente(true);
+      }, 0);
+    } catch (error) {
+      console.error("Error buscando cliente:", error);
+      alert("Error buscando cliente");
+    }
+  };
 
 const cargarDetalleFacturaParaPago = async (detalle) => {
   try {
