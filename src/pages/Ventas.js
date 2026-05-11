@@ -804,32 +804,25 @@ const pagarFactura = async () => {
   }
 };
 
-const cargarFacturaParaPago = async (venta) => {
+const cargarFacturaParaPago = async (dataVenta) => {
   try {
+    // dataVenta viene de /detalle/:factura
+    const venta = dataVenta.venta;
+    const detalle = dataVenta.detalle; // ⭐ AQUÍ ESTÁN LOS PRODUCTOS
     setVenta(venta);
     setClienteSeleccionado(venta.cliente || "");
-    
     // ============================
-    // CARGAR PRODUCTOS VENDIDOS
+    // CONVERTIR PRODUCTOS
     // ============================
-    const respVendidos = await fetch(`${API_URL}/api/ventas/vendidos/${venta.factura}`);
-    const dataVendidos = await respVendidos.json();
-    if (!dataVendidos.ok) {
-      alert("Error cargando productos vendidos");
-      return;
-    }
-    // Convertir a formato de tu tabla
-    console.log("RESPUESTA VENDIDOS:", dataVendidos);
-    const lista = dataVendidos.detalle.map(v => ({
-      _id: v.productoId._id || v.productoId,
-      codigo: v.productoId.codigo || "",
-      descripcion: v.productoId.descripcion || "",
+    const lista = detalle.map(v => ({
+      _id: v.productoId._id,
+      codigo: v.productoId.codigo,
+      descripcion: v.productoId.descripcion,
       cantidad: v.cantidad,
       precio: v.precio,
       dscto: v.dscto,
       total: v.total
     }));
-    console.log("RESPUESTA VENDIDOS:", dataVendidos);
     setListaFactura(lista);
     alert("Factura cargada. Puede modificar productos y luego registrar el pago.");
   } catch (error) {
@@ -837,6 +830,7 @@ const cargarFacturaParaPago = async (venta) => {
     alert("Error inesperado al cargar la factura.");
   }
 };
+
 
 
   // -----------------------------
