@@ -152,24 +152,14 @@ const dataMoneda = {
 
   // TOTAL PAGADO EN USD
   const totalPagadoUSD =
-    Number(pagoUsdEfectivo || 0) +
-    Number(pagoUsdZelle || 0) +
-    (Number(pagoBsEfectivo || 0) / tasaD) +
-    (Number(pagoBsTransferencia || 0) / tasaD) +
-    (Number(pagoBsPunto || 0) / tasaD) +
-    (Number(pagoBsMovil || 0) / tasaD)+
-    (Number(pagoCopEfectivo || 0) / tasaP) +
-    (Number(pagoCopTransferencia || 0) / tasaP);
+    Number(pagoUsdEfectivo || 0) + Number(pagoUsdZelle || 0) + 
+    (Number(pagoBsEfectivo || 0) / tasaD) + (Number(pagoBsTransferencia || 0) / tasaD) + (Number(pagoBsPunto || 0) / tasaD) + (Number(pagoBsMovil || 0) / tasaD)+
+    (Number(pagoCopEfectivo || 0) / tasaP) + (Number(pagoCopTransferencia || 0) / tasaP);
 
   const totalPagadoBs=
-    (Number(pagoBsEfectivo || 0) / tasaD) +
-    (Number(pagoBsTransferencia || 0) / tasaD) +
-    (Number(pagoBsPunto || 0) / tasaD) +
-    (Number(pagoBsMovil || 0) / tasaD) +
-    (Number(pagoUsdEfectivo || 0) * tasaD)+
-    (Number(pagoUsdZelle || 0) *tasaD)+
-    ((Number(pagoCopEfectivo || 0) / tasaP))*tasaD +
-    ((Number(pagoCopTransferencia || 0) / tasaP))*tasaD;    
+    Number(pagoBsEfectivo || 0) + Number(pagoBsTransferencia || 0) + Number(pagoBsPunto || 0) + Number(pagoBsMovil || 0) +
+    (Number(pagoUsdEfectivo || 0) * tasaD)+ (Number(pagoUsdZelle || 0) *tasaD)+
+    ((Number(pagoCopEfectivo || 0) / tasaP))*tasaD + ((Number(pagoCopTransferencia || 0) / tasaP))*tasaD;    
 
   const totalPagadoCOP =
     Number(pagoCopEfectivo || 0) + Number(pagoCopTransferencia || 0)+
