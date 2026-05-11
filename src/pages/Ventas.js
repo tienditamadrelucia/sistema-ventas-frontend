@@ -37,6 +37,8 @@ const Ventas = () => {
   const [productoSeleccionado, setProductoSeleccionado] = useState("");
   const [cantidad, setCantidad] = useState(0);
   const cantidadRef = useRef(null);
+  const carritoRef = useRef(null);
+  const codigoRef = useRef(null);
   const [descuento, setDescuento] = useState(0);
   const [codigoProducto, setCodigoProducto] = useState("");
   const codigoProductoRef = useRef(null);
@@ -597,18 +599,15 @@ const Ventas = () => {
     // 5) GUARDAR LOS PRODUCTOS VENDIDOS
     // ============================
     for (const item of listaFactura) {
-      await fetch(`${API_URL}/api/vendidos`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
+        const vendidoData = {            
           factura: facturaNumero,
-          productoId:productoSeleccionado._id,
+          productoId:item._idProducto,
           cantidad: item.cantidad,
           precio: item.precioVenta,
-          dscto: item.dscto || 0,
+          dscto: item.descuento || 0,
           total: item.total
-        })
-      });
+          };
+    await guardarVendido(vendidoData)      
     }
     alert(`Venta guardada correctamente.\nFactura N° ${facturaNumero}`);
     // ============================
@@ -1296,6 +1295,14 @@ const cargarFacturaParaPago = async (dataVenta) => {
                 onChange={(e) =>
                   validarStock(Number(e.target.value))
                 }
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    if (carritoRef.current) {
+                      carritoRef.current.focus();
+                      }
+                    }
+                }}
               />
             </div>
 
@@ -1364,7 +1371,18 @@ const cargarFacturaParaPago = async (dataVenta) => {
             {/* BOTÓN CARRITO */}
             <button
               disabled={editando}
+              ref={carritoRef}
               onClick={agregarAlCarrito}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                  agregarAlCarrito();
+                if (codigoRef.current) {
+                  codigoRef.current.focus();
+                  codigoRef.current.select();
+                  }
+                }
+              }}
               style={{
                 opacity: editando ? 0.4 : 1,
                 cursor: editando ? "not-allowed" : "pointer",
