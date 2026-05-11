@@ -404,6 +404,10 @@ const Ventas = () => {
     };
     setListaFactura([...listaFactura, nuevoItem]);
     limpiarProducto();
+    if (codigoProductoRef.current) {
+      codigoProductoRef.current.focus();
+      codigoProductoRef.current.select(); // opcional
+      }
   };
 
   const actualizarProducto = () => {
