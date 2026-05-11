@@ -795,7 +795,7 @@ const pagarFactura = async () => {
     // ============================
     // 3) CARGAR FACTURA PARA PAGO
     // ============================
-    await cargarFacturaParaPago(venta);
+    await cargarFacturaParaPago(dataVenta);
   } catch (error) {
     console.error("Error al buscar factura:", error);
     alert("Error inesperado al buscar la factura.");
