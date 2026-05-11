@@ -23,7 +23,7 @@ const Ventas = () => {
   // -----------------------------
 
   // FACTURA
-  const [numeroFactura, setNumeroFactura] = useState(0);
+  const [numeroFactura, setNumeroFactura] = useState("");
   const [hora, setHora] = useState("");    
   const [fechaString, setFechaString] = useState("");
   const [nombreCliente, setNombreCliente] = useState("");
