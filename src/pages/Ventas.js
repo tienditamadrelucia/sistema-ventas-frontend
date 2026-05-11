@@ -767,36 +767,6 @@ const Ventas = () => {
 
 };
 
-const pagarFactura = async () => {
-  const numero = prompt("Ingrese el número de factura a pagar:");
-  if (!numero) return;
-  setProcesando(true);
-  try {
-    // 1) Revisar si ya tiene pago
-    const respPago = await fetch(`${API_URL}/api/moneda/factura/${numero}`);
-    const dataPago = await respPago.json();
-    if (dataPago.ok && Array.isArray(dataPago.lista) && dataPago.lista.length > 0) {
-      alert("Esta factura ya tiene pago asociado.");
-      return;
-    }
-    // 2) Buscar venta + detalle en la ruta CORRECTA
-    const respVenta = await fetch(`${API_URL}/api/ventas/detalle/${numero}`);
-    const dataVenta = await respVenta.json();
-    console.log("DATA VENTA DETALLE:", dataVenta);
-    if (!dataVenta.ok || !dataVenta.venta || !Array.isArray(dataVenta.detalle)) {
-      alert("Factura no existe o no tiene detalle.");
-      return;
-    }
-    // 3) Cargar todo para pago
-    await cargarFacturaParaPago(dataVenta);
-  } catch (error) {
-    console.error("Error al buscar factura:", error);
-    alert("Error inesperado al buscar la factura.");
-  } finally {
-    setProcesando(false);
-  }
-};
-
   const pagarFactura = async () => {
   const numero = prompt("Ingrese el número de factura a pagar:");
   if (!numero) return;
