@@ -797,6 +797,103 @@ const pagarFactura = async () => {
   }
 };
 
+  const pagarFactura = async () => {
+  const numero = prompt("Ingrese el número de factura a pagar:");
+  if (!numero) return;
+  setProcesando(true);
+  try {
+    // 1. Verificar si ya tiene pago
+    const respPago = await fetch(`${API_URL}/api/moneda/factura/${numero}`);
+    const dataPago = await respPago.json();
+    if (dataPago.ok && Array.isArray(dataPago.lista) && dataPago.lista.length > 0) {
+      alert("Esta factura ya tiene pago registrado.");
+      return;
+    }
+    // 2. Buscar venta + detalle (RUTA CORRECTA)
+    const res = await fetch(`${API_URL}/api/ventas/detalle/${numero}`);
+    const data = await res.json();
+    if (!data.ok) {
+      alert("Factura no encontrada");
+      return;
+    }
+    // 3. Guardar datos de la venta
+    setVenta(data.venta);
+    // 4. Validar crédito
+    if (data.venta.estado === "CREDITO") {
+      setEsCredito(true);
+      setAbono(data.venta.abono || 0);
+      setSaldo(data.venta.saldo || 0);
+    } else {
+      setEsCredito(false);
+    }
+    // 5. Buscar cliente
+    const cedula = data.venta.cliente;
+    const datosCliente = await obtenerDatosCliente(cedula);
+    setCliente(datosCliente);
+    // 6. Cargar detalle (productos)
+    await cargarDetalleFacturaParaPago(data.detalle);
+    alert("Factura cargada. Puede registrar el pago.");
+  } catch (error) {
+    console.error("Error consultando factura:", error);
+    alert("Frontend dice: Error consultando factura");
+  } finally {
+    setProcesando(false);
+  }
+};
+
+const obtenerDatosCliente = async (cedula) => {
+  try {
+    const res = await fetch(`${API_URL}/api/clientes/cedula/${cedula}`);
+    if (!res.ok) {
+       return {
+       identificacion: cedula,
+       nombreCompleto: "Cliente no encontrado"
+       };
+     }
+    const data = await res.json();
+    const cliente = data.cliente ?? data;
+    return {
+    identificacion: cliente.identificacion || cedula,
+    nombreCompleto: cliente.nombreCompleto || "Sin nombre"
+    };
+  } catch (error) {
+    console.error("Error buscando cliente:", error);
+    return {
+    identificacion: cedula,
+    nombreCompleto: "Error al buscar cliente"
+    };
+  }
+};
+
+const cargarDetalleFacturaParaPago = async (detalle) => {
+  try {
+    if (!Array.isArray(detalle) || detalle.length === 0) {
+      alert("La factura no tiene productos.");
+      setListaFactura([]);
+      return;
+    }
+    const listaReconstruida = [];
+    for (const item of detalle) {
+      // Buscar producto
+      const resProd = await fetch(`${API_URL}/api/productos/${item.productoId}`);
+      const dataProd = await resProd.json();
+      const producto = dataProd.producto ?? dataProd;
+      listaReconstruida.push({
+        codigo: producto.codigo || "",
+        descripcion: producto.descripcion || "",
+        cantidad: item.cantidad ?? 0,
+        precioActual: producto.venta ?? 0,
+        precioFactura: item.precio ?? 0,
+        descuento: item.dscto ?? 0,
+        total: item.total ?? 0
+      });
+    }
+    setListaFactura(listaReconstruida);
+  } catch (error) {
+    console.error("Error cargando detalle:", error);
+    alert("Frontend dice: Error cargando detalle de la factura");
+  }
+};
 
 const cargarFacturaParaPago = async (dataVenta) => {
   try {
