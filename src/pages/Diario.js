@@ -73,15 +73,6 @@ const ReporteVentas = () => {
     });
   };
   
-  const normalizarFechaInicio = (fecha) => {
-    return `${fecha}T00:00:00.000Z`;
-  };
-
-  const normalizarFechaFin = (fecha) => {
-    return `${fecha}T23:59:59.999Z`;
-  };
-
-
   // -------------------------
   // CARGAR REPORTE
   // -------------------------
@@ -91,11 +82,9 @@ const ReporteVentas = () => {
     alert("Debe seleccionar un rango de fechas");
     return;
   }
-  const desdeUTC = normalizarFechaInicio(desde);
-  const hastaUTC = normalizarFechaFin(hasta);
   try {
     const res = await fetch(
-      `${API_URL}/api/ventas/reporte/${desdeUTC}/${hastaUTC}`
+      `${API_URL}/api/ventas/reporte/${desde}/${hasta}`
     );
     const data = await res.json();
     if (!data.ok) {
