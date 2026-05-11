@@ -454,32 +454,22 @@ const Ventas = () => {
   // OBTENER NÚMERO DE FACTURA (SOLO LECTURA)
   // -----------------------------
   const obtenerFacturaNro = async () => {
-    console.log(">>> LLAMANDO A factura-actual");
-const res = await fetch(`${API_URL}/api/ventas/factura-actual`);
-console.log(">>> RESPUESTA FETCH:", res.status);
-const data = await res.json();
-console.log(">>> DATA:", data);
-
+  const res = await fetch(`${API_URL}/api/ventas/factura-actual`);
+  const data = await res.json();
     return data.numero; // número actual del contador, SIN incrementar
   };
 
   // -----------------------------
   // PAGOS
   // -----------------------------
-  const pagoContado = async () => {    
-    console.log("FACTURA EN ESTADO:", numeroFactura);
-
+  const pagoContado = async () => {      
   if (listaFactura.length === 0) {
     alert("Aún no hay productos ingresados");
     return;
   }
   let facturaNumero = numeroFactura;
-  console.log("numeroFactura:", numeroFactura);
-console.log("facturaNumero:", facturaNumero);
-
   // ⭐ 1) DETERMINAR NÚMERO DE FACTURA
   if (!facturaNumero || facturaNumero === "") {
-    console.log("facturaNumero IF:", facturaNumero);
     // Venta nueva → generar número
     const fact = await obtenerFacturaNro(); 
     facturaNumero = fact + 1;
@@ -624,6 +614,7 @@ console.log("facturaNumero:", facturaNumero);
     // ============================
     // 6) LIMPIAR PANTALLA
     // ============================
+    setNumeroFactura("")    
     limpiarCliente();
     setPagoData(null);
     setPagoRegistrado(false);
@@ -729,11 +720,7 @@ console.log("facturaNumero:", facturaNumero);
     // ============================
     // GUARDAR VENTA
     // ============================
-    const respVenta = await guardarVta(ventaData);
-    console.log("RESPUESTA DEL BACKEND:", respVenta.data);
-    console.log("RESPUESTA AXIOS COMPLETA:", respVenta);
-    console.log("RESPUESTA DEL BACKEND:", respVenta.data);
-    console.log("LISTA FACTURA COMPLETA:", listaFactura);
+    const respVenta = await guardarVta(ventaData);    
     if (!respVenta.data || respVenta.data.ok !== true) {
       alert("Error guardando la venta");
       return;
@@ -751,8 +738,7 @@ console.log("facturaNumero:", facturaNumero);
         precio: item.precioVenta,
         dscto: item.descuento || 0,
         total: item.total
-      };
-      console.log("VENDIDO QUE SE ENVÍA:", vendidoData);
+      };      
       await guardarVendido(vendidoData);
       
     }
