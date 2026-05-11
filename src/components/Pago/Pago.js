@@ -294,29 +294,12 @@ useEffect(() => {
 const vueltoCorrecto =
   Math.abs(vueltoUsuarioUSD - vueltoUsdSistema) < 0.01;
 
+const diferenciaUSD = Math.abs(totalPagadoUSD - totalDolar);
+
 const facturaCancelada = modoCredito
-  ? totalAbonado>0
-  : Number(totalPagadoUSD.toFixed(2)) >= Number(totalDolar.toFixed(2)) && vueltoCorrecto;  
-  console.log("========== DEBUG FACTURA ==========");
-console.log("totalDolar:", totalDolar);
-console.log("totalPagadoUSD:", totalPagadoUSD);
-console.log("totalPagadoBs:", totalPagadoBs);
-console.log("pagoBsEfectivo:", pagoBsEfectivo);
-console.log("pagoBsTransferencia:", pagoBsTransferencia);
-console.log("pagoBsPunto:", pagoBsPunto);
-console.log("pagoBsMovil:", pagoBsMovil);
-console.log("tasaD:", tasaD);
-console.log("tasaP:", tasaP);
-
-console.log("vueltoUsdSistema:", vueltoUsdSistema);
-console.log("vueltoUsuarioUSD:", vueltoUsuarioUSD);
-console.log("vueltoCorrecto:", vueltoCorrecto);
-
-console.log("totalAbonado:", totalAbonado);
-console.log("modoCredito:", modoCredito);
-console.log("facturaCancelada:", facturaCancelada);
-console.log("====================================");
-
+  ? totalAbonado > 0
+  : diferenciaUSD <= 0.02 && vueltoCorrecto;
+ 
   const limpiarTodo = () => {    
     // USD
     setPagoUsdEfectivo("");
