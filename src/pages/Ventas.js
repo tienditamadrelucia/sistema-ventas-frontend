@@ -463,6 +463,8 @@ const Ventas = () => {
   // PAGOS
   // -----------------------------
   const pagoContado = async () => {    
+    console.log("FACTURA EN ESTADO:", numeroFactura);
+
   if (listaFactura.length === 0) {
     alert("Aún no hay productos ingresados");
     return;
