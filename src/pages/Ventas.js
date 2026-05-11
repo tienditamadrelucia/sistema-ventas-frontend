@@ -326,8 +326,8 @@ const Ventas = () => {
       clienteSeleccionado.direccion === "DIRECCIÓN POR ACTUALIZAR" ||
       clienteSeleccionado.telefono === "TELÉFONO POR ACTUALIZAR"
     ) {
-      alert("El cliente tiene datos incompletos. Debe actualizarlo antes de guardar la venta.");
-      return false;
+      alert("El cliente tiene datos incompletos.");
+      return true;
     }
     return true;
   };
@@ -693,7 +693,6 @@ const Ventas = () => {
     window.close();
   }
 };
-
 
   const guardarSinPago = async () => {
   try {
