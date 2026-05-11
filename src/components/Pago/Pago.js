@@ -296,7 +296,7 @@ const vueltoCorrecto =
 
 const facturaCancelada = modoCredito
   ? totalAbonado>0
-  : totalPagadoUSD >= totalDolar && vueltoCorrecto;  
+  : Number(totalPagadoUSD.toFixed(2)) >= Number(totalDolar.toFixed(2)) && vueltoCorrecto;  
   console.log("========== DEBUG FACTURA ==========");
 console.log("totalDolar:", totalDolar);
 console.log("totalPagadoUSD:", totalPagadoUSD);
