@@ -608,7 +608,7 @@ const Ventas = () => {
           productoId:item._idProducto, 
           cantidad: item.cantidad,
           precio: item.precioVenta,
-          dscto: item.descuento || 0,
+          dscto: item.descuento || 0, 
           total: item.total
           };
           console.log("➡️ ENVIANDO VENDIDO:", vendidoData);
