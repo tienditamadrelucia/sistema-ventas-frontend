@@ -103,6 +103,7 @@ const ReporteVentas = () => {
       setProcesando("false");
       return;
     }
+    setProcesando("false");
     setReporte(data.reporte || []);
     setTotales(data.totales || {});
     formularioRef.current?.scrollIntoView({ behavior: "smooth" });    
@@ -111,7 +112,6 @@ const ReporteVentas = () => {
     alert("Error cargando reporte");
   }
 };
-
 
   const eliminarFacturaDesdeDiario = async (factura) => {
   const confirmar = window.confirm(
@@ -240,9 +240,7 @@ const ReporteVentas = () => {
             onClick={enviarWhatsApp}
           />
         </div>
-
       </div>
-
 
       {/* ⭐⭐⭐ TABLA CONTINUA — UNA SOLA, SIN REPETICIONES ⭐⭐⭐ */}
       <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
@@ -262,17 +260,14 @@ const ReporteVentas = () => {
             <th>Eliminar</th>
           </tr>
         </thead>
-
         <tbody>
   {reporte.map((item) => (
     <React.Fragment key={item.venta.factura}>
-
       {item.productos.map((p, i) => (
         <tr key={p._id || `${item.venta.factura}-${i}`}>
-
           {i === 0 ? (
             <>
-              <td>{new Date(item.venta.fecha).toLocaleDateString("es-VE")}</td>
+              <td>{item.venta.fecha.slice(0, 10)}</td>
               <td>{item.venta.factura}</td>
               <td>{item.clienteNombre}</td>
             </>
@@ -283,7 +278,6 @@ const ReporteVentas = () => {
               <td></td>
             </>
           )}
-
           <td>{p.codigo}</td>
           <td>{p.descripcion}</td>
           <td>{item.venta.estado}</td>
