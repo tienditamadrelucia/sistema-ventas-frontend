@@ -475,6 +475,7 @@ console.log("facturaNumero:", facturaNumero);
 
   // ⭐ 1) DETERMINAR NÚMERO DE FACTURA
   if (!facturaNumero || facturaNumero === "") {
+    console.log("facturaNumero IF:", facturaNumero);
     // Venta nueva → generar número
     const fact = await obtenerFacturaNro(); 
     facturaNumero = fact + 1;
