@@ -791,15 +791,7 @@ const Ventas = () => {
       return;
     }
     // 3. Guardar datos de la venta
-    setVenta(data.venta);
-    // 4. Validar crédito
-    if (data.venta.estado === "CREDITO") {
-      setEsCredito(true);
-      setAbono(data.venta.abono || 0);
-      setSaldo(data.venta.saldo || 0);
-    } else {
-      setEsCredito(false);
-    }
+    setVenta(data.venta);    
     // 5. Buscar cliente
     const cedula = data.venta.cliente;
     const datosCliente = await obtenerDatosCliente(cedula);
