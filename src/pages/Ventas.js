@@ -772,29 +772,22 @@ const pagarFactura = async () => {
   if (!numero) return;
   setProcesando(true);
   try {
-    // ============================
-    // 1) REVISAR SI YA TIENE PAGO
-    // ============================
+    // 1) Revisar si ya tiene pago
     const respPago = await fetch(`${API_URL}/api/moneda/factura/${numero}`);
     const dataPago = await respPago.json();
-    if (dataPago.ok && dataPago.lista.length > 0) {
+    if (dataPago.ok && Array.isArray(dataPago.lista) && dataPago.lista.length > 0) {
       alert("Esta factura ya tiene pago asociado.");
-      setProcesando(false);
       return;
     }
-    // ============================
-    // 2) BUSCAR VENTA EN DBVENTAS
-    // ============================
+    // 2) Buscar venta + detalle en la ruta CORRECTA
     const respVenta = await fetch(`${API_URL}/api/ventas/detalle/${numero}`);
     const dataVenta = await respVenta.json();
-    if (!dataVenta.ok || !dataVenta.venta) {
-      alert("Factura no existe.");
+    console.log("DATA VENTA DETALLE:", dataVenta);
+    if (!dataVenta.ok || !dataVenta.venta || !Array.isArray(dataVenta.detalle)) {
+      alert("Factura no existe o no tiene detalle.");
       return;
     }
-    const venta = dataVenta.venta;
-    // ============================
-    // 3) CARGAR FACTURA PARA PAGO
-    // ============================
+    // 3) Cargar todo para pago
     await cargarFacturaParaPago(dataVenta);
   } catch (error) {
     console.error("Error al buscar factura:", error);
@@ -804,25 +797,34 @@ const pagarFactura = async () => {
   }
 };
 
+
 const cargarFacturaParaPago = async (dataVenta) => {
   try {
-    // dataVenta viene de /detalle/:factura
     const venta = dataVenta.venta;
     const detalle = dataVenta.detalle;
+    console.log("VENTA PARA PAGO:", venta);
+    console.log("DETALLE PARA PAGO:", detalle);
+    if (!venta) {
+      alert("No se recibió la venta.");
+      return;
+    }
     setVenta(venta);
     setClienteSeleccionado(venta.cliente || "");
-    // ============================
-    // CONVERTIR PRODUCTOS
-    // ============================
+    if (!Array.isArray(detalle)) {
+      alert("La factura no tiene productos en el detalle.");
+      setListaFactura([]);
+      return;
+    }
     const lista = detalle.map(v => ({
-      _id: v.productoId._id,
-      codigo: v.productoId.codigo,
-      descripcion: v.productoId.descripcion,
-      cantidad: v.cantidad,
-      precio: v.precio,
-      dscto: v.dscto,
-      total: v.total
+      _id: v.productoId?._id || v.productoId || "",
+      codigo: v.productoId?.codigo || "",
+      descripcion: v.productoId?.descripcion || "",
+      cantidad: v.cantidad ?? 0,
+      precio: v.precio ?? 0,
+      dscto: v.dscto ?? 0,
+      total: v.total ?? 0
     }));
+    console.log("LISTA CONVERTIDA:", lista);
     setListaFactura(lista);
     alert("Factura cargada. Puede modificar productos y luego registrar el pago.");
   } catch (error) {
@@ -830,6 +832,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
     alert("Error inesperado al cargar la factura.");
   }
 };
+
 
   // -----------------------------
   // RENDER
