@@ -856,8 +856,7 @@ const cargarDetalleFacturaParaPago = async (detalle) => {
         codigo: producto.codigo || "",
         descripcion: producto.descripcion || "",
         cantidad: item.cantidad ?? 0,
-        precioActual: producto.venta ?? 0,
-        precioFactura: item.precio ?? 0,
+        precioVenta: producto.venta ?? 0,        
         descuento: item.dscto ?? 0,
         total: item.total ?? 0
       });
