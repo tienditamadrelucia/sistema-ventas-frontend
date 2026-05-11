@@ -779,18 +779,19 @@ const facturaCancelada = modoCredito
                Borrar
             </button>
 
-            <button
-              style={{
+            <button              
+              style={{                
               ...estiloBoton,
               opacity: facturaCancelada ? 1 : 0.4,
               cursor: facturaCancelada ? "pointer" : "not-allowed"
               }}
-              disabled={!facturaCancelada}
+              disabled={!facturaCancelada}              
               onClick={async () => {
               // ============================
               // VALIDACIONES DE REFERENCIAS
               // ============================
               // PUNTO
+              {console.log("FACTURA CANCELADA =", facturaCancelada)}
               if (Number(pagoBsPunto) > 0) {
                 if (!refPunto || !lotePunto) {
                   alert("Debe ingresar referencia y lote para el pago por punto");
