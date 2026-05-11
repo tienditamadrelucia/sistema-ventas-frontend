@@ -819,6 +819,7 @@ const cargarFacturaParaPago = async (venta) => {
       return;
     }
     // Convertir a formato de tu tabla
+    console.log("RESPUESTA VENDIDOS:", dataVendidos);
     const lista = dataVendidos.detalle.map(v => ({
       _id: v.productoId._id || v.productoId,
       codigo: v.productoId.codigo || "",
