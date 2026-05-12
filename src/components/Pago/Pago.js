@@ -164,7 +164,7 @@ const dataMoneda = {
   const totalPagadoCOP =
     Number(pagoCopEfectivo || 0) + Number(pagoCopTransferencia || 0)+
     (((Number(pagoBsEfectivo || 0)+ Number(pagoBsTransferencia || 0)+ Number(pagoBsPunto || 0)+ Number(pagoBsMovil || 0)) / tasaD)*tasaP)+
-    (Number(pagoUsdEfectivo || 0) + Number(pagoUsdZelle || 0) * tasaP);
+    (Number(pagoUsdEfectivo || 0)) * tasaP + (Number(pagoUsdZelle || 0)) * tasaP;
 
   let faltanteUSD = 0;
   let faltanteCOP = 0;
