@@ -982,28 +982,19 @@ const cargarFacturaParaPago = async (dataVenta) => {
                   type="date"
                   value={fecha}
                   onChange={async (e) => {
-                    const f = new Date(e.target.value); // fecha elegida por el usuario
-                    // ⭐ Normalizar a UTC 00:00:00
-                    const fUTC = new Date(Date.UTC(
-                    f.getFullYear(),
-                    f.getMonth(),
-                    f.getDate(),
-                    0, 0, 0
-                    ));
-                    const fechaNormalizada = fUTC.toISOString().slice(0, 10);
-                    setFecha(fechaNormalizada);
-                    // ⭐ Cargar tasas usando la fecha UTC normalizada
-                    const tasa = await cargarTasasPorFecha(fechaNormalizada);
+                    const fechaSeleccionada = e.target.value; // viene EXACTA, sin zona horaria
+                    setFecha(fechaSeleccionada);
+                    const tasa = await cargarTasasPorFecha(fechaSeleccionada);
                     if (!tasa) {
                       setMostrarModalTasas(true);
                       return;
                       }
                     const { tasaD, tasaP, cajachicaD, cajachicaP } = tasa;
-                    setTasaDolar(tasaD);
-                    setTasaPeso(tasaP);
-                    setCajaDolar(cajachicaD);
-                    setCajaPeso(cajachicaP);
-                  }}
+                      setTasaDolar(tasaD);
+                      setTasaPeso(tasaP);
+                      setCajaDolar(cajachicaD);
+                      setCajaPeso(cajachicaP);
+                    }}
                 />
               </div>
               <div
