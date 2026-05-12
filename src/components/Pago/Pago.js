@@ -362,7 +362,12 @@ const facturaCancelada = modoCredito
           boxShadow: "0 0 10px rgba(0,0,0,0.3)"
           }}
         >
-
+        <div style={{ fontSize: "11px", color: "#555", marginBottom: "8px" }}>
+          <div><strong>Tasas usadas para esta venta:</strong></div>
+          <div>Tasa USD → Bs: {tasaD}</div>
+          <div>Tasa USD → COP: {tasaP}</div>
+          <div>Fecha de la venta: {fecha}</div>
+        </div>
         <h2 style={{ textAlign: "center", marginBottom: "1px" }}>
           REGISTRO DE PAGO
         </h2>
