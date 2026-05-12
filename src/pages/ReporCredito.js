@@ -115,6 +115,7 @@ const ReporCredito = () => {
     alert("Hubo un error al eliminar la factura.");
   }
 };
+console.log("REPORTE:", reporte);
 
   return (
     <div>
