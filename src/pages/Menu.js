@@ -425,7 +425,7 @@ function Menu() {
               <button style={botonSubmenu}
                 onClick={async() => {
                   await registrarAccion("Entró al módulo Reporte de Crédito")
-                  window.open("/ReporCredito", "_blank")}}
+                  window.open("/reporcredito", "_blank")}}
               >
                 Crédito
               </button>
