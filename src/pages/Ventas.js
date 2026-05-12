@@ -169,32 +169,24 @@ const Ventas = () => {
   // CARGAR TASAS POR FECHA
   // -----------------------------
   useEffect(() => {
-    const cargarTasas = async () => {
-      if (!fecha) return;
-      try {
-        const fechaLocal = new Date(fecha);
-        const fechaUTC = new Date(Date.UTC(
-          fechaLocal.getFullYear(),
-          fechaLocal.getMonth(),
-          fechaLocal.getDate(),
-          0, 0, 0
-          ));
-        const fechaStr = fechaUTC.toISOString().slice(0, 10);
-        const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fechaStr}`);
-        const { tasaD, tasaP, cajachicaD, cajachicaP } = res.data.tasa;
-        setTasaDolar(tasaD);
-        setTasaPeso(tasaP);
-        setCajaDolar(cajachicaD);
-        setCajaPeso(cajachicaP);
-      } catch (error) {
-        if (error.response && error.response.status === 404) {
-          return;
-        }
-        console.error("Error REAL cargando tasas:", error);
+  const cargarTasas = async () => {
+    if (!fecha) return;
+    try {
+      const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fecha}`);
+      const { tasaD, tasaP, cajachicaD, cajachicaP } = res.data.tasa;
+      setTasaDolar(tasaD);
+      setTasaPeso(tasaP);
+      setCajaDolar(cajachicaD);
+      setCajaPeso(cajachicaP);
+    } catch (error) {
+      if (error.response && error.response.status === 404) {
+        return;
       }
-    };
-    cargarTasas();
-  }, [fecha]);
+      console.error("Error REAL cargando tasas:", error);
+    }
+  };
+  cargarTasas();
+}, [fecha]);
 
   // -----------------------------
   // CARGAR CLIENTES / PRODUCTOS / HORA
@@ -1807,12 +1799,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
 
           {mostrarModalTasas && (
             <ModalTasas
-              fecha={new Date(Date.UTC(
-                new Date(fecha).getFullYear(),
-                new Date(fecha).getMonth(),
-                new Date(fecha).getDate(),
-                0, 0, 0
-                )).toISOString().slice(0, 10)}
+              fecha={fecha}
               onCerrar={() => setMostrarModalTasas(false)}
               onGuardado={(tasaNueva) => {
                 const {
