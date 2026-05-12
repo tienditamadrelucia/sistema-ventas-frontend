@@ -292,7 +292,7 @@ useEffect(() => {
   );
 
 const vueltoCorrecto =
-  Math.abs(vueltoUsuarioUSD - vueltoUsdSistema) < 0.01;
+  Math.abs(vueltoUsuarioUSD - vueltoUsdSistema) < 0.02;
 
 const diferenciaUSD = Math.abs(totalPagadoUSD - totalDolar);
 
