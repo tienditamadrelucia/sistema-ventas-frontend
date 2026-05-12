@@ -373,9 +373,9 @@ const facturaCancelada = modoCredito
               whiteSpace: "nowrap"
               }}
           >
-            Tasas usadas para esta venta → USD/Bs: {tasaD} ••••• USD/COP: {tasaP} ••••• Fecha: {fecha}
+            <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaD} ••••• USD/COP: {tasaP} ••••• Fecha: {fecha}</strong>
           </div>
-                
+
         <h2 style={{ textAlign: "center", marginBottom: "1px" }}>
           REGISTRO DE PAGO
         </h2>
