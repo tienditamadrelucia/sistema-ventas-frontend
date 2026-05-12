@@ -45,13 +45,15 @@ const ReporCredito = () => {
     fontFamily: "Arial",
     fontSize: "14px"
   };
-
+ 
   // -------------------------
   // ESTADOS
   // -------------------------
   const [desde, setDesde] = useState(new Date().toISOString().substring(0, 10));
   const [hasta, setHasta] = useState(new Date().toISOString().substring(0, 10));
   const [reporte, setReporte] = useState([]);
+
+  const [procesando, setProcesando] = useState(false);
 
   // -------------------------
   // FORMATO VENEZOLANO
@@ -72,20 +74,16 @@ const ReporCredito = () => {
       alert("Debe seleccionar un rango de fechas");
       return;
     }
-
     try {
       const res = await fetch(`${API_URL}/api/ventas/reporte-creditos/${desde}/${hasta}`);      
       const data = await res.json();
-
       if (!data.ok) {
         alert(data.msg || "No hay datos para este rango");
         setReporte([]);
         return;
       }
-
       setReporte(data.reporte || []);
       formularioRef.current?.scrollIntoView({ behavior: "smooth" });
-
     } catch (error) {
       console.error("Error cargando reporte:", error);
       alert("Error cargando reporte");
@@ -98,24 +96,18 @@ const ReporCredito = () => {
     "Se eliminarán: venta, productos y abonos.\n" +
     "Esta acción no se puede deshacer."
   );
-
   if (!confirmar) return;
-
   try {
     const res = await fetch(
       `${API_URL}/api/facturas/eliminar-completa/${factura}`,
       { method: "DELETE" }
     );
-
     const json = await res.json();
-
     if (!json.ok) {
       alert("No se pudo eliminar la factura.");
       return;
     }
-
     alert("Factura eliminada correctamente.");
-
     // Recargar el reporte de créditos
     cargarReporte();
   } catch (error) {
@@ -124,9 +116,24 @@ const ReporCredito = () => {
   }
 };
 
-
   return (
     <div>
+      {procesando && (
+      <div style={{
+        background: "#6699FF",
+        color: "white",
+        padding: "8px",
+        textAlign: "center",
+        fontWeight: "bold",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 999999
+      }}>
+        Procesando, por favor espere...
+      </div>
+      )}
       <Encabezado />
 
       <div style={{ padding: "20px" }}>
