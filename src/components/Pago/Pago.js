@@ -368,6 +368,7 @@ const facturaCancelada = modoCredito
           <div>Tasa USD → COP: {tasaP}</div>
           <div>Fecha de la venta: {fecha}</div>
         </div>
+        <div></div>
         <h2 style={{ textAlign: "center", marginBottom: "1px" }}>
           REGISTRO DE PAGO
         </h2>
