@@ -153,7 +153,7 @@ useEffect(() => {
         setVenta(data.venta);
         console.log("data venta", data.venta)
         console.log("fecha ", data.venta.fecha);
-        cargarTasaDeLaFactura(data.venta.fecha);
+        //cargarTasaDeLaFactura(data.venta.fecha);
         // 2. Validar si es crédito
         if (data.venta.estado === "CREDITO") {
           setEsCredito(true);
