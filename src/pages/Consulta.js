@@ -129,7 +129,6 @@ useEffect(() => {
   }
 }, [pagosMoneda, tasaDolar, tasaPeso, total]);
 
-
     const formatoVE = (valor) => {
       if (!valor) return "0,00";
         return Number(valor).toLocaleString("es-VE", {
