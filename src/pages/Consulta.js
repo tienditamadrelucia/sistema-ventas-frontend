@@ -314,6 +314,16 @@ useEffect(() => {
 
   if (!td || !tpeso || !totalFacturaUSD) {
     console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
+    console.log("DEBUG CREDITOS =====");
+console.log("usd:", usd);
+console.log("bs:", bs);
+console.log("p:", p);
+console.log("tasaDolar:", td);
+console.log("tasaPeso:", tpeso);
+console.log("totalFacturaUSD (total):", totalFacturaUSD);
+console.log("totalPagadoUSD:", totalPagadoUSD);
+console.log("restaUSD:", restaUSD);
+
     setRestaUSD(0);
     setRestaBs(0);
     setRestaP(0);
