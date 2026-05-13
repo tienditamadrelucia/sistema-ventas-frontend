@@ -286,33 +286,39 @@ useEffect(() => {
   };
 
   const calcularTotalesCredito = (pagos) => {
-  let usd = 0;
-  let bs = 0;
-  let p = 0;
-  pagos.forEach((pago) => {
-    usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
-    bs  += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
-    p   += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
-  });
-  setTotalUSD(usd);
-  setTotalBsPagado(bs);
-  setTotalPPagado(p);
-  // si faltan tasas o total, no calculamos resto
-  if (!tasaDolar || !tasaPeso || !total) {
-    setRestaUSD(0);
-    setRestaBs(0);
-    setRestaP(0);
-    return;
-  }
-  // total de la factura en USD
-  const totalFacturaUSD = Number(total);
-  // total pagado convertido a USD
-  const totalPagadoUSD = usd + (bs / tasaDolar) + (p / tasaPeso);
-  const restaUSD = totalFacturaUSD - totalPagadoUSD;
-  setRestaUSD(restaUSD);
-  setRestaBs(restaUSD * tasaDolar);
-  setRestaP(restaUSD * tasaPeso);
-};
+    let usd = 0;
+    let bs = 0;
+    let p = 0;
+    // 1) SUMAR ABONOS EN CADA MONEDA
+    pagos.forEach((pago) => {
+      usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
+      bs  += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
+      p   += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
+    });
+    setTotalUSD(usd);
+    setTotalBsPagado(bs);
+    setTotalPPagado(p);
+    // 2) VALIDAR DATOS BASE
+    const td = Number(tasaDolar);
+    const tp = Number(tasaPeso);
+    const totalFacturaUSD = Number(total); // total de la factura en USD
+    if (!td || !tp || !totalFacturaUSD) {
+      console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
+      setRestaUSD(0);
+      setRestaBs(0);
+      setRestaP(0);
+      return;
+    }
+    // 3) TOTAL PAGADO CONVERTIDO A USD
+    const totalPagadoUSD = usd + (bs / td) + (p / tp);
+    // 4) RESTA POR PAGAR
+    const restaUSD = totalFacturaUSD - totalPagadoUSD;
+    const restaBs  = restaUSD * td;
+    const restaP   = restaUSD * tp;
+    setRestaUSD(restaUSD);
+    setRestaBs(restaBs);
+    setRestaP(restaP);
+  };
 
     // -----------------------------
     // Render
