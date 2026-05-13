@@ -172,7 +172,6 @@ useEffect(() => {
         alert("Frontend dice: Error consultando factura");
       }
   };
-
     
     const obtenerDatosCliente = async (cedula) => {
       try {
@@ -316,7 +315,12 @@ useEffect(() => {
   // 2) VALIDAR DATOS BASE
   const td = Number(tasaDolar);
   const tpeso = Number(tasaPeso);
-  const totalFacturaUSD = Number(detalle.venta.total);  // total de la factura en USD
+  if (!detalle || !detalle.venta || !detalle.venta.total) {
+  console.log("Detalle incompleto, no se puede calcular total de factura");
+  return;
+}
+  const totalFacturaUSD = Number(detalle.venta.total);
+
 
   if (!td || !tpeso || !totalFacturaUSD) {
     console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
