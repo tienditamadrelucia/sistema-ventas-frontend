@@ -94,8 +94,9 @@ const Consulta = () => {
     // -----------------------------
     // USEEFFECT para cargar tasas, clientes, categorías y productos
     // -----------------------------
-  useEffect(() => {
-  if (!venta) return;
+  //useEffect(() => {
+  //  if (!numeroFactura) return;
+  //  consultarFactura()
   const cargarTasaDeLaFactura = async () => {
     try {
       const fechaFactura = venta.fecha.substring(0, 10);
@@ -115,8 +116,8 @@ const Consulta = () => {
       console.error("Error cargando tasa:", error);
     }
   };
-  cargarTasaDeLaFactura();
-}, [venta]);
+  //cargarTasaDeLaFactura();
+//}, [numeroFactura]);
 
 useEffect(() => {
   if (!esCredito) return;
@@ -157,6 +158,7 @@ useEffect(() => {
         } else {
           setEsCredito(false);
         }
+        cargarTasaDeLaFactura()
         // 3. Buscar nombre del cliente
         const cedula = data.venta.cliente;
         const datosCliente = await obtenerDatosCliente(cedula);
