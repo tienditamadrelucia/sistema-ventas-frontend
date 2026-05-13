@@ -297,18 +297,16 @@ useEffect(() => {
     setTotalUSD(usd);
     setTotalBsPagado(bs);
     setTotalPPagado(p);
-    // Convertir todo a USD para restar
-    const totalPagadoUSD =
-      usd +
-      (bs / tasaDolar) +
-      (p / tasaPeso);
-    const totalFacturaUSD = total;
+    // PROTECCIÓN ANTI-NAN
+    const td = Number(tasaDolar) || 1;
+    const tp = Number(tasaPeso) || 1;
+    const totalFacturaUSD = Number(total) || 0;
+    const totalPagadoUSD = usd + (bs / td) + (p / tp);
     const resta = totalFacturaUSD - totalPagadoUSD;
     setRestaUSD(resta);
-    setRestaBs(resta * tasaDolar);
-    setRestaP(resta * tasaPeso);
+    setRestaBs(resta * td);
+    setRestaP(resta * tp);
   };
-
 
     // -----------------------------
     // Render
@@ -604,17 +602,22 @@ useEffect(() => {
         </tbody>
       </table>
 
-      <h3>Total Pagado</h3>
-      <div style={{ display:"flex", gap:"4px", marginBottom:"1px" }}>
+      <h3>Total Pagado:</h3>
+      <div style={{ display:"flex", gap:"25px", marginBottom:"10px" }}>
         <p>USD: {totalUSD.toFixed(2)}</p>
+        <p>-----</p>
         <p>Bs: {totalBsPagado.toFixed(2)}</p>
+        <p>------</p>
         <p>Pesos: {totalPPagado.toFixed(2)}</p>
       </div>
-      <h3>Resta por Pagar</h3>
-      <div style={{ display:"flex", gap:"4px" }}>
-        <p>USD: {restaUSD.toFixed(2)}</p>
-        <p>Bs: {restaBs.toFixed(2)}</p>
-        <p>Pesos: {restaP.toFixed(2)}</p>
+
+      <h3>Resta por Pagar:</h3>
+      <div style={{ display:"flex", gap:"25px" }}>
+        <p>USD: {restaUSD}</p>
+        <p>------</p>
+        <p>Bs: {restaBs}</p>
+        <p>-------</p>
+        <p>Pesos: {restaP}</p>
       </div>
     </div>
   </div>
