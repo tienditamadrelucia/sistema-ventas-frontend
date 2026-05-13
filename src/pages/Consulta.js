@@ -97,9 +97,9 @@ const Consulta = () => {
   //useEffect(() => {
   //  if (!numeroFactura) return;
   //  consultarFactura()
-  const cargarTasaDeLaFactura = async () => {
+  const cargarTasaDeLaFactura = async (fechaFactura) => {
     try {
-      const fechaFactura = venta.fecha.substring(0, 10);
+      //const fechaFactura = venta.fecha.substring(0, 10);
       const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fechaFactura}`);
       const data = await res.json();
       if (data.ok) {
@@ -150,6 +150,7 @@ useEffect(() => {
         // 1. Guardar datos de la venta
         setVenta(data.venta);
         console.log("data venta", data.venta)
+        cargarTasaDeLaFactura(data.venta.fecha)
         // 2. Validar si es crédito
         if (data.venta.estado === "CREDITO") {
           setEsCredito(true);
@@ -158,7 +159,7 @@ useEffect(() => {
         } else {
           setEsCredito(false);
         }
-        cargarTasaDeLaFactura()
+        //cargarTasaDeLaFactura()
         // 3. Buscar nombre del cliente
         const cedula = data.venta.cliente;
         const datosCliente = await obtenerDatosCliente(cedula);
