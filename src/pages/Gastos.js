@@ -110,7 +110,6 @@ const Gastos = () => {
   }
 }
 
-
   useEffect(() => {
     cargarGastos();
     cargarTiposGasto(); // ⭐ NUEVO
@@ -372,7 +371,7 @@ const Gastos = () => {
             {Array.isArray(gastos) &&
               gastos.map((g) => (
                 <tr key={g._id}>
-                  <td>{new Date(g.fecha).toLocaleDateString("es-VE")}</td>
+                  <td>{g.fecha.slice(0, 10)}</td>
                   <td>{g.descripcion}</td>
                   <td>{g.moneda}</td>
                   <td>{g.monto}</td>
