@@ -553,59 +553,64 @@ const Consulta = () => {
 {esCredito && pagosMoneda.length > 0 && (
   <div className="bloque-credito">
 
-    <h3>Pagos de Crédito</h3>
+    <div style={{ border:"1px solid #ccc", padding:"7px", borderRadius:"8px", width:"1200px" }}>
+      <h3 style={{ marginBottom:"10px" }}>Pagos de Crédito</h3>
 
-    <table className="tabla-credito">
-      <thead>
-        <tr>
-          <th>Fecha</th>
-          <th>Operación</th>
-          <th>Efectivo P</th>
-          <th>Transferencia P</th>
-          <th>Efectivo Bs</th>
-          <th>Transferencia Bs</th>
-          <th>Punto</th>
-          <th>Pago Móvil</th>
-          <th>Efectivo $</th>
-          <th>Zelle</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {pagosMoneda.map((p, i) => (
-          <tr key={i}>
-            <td>{p.fecha?.substring(0, 10)}</td>
-            <td>{p.operacion || "ABONO DE CREDITO"}</td>
-
-            <td>{formatoVE(p.efectivoP)}</td>
-            <td>{formatoVE(p.transferenciaP)}</td>
-
-            <td>{formatoVE(p.efectivoBs)}</td>
-            <td>{formatoVE(p.transferenciaBs)}</td>
-            <td>{formatoVE(p.puntoBs)}</td>
-            <td>{formatoVE(p.pagomovilBs)}</td>
-
-            <td>{formatoVE(p.efectivoD)}</td>
-            <td>{formatoVE(p.zelle)}</td>
+      <table style={{ width:"100%", borderCollapse:"collapse", fontSize:"13px" }}>
+        <thead>
+          <tr style={{ background:"#D98897", color:"white" }}>
+            <th style={{ border:"1px solid #ccc", padding:"5px", width:"70px", fontFamily:"Arial Black" }}>Fecha</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"200px", fontFamily:"Arial Black" }}>Operación</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>E-Pesos</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>T-Pesos</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Efectivo Bs</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Transf Bs</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Punto</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Pago Móvil</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Efectivo $</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Zelle</th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
 
-    <h3>Total Pagado</h3>
-    <p>USD: {totalUSD.toFixed(2)}</p>
-    <p>Bs: {totalBsPagado.toFixed(2)}</p>
-    <p>Pesos: {totalPPagado.toFixed(2)}</p>
+        <tbody>
+          {pagosMoneda.map((p, i) => (
+            <tr key={i}>
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>
+                {p.fecha?.substring(0,10)}
+              </td>
 
-    <h3>Resta por Pagar</h3>
-    <p>USD: {restaUSD.toFixed(2)}</p>
-    <p>Bs: {restaBs.toFixed(2)}</p>
-    <p>Pesos: {restaP.toFixed(2)}</p>
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>
+                {p.operacion || "ABONO DE CREDITO"}
+              </td>
+
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.efectivoP)}</td>
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.transferenciaP)}</td>
+
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.efectivoBs)}</td>
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.transferenciaBs)}</td>
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.puntoBs)}</td>
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.pagomovilBs)}</td>
+
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.efectivoD)}</td>
+              <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.zelle)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <h3>Total Pagado</h3>
+      <p>USD: {totalUSD.toFixed(2)}</p>
+      <p>Bs: {totalBsPagado.toFixed(2)}</p>
+      <p>Pesos: {totalPPagado.toFixed(2)}</p>
+
+      <h3>Resta por Pagar</h3>
+      <p>USD: {restaUSD.toFixed(2)}</p>
+      <p>Bs: {restaBs.toFixed(2)}</p>
+      <p>Pesos: {restaP.toFixed(2)}</p>
+    </div>
 
   </div>
 )}
-
-
 
 <div style={{ marginTop: "10px", width: "950px", display: "flex", justifyContent: "center", gap: "20px" }}>
   <button onClick={volverAlMenu} style={estiloBoton}>
