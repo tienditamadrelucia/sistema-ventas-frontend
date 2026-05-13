@@ -632,14 +632,13 @@ useEffect(() => {
           ))}
         </tbody>
       </table>
-      <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
-        Total Pagado: USD: {totalUSD.toFixed(2)} ---- Bs.: {totalBsPagado.toFixed(2)} ---- Pesos: {totalPPagado.toFixed(2)}
-      </div>
-      <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
-        Resta por Pagar: USD: {restaUSD.toFixed(2)} ---- Bs.: {restaBs.toFixed(2)} ---- Pesos: {restaP.toFixed(2)}
-      </div>
-
     </div>
+    <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
+      Total Pagado: USD: {totalUSD.toFixed(2)} ---- Bs.: {totalBsPagado.toFixed(2)} ---- Pesos: {totalPPagado.toFixed(2)}
+    </div>
+    <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
+      Resta por Pagar: USD: {restaUSD.toFixed(2)} ---- Bs.: {restaBs.toFixed(2)} ---- Pesos: {restaP.toFixed(2)}
+    </div>    
   </div>
 )}
 
