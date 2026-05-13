@@ -127,6 +127,8 @@ useEffect(() => {
     Number(tasaDolar) > 0 &&
     Number(tasaPeso) > 0
   ) {
+    console.log("tasa dolar", tasaDolar);
+    console.log("tasa dolar", tasaPeso);
     calcularTotalesCredito(pagosMoneda);
   }
 }, [venta, pagosMoneda, tasaDolar, tasaPeso]);
@@ -153,6 +155,7 @@ useEffect(() => {
         }
         // 1. Guardar datos de la venta
         setVenta(data.venta);
+        console.log("data venta", data.venta)
         // 2. Validar si es crédito
         if (data.venta.estado === "CREDITO") {
           setEsCredito(true);
@@ -310,6 +313,7 @@ useEffect(() => {
   setTotalPPagado(p);
   const td = Number(tasaDolar);
   const tpeso = Number(tasaPeso);
+  console.log("venta total ", venta.total);
   if (!venta || !venta.total) {
     console.log("Venta incompleta, no se puede calcular total de factura");
     return;
