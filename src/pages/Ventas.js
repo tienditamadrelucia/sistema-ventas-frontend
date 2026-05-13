@@ -519,12 +519,21 @@ const Ventas = () => {
       alert("Debe ingresar productos antes de procesar un crédito");
       return;
     }
+    let facturaNumero = numeroFactura;
+    // ⭐ 1) DETERMINAR NÚMERO DE FACTURA
+    if (!facturaNumero || facturaNumero === "") {
+    // Venta nueva → generar número
+    const fact = await obtenerFacturaNro(); 
+    facturaNumero = fact + 1;
+    setNumeroFactura(facturaNumero);
+    }
+    // Si ya tiene número → NO generar nada
+    
     if (!clienteSeleccionado) {
       alert("Debe seleccionar un cliente para crédito");
       return;
-    }
-    const numero = await obtenerFacturaNro();
-    setNumeroFactura(numero);
+    }    
+    setNumeroFactura(facturaNumero);
     setModoCredito(true);
     setPagoExistente(null);
     setVueltoExistente(null);

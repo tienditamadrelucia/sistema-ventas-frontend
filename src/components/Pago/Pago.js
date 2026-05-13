@@ -912,7 +912,7 @@ const facturaCancelada = modoCredito
             totalAbonado,
             modoCredito
             });
-          onCerrar();
+          setTimeout(() => onCerrar(), 0);
           }}
         >
           Grabar
