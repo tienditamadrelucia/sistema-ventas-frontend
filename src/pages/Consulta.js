@@ -288,39 +288,56 @@ useEffect(() => {
 
   const calcularTotalesCredito = (pagos) => {
   let usd = 0;
-  let bs = 0;
-  let p = 0;
-  // 1) SUMAR ABONOS EN CADA MONEDA
+  let bs  = 0;
+  let p   = 0;
+
+  // 1) SUMAR ABONOS EN CADA MONEDA (SIN CONVERTIR)
   pagos.forEach((pago) => {
     usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
-    bs  += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
+    bs  += Number(pago.efectivoBs || 0)
+        + Number(pago.transferenciaBs || 0)
+        + Number(pago.puntoBs || 0)
+        + Number(pago.pagomovilBs || 0);
     p   += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
   });
+
+  // Estos son los que vas a mostrar en:
+  // Total Pagado: USD: xx  Bs: yy  Pesos: zz
+  setTotalUSD(usd);
+  setTotalBsPagado(bs);
+  setTotalPPagado(p);
+
   // 2) VALIDAR DATOS BASE
   const td = Number(tasaDolar);
-  const tp = Number(tasaPeso);
+  const tpeso = Number(tasaPeso);
   const totalFacturaUSD = Number(total); // total de la factura en USD
-  if (!td || !tp || !totalFacturaUSD) {
+
+  if (!td || !tpeso || !totalFacturaUSD) {
     console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
     setRestaUSD(0);
     setRestaBs(0);
     setRestaP(0);
     return;
   }
-  const tusd = usd+(bs/td)+(p/tp)
-  const tbs = tusd * td
-  const tp = tusd * tp
-  setTotalUSD(tusd);
-  setTotalBsPagado(tbs);
-  setTotalPPagado(tp);
-  // 3) RESTA POR PAGAR
-  const restaUSD = totalFacturaUSD - tusd;
+
+  // 3) TOTAL PAGADO CONVERTIDO A USD (TU PRIMERA REGLA)
+  const totalPagadoUSD = usd + (bs / td) + (p / tpeso);
+
+  // 4) RESTA POR PAGAR SEGÚN LA LÓGICA CORRECTA
+  //    (si quieres “lo que falta por pagar”):
+  const restaUSD = totalFacturaUSD - totalPagadoUSD;
+
+  //    Bs = restaUSD * tasaDolar
   const restaBs  = restaUSD * td;
-  const restaP   = restaUSD * tp;
+
+  //    Pesos = restaUSD * tasaPeso
+  const restaP   = restaUSD * tpeso;
+
   setRestaUSD(restaUSD);
   setRestaBs(restaBs);
   setRestaP(restaP);
 };
+
 
     // -----------------------------
     // Render
