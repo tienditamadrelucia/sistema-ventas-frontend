@@ -296,9 +296,6 @@ useEffect(() => {
     bs  += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
     p   += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
   });
-  setTotalUSD(usd);
-  setTotalBsPagado(bs);
-  setTotalPPagado(p);
   // 2) VALIDAR DATOS BASE
   const td = Number(tasaDolar);
   const tp = Number(tasaPeso);
@@ -310,17 +307,20 @@ useEffect(() => {
     setRestaP(0);
     return;
   }
-  // 3) TOTAL PAGADO CONVERTIDO A USD
-  const totalPagadoUSD = usd + (bs / td) + (p / tp);
-  // 4) RESTA POR PAGAR
-  const restaUSD = totalFacturaUSD - totalPagadoUSD;
+  const tusd = usd+(bs/td)+(p/tp)
+  const tbs = tusd * td
+  const tp = tusd * tp
+  setTotalUSD(tusd);
+  setTotalBsPagado(tbs);
+  setTotalPPagado(tp);
+  // 3) RESTA POR PAGAR
+  const restaUSD = totalFacturaUSD - tusd;
   const restaBs  = restaUSD * td;
   const restaP   = restaUSD * tp;
   setRestaUSD(restaUSD);
   setRestaBs(restaBs);
   setRestaP(restaP);
 };
-
 
     // -----------------------------
     // Render
@@ -615,10 +615,10 @@ useEffect(() => {
           ))}
         </tbody>
       </table>
-      <div style={{ textAlign: "right", marginTop: "1px", fontSize: "18px", fontWeight: "bold", marginRight:"300px"}}>
+      <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
         Total Pagado: USD: {totalUSD.toFixed(2)} ---- Bs.: {totalBsPagado.toFixed(2)} ---- Pesos: {totalPPagado.toFixed(2)}
       </div>
-      <div style={{ textAlign: "right", marginTop: "1px", fontSize: "18px", fontWeight: "bold", marginRight:"300px"}}>
+      <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
         Resta por Pagar: USD: {restaUSD.toFixed(2)} ---- Bs.: {restaBs.toFixed(2)} ---- Pesos: {restaP.toFixed(2)}
       </div>
 
