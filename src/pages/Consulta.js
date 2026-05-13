@@ -116,6 +116,12 @@ const Consulta = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [detalle]);
 
+useEffect(() => {
+  if (esCredito && pagosMoneda.length > 0) {
+    calcularTotalesCredito(pagosMoneda);
+  }
+}, [pagosMoneda, tasaDolar, tasaPeso, total]);
+
     const formatoVE = (valor) => {
       if (!valor) return "0,00";
         return Number(valor).toLocaleString("es-VE", {
@@ -280,28 +286,28 @@ const Consulta = () => {
   };
 
   const calcularTotalesCredito = (pagos) => {
-  let usd = 0;
-  let bs = 0;
-  let p = 0;
-  pagos.forEach(pago => {
-    usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
-    bs += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
-    p  += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
-  });
-  setTotalUSD(usd);
-  setTotalBsPagado(bs);
-  setTotalPPagado(p);
-  // Convertir todo a USD para restar
-  const totalPagadoUSD =
+    let usd = 0;
+    let bs = 0;
+    let p = 0;
+    pagos.forEach(pago => {
+      usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
+      bs += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
+      p  += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
+    });
+    setTotalUSD(usd);
+    setTotalBsPagado(bs);
+    setTotalPPagado(p);
+    // Convertir todo a USD para restar
+    const totalPagadoUSD =
       usd +
       (bs / tasaDolar) +
       (p / tasaPeso);
-  const totalFacturaUSD = total;
-  const resta = totalFacturaUSD - totalPagadoUSD;
-  setRestaUSD(resta);
-  setRestaBs(resta * tasaDolar);
-  setRestaP(resta * tasaPeso);
-};
+    const totalFacturaUSD = total;
+    const resta = totalFacturaUSD - totalPagadoUSD;
+    setRestaUSD(resta);
+    setRestaBs(resta * tasaDolar);
+    setRestaP(resta * tasaPeso);
+  };
 
 
     // -----------------------------
@@ -559,16 +565,16 @@ const Consulta = () => {
       <table style={{ width:"100%", borderCollapse:"collapse", fontSize:"13px" }}>
         <thead>
           <tr style={{ background:"#D98897", color:"white" }}>
-            <th style={{ border:"1px solid #ccc", padding:"5px", width:"70px", fontFamily:"Arial Black" }}>Fecha</th>
+            <th style={{ border:"1px solid #ccc", padding:"5px", width:"50px", fontFamily:"Arial Black" }}>Fecha</th>
             <th style={{ border:"1px solid #ccc", padding:"6px", width:"200px", fontFamily:"Arial Black" }}>Operación</th>
-            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>E-Pesos</th>
-            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>T-Pesos</th>
-            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Efectivo Bs</th>
-            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Transf Bs</th>
-            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Punto</th>
-            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Pago Móvil</th>
-            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Efectivo $</th>
-            <th style={{ border:"1px solid #ccc", padding:"6px", width:"80px", fontFamily:"Arial Black" }}>Zelle</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>E-Pesos</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>T-Pesos</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>Efectivo Bs</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>Transf Bs</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>Punto</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>Pago Móvil</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>Efectivo $</th>
+            <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>Zelle</th>
           </tr>
         </thead>
 
@@ -599,16 +605,18 @@ const Consulta = () => {
       </table>
 
       <h3>Total Pagado</h3>
-      <p>USD: {totalUSD.toFixed(2)}</p>
-      <p>Bs: {totalBsPagado.toFixed(2)}</p>
-      <p>Pesos: {totalPPagado.toFixed(2)}</p>
-
+      <div style={{ display:"flex", gap:"40px", marginBottom:"10px" }}>
+        <p>USD: {totalUSD.toFixed(2)}</p>
+        <p>Bs: {totalBsPagado.toFixed(2)}</p>
+        <p>Pesos: {totalPPagado.toFixed(2)}</p>
+      </div>
       <h3>Resta por Pagar</h3>
-      <p>USD: {restaUSD.toFixed(2)}</p>
-      <p>Bs: {restaBs.toFixed(2)}</p>
-      <p>Pesos: {restaP.toFixed(2)}</p>
+      <div style={{ display:"flex", gap:"40px" }}>
+        <p>USD: {restaUSD.toFixed(2)}</p>
+        <p>Bs: {restaBs.toFixed(2)}</p>
+        <p>Pesos: {restaP.toFixed(2)}</p>
+      </div>
     </div>
-
   </div>
 )}
 
