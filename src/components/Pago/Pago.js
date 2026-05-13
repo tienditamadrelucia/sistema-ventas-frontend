@@ -297,7 +297,8 @@ const diferenciaUSD = Math.abs(totalPagadoUSD - totalDolar);
 
 const facturaCancelada = modoCredito
   ? totalAbonado > 0
-  : diferenciaUSD <= 0.02 && vueltoCorrecto;
+  : vueltoCorrecto;
+
  
   const limpiarTodo = () => {    
     // USD
