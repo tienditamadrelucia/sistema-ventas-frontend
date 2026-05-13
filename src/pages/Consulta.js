@@ -129,7 +129,7 @@ useEffect(() => {
   ) {
     console.log("tasa dolar", tasaDolar);
     console.log("tasa dolar", tasaPeso);
-    calcularTotalesCredito(pagosMoneda);
+    calcularTotalesCredito(pagosMoneda, venta.venta);
   }
 }, [venta, pagosMoneda, tasaDolar, tasaPeso]);
 
@@ -296,7 +296,7 @@ useEffect(() => {
     }
   };
 
-  const calcularTotalesCredito = (pagos) => {
+  const calcularTotalesCredito = (pagos, venta) => {
   let usd = 0;
   let bs  = 0;
   let p   = 0;
