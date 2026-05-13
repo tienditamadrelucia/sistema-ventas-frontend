@@ -15,6 +15,7 @@ const Gastos = () => {
   const [gastoEditando, setGastoEditando] = useState(null);
   const formularioRef = useRef(null);
   const [procesando, setProcesando] = useState(false);
+  const hoyLocal = new Date();
   const hoyUTC = new Date(Date.UTC(
     hoyLocal.getFullYear(),
     hoyLocal,getMonth(),

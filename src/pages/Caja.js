@@ -275,10 +275,8 @@ const Caja = () => {
       return;
     }
     const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fechaFormateada}`);
-    const data = await res.json();
-    console.log("CAJA CHICA:", data);
-    if (!data || data.ok !== true) {
-      console.log("DATA RECIBIDA:", data);
+    const data = await res.json();    
+    if (!data || data.ok !== true) {      
       alert("F: No hay caja chica registrada para esa fecha.");
       return;
     }
