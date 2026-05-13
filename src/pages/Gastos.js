@@ -18,7 +18,7 @@ const Gastos = () => {
   const hoyLocal = new Date();
   const hoyUTC = new Date(Date.UTC(
     hoyLocal.getFullYear(),
-    hoyLocal,getMonth(),
+    hoyLocal.getMonth(),
     hoyLocal.getDate(),
     0,0,0    
   ));
