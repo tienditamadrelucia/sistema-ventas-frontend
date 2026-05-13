@@ -94,9 +94,8 @@ const Consulta = () => {
     // -----------------------------
     // USEEFFECT para cargar tasas, clientes, categorías y productos
     // -----------------------------
-    useEffect(() => {
+  useEffect(() => {
   if (!venta) return;
-
   const cargarTasaDeLaFactura = async () => {
     try {
       const fechaFactura = venta.fecha.substring(0, 10);
@@ -105,6 +104,10 @@ const Consulta = () => {
       if (data.ok) {
         setTasaDolar(data.tasa.tasaDolar);
         setTasaPeso(data.tasa.tasaPeso);
+        // ⭐ SI YA HAY PAGOS, CALCULAR AHORA
+        if (esCredito && pagosMoneda.length > 0) {
+          calcularTotalesCredito(pagosMoneda);
+        }
       } else {
         alert("No hay tasas registradas para la fecha de esta factura.");
       }
@@ -113,8 +116,9 @@ const Consulta = () => {
     }
   };
   cargarTasaDeLaFactura();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [venta]);
+
+
 
 useEffect(() => {
   if (
@@ -129,7 +133,7 @@ useEffect(() => {
   ) {
     console.log("tasa dolar", tasaDolar);
     console.log("tasa dolar", tasaPeso);
-    calcularTotalesCredito(pagosMoneda, venta.venta);
+    calcularTotalesCredito(pagosMoneda);
   }
 }, [venta, pagosMoneda, tasaDolar, tasaPeso]);
 
@@ -241,10 +245,7 @@ useEffect(() => {
   try {
     const res = await fetch(`${API_URL}/api/moneda/factura/${factura}`);
     const data = await res.json();
-    setPagosMoneda(data.lista || []);
-    if (esCreditoFactura) {
-      calcularTotalesCredito(data.lista || []);
-    }
+    setPagosMoneda(data.lista || []);    
   } catch (error) {
     console.error("Error cargando pagos:", error);
     alert("Error al buscar pagos");
@@ -296,7 +297,7 @@ useEffect(() => {
     }
   };
 
-  const calcularTotalesCredito = (pagos, venta) => {
+  const calcularTotalesCredito = (pagos) => {
   let usd = 0;
   let bs  = 0;
   let p   = 0;
