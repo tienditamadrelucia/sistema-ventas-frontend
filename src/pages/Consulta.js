@@ -232,7 +232,7 @@ useEffect(() => {
     const data = await res.json();
     setPagosMoneda(data.lista || []);
     if (esCreditoFactura) {
-      calcularTotalesCredito(data);
+      calcularTotalesCredito(data.lista || []);
     }
   } catch (error) {
     console.error("Error cargando pagos:", error);
@@ -605,13 +605,13 @@ useEffect(() => {
       </table>
 
       <h3>Total Pagado</h3>
-      <div style={{ display:"flex", gap:"40px", marginBottom:"10px" }}>
+      <div style={{ display:"flex", gap:"4px", marginBottom:"1px" }}>
         <p>USD: {totalUSD.toFixed(2)}</p>
         <p>Bs: {totalBsPagado.toFixed(2)}</p>
         <p>Pesos: {totalPPagado.toFixed(2)}</p>
       </div>
       <h3>Resta por Pagar</h3>
-      <div style={{ display:"flex", gap:"40px" }}>
+      <div style={{ display:"flex", gap:"4px" }}>
         <p>USD: {restaUSD.toFixed(2)}</p>
         <p>Bs: {restaBs.toFixed(2)}</p>
         <p>Pesos: {restaP.toFixed(2)}</p>
