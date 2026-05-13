@@ -344,6 +344,12 @@ useEffect(() => {
   setRestaP(restaP);
 };
 
+  const abonoCredito = async () => {
+    if (!numeroFactura) {
+      alert("Debe ingresar un número de factura.");
+      return;
+      }
+  };
 
     // -----------------------------
     // Render
