@@ -475,6 +475,19 @@ useEffect(() => {
 )}
 {!esCredito && (
   <div>
+    <div
+      style={{
+        fontSize: "10px",
+        color: "#444",
+        marginBottom: "10px",
+        padding: "4px 8px",
+        backgroundColor: "#f3f3f3",
+        borderRadius: "6px",
+        whiteSpace: "nowrap"
+        }}
+      >
+        <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaD} ••••• USD/COP: {tasaP} ••••• Fecha: {fecha}</strong>
+    </div>
 {/* TABLA DE PAGOS */}
 <div style={{ display:"flex", border: "1px solid #ccc", padding: "7px", gap: "8px", width: "1200px", marginTop: "10px", alignItems:"flex-start" }}>
     <div style={{ marginTop: "1px" }}>
