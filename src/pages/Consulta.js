@@ -118,21 +118,16 @@ const Consulta = () => {
   cargarTasaDeLaFactura();
 }, [venta]);
 
-
-
 useEffect(() => {
   if (
     esCredito &&
     venta &&
-    venta.venta &&
-    Number(venta.venta.total) > 0 &&
+    Number(venta.total) > 0 &&
     Array.isArray(pagosMoneda) &&
     pagosMoneda.length > 0 &&
     Number(tasaDolar) > 0 &&
     Number(tasaPeso) > 0
   ) {
-    console.log("tasa dolar", tasaDolar);
-    console.log("tasa dolar", tasaPeso);
     calcularTotalesCredito(pagosMoneda);
   }
 }, [venta, pagosMoneda, tasaDolar, tasaPeso]);
