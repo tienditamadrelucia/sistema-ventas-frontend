@@ -15,9 +15,14 @@ const Gastos = () => {
   const [gastoEditando, setGastoEditando] = useState(null);
   const formularioRef = useRef(null);
   const [procesando, setProcesando] = useState(false);
-
+  const hoyUTC = new Date(Date.UTC(
+    hoyLocal.getFullYear(),
+    hoyLocal,getMonth(),
+    hoyLocal.getDate(),
+    0,0,0    
+  ));
   const [formData, setFormData] = useState({
-    fecha: new Date().toISOString().substring(0, 10),
+    fecha: hoyUTC.toISOString().slice(0,10),
     descripcion: "",
     moneda: "",
     monto: 0,
