@@ -291,8 +291,7 @@ useEffect(() => {
     ((Number(vueltoCopUsuario || 0) / tasaP) * tasaD)
   );
 
-const vueltoCorrecto =
-  Math.abs(vueltoUsuarioUSD - vueltoUsdSistema) < 0.03;
+const vueltoCorrecto = vueltoUsuarioUSD + 0.001 >= vueltoUsdSistema;
 
 const diferenciaUSD = Math.abs(totalPagadoUSD - totalDolar);
 
