@@ -20,7 +20,7 @@ import Consulta from "./pages/Consulta";
 import Caja from "./pages/Caja";
 import Gastos from "./pages/Gastos";
 import Diario from "./pages/Diario";
-import Repcredito from "./pages/ReporCredito";
+import ReporCredito from "./pages/ReporCredito";
 import TipoGastos from "./pages/TipoGastos";
 import PorStock from "./pages/PorStock";
 
@@ -74,7 +74,7 @@ function App() {
         <Route path="/caja" element={<ProtectedRoute><Caja /></ProtectedRoute>} />
         <Route path="/gastos" element={<ProtectedRoute><Gastos /></ProtectedRoute>} />
         <Route path="/diario" element={<ProtectedRoute><Diario /></ProtectedRoute>} />
-        <Route path="/repcredito" element={<ProtectedRoute><Repcredito /></ProtectedRoute>} />
+        <Route path="/reporcredito" element={<ProtectedRoute><ReporCredito /></ProtectedRoute>} />
         <Route path="/tipogastos" element={<ProtectedRoute><TipoGastos /></ProtectedRoute>} />
         <Route path="/porstock" element={<ProtectedRoute><PorStock /></ProtectedRoute>} />
       </Routes>

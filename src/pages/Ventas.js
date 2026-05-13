@@ -941,79 +941,43 @@ const cargarFacturaParaPago = async (dataVenta) => {
       <div style={{ width: "1500px", margin: "0 auto", marginLeft: "15px" }}>
         {/* CONTENEDOR HORIZONTAL */}
         <div
-          style={{
-            display: "flex",
-            gap: "10px",
-            alignItems: "flex-start",
-            width: "1400px"
-          }}
-        >
+          style={{display: "flex", gap: "10px", alignItems: "flex-start", width: "1400px" }}>
           {/* A) DATOS DE LA FACTURA */}
-          <div
-            style={{
-              border: "1px solid #ccc",
-              padding: "1px",
-              borderRadius: "8px",
-              width: "440px",
-              marginBottom: "1px"
-            }}
-          >
-            <h3 style={{ marginTop: 0, marginLeft: "5px" }}>Datos de la Factura</h3>
-            <div
-              style={{
-                display: "flex",
-                gap: "10px",
-                marginBottom: "10px",
-                marginLeft: "5px"
-              }}
-            >
-              <div
-                style={{display: "flex", flexDirection: "column", width: "210px"}}>
+          <div style={{ border:"1px solid #ccc", padding:"1px", borderRadius:"8px", width:"440px", marginBottom:"1px" }}>
+            <h3 style={{ marginTop:0, marginLeft:"5px" }}>Datos de la Factura</h3>
+            <div style={{ display:"flex", gap:"10px", marginBottom:"10px", marginLeft:"5px" }}>
+              {/* FECHA */}
+              <div style={{ display:"flex", flexDirection:"column", width:"210px" }}>
                 <label>Fecha</label>
                 <input
                   type="date"
                   value={fecha}
                   onChange={async (e) => {
-                    const fechaSeleccionada = e.target.value; // viene EXACTA, sin zona horaria
-                    setFecha(fechaSeleccionada);
-                    const tasa = await cargarTasasPorFecha(fechaSeleccionada);
-                    if (!tasa) {
-                      setMostrarModalTasas(true);
-                      return;
-                      }
+                  const f = e.target.value;
+                  setFecha(f);
+                  const tasa = await cargarTasasPorFecha(f);
+                  if (!tasa) return setMostrarModalTasas(true);
                     const { tasaD, tasaP, cajachicaD, cajachicaP } = tasa;
-                      setTasaDolar(tasaD);
-                      setTasaPeso(tasaP);
-                      setCajaDolar(cajachicaD);
-                      setCajaPeso(cajachicaP);
-                    }}
+                    setTasaDolar(tasaD); setTasaPeso(tasaP);
+                    setCajaDolar(cajachicaD); setCajaPeso(cajachicaP);
+                  }}
                 />
               </div>
-              <div
-                style={{display: "flex", flexDirection: "column", width: "100px" }}>
+              {/* FACTURA */}
+              <div style={{ display:"flex", flexDirection:"column", width:"100px" }}>
                 <label>N° Factura</label>
-                <input
-                  type="text"
-                  value={numeroFactura || ""}
-                  readOnly
-                  style={{ backgroundColor: "#EDC5CD" }}
-                />
+                <input type="text" value={numeroFactura || ""} readOnly style={{ background:"#EDC5CD" }} />
               </div>
-              <div
-                style={{display: "flex", flexDirection: "column", width: "100px"}}>
+              {/* HORA */}
+              <div style={{ display:"flex", flexDirection:"column", width:"100px" }}>
                 <label>Hora</label>
-                <input
-                  type="text"
-                  value={hora}
-                  readOnly
-                  style={{ backgroundColor: "#EDC5CD" }}
-                />
-              </div>            
-              <button onClick={pagarFactura} style={estiloBoton}>
-                Buscar
-              </button>            
+                <input type="text" value={hora} readOnly style={{ background:"#EDC5CD" }} />
+              </div>
+              {/* BOTÓN */}
+              <button onClick={pagarFactura} style={estiloBotonVerde }>Buscar</button>
             </div>
           </div>
+
           {/* B) DATOS DEL CLIENTE */}
           <div
             style={{
@@ -1025,16 +989,8 @@ const cargarFacturaParaPago = async (dataVenta) => {
             }}
           >
             <h3 style={{ marginTop: 0, marginLeft: "5px" }}>Datos del Cliente</h3>
-            <div
-              style={{display: "flex", gap: "10px", marginBottom: "10px"}}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  width: "100px",
-                  marginLeft: "5px"
-                }}
-              >
+            <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+              <div style={{ display: "flex", flexDirection: "column", width: "100px", marginLeft: "5px" }}>
                 <label>Identificación</label>
                 <input
                   type="text"
@@ -1042,54 +998,37 @@ const cargarFacturaParaPago = async (dataVenta) => {
                   onChange={(e) => {
                     const valor = e.target.value.toUpperCase();
                     const regex = /^[VEJG][0-9]*$/;
-                    if (valor === "" || regex.test(valor)) {
-                      setIdentificacion(valor);
-                    }
+                    if (valor === "" || regex.test(valor)) setIdentificacion(valor);
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "Enter") {
                       const valor = e.target.value.trim().toUpperCase();
                       buscarClientePorIdentificacion(valor);
                     }
-                  }}                  
+                  }}
                 />
               </div>
-              <div
-                style={{display: "flex", flexDirection: "column", width: "250px"}}>
+              <div style={{ display: "flex", flexDirection: "column", width: "250px" }}>
                 <label>Nombre</label>
                 <select
                   value={clienteSeleccionado ? clienteSeleccionado._id : ""}
                   onChange={(e) => {
                     const id = e.target.value;
-                    const cliente =
-                      listaClientes.find((c) => c._id === id) || null;
+                    const cliente = listaClientes.find((c) => c._id === id) || null;
                     setClienteSeleccionado(cliente);
-                    setNombreCliente(
-                      cliente ? cliente.nombreCompleto : ""
-                    );
-                    setIdentificacion(
-                      cliente ? cliente.identificacion : ""
-                    );
-                    if (!cliente) {
-                      setMostrarEditorCliente(false);
-                      return;
-                    }
-                    const incompleto =
+                    setNombreCliente(cliente ? cliente.nombreCompleto : "");
+                    setIdentificacion(cliente ? cliente.identificacion : "");
+                    if (!cliente) return setMostrarEditorCliente(false);
+                      const incompleto =
                       cliente.nombreCompleto === "CLIENTE POR ACTUALIZAR" ||
                       cliente.direccion === "DIRECCIÓN POR ACTUALIZAR" ||
                       cliente.telefono === "TELÉFONO POR ACTUALIZAR";
-                    if (incompleto) {
-                      setMostrarEditorCliente(true);
-                    } else {
-                      setMostrarEditorCliente(false);
-                    }
-                  }}
+                      setMostrarEditorCliente(incompleto);
+                    }}
                 >
                   <option value="">Seleccione</option>
                   {listaClientes.map((c) => (
-                    <option key={c._id} value={c._id}>
-                      {c.nombreCompleto}
-                    </option>
+                  <option key={c._id} value={c._id}>{c.nombreCompleto}</option>
                   ))}
                 </select>
               </div>
@@ -1105,7 +1044,6 @@ const cargarFacturaParaPago = async (dataVenta) => {
             </div>
           </div>
         </div>
-
         {/* SECCIÓN PRODUCTOS */}
         <div
           style={{
