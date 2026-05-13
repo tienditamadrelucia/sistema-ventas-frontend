@@ -95,11 +95,11 @@ const Consulta = () => {
     // USEEFFECT para cargar tasas, clientes, categorías y productos
     // -----------------------------
     useEffect(() => {
-  if (!detalle) return;
+  if (!venta) return;
 
   const cargarTasaDeLaFactura = async () => {
     try {
-      const fechaFactura = detalle.venta.fecha.substring(0, 10);
+      const fechaFactura = venta.fecha.substring(0, 10);
       const res = await fetch(`${API}/tasas/por-fecha/${fechaFactura}`);
       const data = await res.json();
       if (data.ok) {
@@ -114,14 +114,14 @@ const Consulta = () => {
   };
   cargarTasaDeLaFactura();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [detalle]);
+}, [venta]);
 
 useEffect(() => {
   if (
     esCredito &&
-    detalle &&
-    detalle.venta &&
-    Number(detalle.venta.total) > 0 &&
+    venta &&
+    venta.venta &&
+    Number(venta.venta.total) > 0 &&
     Array.isArray(pagosMoneda) &&
     pagosMoneda.length > 0 &&
     Number(tasaDolar) > 0 &&
@@ -129,8 +129,7 @@ useEffect(() => {
   ) {
     calcularTotalesCredito(pagosMoneda);
   }
-}, [detalle, pagosMoneda, tasaDolar, tasaPeso]);
-
+}, [venta, pagosMoneda, tasaDolar, tasaPeso]);
 
     const formatoVE = (valor) => {
       if (!valor) return "0,00";
@@ -298,8 +297,6 @@ useEffect(() => {
   let usd = 0;
   let bs  = 0;
   let p   = 0;
-
-  // 1) SUMAR ABONOS EN CADA MONEDA (SIN CONVERTIR)
   pagos.forEach((pago) => {
     usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
     bs  += Number(pago.efectivoBs || 0)
@@ -308,21 +305,16 @@ useEffect(() => {
         + Number(pago.pagomovilBs || 0);
     p   += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
   });
-
-  // Estos son los que vas a mostrar en:
-  // Total Pagado: USD: xx  Bs: yy  Pesos: zz
   setTotalUSD(usd);
   setTotalBsPagado(bs);
   setTotalPPagado(p);
-
-  // 2) VALIDAR DATOS BASE
   const td = Number(tasaDolar);
   const tpeso = Number(tasaPeso);
-  if (!detalle || !detalle.venta || !detalle.venta.total) {
-  console.log("Detalle incompleto, no se puede calcular total de factura");
-  return;
-}
-  const totalFacturaUSD = Number(detalle.venta.total);
+  if (!venta || !venta.total) {
+    console.log("Venta incompleta, no se puede calcular total de factura");
+    return;
+  }
+  const totalFacturaUSD = Number(venta.total);
   if (!td || !tpeso || !totalFacturaUSD) {
     console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
     setRestaUSD(0);
@@ -330,20 +322,10 @@ useEffect(() => {
     setRestaP(0);
     return;
   }
-
-  // 3) TOTAL PAGADO CONVERTIDO A USD (TU PRIMERA REGLA)
   const totalPagadoUSD = usd + (bs / td) + (p / tpeso);
-
-  // 4) RESTA POR PAGAR SEGÚN LA LÓGICA CORRECTA
-  //    (si quieres “lo que falta por pagar”):
   const restaUSD = totalFacturaUSD - totalPagadoUSD;
-
-  //    Bs = restaUSD * tasaDolar
   const restaBs  = restaUSD * td;
-
-  //    Pesos = restaUSD * tasaPeso
   const restaP   = restaUSD * tpeso;
-
   setRestaUSD(restaUSD);
   setRestaBs(restaBs);
   setRestaP(restaP);
