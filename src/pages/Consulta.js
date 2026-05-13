@@ -286,27 +286,33 @@ useEffect(() => {
   };
 
   const calcularTotalesCredito = (pagos) => {
-    let usd = 0;
-    let bs = 0;
-    let p = 0;
-    pagos.forEach(pago => {
-      usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
-      bs += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
-      p  += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
-    });
-    setTotalUSD(usd);
-    setTotalBsPagado(bs);
-    setTotalPPagado(p);
-    // PROTECCIÓN ANTI-NAN
-    const td = Number(tasaDolar) || 1;
-    const tp = Number(tasaPeso) || 1;
-    const totalFacturaUSD = Number(total) || 0;
-    const totalPagadoUSD = usd + (bs / td) + (p / tp);
-    const resta = totalFacturaUSD - totalPagadoUSD;
-    setRestaUSD(resta);
-    setRestaBs(resta * td);
-    setRestaP(resta * tp);
-  };
+  let usd = 0;
+  let bs = 0;
+  let p = 0;
+  pagos.forEach((pago) => {
+    usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
+    bs  += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
+    p   += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
+  });
+  setTotalUSD(usd);
+  setTotalBsPagado(bs);
+  setTotalPPagado(p);
+  // si faltan tasas o total, no calculamos resto
+  if (!tasaDolar || !tasaPeso || !total) {
+    setRestaUSD(0);
+    setRestaBs(0);
+    setRestaP(0);
+    return;
+  }
+  // total de la factura en USD
+  const totalFacturaUSD = Number(total);
+  // total pagado convertido a USD
+  const totalPagadoUSD = usd + (bs / tasaDolar) + (p / tasaPeso);
+  const restaUSD = totalFacturaUSD - totalPagadoUSD;
+  setRestaUSD(restaUSD);
+  setRestaBs(restaUSD * tasaDolar);
+  setRestaP(restaUSD * tasaPeso);
+};
 
     // -----------------------------
     // Render
@@ -602,23 +608,24 @@ useEffect(() => {
         </tbody>
       </table>
 
-      <h3>Total Pagado:</h3>
-      <div style={{ display:"flex", gap:"25px", marginBottom:"10px" }}>
-        <p>USD: {totalUSD.toFixed(2)}</p>
-        <p>-----</p>
-        <p>Bs: {totalBsPagado.toFixed(2)}</p>
-        <p>------</p>
-        <p>Pesos: {totalPPagado.toFixed(2)}</p>
+      <div style={{ marginTop:"10px" }}>
+        <div style={{ display:"flex", alignItems:"center", gap:"10px", margin:0, padding:0 }}>
+          <strong>Total Pagado:</strong>
+          <span>USD: {totalUSD.toFixed(2)}</span>
+          <span>-----</span>
+          <span>Bs: {totalBsPagado.toFixed(2)}</span>
+          <span>-----</span>
+          <span>Pesos: {totalPPagado.toFixed(2)}</span>
+        </div>
+      <div style={{ display:"flex", alignItems:"center", gap:"10px", margin:0, padding:0 }}>
+        <strong>Resta por Pagar:</strong>
+        <span>USD: {restaUSD.toFixed(2)}</span>
+        <span>-----</span>
+        <span>Bs: {restaBs.toFixed(2)}</span>
+        <span>-----</span>
+        <span>Pesos: {restaP.toFixed(2)}</span>
       </div>
-
-      <h3>Resta por Pagar:</h3>
-      <div style={{ display:"flex", gap:"25px" }}>
-        <p>USD: {restaUSD}</p>
-        <p>------</p>
-        <p>Bs: {restaBs}</p>
-        <p>-------</p>
-        <p>Pesos: {restaP}</p>
-      </div>
+    </div>
     </div>
   </div>
 )}
