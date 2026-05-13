@@ -117,10 +117,11 @@ const Consulta = () => {
 }, [detalle]);
 
 useEffect(() => {
-  if (esCredito && pagosMoneda.length > 0) {
+  if (esCredito && Array.isArray(pagosMoneda) && pagosMoneda.length > 0) {
     calcularTotalesCredito(pagosMoneda);
   }
 }, [pagosMoneda, tasaDolar, tasaPeso, total]);
+
 
     const formatoVE = (valor) => {
       if (!valor) return "0,00";
@@ -286,39 +287,40 @@ useEffect(() => {
   };
 
   const calcularTotalesCredito = (pagos) => {
-    let usd = 0;
-    let bs = 0;
-    let p = 0;
-    // 1) SUMAR ABONOS EN CADA MONEDA
-    pagos.forEach((pago) => {
-      usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
-      bs  += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
-      p   += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
-    });
-    setTotalUSD(usd);
-    setTotalBsPagado(bs);
-    setTotalPPagado(p);
-    // 2) VALIDAR DATOS BASE
-    const td = Number(tasaDolar);
-    const tp = Number(tasaPeso);
-    const totalFacturaUSD = Number(total); // total de la factura en USD
-    if (!td || !tp || !totalFacturaUSD) {
-      console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
-      setRestaUSD(0);
-      setRestaBs(0);
-      setRestaP(0);
-      return;
-    }
-    // 3) TOTAL PAGADO CONVERTIDO A USD
-    const totalPagadoUSD = usd + (bs / td) + (p / tp);
-    // 4) RESTA POR PAGAR
-    const restaUSD = totalFacturaUSD - totalPagadoUSD;
-    const restaBs  = restaUSD * td;
-    const restaP   = restaUSD * tp;
-    setRestaUSD(restaUSD);
-    setRestaBs(restaBs);
-    setRestaP(restaP);
-  };
+  let usd = 0;
+  let bs = 0;
+  let p = 0;
+  // 1) SUMAR ABONOS EN CADA MONEDA
+  pagos.forEach((pago) => {
+    usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
+    bs  += Number(pago.efectivoBs || 0) + Number(pago.transferenciaBs || 0) + Number(pago.puntoBs || 0) + Number(pago.pagomovilBs || 0);
+    p   += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
+  });
+  setTotalUSD(usd);
+  setTotalBsPagado(bs);
+  setTotalPPagado(p);
+  // 2) VALIDAR DATOS BASE
+  const td = Number(tasaDolar);
+  const tp = Number(tasaPeso);
+  const totalFacturaUSD = Number(total); // total de la factura en USD
+  if (!td || !tp || !totalFacturaUSD) {
+    console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
+    setRestaUSD(0);
+    setRestaBs(0);
+    setRestaP(0);
+    return;
+  }
+  // 3) TOTAL PAGADO CONVERTIDO A USD
+  const totalPagadoUSD = usd + (bs / td) + (p / tp);
+  // 4) RESTA POR PAGAR
+  const restaUSD = totalFacturaUSD - totalPagadoUSD;
+  const restaBs  = restaUSD * td;
+  const restaP   = restaUSD * tp;
+  setRestaUSD(restaUSD);
+  setRestaBs(restaBs);
+  setRestaP(restaP);
+};
+
 
     // -----------------------------
     // Render
@@ -613,25 +615,13 @@ useEffect(() => {
           ))}
         </tbody>
       </table>
-
-      <div style={{ marginTop:"10px" }}>
-        <div style={{ display:"flex", alignItems:"center", gap:"10px", margin:0, padding:0 }}>
-          <strong>Total Pagado:</strong>
-          <span>USD: {totalUSD.toFixed(2)}</span>
-          <span>-----</span>
-          <span>Bs: {totalBsPagado.toFixed(2)}</span>
-          <span>-----</span>
-          <span>Pesos: {totalPPagado.toFixed(2)}</span>
-        </div>
-      <div style={{ display:"flex", alignItems:"center", gap:"10px", margin:0, padding:0 }}>
-        <strong>Resta por Pagar:</strong>
-        <span>USD: {restaUSD.toFixed(2)}</span>
-        <span>-----</span>
-        <span>Bs: {restaBs.toFixed(2)}</span>
-        <span>-----</span>
-        <span>Pesos: {restaP.toFixed(2)}</span>
+      <div style={{ textAlign: "right", marginTop: "1px", fontSize: "18px", fontWeight: "bold", marginRight:"300px"}}>
+        Total Pagado: USD: {totalUSD.toFixed(2)} ---- Bs.: {totalBsPagado.toFixed(2)} ---- Pesos: {totalPPagado.toFixed(2)}
       </div>
-    </div>
+      <div style={{ textAlign: "right", marginTop: "1px", fontSize: "18px", fontWeight: "bold", marginRight:"300px"}}>
+        Resta por Pagar: USD: {restaUSD.toFixed(2)} ---- Bs.: {restaBs.toFixed(2)} ---- Pesos: {restaP.toFixed(2)}
+      </div>
+
     </div>
   </div>
 )}
