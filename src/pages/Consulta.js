@@ -119,18 +119,12 @@ const Consulta = () => {
 }, [venta]);
 
 useEffect(() => {
-  if (
-    esCredito &&
-    venta &&
-    Number(venta.total) > 0 &&
-    Array.isArray(pagosMoneda) &&
-    pagosMoneda.length > 0 &&
-    Number(tasaDolar) > 0 &&
-    Number(tasaPeso) > 0
-  ) {
-    calcularTotalesCredito(pagosMoneda);
-  }
-}, [venta, pagosMoneda, tasaDolar, tasaPeso]);
+  if (!esCredito) return;
+  if (!venta) return;
+  if (!pagosMoneda || pagosMoneda.length === 0) return;
+  if (!tasaDolar || !tasaPeso) return;
+  calcularTotalesCredito(pagosMoneda);
+}, [esCredito, venta, pagosMoneda, tasaDolar, tasaPeso]);
 
     const formatoVE = (valor) => {
       if (!valor) return "0,00";
