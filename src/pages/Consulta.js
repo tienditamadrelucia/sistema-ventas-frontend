@@ -316,7 +316,7 @@ useEffect(() => {
   // 2) VALIDAR DATOS BASE
   const td = Number(tasaDolar);
   const tpeso = Number(tasaPeso);
-  const totalFacturaUSD = Number(total); // total de la factura en USD
+  const totalFacturaUSD = Number(detalle.venta.total);  // total de la factura en USD
 
   if (!td || !tpeso || !totalFacturaUSD) {
     console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
@@ -661,6 +661,12 @@ useEffect(() => {
     Eliminar
   </button>
   
+  {esCredito && (
+    <button onClick={abonoCredito} style={estiloBoton}>
+      Registrar abono
+    </button>
+  )}
+
 </div>
   
 </div>{/* FIN CONTENEDOR HORIZONTAL */}
