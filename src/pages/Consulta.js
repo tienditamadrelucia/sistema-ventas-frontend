@@ -117,7 +117,14 @@ const Consulta = () => {
 }, [detalle]);
 
 useEffect(() => {
-  if (esCredito && Array.isArray(pagosMoneda) && pagosMoneda.length > 0) {
+  if (
+    esCredito &&
+    Array.isArray(pagosMoneda) &&
+    pagosMoneda.length > 0 &&
+    Number(tasaDolar) > 0 &&
+    Number(tasaPeso) > 0 &&
+    Number(total) > 0
+  ) {
     calcularTotalesCredito(pagosMoneda);
   }
 }, [pagosMoneda, tasaDolar, tasaPeso, total]);
@@ -314,16 +321,6 @@ useEffect(() => {
 
   if (!td || !tpeso || !totalFacturaUSD) {
     console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
-    console.log("DEBUG CREDITOS =====");
-console.log("usd:", usd);
-console.log("bs:", bs);
-console.log("p:", p);
-console.log("tasaDolar:", td);
-console.log("tasaPeso:", tpeso);
-console.log("totalFacturaUSD (total):", totalFacturaUSD);
-console.log("totalPagadoUSD:", totalPagadoUSD);
-console.log("restaUSD:", restaUSD);
-
     setRestaUSD(0);
     setRestaBs(0);
     setRestaP(0);
