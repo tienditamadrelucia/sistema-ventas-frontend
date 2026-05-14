@@ -109,15 +109,16 @@ const Consulta = () => {
     try {
       //const fechaFactura = venta.fecha.substring(0, 10);
       const fecha = fechaFactura.substring(0, 10);
+      console.log("fecha ", fecha);
       const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fecha}`);
       const data = await res.json();
       if (data.ok) {
         setTasaDolar(data.tasa.tasaDolar);
         setTasaPeso(data.tasa.tasaPeso);
         // ⭐ SI YA HAY PAGOS, CALCULAR AHORA
-        if (esCredito && pagosMoneda.length > 0) {
-          calcularTotalesCredito(pagosMoneda);
-        }
+        //if (esCredito && pagosMoneda.length > 0) {
+        //  calcularTotalesCredito(pagosMoneda);
+        //}
       } else {
         alert("No hay tasas registradas para la fecha de esta factura.");
       }
@@ -159,8 +160,7 @@ useEffect(() => {
         }
         // 1. Guardar datos de la venta
         setVenta(data.venta);
-        console.log("data venta", data.venta)
-        console.log("fecha ", data.venta.fecha);
+        console.log("data venta", data.venta)        
         cargarTasaDeLaFactura(data.venta.fecha);
         // 2. Validar si es crédito
         if (data.venta.estado === "CREDITO") {
