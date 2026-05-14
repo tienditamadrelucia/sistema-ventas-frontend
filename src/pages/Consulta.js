@@ -7,6 +7,7 @@ import { registrarAccion } from "../utils/registrarAccion";
 import { obtenerVentaPorFactura, obtenerProductosVendidos } from "../services/ser_ventas";
 import { obtenerAbonosPorFactura } from "../services/ser_moneda";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import Pago from "../components/Pago/Pago";
 
 const Consulta = () => {
   const navigate = useNavigate();
