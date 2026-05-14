@@ -316,6 +316,9 @@ useEffect(() => {
   setTotalUSD(usd);
   setTotalBsPagado(bs);
   setTotalPPagado(p);
+  console.log("USD", usd);
+  console.log("Bs", bs);
+  console.log("Pesos", p);
   const td = Number(tasaDolar);
   const tpeso = Number(tasaPeso);  
   if (!venta || !venta.total) {
@@ -357,7 +360,7 @@ useEffect(() => {
   <div>
     <Encabezado />
 
-    <h2 style={{ textAlign: "left", marginTop: "5px", marginLeft:"250px" }}>
+    <h2 style={{ textAlign: "left", marginTop: "1px", marginLeft:"350px" }}>
       CONSULTA DE VENTAS
     </h2>
 
@@ -370,7 +373,7 @@ useEffect(() => {
         {/* A) DATOS DE LA FACTURA */}        
         <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "850px" }}>
           
-          <h3 style={{ marginTop: 28 }}>Datos de la Factura</h3>
+          <h3 style={{ marginTop: 18 }}>Datos de la Factura</h3>
 
           <div style={{ display: "flex", gap: "5px", alignItems:"center" }}>
             <label>Factura:</label>
