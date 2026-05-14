@@ -99,7 +99,7 @@ const Consulta = () => {
         height:"20px"
     };
     const estiloBotonVerde = {
-    width: "20%",
+    width: "25%",
     padding: "5px",
     backgroundColor: "#74c769",
     color: "white",
@@ -353,7 +353,7 @@ useEffect(() => {
   <div>
     <Encabezado />
 
-    <h2 style={{ textAlign: "left", marginTop: "1px", marginLeft:"350px" }}>
+    <h2 style={{ textAlign: "left", marginTop: "1px", marginLeft:"400px" }}>
       CONSULTA DE VENTAS
     </h2>
 
@@ -407,8 +407,8 @@ useEffect(() => {
         </div>
     </div> {/* FIN DATOS FACTURA */}
 
-    {/* B) DATOS DEL CLIENTE */}
-    <div style={{ border: "1px solid #ccc", padding: "7px", alignItems:"center", borderRadius: "8px", width: "325px", marginTop: "0px" }}>         
+    {/* B) DATOS DEL CLIENTE */}    
+    <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "325px" }}>         
         <h3 style={{margintop:"1px" }}>Datos del Cliente</h3>
         <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
             <div style={{ display: "flex", flexDirection: "column", width: "120px" }}>
@@ -432,8 +432,8 @@ useEffect(() => {
         </div>
     </div> {/* FIN DATOS CLIENTE */}
     </div>
-    {/* TABLA DE PRODUCTOS */}
-    <div style={{ border: "1px solid #ccc", padding: "7px", borderRadius: "8px", width: "1200px"}}>        
+    {/* TABLA DE PRODUCTOS */}    
+    <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "1200px"}}>        
         <div style={{ marginTop: "1px", width: "1180px" }}>
             <h3 style={{ marginBottom: "1px" }}>Detalle de la Factura</h3>
             <table
@@ -486,7 +486,7 @@ useEffect(() => {
 {!esCredito && (
   <div>  
 {/* TABLA DE PAGOS */}
-<div style={{ display:"flex", border: "1px solid #ccc", padding: "7px", gap: "8px", width: "1200px", marginTop: "10px", alignItems:"flex-start" }}>
+<div style={{ display:"flex", border: "1px solid #ccc", padding: "10px", gap: "8px", width: "1200px", marginTop: "1px", alignItems:"flex-start" }}>
     <div style={{ marginTop: "1px" }}>
         <h3 style={{ marginBottom: "1px" }}>Detalle del Pago</h3>           
             
@@ -607,8 +607,8 @@ useEffect(() => {
       >
         <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaDolar} ••••• USD/COP: {tasaPeso} ••••• Fecha: {venta ? venta.fecha.substring(0,10) : ""}</strong>
     </div>
-    <div style={{ border:"1px solid #ccc", padding:"7px", borderRadius:"8px", width:"1200px" }}>
-      <h3 style={{ marginBottom:"10px" }}>Pagos de Crédito</h3>
+    <div style={{ border:"1px solid #ccc", padding:"10px", borderRadius:"8px", width:"1200px" }}>
+      <h3 style={{ marginBottom:"1px" }}>Pagos de Crédito</h3>
 
       <table style={{ width:"100%", borderCollapse:"collapse", fontSize:"13px" }}>
         <thead>
@@ -673,7 +673,7 @@ useEffect(() => {
   </button>
   
   {esCredito && (
-    <button onClick={abonoCredito} style={estiloBoton}>
+    <button onClick={abonoCredito} style={estiloBotonVerde}>
       Registrar abono
     </button>
   )}
