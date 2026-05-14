@@ -108,8 +108,8 @@ const Consulta = () => {
   const cargarTasaDeLaFactura = async (fechaFactura) => {
     try {
       //const fechaFactura = venta.fecha.substring(0, 10);
-      //const fecha = fechaFactura.substring(0, 10);
-      const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fechaFactura}`);
+      const fecha = fechaFactura.substring(0, 10);
+      const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fecha}`);
       const data = await res.json();
       if (data.ok) {
         setTasaDolar(data.tasa.tasaDolar);
