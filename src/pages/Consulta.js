@@ -740,7 +740,9 @@ const abrirModalPagoConFecha = () => {
   </button>
   
   {esCredito && (
-    <button onClick={abonoCredito} style={estiloBotonVerde}>
+    <button onClick={setMostrarFechaAbono} style={estiloBotonVerde}
+      className="btn-abono"
+    >    
       Registrar abono
     </button>
   )}
@@ -799,16 +801,7 @@ const abrirModalPagoConFecha = () => {
       setIdVueltoExistente(dataPago.idVuelto);
       }}
   />
-  )}
-  {esCredito && (
-  <button
-    onClick={() => setMostrarFechaAbono(true)}
-    className="btn-abono"
-  >
-    Registrar abono
-  </button>
-)}
-
+  )}  
 </div>  
 </div>{/* FIN CONTENEDOR HORIZONTAL */}
 </div> 
