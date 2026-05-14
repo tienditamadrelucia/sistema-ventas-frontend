@@ -499,20 +499,7 @@ useEffect(() => {
 </div>
 )}
 {!esCredito && (
-  <div>
-    <div
-      style={{
-        fontSize: "10px",
-        color: "#444",
-        marginBottom: "10px",
-        padding: "4px 8px",
-        backgroundColor: "#f3f3f3",
-        borderRadius: "6px",
-        whiteSpace: "nowrap"
-        }}
-      >
-        <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaDolar} ••••• USD/COP: {tasaPeso} ••••• Fecha: {fecha}</strong>
-    </div>
+  <div>  
 {/* TABLA DE PAGOS */}
 <div style={{ display:"flex", border: "1px solid #ccc", padding: "7px", gap: "8px", width: "1200px", marginTop: "10px", alignItems:"flex-start" }}>
     <div style={{ marginTop: "1px" }}>
@@ -622,7 +609,19 @@ useEffect(() => {
 
 {esCredito && pagosMoneda.length > 0 && (
   <div className="bloque-credito">
-
+      <div
+      style={{
+        fontSize: "12px",
+        color: "#444",
+        marginBottom: "10px",
+        padding: "4px 8px",
+        backgroundColor: "#f3f3f3",
+        borderRadius: "6px",
+        whiteSpace: "nowrap"
+        }}
+      >
+        <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaDolar} ••••• USD/COP: {tasaPeso} ••••• Fecha: {fecha}</strong>
+    </div>
     <div style={{ border:"1px solid #ccc", padding:"7px", borderRadius:"8px", width:"1200px" }}>
       <h3 style={{ marginBottom:"10px" }}>Pagos de Crédito</h3>
 
@@ -670,10 +669,8 @@ useEffect(() => {
     </div>
     <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
       Total Pagado: USD: {totalUSD.toFixed(2)} ---- Bs.: {totalBsPagado.toFixed(2)} ---- Pesos: {totalPPagado.toFixed(2)}
-    </div>
-    <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
       Resta por Pagar: USD: {restaUSD.toFixed(2)} ---- Bs.: {restaBs.toFixed(2)} ---- Pesos: {restaP.toFixed(2)}
-    </div>    
+    </div>
   </div>
 )}
 
