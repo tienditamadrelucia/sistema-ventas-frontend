@@ -68,7 +68,6 @@ const Consulta = () => {
 
     /// PARA EL MODAL PAGO
     const [mostrarPago, setMostrarPago] = useState(false);
-    const [modoCredito, setModoCredito] = useState(false);
     const [pagoExistente, setPagoExistente] = useState(null);
     const [vueltoExistente, setVueltoExistente] = useState(null);
     const [idVueltoExistente, setIdVueltoExistente] = useState(null);
