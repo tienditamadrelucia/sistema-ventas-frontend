@@ -364,10 +364,8 @@ useEffect(() => {
       <div style={{ display: "flex", gap: "5px", alignItems: "flex-start", width: "1400px" }}>
 
         {/* A) DATOS DE LA FACTURA */}        
-        <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "850px" }}>
-          
+        <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "850px" }}>          
           <h3 style={{ marginTop: 1 }}>Datos de la Factura</h3>
-
           <div style={{ display: "flex", gap: "5px", alignItems:"center" }}>
             <label>Factura:</label>
             <input
@@ -382,45 +380,45 @@ useEffect(() => {
             </button>   
           
             <div style={{ display: "flex", gap: "15px", marginTop:"10px" }}>
-            <label>Fecha</label>
-            <input
-              type="date"
-              value={venta ? venta.fecha.substring(0,10) : ""}
-              readOnly
-              style={{ backgroundColor: "#EDC5CD", width:"95px" }}
-            />
-            <label>Hora</label>
-            <input
-              type="text"
-              value={venta ? venta.hora : ""}
-              readOnly
-              style={{ backgroundColor: "#EDC5CD", width:"80px" }}
-            />
-            <label>Usuario</label>
-            <input
-              type="text"
-              value={venta ? venta.usuario : ""}
-              readOnly
-              style={{ backgroundColor: "#EDC5CD", width:"200px" }}
-            />
+              <label>Fecha</label>
+              <input
+                type="date"
+                value={venta ? venta.fecha.substring(0,10) : ""}
+                readOnly
+                style={{ backgroundColor: "#EDC5CD", width:"95px" }}
+              />
+              <label>Hora</label>
+              <input
+                type="text"
+                value={venta ? venta.hora : ""}
+                readOnly
+                style={{ backgroundColor: "#EDC5CD", width:"80px" }}
+              />
+              <label>Usuario</label>
+              <input
+                type="text"
+                value={venta ? venta.usuario : ""}
+                readOnly
+                style={{ backgroundColor: "#EDC5CD", width:"200px" }}
+              />
+            </div>
           </div>
-        </div>
-    </div> {/* FIN DATOS FACTURA */}
+          {/* FIN DATOS FACTURA */}
 
-    {/* B) DATOS DEL CLIENTE */}    
-    <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "325px" }}>         
-        <h3 style={{margintop:"1px" }}>Datos del Cliente</h3>
-        <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
-            <div style={{ display: "flex", flexDirection: "column", width: "120px" }}>
+          {/* B) DATOS DEL CLIENTE */}    
+          <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "325px" }}>         
+            <h3 style={{margintop:"1px" }}>Datos del Cliente</h3>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+              <div style={{ display: "flex", flexDirection: "column", width: "120px" }}>
                 <label>Identificación</label>
                 <input
                     type="text"
                     value={cliente ? cliente.identificacion : ""}
                     readOnly
                     style={{ backgroundColor: "#EDC5CD", width:"100px" }}
-                />
-            </div>
-            <div style={{ display: "flex", flexDirection: "column", width: "300px" }}>
+                  />
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", width: "300px" }}>
                 <label>Nombre</label>
                 <input
                     type="text"
@@ -428,12 +426,13 @@ useEffect(() => {
                     readOnly
                     style={{ backgroundColor: "#EDC5CD", width:"200px" }}
                 />
+              </div>
             </div>
+          </div> {/* FIN DATOS CLIENTE */}
         </div>
-    </div> {/* FIN DATOS CLIENTE */}
-    </div>
-    {/* TABLA DE PRODUCTOS */}    
-    <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "1200px"}}>        
+      </div>
+      {/* TABLA DE PRODUCTOS */}    
+      <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "1200px"}}>        
         <div style={{ marginTop: "1px", width: "1180px" }}>
             <h3 style={{ marginBottom: "1px" }}>Detalle de la Factura</h3>
             <table
