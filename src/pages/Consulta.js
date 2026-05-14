@@ -105,19 +105,20 @@ const Consulta = () => {
         height:"20px"
     };
     const estiloBotonVerde = {
-      display: "flex",
-      width: "20%",
-      padding: "15px",
-      backgroundColor: "#74c769",
-      color: "white",
-      border: "1px solid #ccc",
-      borderRadius: "8px",
-      fontWeight: "800",
-      fontFamily: "Arial Black",
-      cursor: "pointer",
-      marginTop: "1px",
-      justifyContent: "center",
-      height:"20px"
+        display:"flex",
+        width: "15%",
+        padding: "15px",
+        backgroundColor: "#74c769",
+        color: "white",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        fontWeight: "800",
+        fontFamily: "Arial Black",        
+        marginTop: "1px",
+        justifyContent: "center",
+        alignItems:"center",
+        cursor:"pointer",
+        height:"20px"
     };
 
     // -----------------------------
@@ -276,6 +277,7 @@ useEffect(() => {
     setCliente(null);            // limpia datos del cliente
     setListaFactura([]);    // limpia tabla de productos
     setPagosMoneda([]);          // limpia pagos
+    setEsCredito(false);
     //setDetalleFactura([]);       // si lo usas    
     alert("Campos borrados.");
   };
@@ -325,8 +327,8 @@ useEffect(() => {
   setTotalUSD(usd);
   setTotalBsPagado(bs);
   setTotalPPagado(p);  
-  const tpeso = Number(tasaDolar);
-  const td = Number(tasaPeso);  
+  const tpeso = Number(tasaPeso);
+  const td = Number(tasaDolar);  
   if (!venta || !venta.total) {
     console.log("Venta incompleta, no se puede calcular total de factura");
     return;
