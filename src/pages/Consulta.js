@@ -125,11 +125,11 @@ const Consulta = () => {
       const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fecha}`);
       const data = await res.json();
       if (data.ok) {
-        setTasaDolar(data.tasa.tasaDolar);
-        setTasaPeso(data.tasa.tasaPeso);
+        setTasaDolar(data.tasa.tasaD);
+        setTasaPeso(data.tasa.tasaP);
         console.log("data.tasa ", data.tasa);
-        console.log("tasa dolar ", data.tasa.tasaDolar);
-        console.log("tasa dolar ", data.tasa.tasaPeso);
+        console.log("tasa dolar ", data.tasa.tasaD);
+        console.log("tasa dolar ", data.tasa.tasaP);
         // ⭐ SI YA HAY PAGOS, CALCULAR AHORA
         //if (esCredito && pagosMoneda.length > 0) {
         //  calcularTotalesCredito(pagosMoneda);
