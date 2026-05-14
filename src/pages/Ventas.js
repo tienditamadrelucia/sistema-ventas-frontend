@@ -909,8 +909,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
       precio: v.precio ?? 0,
       dscto: v.dscto ?? 0,
       total: v.total ?? 0
-    }));
-    console.log("LISTA CONVERTIDA:", lista);
+    }));    
     setListaFactura(lista);
     alert("Factura cargada. Puede modificar productos y luego registrar el pago.");
   } catch (error) {
@@ -1702,14 +1701,11 @@ const cargarFacturaParaPago = async (dataVenta) => {
               vueltoExistente={vueltoExistente}
               idVueltoExistente={idVueltoExistente}
               onCerrar={() => setMostrarPago(false)}
-              onPagoCompletado={(dataPago) => {
-                console.log("Pago registrado:", dataPago);
+              onPagoCompletado={(dataPago) => {                
                 setPagoData(dataPago);
                 setPagoRegistrado(true);
                 setIdPagoExistente(dataPago.idPago);
                 setIdVueltoExistente(dataPago.idVuelto);
-                console.log("➡️ Enviando facturaNumero a <Pago />:", numeroFactura);
-
               }}
             />
           )}

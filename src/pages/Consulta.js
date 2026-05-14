@@ -349,7 +349,32 @@ useEffect(() => {
   setRestaUSD(restaUSD);
   setRestaBs(restaBs);
   setRestaP(restaP);
-};
+  // ===============================
+  // DETECTAR CANCELACIÓN COMPLETA
+  // ===============================
+  if (restaUSD <= 0 && venta?.estado === "CREDITO") {
+    alert("✔ La venta ha sido cancelada en su totalidad. Se cambiará a CONTADO.");
+    try {
+      const res = await fetch(`${API_URL}/api/ventas/cambiar-estado/${venta._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ estado: "CONTADO" })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setEsCredito(false);
+        // Recargar la venta actualizada
+        cargarVenta(factura);  
+        cargarPagos(factura, true);
+      } else {
+        alert("Error cambiando estado a CONTADO");
+      }
+    } catch (error) {
+      console.error("Error cambiando estado:", error);
+      alert("Error cambiando estado a CONTADO");
+    }
+  }
+  };
 
   const abonoCredito = () => {
   // Fecha de hoy en formato YYYY-MM-DD
