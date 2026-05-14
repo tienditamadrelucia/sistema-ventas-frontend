@@ -114,35 +114,23 @@ const Consulta = () => {
     // -----------------------------
     // USEEFFECT para cargar tasas, clientes, categorías y productos
     // -----------------------------
-  //useEffect(() => {
-  //  if (!numeroFactura) return;
-  //  consultarFactura()
+  
   const cargarTasaDeLaFactura = async (fechaFactura) => {
     try {
       //const fechaFactura = venta.fecha.substring(0, 10);
-      const fecha = fechaFactura.substring(0, 10);
-      console.log("fecha ", fecha);
+      const fecha = fechaFactura.substring(0, 10);      
       const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fecha}`);
       const data = await res.json();
       if (data.ok) {
         setTasaDolar(data.tasa.tasaD);
-        setTasaPeso(data.tasa.tasaP);
-        console.log("data.tasa ", data.tasa);
-        console.log("tasa dolar ", data.tasa.tasaD);
-        console.log("tasa dolar ", data.tasa.tasaP);
-        // ⭐ SI YA HAY PAGOS, CALCULAR AHORA
-        //if (esCredito && pagosMoneda.length > 0) {
-        //  calcularTotalesCredito(pagosMoneda);
-        //}
+        setTasaPeso(data.tasa.tasaP);                
       } else {
         alert("No hay tasas registradas para la fecha de esta factura.");
       }
     } catch (error) {
       console.error("Error cargando tasa:", error);
     }
-  };
-  //cargarTasaDeLaFactura();
-//}, [numeroFactura]);
+  };  
 
 useEffect(() => {
   if (!esCredito) return;
@@ -331,8 +319,7 @@ useEffect(() => {
   setTotalBsPagado(bs);
   setTotalPPagado(p);
   const td = Number(tasaDolar);
-  const tpeso = Number(tasaPeso);
-  console.log("venta total ", venta.total);
+  const tpeso = Number(tasaPeso);  
   if (!venta || !venta.total) {
     console.log("Venta incompleta, no se puede calcular total de factura");
     return;
@@ -348,7 +335,8 @@ useEffect(() => {
   const totalPagadoUSD = usd + (bs / td) + (p / tpeso);
   const restaUSD = totalFacturaUSD - totalPagadoUSD;
   const restaBs  = restaUSD * td;
-  const restaP   = restaUSD * tpeso;
+  const restaP   = restaUSD * tpeso
+  so;
   setRestaUSD(restaUSD);
   setRestaBs(restaBs);
   setRestaP(restaP);
@@ -620,7 +608,7 @@ useEffect(() => {
         whiteSpace: "nowrap"
         }}
       >
-        <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaDolar} ••••• USD/COP: {tasaPeso} ••••• Fecha: {fecha}</strong>
+        <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaDolar} ••••• USD/COP: {tasaPeso} ••••• Fecha: {venta ? venta.fecha.substring(0,10) : ""}</strong>
     </div>
     <div style={{ border:"1px solid #ccc", padding:"7px", borderRadius:"8px", width:"1200px" }}>
       <h3 style={{ marginBottom:"10px" }}>Pagos de Crédito</h3>
@@ -669,7 +657,7 @@ useEffect(() => {
     </div>
     <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
       Total Pagado: USD: {totalUSD.toFixed(2)} ---- Bs.: {formatoVE(totalBsPagado.toFixed(2))} ---- Pesos: {formatoVE(totalPPagado.toFixed(2))}
-      -------------- Resta por Pagar: USD: {restaUSD.toFixed(2)} ---- Bs.: {formatoVE(restaBs.toFixed(2))} ---- Pesos: {formatoVE(restaP.toFixed(2))}
+      ------------------------ Resta por Pagar: USD: {restaUSD.toFixed(2)} ---- Bs.: {formatoVE(restaBs.toFixed(2))} ---- Pesos: {formatoVE(restaP.toFixed(2))}
     </div>
   </div>
 )}
