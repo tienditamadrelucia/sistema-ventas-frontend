@@ -496,7 +496,7 @@ useEffect(() => {
         whiteSpace: "nowrap"
         }}
       >
-        <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaDolar} ••••• USD/COP: {tasaPeso} ••••• Fecha: {data.venta.fecha}</strong>
+        <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaDolar} ••••• USD/COP: {tasaPeso} ••••• Fecha: {fecha}</strong>
     </div>
 {/* TABLA DE PAGOS */}
 <div style={{ display:"flex", border: "1px solid #ccc", padding: "7px", gap: "8px", width: "1200px", marginTop: "10px", alignItems:"flex-start" }}>
