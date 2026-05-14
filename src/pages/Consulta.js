@@ -98,6 +98,18 @@ const Consulta = () => {
         cursor:"pointer",
         height:"20px"
     };
+    const estiloBotonVerde = {
+    width: "20%",
+    padding: "5px",
+    backgroundColor: "#74c769",
+    color: "white",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    fontWeight: "800",
+    fontFamily: "Arial Black",
+    cursor: "pointer",
+    marginTop: "5px"
+  };
 
     // -----------------------------
     // USEEFFECT para cargar tasas, clientes, categorías y productos
@@ -115,6 +127,8 @@ const Consulta = () => {
       if (data.ok) {
         setTasaDolar(data.tasa.tasaDolar);
         setTasaPeso(data.tasa.tasaPeso);
+        console.log("tasa dolar ", data.tasa.tasaDolar);
+        console.log("tasa dolar ", data.tasa.tasaPeso);
         // ⭐ SI YA HAY PAGOS, CALCULAR AHORA
         //if (esCredito && pagosMoneda.length > 0) {
         //  calcularTotalesCredito(pagosMoneda);
