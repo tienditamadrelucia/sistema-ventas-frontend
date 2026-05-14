@@ -127,6 +127,7 @@ const Consulta = () => {
       if (data.ok) {
         setTasaDolar(data.tasa.tasaDolar);
         setTasaPeso(data.tasa.tasaPeso);
+        console.log("data.tasa ", data.tasa);
         console.log("tasa dolar ", data.tasa.tasaDolar);
         console.log("tasa dolar ", data.tasa.tasaPeso);
         // ⭐ SI YA HAY PAGOS, CALCULAR AHORA
