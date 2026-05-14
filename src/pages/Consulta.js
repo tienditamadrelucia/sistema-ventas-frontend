@@ -66,6 +66,13 @@ const Consulta = () => {
     const [restaBs, setRestaBs] = useState(0);
     const [restaP, setRestaP] = useState(0);
 
+    /// PARA EL MODAL PAGO
+    const [mostrarPago, setMostrarPago] = useState(false);
+    const [modoCredito, setModoCredito] = useState(false);
+    const [pagoExistente, setPagoExistente] = useState(null);
+    const [vueltoExistente, setVueltoExistente] = useState(null);
+    const [idVueltoExistente, setIdVueltoExistente] = useState(null);
+
     const [Abono, setAbono] = useState(0);
     const [Saldo, setSaldo] = useState(0);
     const [totalBsPagado, setTotalBsPagado] = useState(0);
@@ -99,8 +106,8 @@ const Consulta = () => {
         height:"20px"
     };
     const estiloBotonVerde = {
-    width: "25%",
-    padding: "5px",
+    width: "20%",
+    padding: "15px",
     backgroundColor: "#74c769",
     color: "white",
     border: "1px solid #ccc",
@@ -108,7 +115,8 @@ const Consulta = () => {
     fontWeight: "800",
     fontFamily: "Arial Black",
     cursor: "pointer",
-    marginTop: "5px"
+    marginTop: "1px",
+    height:"20px"
   };
 
     // -----------------------------
@@ -344,6 +352,10 @@ useEffect(() => {
       alert("Debe ingresar un número de factura.");
       return;
       }
+    setModoCredito(true);          // ya lo usas en Pago.js
+    setMostrarPago(true);          // abre el modal
+    setPagoExistente(null);        // para que no cargue pagos viejos
+    setVueltoExistente(null);  
   };
 
     // -----------------------------
@@ -421,7 +433,7 @@ useEffect(() => {
                     type="text"
                     value={cliente ? cliente.nombreCompleto : ""}
                     readOnly
-                    style={{ backgroundColor: "#EDC5CD", width:"150px" }}
+                    style={{ backgroundColor: "#EDC5CD", width:"200px" }}
                 />
               </div>
             </div>
@@ -674,8 +686,28 @@ useEffect(() => {
     </button>
   )}
 
-</div>
-  
+  {mostrarPago && (            
+  <Pago            
+    modoCredito={modoCredito}
+    fecha={fecha}
+    facturaNumero={numeroFactura}
+    totalDolar={totalDolar}
+    totalPeso={totalPeso}
+    totalBs={totalBs}
+    tasaP={tasaPeso}
+    tasaD={tasaDolar}
+    pagoExistente={pagoExistente}
+    vueltoExistente={vueltoExistente}
+    idVueltoExistente={idVueltoExistente}
+    onCerrar={() => setMostrarPago(false)}
+    onPagoCompletado={(dataPago) => {
+      cargarPagos(numeroFactura, true);      
+      setIdPagoExistente(dataPago.idPago);
+      setIdVueltoExistente(dataPago.idVuelto);
+      }}
+  />
+  )}
+</div>  
 </div>{/* FIN CONTENEDOR HORIZONTAL */}
 </div> 
 );
