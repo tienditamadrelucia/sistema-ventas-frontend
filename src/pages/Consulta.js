@@ -181,8 +181,7 @@ useEffect(() => {
           setSaldo(data.venta.saldo || 0);
         } else {
           setEsCredito(false);
-        }
-        //cargarTasaDeLaFactura()
+        }        
         // 3. Buscar nombre del cliente
         const cedula = data.venta.cliente;
         const datosCliente = await obtenerDatosCliente(cedula);
@@ -525,7 +524,7 @@ useEffect(() => {
   Subtotal: ${venta.subtotal.toFixed(2)} — IVA: ${venta.IVA.toFixed(2)} — Total: ${venta.total.toFixed(2)}
 </div>
 )}
-{!esCredito && (
+{pagosMoneda.length === 1 && (
   <div>  
 {/* TABLA DE PAGOS */}
 <div style={{ display:"flex", border: "1px solid #ccc", padding: "10px", gap: "8px", width: "1200px", marginTop: "1px", alignItems:"flex-start" }}>
@@ -634,7 +633,7 @@ useEffect(() => {
   
 )}
 
-{esCredito && pagosMoneda.length > 0 && (
+{pagosMoneda.length > 1 && (
   <div className="bloque-credito">
       <div
       style={{
