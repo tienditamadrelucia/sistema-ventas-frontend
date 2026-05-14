@@ -86,6 +86,7 @@ const Consulta = () => {
         ));
     const hoy = hoyUTC.toISOString().slice(0, 10); // "YYYY-MM-DD"
     const [fecha, setFecha] = useState(hoyUTC.toISOString().slice(0, 10));    
+    const [procesando, setProcesando] = useState(false);
 
     const API = `${API_URL}/api`;
 
@@ -162,7 +163,8 @@ useEffect(() => {
     // -----------------------------
     // Funciones de búsqueda y filtros
     // -----------------------------  
-    const consultarFactura = async () => {          
+    const consultarFactura = async () => {   
+      setProcesando(true);       
       if (!numeroFactura) return;
       try {            
         const res = await fetch(`${API_URL}/api/ventas/detalle/${numeroFactura}`);
@@ -194,6 +196,7 @@ useEffect(() => {
         console.error("Error consultando factura:", error);
         alert("Frontend dice: Error consultando factura");
       }
+      setProcesando(false);
   };
     
     const obtenerDatosCliente = async (cedula) => {
@@ -396,6 +399,22 @@ useEffect(() => {
     // -----------------------------
     return (
   <div>
+    {procesando && (
+      <div style={{
+        background: "#6699FF",
+        color: "white",
+        padding: "8px",
+        textAlign: "center",
+        fontWeight: "bold",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 999999
+      }}>
+        Procesando, por favor espere...
+      </div>
+      )}
     <Encabezado />
 
     <h2 style={{ textAlign: "left", marginTop: "1px", marginLeft:"400px" }}>
