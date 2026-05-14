@@ -669,7 +669,7 @@ useEffect(() => {
     </div>
     <div style={{ textAlign: "left", marginTop: "1px", fontSize: "18px", fontWeight: "bold"}}>
       Total Pagado: USD: {totalUSD.toFixed(2)} ---- Bs.: {formatoVE(totalBsPagado.toFixed(2))} ---- Pesos: {formatoVE(totalPPagado.toFixed(2))}
-      Resta por Pagar: USD: {restaUSD.toFixed(2)} ---- Bs.: {formatoVE(restaBs.toFixed(2))} ---- Pesos: {formatoVE(restaP.toFixed(2))}
+      -------------- Resta por Pagar: USD: {restaUSD.toFixed(2)} ---- Bs.: {formatoVE(restaBs.toFixed(2))} ---- Pesos: {formatoVE(restaP.toFixed(2))}
     </div>
   </div>
 )}
