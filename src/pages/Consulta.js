@@ -70,8 +70,7 @@ const Consulta = () => {
     const [mostrarPago, setMostrarPago] = useState(false);
     const [pagoExistente, setPagoExistente] = useState(null);
     const [vueltoExistente, setVueltoExistente] = useState(null);
-    const [idVueltoExistente, setIdVueltoExistente] = useState(null);
-
+    
     const [Abono, setAbono] = useState(0);
     const [Saldo, setSaldo] = useState(0);
     const [totalBsPagado, setTotalBsPagado] = useState(0);
