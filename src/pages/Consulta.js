@@ -407,8 +407,8 @@ useEffect(() => {
 
           {/* B) DATOS DEL CLIENTE */}    
           <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "325px" }}>         
-            <h3 style={{margintop:"1px" }}>Datos del Cliente</h3>
-            <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+            <h3 style={{margintop:"0px" }}>Datos del Cliente</h3>
+            <div style={{ display: "flex", gap: "10px", marginBottom: "1px" }}>
               <div style={{ display: "flex", flexDirection: "column", width: "120px" }}>
                 <label>Identificación</label>
                 <input
