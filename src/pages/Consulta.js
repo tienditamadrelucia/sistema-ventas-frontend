@@ -364,7 +364,7 @@ useEffect(() => {
       <div style={{ display: "flex", gap: "5px", alignItems: "flex-start", width: "1400px" }}>
 
         {/* A) DATOS DE LA FACTURA */}        
-        <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "850px" }}>          
+        <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "800px" }}>          
           <h3 style={{ marginTop: 1 }}>Datos de la Factura</h3>
           <div style={{ display: "flex", gap: "5px", alignItems:"center" }}>
             <label>Factura:</label>
@@ -399,7 +399,7 @@ useEffect(() => {
                 type="text"
                 value={venta ? venta.usuario : ""}
                 readOnly
-                style={{ backgroundColor: "#EDC5CD", width:"200px" }}
+                style={{ backgroundColor: "#EDC5CD", width:"100px" }}
               />
             </div>
           </div>        
@@ -408,23 +408,20 @@ useEffect(() => {
           {/* B) DATOS DEL CLIENTE */}    
           <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "325px" }}>         
             <h3 style={{margintop:"0px" }}>Datos del Cliente</h3>
-            <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>
-              
-                <label>Identificación</label>
+            <div style={{ display: "flex", gap: "5px", alignItems: "center" }}>                
                 <input
                     type="text"
                     value={cliente ? cliente.identificacion : ""}
                     readOnly
-                    style={{ backgroundColor: "#EDC5CD", width:"100px" }}
+                    style={{ backgroundColor: "#EDC5CD", width:"80px" }}
                   />
               
-              <div style={{ display: "flex", flexDirection: "column", width: "300px" }}>
-                <label>Nombre</label>
+              <div style={{ display: "flex", flexDirection: "column", width: "300px" }}>                
                 <input
                     type="text"
                     value={cliente ? cliente.nombreCompleto : ""}
                     readOnly
-                    style={{ backgroundColor: "#EDC5CD", width:"200px" }}
+                    style={{ backgroundColor: "#EDC5CD", width:"150px" }}
                 />
               </div>
             </div>
