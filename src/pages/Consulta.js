@@ -335,8 +335,7 @@ useEffect(() => {
   const totalPagadoUSD = usd + (bs / td) + (p / tpeso);
   const restaUSD = totalFacturaUSD - totalPagadoUSD;
   const restaBs  = restaUSD * td;
-  const restaP   = restaUSD * tpeso
-  so;
+  const restaP   = restaUSD * tpeso;
   setRestaUSD(restaUSD);
   setRestaBs(restaBs);
   setRestaP(restaP);
