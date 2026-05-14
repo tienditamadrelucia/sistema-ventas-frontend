@@ -315,12 +315,9 @@ useEffect(() => {
   });
   setTotalUSD(usd);
   setTotalBsPagado(bs);
-  setTotalPPagado(p);
-  console.log("USD", usd);
-  console.log("Bs", bs);
-  console.log("Pesos", p);
-  const td = Number(tasaDolar);
-  const tpeso = Number(tasaPeso);  
+  setTotalPPagado(p);  
+  const tpeso = Number(tasaDolar);
+  const td = Number(tasaPeso);  
   if (!venta || !venta.total) {
     console.log("Venta incompleta, no se puede calcular total de factura");
     return;
@@ -333,11 +330,7 @@ useEffect(() => {
     setRestaP(0);
     return;
   }
-  const totalPagadoUSD = usd + (bs / td) + (p / tpeso);
-  console.log("USD", usd);
-  console.log("Bs", bs/td);
-  console.log("Pesos", p/tpeso);
-  console.log("total pagado USD", totalPagadoUSD);
+  const totalPagadoUSD = usd + (bs / td) + (p / tpeso);  
   const restaUSD = totalFacturaUSD - totalPagadoUSD;
   const restaBs  = restaUSD * td;
   const restaP   = restaUSD * tpeso;
@@ -373,7 +366,7 @@ useEffect(() => {
         {/* A) DATOS DE LA FACTURA */}        
         <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "850px" }}>
           
-          <h3 style={{ marginTop: 18 }}>Datos de la Factura</h3>
+          <h3 style={{ marginTop: 1 }}>Datos de la Factura</h3>
 
           <div style={{ display: "flex", gap: "5px", alignItems:"center" }}>
             <label>Factura:</label>
@@ -416,7 +409,7 @@ useEffect(() => {
 
     {/* B) DATOS DEL CLIENTE */}
     <div style={{ border: "1px solid #ccc", padding: "7px", alignItems:"center", borderRadius: "8px", width: "325px", marginTop: "0px" }}>         
-        <h3 style={{margintop:"10px" }}>Datos del Cliente</h3>
+        <h3 style={{margintop:"1px" }}>Datos del Cliente</h3>
         <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
             <div style={{ display: "flex", flexDirection: "column", width: "120px" }}>
                 <label>Identificación</label>
@@ -441,8 +434,8 @@ useEffect(() => {
     </div>
     {/* TABLA DE PRODUCTOS */}
     <div style={{ border: "1px solid #ccc", padding: "7px", borderRadius: "8px", width: "1200px"}}>        
-        <div style={{ marginTop: "10px", width: "1180px" }}>
-            <h3 style={{ marginBottom: "10px" }}>Detalle de la Factura</h3>
+        <div style={{ marginTop: "1px", width: "1180px" }}>
+            <h3 style={{ marginBottom: "1px" }}>Detalle de la Factura</h3>
             <table
                 style={{
                 width: "100%",
