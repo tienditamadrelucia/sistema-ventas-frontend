@@ -254,3 +254,28 @@ select, option {
   max-height: 90vh;   /* ⭐ evita que se salga */
   overflow-y: auto;   /* ⭐ permite scroll interno */
 }
+
+.modal-contenido-fecha {
+  background: white;
+  padding: 15px;
+  border-radius: 10px;
+  width: 260px;        /* ANTES era 300–400px */
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.modal-botones-fecha button {
+  display:flex;
+  width: 15%;
+  padding: 15px;
+  background: #D98897;
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-weight: 800;
+  font-family: Arial Black;        
+  margin-top: 1px;
+  justify-content: center;
+  align-items:center;
+  cursor:pointer;
+  height:20px;
+};

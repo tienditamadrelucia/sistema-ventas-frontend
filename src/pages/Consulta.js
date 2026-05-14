@@ -758,7 +758,7 @@ const abrirModalPagoConFecha = () => {
         className="input-fecha"
       />
 
-      <div className="modal-botones">
+      <div className="modal-botones-fecha">
         <button onClick={() => setMostrarFechaAbono(false)}>
           Cancelar
         </button>
