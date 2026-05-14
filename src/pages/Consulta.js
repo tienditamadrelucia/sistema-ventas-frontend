@@ -313,7 +313,7 @@ useEffect(() => {
     }
   };
 
-  const calcularTotalesCredito = (pagos) => {
+  const calcularTotalesCredito = async (pagos) => {
   let usd = 0;
   let bs  = 0;
   let p   = 0;
