@@ -15,8 +15,7 @@ const Consulta = () => {
     // ESTADOS PRINCIPALES USESTATE
     // -----------------------------    
     const [numeroFactura, setNumeroFactura] = useState(0);
-    const [hora, setHora] = useState("");
-    const [fecha, setFecha] = useState(new Date());
+    const [hora, setHora] = useState("");    
     const [modoCredito, setModoCredito] = useState(false);
     const [listaFactura, setListaFactura] = useState([]);
     const [iva, setIva] = useState(0);
@@ -70,7 +69,16 @@ const Consulta = () => {
     const [Abono, setAbono] = useState(0);
     const [Saldo, setSaldo] = useState(0);
     const [totalBsPagado, setTotalBsPagado] = useState(0);
-    const [totalPPagado, setTotalPPagado] = useState(0);    
+    const [totalPPagado, setTotalPPagado] = useState(0);
+    const hoyLocal = new Date();
+    const hoyUTC = new Date(Date.UTC(
+        hoyLocal.getFullYear(),
+        hoyLocal.getMonth(),
+        hoyLocal.getDate(),
+        0, 0, 0
+        ));
+    const hoy = hoyUTC.toISOString().slice(0, 10); // "YYYY-MM-DD"
+    const [fecha, setFecha] = useState(hoyUTC.toISOString().slice(0, 10));    
 
     const API = `${API_URL}/api`;
 
@@ -153,7 +161,7 @@ useEffect(() => {
         setVenta(data.venta);
         console.log("data venta", data.venta)
         console.log("fecha ", data.venta.fecha);
-        //cargarTasaDeLaFactura(data.venta.fecha);
+        cargarTasaDeLaFactura(data.venta.fecha);
         // 2. Validar si es crédito
         if (data.venta.estado === "CREDITO") {
           setEsCredito(true);
@@ -477,7 +485,19 @@ useEffect(() => {
 )}
 {!esCredito && (
   <div>
-    
+    <div
+      style={{
+        fontSize: "10px",
+        color: "#444",
+        marginBottom: "10px",
+        padding: "4px 8px",
+        backgroundColor: "#f3f3f3",
+        borderRadius: "6px",
+        whiteSpace: "nowrap"
+        }}
+      >
+        <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaDolar} ••••• USD/COP: {tasaPeso} ••••• Fecha: {data.venta.fecha}</strong>
+    </div>
 {/* TABLA DE PAGOS */}
 <div style={{ display:"flex", border: "1px solid #ccc", padding: "7px", gap: "8px", width: "1200px", marginTop: "10px", alignItems:"flex-start" }}>
     <div style={{ marginTop: "1px" }}>
