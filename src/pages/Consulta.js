@@ -151,8 +151,7 @@ useEffect(() => {
     // -----------------------------
     // Funciones de búsqueda y filtros
     // -----------------------------  
-    const consultarFactura = async () => {    
-      console.log("factura ", numeroFactura);  
+    const consultarFactura = async () => {          
       if (!numeroFactura) return;
       try {            
         const res = await fetch(`${API_URL}/api/ventas/detalle/${numeroFactura}`);
@@ -162,8 +161,7 @@ useEffect(() => {
           return;
         }
         // 1. Guardar datos de la venta
-        setVenta(data.venta);
-        console.log("data venta", data.venta)        
+        setVenta(data.venta);        
         cargarTasaDeLaFactura(data.venta.fecha);
         // 2. Validar si es crédito
         if (data.venta.estado === "CREDITO") {
@@ -333,6 +331,7 @@ useEffect(() => {
     return;
   }
   const totalPagadoUSD = usd + (bs / td) + (p / tpeso);
+  console.log("total pagado USD", totalPagadoUSD);
   const restaUSD = totalFacturaUSD - totalPagadoUSD;
   const restaBs  = restaUSD * td;
   const restaP   = restaUSD * tpeso;
