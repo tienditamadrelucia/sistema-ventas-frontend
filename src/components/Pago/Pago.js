@@ -777,7 +777,7 @@ const facturaCancelada = modoCredito
             marginTop: "10px"
             }}>          
             <button style={estiloBoton} onClick={onCerrar}>
-              Volver a la Factura
+              Volver
             </button>
 
             <button style={estiloBoton} onClick={limpiarTodo}>

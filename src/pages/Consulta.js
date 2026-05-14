@@ -115,6 +115,7 @@ const Consulta = () => {
     fontFamily: "Arial Black",
     cursor: "pointer",
     marginTop: "1px",
+    justifyContent: "center",
     height:"20px"
   };
 
@@ -688,7 +689,7 @@ useEffect(() => {
   {mostrarPago && (            
   <Pago            
     modoCredito={modoCredito}
-    fecha={fecha}
+    fecha={venta ? venta.fecha.substring(0,10) : ""}
     facturaNumero={numeroFactura}
     totalDolar={totalDolar}
     totalPeso={totalPeso}
