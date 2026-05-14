@@ -107,7 +107,7 @@ const Consulta = () => {
     };
     const estiloBotonVerde = {
         display:"flex",
-        width: "15%",
+        width: "20%",
         padding: "15px",
         backgroundColor: "#74c769",
         color: "white",
