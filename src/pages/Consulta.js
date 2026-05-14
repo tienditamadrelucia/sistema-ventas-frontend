@@ -331,6 +331,9 @@ useEffect(() => {
     return;
   }
   const totalPagadoUSD = usd + (bs / td) + (p / tpeso);
+  console.log("USD", usd);
+  console.log("Bs", bs/td);
+  console.log("Pesos", p/tpeso);
   console.log("total pagado USD", totalPagadoUSD);
   const restaUSD = totalFacturaUSD - totalPagadoUSD;
   const restaBs  = restaUSD * td;
