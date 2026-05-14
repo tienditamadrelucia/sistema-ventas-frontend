@@ -71,6 +71,7 @@ const Consulta = () => {
     const [mostrarPago, setMostrarPago] = useState(false);
     const [pagoExistente, setPagoExistente] = useState(null);
     const [vueltoExistente, setVueltoExistente] = useState(null);
+    const [fechaAbono, setFechaAbono] = useState("");
     
     const [Abono, setAbono] = useState(0);
     const [Saldo, setSaldo] = useState(0);
@@ -350,16 +351,22 @@ useEffect(() => {
   setRestaP(restaP);
 };
 
-  const abonoCredito = async () => {
-    if (!numeroFactura) {
-      alert("Debe ingresar un número de factura.");
-      return;
-      }
-    setModoCredito(true);          // ya lo usas en Pago.js
-    setMostrarPago(true);          // abre el modal
-    setPagoExistente(null);        // para que no cargue pagos viejos
-    setVueltoExistente(null);  
-  };
+  const abonoCredito = () => {
+  // Fecha de hoy en formato YYYY-MM-DD
+  const hoy = new Date().toISOString().substring(0, 10);
+  // Prompt con la fecha por defecto
+  const fechaIngresada = prompt("Ingrese la fecha del abono:", hoy);
+  if (!fechaIngresada) {
+    alert("Debe ingresar una fecha para continuar");
+    return;
+  }
+  // Guardamos la fecha del abono
+  setFechaAbono(fechaIngresada);
+  // Activamos modo crédito y abrimos el modal
+  setModoCredito(true);
+  setMostrarPago(true);
+};
+
 
     // -----------------------------
     // Render
@@ -692,7 +699,7 @@ useEffect(() => {
   {mostrarPago && (            
   <Pago            
     modoCredito={modoCredito}
-    fecha={venta ? venta.fecha.substring(0,10) : ""}
+    fecha={fechaAbono}
     facturaNumero={numeroFactura}
     totalDolar={restaUSD}
     totalPeso={restaP}
