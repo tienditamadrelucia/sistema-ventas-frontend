@@ -87,6 +87,9 @@ const Consulta = () => {
     const hoy = hoyUTC.toISOString().slice(0, 10); // "YYYY-MM-DD"
     const [fecha, setFecha] = useState(hoyUTC.toISOString().slice(0, 10));    
     const [procesando, setProcesando] = useState(false);
+    const [mostrarFechaAbono, setMostrarFechaAbono] = useState(false);
+    const [fechaAbono, setFechaAbono] = useState("");
+
 
     const API = `${API_URL}/api`;
 
@@ -389,6 +392,11 @@ useEffect(() => {
   // Guardamos la fecha del abono
   setFechaAbono(fechaIngresada);
   // Activamos modo crédito y abrimos el modal
+  setModoCredito(true);
+  setMostrarPago(true);
+};
+
+const abrirModalPagoConFecha = () => {
   setModoCredito(true);
   setMostrarPago(true);
 };
@@ -737,6 +745,40 @@ useEffect(() => {
       Registrar abono
     </button>
   )}
+  {mostrarFechaAbono && (
+  <div className="modal-fondo">
+    <div className="modal-contenido">
+      <h3>Fecha del abono</h3>
+
+      <input
+        type="date"
+        value={fechaAbono}
+        onChange={(e) => setFechaAbono(e.target.value)}
+        className="input-fecha"
+      />
+
+      <div className="modal-botones">
+        <button onClick={() => setMostrarFechaAbono(false)}>
+          Cancelar
+        </button>
+
+        <button
+          onClick={() => {
+            if (!fechaAbono) {
+              alert("Debe seleccionar una fecha");
+              return;
+            }
+            setMostrarFechaAbono(false);
+            abrirModalPagoConFecha();
+          }}
+          className="btn-ok"
+        >
+          Aceptar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
   {mostrarPago && (            
   <Pago            
@@ -759,6 +801,15 @@ useEffect(() => {
       }}
   />
   )}
+  {esCredito && (
+  <button
+    onClick={() => setMostrarFechaAbono(true)}
+    className="btn-abono"
+  >
+    Registrar abono
+  </button>
+)}
+
 </div>  
 </div>{/* FIN CONTENEDOR HORIZONTAL */}
 </div> 
