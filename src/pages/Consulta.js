@@ -105,19 +105,20 @@ const Consulta = () => {
         height:"20px"
     };
     const estiloBotonVerde = {
-    width: "20%",
-    padding: "15px",
-    backgroundColor: "#74c769",
-    color: "white",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    fontWeight: "800",
-    fontFamily: "Arial Black",
-    cursor: "pointer",
-    marginTop: "1px",
-    justifyContent: "center",
-    height:"20px"
-  };
+      display: "flex",
+      width: "20%",
+      padding: "15px",
+      backgroundColor: "#74c769",
+      color: "white",
+      border: "1px solid #ccc",
+      borderRadius: "8px",
+      fontWeight: "800",
+      fontFamily: "Arial Black",
+      cursor: "pointer",
+      marginTop: "1px",
+      justifyContent: "center",
+      height:"20px"
+    };
 
     // -----------------------------
     // USEEFFECT para cargar tasas, clientes, categorías y productos
@@ -691,9 +692,9 @@ useEffect(() => {
     modoCredito={modoCredito}
     fecha={venta ? venta.fecha.substring(0,10) : ""}
     facturaNumero={numeroFactura}
-    totalDolar={totalDolar}
-    totalPeso={totalPeso}
-    totalBs={totalBs}
+    totalDolar={restaUSD}
+    totalPeso={restaP}
+    totalBs={restaBs}
     tasaP={tasaPeso}
     tasaD={tasaDolar}
     pagoExistente={pagoExistente}
