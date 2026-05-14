@@ -364,8 +364,7 @@ useEffect(() => {
       if (data.ok) {
         setEsCredito(false);
         // Recargar la venta actualizada
-        cargarVenta(factura);  
-        cargarPagos(factura, true);
+        consultarFactura(numeroFactura);          
       } else {
         alert("Error cambiando estado a CONTADO");
       }
