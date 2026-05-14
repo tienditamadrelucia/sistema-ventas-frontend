@@ -402,8 +402,8 @@ useEffect(() => {
                 style={{ backgroundColor: "#EDC5CD", width:"200px" }}
               />
             </div>
-          </div>
-          {/* FIN DATOS FACTURA */}
+          </div>        
+        </div>  {/* FIN DATOS FACTURA */}
 
           {/* B) DATOS DEL CLIENTE */}    
           <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "325px" }}>         
@@ -430,7 +430,7 @@ useEffect(() => {
             </div>
           </div> {/* FIN DATOS CLIENTE */}
         </div>
-      </div>
+      
       {/* TABLA DE PRODUCTOS */}    
       <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "1200px"}}>        
         <div style={{ marginTop: "1px", width: "1180px" }}>
