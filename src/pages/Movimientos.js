@@ -75,7 +75,6 @@ const estiloBoton = {
   // -------------------------
   const manejarError = (error) => {
   console.error("ERROR:", error);
-
   if (error?.mensaje) {
     alert(error.mensaje);
   } else {
@@ -91,15 +90,12 @@ const estiloBoton = {
       try {
         const cats = await cargarCategorias();
         const prods = await cargarProductos();
-
         setCategorias(cats || []);
         setProductos(prods || []);
-
       } catch (error) {
         manejarError("Error cargando datos iniciales", error);
       }
     };
-
     cargarDatos();
   }, []);
   
@@ -108,7 +104,6 @@ const estiloBoton = {
   // ============================
   const handleCategoria = (e) => {
   const categoriaSeleccionada = e.target.value;
-    
   setFormData({
     ...formData,
     categoria: categoriaSeleccionada
@@ -144,28 +139,22 @@ const ObtenerMovimientos = async () => {
     if (!formData.productoId || !formData.fechaInicio || !formData.fechaFin) {      
       return;      
     }
-
     const movimientosArray = await Consultar(
       formData.productoId,
       formData.fechaInicio,
       formData.fechaFin    
     );
-
     // Ordenar por fecha
     //movimientosArray.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
-
     setMovimientosArray(movimientosArray);
-
     // Calcular stock final
     let stock = 0;
     movimientosArray.forEach(m => {
       if (m.tipo === "ENTRADA") stock += m.cantidad;
       if (m.tipo === "SALIDA" || m.tipo === "VENTA") stock -= m.cantidad;
     });
-
     setStockFinal(stock);
     setProcesando(false);
-
   } catch (error) {
     manejarError("Error obteniendo movimientos", error);
   }
@@ -281,36 +270,52 @@ const ObtenerMovimientos = async () => {
       <table
   border="1"
   cellPadding="8"
-  style={{ width: "100%", textAlign: "center", backgroundColor: "white" }}
+  style={{
+    width: "100%",
+    textAlign: "center",
+    backgroundColor: "white",
+    borderCollapse: "collapse"
+  }}
 >
   <thead>
-    <tr>
+    <tr style={{ backgroundColor: "#f0f0f0", fontWeight: "bold" }}>
       <th>Fecha</th>
       <th>Tipo</th>
       <th>Cantidad</th>
-      <th>Total</th>
       <th>Observación</th>
       <th>Factura</th>
       <th>Código</th>
       <th>Producto</th>
+      <th>Total</th>
     </tr>
   </thead>
 
   <tbody>
     {movimientosArray.map((m, index) => (
-      <tr key={index}>
+      <tr
+        key={index}
+        style={{
+          backgroundColor:
+            m.tipo === "ENTRADA"
+              ? "#e6ffe6" // verde suave
+              : m.tipo === "SALIDA"
+              ? "#ffe6e6" // rojo suave
+              : "#e6f0ff" // azul suave para ventas
+        }}
+      >
         <td>{new Date(m.fecha).toLocaleDateString("es-VE")}</td>
-        <td>{m.tipo}</td>
+        <td style={{ fontWeight: "bold" }}>{m.tipo}</td>
         <td>{m.cantidad}</td>
-        <td>{m.total || ""}</td>
         <td>{m.observacion || ""}</td>
         <td>{m.factura || ""}</td>
         <td>{m.codigo || ""}</td>
         <td>{m.producto || ""}</td>
+        <td>{m.total || ""}</td>
       </tr>
     ))}
   </tbody>
 </table>
+
 
       {/* STOCK FINAL */}
       <h3 style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold" }}>
