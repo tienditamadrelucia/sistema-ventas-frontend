@@ -61,6 +61,7 @@ const estiloBoton = {
 
   const [movimientosArray, setMovimientosArray] = useState([]);
   const [stockFinal, setStockFinal] = useState(0);
+  const [procesando, setProcesando] = useState(false);
 
   const [formData, setFormData] = useState({
     categoria: "",
@@ -138,6 +139,7 @@ const estiloBoton = {
 //   CONSULTAR MOVIMIENTOS
 // ===============================
 const ObtenerMovimientos = async () => {
+  setProcesando(true);
   try {        
     if (!formData.productoId || !formData.fechaInicio || !formData.fechaFin) {      
       return;      
@@ -162,6 +164,7 @@ const ObtenerMovimientos = async () => {
     });
 
     setStockFinal(stock);
+    setProcesando(false);
 
   } catch (error) {
     manejarError("Error obteniendo movimientos", error);
@@ -173,7 +176,23 @@ const ObtenerMovimientos = async () => {
   // -------------------------
 
    return (
-    <div style={{ minHeight: "100vh", padding: "10px" }}>
+    <div>
+      {procesando && (
+      <div style={{
+        background: "#6699FF",
+        color: "white",
+        padding: "8px",
+        textAlign: "center",
+        fontWeight: "bold",
+        position: "fixed",
+        bottom: 0,
+        left: 0,
+        width: "100%",
+        zIndex: 999999
+      }}>
+        Procesando, por favor espere...
+      </div>
+      )}
       <Encabezado />
 
       <div style={{ padding: "20px" }}>
