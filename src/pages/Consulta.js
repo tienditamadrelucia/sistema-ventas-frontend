@@ -503,12 +503,14 @@ const abrirModalPagoConFecha = () => {
       <div style={{ border: "1px solid #ccc", padding: "10px", borderRadius: "8px", width: "1200px"}}>        
         <div style={{ marginTop: "1px", width: "1180px" }}>
             <h3 style={{ marginBottom: "1px" }}>Detalle de la Factura</h3>
-            <h2>
-  Venta #{venta.factura} — 
-  {venta.estado === "CREDITO" 
-    ? "Venta a CRÉDITO (pendiente de pago)" 
-    : "Venta de CONTADO (pagada)"}
-</h2>
+            {venta && (
+  <h2>
+    Venta #{venta.factura} — 
+    {venta.estado === "CREDITO" 
+      ? "Venta a CRÉDITO (pendiente de pago)" 
+      : "Venta de CONTADO (pagada)"}
+  </h2>
+)}
          
             <table
                 style={{
