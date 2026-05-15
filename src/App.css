@@ -177,8 +177,7 @@ select, option {
   .btn-pdf,
   .btn-whatsapp,
   .btn-eliminar,
-  .botonera,
-  button:not(.boton-guardar-15) {
+  .botonera {
     display: none !important;
   }
 
