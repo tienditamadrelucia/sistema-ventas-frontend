@@ -13,6 +13,7 @@ export async function Consultar(productoId, fechaInicio, fechaFin) {
     // El backend devuelve movimientosArray, no "movimientos"
     return data.movimientos || [];
   } catch (error) {
+    console.log("ERROR MOVIMIENTOS:", error);
     alert("Error consultando movimientos services: " + error.message);
     return [];
   }
