@@ -62,6 +62,12 @@ const estiloBoton = {
   const [movimientosArray, setMovimientosArray] = useState([]);
   const [stockFinal, setStockFinal] = useState(0);
   const [procesando, setProcesando] = useState(false);
+  const [totales, setTotales] = useState({
+    totalEntradas: 0,
+    totalSalidas: 0,
+    totalVentas: 0
+  });
+
 
   const [formData, setFormData] = useState({
     categoria: "",
