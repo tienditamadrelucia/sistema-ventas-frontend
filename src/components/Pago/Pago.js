@@ -68,6 +68,7 @@ const Pago = ({
   const [vueltoCopSistema, setVueltoCopSistema] = useState(0);
   const [vueltoBsSistema, setVueltoBsSistema] = useState(0);  
   const [totalAbonado, setTotalAbonado] = useState(0);
+  const [guardando, setGuardando] = useState(false);
   
 const formatoVE = new Intl.NumberFormat("es-VE", {
   minimumFractionDigits: 2,
@@ -796,7 +797,8 @@ const facturaCancelada = modoCredito
               // VALIDACIONES DE REFERENCIAS
               // ============================
               // PUNTO
-              {console.log("FACTURA CANCELADA =", facturaCancelada)}
+              if (guardando) return;
+                setGuardando(true);              
               if (Number(pagoBsPunto) > 0) {
                 if (!refPunto || !lotePunto) {
                   alert("Debe ingresar referencia y lote para el pago por punto");
@@ -854,6 +856,7 @@ const facturaCancelada = modoCredito
             }
             if (!respuestaPago.ok) {
               alert("Error al guardar el pago:\n" + JSON.stringify(respuestaPago, null, 2));
+              setGuardando(false);
               return;
             }
             // ============================
@@ -897,8 +900,7 @@ const facturaCancelada = modoCredito
             Number(vueltoCopUsuario || 0) === 0 &&
             Number(vueltoBsUsuario || 0) === 0;
             if (usuarioBorroVuelto) {
-              await eliminarMoneda(IdVueltoExistente);
-              console.log("🗑️ Vuelto eliminado de la DB");
+              await eliminarMoneda(IdVueltoExistente);              
             }
           }
           alert("💾 Pago grabado con éxito");
@@ -913,9 +915,10 @@ const facturaCancelada = modoCredito
             modoCredito
             });
           setTimeout(() => onCerrar(), 0);
+          setGuardando(false);
           }}
         >
-          Grabar
+          {guardando ? "Guardando..." : "Grabar"}
         </button>
         </div>
       </div>    
