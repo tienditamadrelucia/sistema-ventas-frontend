@@ -88,6 +88,7 @@ const Ventas = () => {
   const [reservaId, setReservaId] = useState(null); // ya casi obsoleto, pero lo dejamos por compatibilidad
   const [ventaFinalizada, setVentaFinalizada] = useState(false);
   const [procesando, setProcesando] = useState(false);
+  const [estado, setEstado] = useState("normal");
 
   const estiloBoton = {
     width: "20%",
@@ -114,17 +115,21 @@ const Ventas = () => {
     marginTop: "5px"
   };
   const botonGuardar = {
-    width: "15%",
-    padding: "6px",
-    backgroundColor: "#D98897",
-    color: "white",
-    border: "none",
-    borderRadius: "6px",
-    fontFamily: "Arial Black",
-    marginTop: "8px",
-    opacity: procesando ? 0.6 : 1,
-    cursor: procesando ? "not-allowed" : "pointer"
-  };
+  width: "15%",
+  padding: "6px",
+  backgroundColor:
+    estado === "hover" ? "#c97a87" :
+    estado === "active" ? "#b86c78" :
+    "#D98897",
+  color: "white",
+  border: "none",
+  borderRadius: "6px",
+  fontFamily: "Arial Black",
+  marginTop: "8px",
+  opacity: procesando ? 0.6 : 1,
+  cursor: procesando ? "not-allowed" : "pointer",
+  transition: "0.15s"
+};
 
   const API = `${API_URL}/api`;
   const UsuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";
@@ -1560,7 +1565,12 @@ const cargarFacturaParaPago = async (dataVenta) => {
           </button>
           <button
             onClick={validarPagoAntes}
-            className="boton-guardar-15"
+            style={botonGuardar}
+            disabled={procesando}
+            onMouseEnter={() => setEstado("hover")}
+            onMouseLeave={() => setEstado("normal")}
+            onMouseDown={() => setEstado("active")}
+            onMouseUp={() => setEstado("hover")}
           >
             Guardar Venta
           </button>

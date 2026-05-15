@@ -26,9 +26,9 @@ const Productos = () => {
   };
 
   const botonGuardar = {
-    width: "50%",
+    width: "25%",
     padding: "6px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
