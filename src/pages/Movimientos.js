@@ -145,13 +145,16 @@ const ObtenerMovimientos = async () => {
     if (!formData.productoId || !formData.fechaInicio || !formData.fechaFin) {      
       return;      
     }
+    // 1. Stock inicial
+    const producto = productos.find(p => p._id === formData.productoId);
+    const stockInicial = producto?.stock || 0;
+    // 2. Movimientos del backend
     const movimientosArray = await Consultar(
       formData.productoId,
       formData.fechaInicio,
       formData.fechaFin    
     );
-    // Ordenar por fecha
-    //movimientosArray.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+    // 3. Transformar movimientos
     setMovimientosArray(movimientosArray);
     const movimientosTransformados = movimientosArray.map(m => {
       return {
@@ -161,24 +164,27 @@ const ObtenerMovimientos = async () => {
       venta: m.tipo === "VENTA" ? m.cantidad : "",
       };
     });
-    let existencia = 0;
+    // 4. Calcular existencia actual
+    let existencia = stockInicial;
       const movimientosConExistencia = movimientosTransformados.map(m => {
       const entrada = Number(m.entrada) || 0;
       const salida = Number(m.salida) || 0;
       const venta = Number(m.venta) || 0;
-      existencia = existencia + entrada - salida - venta;
-      return {
-        ...m,
+        existencia = existencia + entrada - salida - venta;
+        return {
+      ...m,
         existenciaActual: existencia
-      };
-    });
-    setMovimientosArray(movimientosTransformados);
+        };
+      });
+      // 5. Guardar movimientos correctos
+    setMovimientosArray(movimientosConExistencia);
+    // 6. Totales
     const totalEntradas = movimientosConExistencia.reduce((acc, m) => acc + (Number(m.entrada) || 0), 0);
     const totalSalidas  = movimientosConExistencia.reduce((acc, m) => acc + (Number(m.salida) || 0), 0);
     const totalVentas   = movimientosConExistencia.reduce((acc, m) => acc + (Number(m.venta) || 0), 0);
     setTotales({ totalEntradas, totalSalidas, totalVentas });
 
-    // Calcular stock final
+    // 7. Stock final (si lo necesitas)
     let stock = 0;
     movimientosArray.forEach(m => {
       if (m.tipo === "ENTRADA") stock += m.cantidad;
@@ -298,7 +304,7 @@ const ObtenerMovimientos = async () => {
         Movimientos del Producto
       </h3>
 
-      <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center", backgroundColor: "white" }}>
+      <table border="1" cellPadding="8" style={{ width: "50%", textAlign: "center", backgroundColor: "white" }}>
   <thead>
     <tr>
       <th>Fecha</th>
