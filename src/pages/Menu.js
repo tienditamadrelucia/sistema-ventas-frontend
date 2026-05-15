@@ -344,6 +344,22 @@ function Menu() {
               >
                 Cierre de Año
               </button>
+              <button
+            style={{
+            ...botonSubmenu,
+            opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+            cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+            }}
+            disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
+            onClick={async () => {
+            await registrarAccion("Entró al módulo CONTROL DE INTEGRIDAD");
+            if (localStorage.getItem("rolUsuario") === "ADMINISTRADOR") {
+              navigate("/integridad");
+            }
+          }}
+          >
+            Control de Integridad
+          </button>
             </>
           )}        
 
