@@ -147,6 +147,32 @@ const ObtenerMovimientos = async () => {
     // Ordenar por fecha
     //movimientosArray.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
     setMovimientosArray(movimientosArray);
+    const movimientosTransformados = movimientosArray.map(m => {
+    if (m.tipo === "ENTRADA") {
+      return {
+        fechaEntrada: m.fecha,
+        cantidadEntrada: m.cantidad,
+        observacionEntrada: m.observacion
+      };
+    }
+    if (m.tipo === "SALIDA") {
+      return {
+        fechaSalida: m.fecha,
+        cantidadSalida: m.cantidad,
+        observacionSalida: m.observacion
+      };
+    }
+    if (m.tipo === "VENTA") {
+      return {
+        fechaVenta: m.fecha,
+        cantidadVenta: m.cantidad,
+        total: m.total
+      };
+    }
+    return {};
+  });
+  setMovimientosArray(movimientosTransformados);
+
     // Calcular stock final
     let stock = 0;
     movimientosArray.forEach(m => {
