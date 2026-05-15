@@ -918,7 +918,7 @@ const facturaCancelada = modoCredito
           setGuardando(false);
           }}
         >
-          {guardando ? "Guardando..." : "Grabar"}
+          {guardando ? "Guardando..." : "Guardar"}
         </button>
         </div>
       </div>    
