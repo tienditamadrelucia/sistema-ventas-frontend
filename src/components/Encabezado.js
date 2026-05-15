@@ -52,7 +52,7 @@ const Encabezado = () => {
         width: "100%",
         backgroundColor: "#F9CEAE",
         padding: "8px 20px",
-        color: "#84868a",
+        color: "#000000",
         borderRadius: "0 0 8px 8px",
         marginBottom: "20px",
         fontFamily: "Arial"
