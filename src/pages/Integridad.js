@@ -202,11 +202,13 @@ export default function Integridad() {
           <thead>
             <tr style={{ background: "#eee" }}>
               <th style={th}>ID</th>
-              <th style={th}>Producto</th>
+              <th style={th}>Código</th>
+              <th style={th}>Descripción</th>
               <th style={th}>Cantidad</th>
               <th style={th}>Precio</th>
+              <th style={th}>Dscto</th>
               <th style={th}>Total</th>
-              <th style={th}>Fecha (createdAt)</th>
+              <th style={th}>Fecha</th>
               <th style={th}>Acción</th>
             </tr>
           </thead>
@@ -215,14 +217,21 @@ export default function Integridad() {
             {grupo.map((v) => (
               <tr key={v._id}>
                 <td style={td}>{v._id}</td>
-                <td style={td}>
-                  {v.productoId?.codigo || "SIN CÓDIGO"}<br />
-                  <small>{v.productoId?.descripcion || ""}</small>
-                </td>
+
+                {/* Código del producto */}
+                <td style={td}>{v.productoId?.codigo || "SIN CÓDIGO"}</td>
+
+                {/* Nombre del producto */}
+                <td style={td}>{v.productoId?.descripcion || "SIN DESCRIPCIÓN"}</td>
+
                 <td style={td}>{v.cantidad}</td>
                 <td style={td}>{v.precio}</td>
+                <td style={td}>{v.dscto}</td>
                 <td style={td}>{v.total}</td>
-                <td style={td}>{v.createdAt || "SIN FECHA"}</td>
+
+                {/* Fecha real */}
+                <td style={td}>{v.createdAt}</td>
+
                 <td style={tdCenter}>
                   <button
                     onClick={() => eliminarUno("vendidos", v._id)}
