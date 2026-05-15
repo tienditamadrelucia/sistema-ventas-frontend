@@ -24,65 +24,52 @@ export default function Integridad() {
     }
   };
 
-  const limpiarDuplicadosMoneda = async () => {
-    if (!window.confirm("¿Eliminar duplicados automáticamente?")) return;
+  const eliminarUno = async (id) => {
+    if (!window.confirm("¿Eliminar este registro duplicado?")) return;
 
-    setCargando(true);
     try {
-      const res = await fetch(`${API}/limpiar/moneda`, {
+      const res = await fetch(`${API_URL}/api/moneda/${id}`, {
         method: "DELETE",
       });
+
       const data = await res.json();
 
       if (!data.ok) {
-        alert("Error eliminando duplicados:\n" + data.error);
+        alert("Error eliminando:\n" + data.error);
         return;
       }
 
-      alert("Duplicados eliminados:\n" + JSON.stringify(data.eliminados, null, 2));
-      setDuplicados([]);
+      // Quitar el registro eliminado de la tabla
+      setDuplicados((prev) =>
+        prev.map((grupo) => grupo.filter((p) => p._id !== id))
+             .filter((grupo) => grupo.length > 1)
+      );
+
+      alert("Registro eliminado correctamente");
     } catch (error) {
-      alert("Error de conexión eliminando duplicados");
-    } finally {
-      setCargando(false);
+      alert("Error de conexión eliminando registro");
     }
   };
 
   return (
     <div style={{ padding: "20px" }}>
       <h2>🛠️ Control de Integridad</h2>
-      <p>Herramientas administrativas para revisar y corregir inconsistencias en pagos.</p>
+      <p>Revisión y depuración de pagos duplicados en dbMoneda.</p>
 
-      <div style={{ marginBottom: "20px" }}>
-        <button
-          onClick={buscarDuplicadosMoneda}
-          style={{
-            padding: "10px 15px",
-            marginRight: "10px",
-            background: "#d63384",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-          }}
-        >
-          Buscar duplicados en Pagos
-        </button>
-
-        <button
-          onClick={limpiarDuplicadosMoneda}
-          style={{
-            padding: "10px 15px",
-            background: "#6f42c1",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-          }}
-        >
-          Eliminar duplicados automáticamente
-        </button>
-      </div>
+      <button
+        onClick={buscarDuplicadosMoneda}
+        style={{
+          padding: "10px 15px",
+          background: "#d63384",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer",
+          marginBottom: "20px",
+        }}
+      >
+        Buscar duplicados
+      </button>
 
       {cargando && <p>Cargando...</p>}
 
@@ -91,36 +78,66 @@ export default function Integridad() {
           <h3>Duplicados encontrados: {duplicados.length}</h3>
 
           {duplicados.map((grupo, i) => (
-            <div
-              key={i}
-              style={{
-                background: "#f8f9fa",
-                padding: "10px",
-                marginBottom: "15px",
-                borderRadius: "8px",
-                border: "1px solid #ddd",
-              }}
-            >
+            <div key={i} style={{ marginBottom: "25px" }}>
               <h4>Factura: {grupo[0].factura}</h4>
 
-              {grupo.map((pago) => (
-                <div
-                  key={pago._id}
-                  style={{
-                    padding: "6px",
-                    borderBottom: "1px solid #eee",
-                  }}
-                >
-                  <strong>ID:</strong> {pago._id}
-                  <br />
-                  <strong>Total:</strong> {pago.total}
-                  <br />
-                  <strong>Operación:</strong> {pago.operacion}
-                  <br />
-                  <strong>Fecha:</strong>{" "}
-                  {new Date(pago.fecha).toLocaleString()}
-                </div>
-              ))}
+              <table
+                style={{
+                  width: "100%",
+                  borderCollapse: "collapse",
+                  marginBottom: "10px",
+                }}
+              >
+                <thead>
+                  <tr style={{ background: "#eee" }}>
+                    <th style={{ border: "1px solid #ccc", padding: "6px" }}>ID</th>
+                    <th style={{ border: "1px solid #ccc", padding: "6px" }}>Total</th>
+                    <th style={{ border: "1px solid #ccc", padding: "6px" }}>Operación</th>
+                    <th style={{ border: "1px solid #ccc", padding: "6px" }}>Fecha</th>
+                    <th style={{ border: "1px solid #ccc", padding: "6px" }}>Acción</th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {grupo.map((pago) => (
+                    <tr key={pago._id}>
+                      <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                        {pago._id}
+                      </td>
+                      <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                        {pago.total}
+                      </td>
+                      <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                        {pago.operacion}
+                      </td>
+                      <td style={{ border: "1px solid #ccc", padding: "6px" }}>
+                        {new Date(pago.fecha).toLocaleString()}
+                      </td>
+                      <td
+                        style={{
+                          border: "1px solid #ccc",
+                          padding: "6px",
+                          textAlign: "center",
+                        }}
+                      >
+                        <button
+                          onClick={() => eliminarUno(pago._id)}
+                          style={{
+                            background: "red",
+                            color: "white",
+                            border: "none",
+                            padding: "6px 10px",
+                            borderRadius: "4px",
+                            cursor: "pointer",
+                          }}
+                        >
+                          🗑️
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           ))}
         </div>
