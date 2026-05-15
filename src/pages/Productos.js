@@ -14,7 +14,7 @@ const Productos = () => {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -408,7 +408,7 @@ const Productos = () => {
           width: "550px",
           margin: "0 auto 1px auto",
           padding: "1px",
-          border: "1px solid #ccc",
+          border: "1px solid #84868a",
           borderRadius: "8px",
           backgroundColor: "white",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
