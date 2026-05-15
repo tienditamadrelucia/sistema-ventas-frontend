@@ -21,6 +21,16 @@ export default function Integridad() {
   // ============================
   // BUSCAR DUPLICADOS
   // ============================
+  const cargarVendidosTodos = async () => {
+    const res = await fetch(`${API}/vendidos-todos`);
+    const data = await res.json();
+    if (!data.ok) {
+      alert("Error cargando vendidos:\n" + data.error);
+      return;
+    }
+    setVendidosTodos(data.registros);
+  };
+
   const buscarDuplicados = async (tipo) => {
     setCargando(true);
     try {
@@ -300,16 +310,6 @@ export default function Integridad() {
     borderRadius: "4px",
     cursor: "pointer"
   };
-
-  const cargarVendidosTodos = async () => {
-  const res = await fetch(`${API}/vendidos-todos`);
-  const data = await res.json();
-  if (!data.ok) {
-    alert("Error cargando vendidos:\n" + data.error);
-    return;
-  }
-  setVendidosTodos(data.registros);
-};
 
   return (
     <div style={{ padding: "20px" }}>
