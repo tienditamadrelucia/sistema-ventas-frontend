@@ -305,7 +305,7 @@ const ObtenerMovimientos = async () => {
         Movimientos del Producto
       </h3>
 
-      <table border="1" cellPadding="8" style={{ width: "50%", textAlign: "center", backgroundColor: "white", justifyContent:"center" }}>
+      <table border="1" cellPadding="8" style={{ width: "50%", display:"flez", textAlign: "center", backgroundColor: "white", justifyContent:"center" }}>
   <thead>
     <tr>
       <th>Fecha</th>
