@@ -260,6 +260,55 @@ export default function Integridad() {
   </div>
 );
 
+const TablaVendidosTodos = ({ registros }) => (
+  <div style={{ marginTop: "30px" }}>
+    <h3>Todos los Vendidos: {registros.length}</h3>
+
+    <table style={{ width: "100%", borderCollapse: "collapse" }}>
+      <thead>
+        <tr style={{ background: "#eee" }}>
+          <th style={th}>Factura</th>
+          <th style={th}>Código</th>
+          <th style={th}>Descripción</th>
+          <th style={th}>Cantidad</th>
+          <th style={th}>Precio</th>
+          <th style={th}>Dscto</th>
+          <th style={th}>Total</th>
+          <th style={th}>Fecha</th>
+          <th style={th}>ID</th>
+          <th style={th}>Acción</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {registros.map((v) => (
+          <tr key={v._id}>
+            <td style={td}>{v.factura}</td>
+            <td style={td}>{v.productoId?.codigo || "SIN CÓDIGO"}</td>
+            <td style={td}>{v.productoId?.descripcion || "SIN DESCRIPCIÓN"}</td>
+            <td style={td}>{v.cantidad}</td>
+            <td style={td}>{v.precio}</td>
+            <td style={td}>{v.dscto}</td>
+            <td style={td}>{v.total}</td>
+            <td style={td}>{v.createdAt}</td>
+            <td style={td}>{v._id}</td>
+
+            <td style={tdCenter}>
+              <button
+                onClick={() => eliminarUno("vendidos", v._id)}
+                style={btnTrash}
+              >
+                🗑️
+              </button>
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+
   const th = { border: "1px solid #ccc", padding: "6px" };
   const td = { border: "1px solid #ccc", padding: "6px" };
   const tdCenter = { ...td, textAlign: "center" };
@@ -358,6 +407,10 @@ export default function Integridad() {
 
       {duplicadosVendidos.length > 0 && (
       <TablaDuplicadosVendidos grupos={duplicadosVendidos} />
+      )}
+
+      {vendidosTodos.length > 0 && (
+      <TablaVendidosTodos registros={vendidosTodos} />
       )}
     </div>
   );
