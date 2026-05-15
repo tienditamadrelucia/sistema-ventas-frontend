@@ -1,13 +1,19 @@
 import React, { useState } from "react";
 import { API_URL } from "../config";
+import { useNavigate } from "react-router-dom";
 
 const API = `${API_URL}/admin`;
 
 export default function Integridad() {
+  const navigate = useNavigate();
   const [duplicadosMoneda, setDuplicadosMoneda] = useState([]);
   const [duplicadosVentas, setDuplicadosVentas] = useState([]);
   const [duplicadosVendidos, setDuplicadosVendidos] = useState([]);
   const [cargando, setCargando] = useState(false);
+
+  const volverMenu = () => {
+    navigate("/menu");
+  };
 
   // ============================
   // BUSCAR DUPLICADOS
@@ -39,38 +45,31 @@ export default function Integridad() {
   // ============================
   const eliminarUno = async (tipo, id) => {
     if (!window.confirm("¿Eliminar este registro duplicado?")) return;
-
     try {
       const res = await fetch(`${API}/eliminar/${tipo}/${id}`, {
         method: "DELETE",
       });
-
       const data = await res.json();
       if (!data.ok) {
         alert("Error eliminando:\n" + data.error);
         return;
       }
-
       if (tipo === "moneda") {
         setDuplicadosMoneda((prev) =>
           prev.map((g) => g.filter((p) => p._id !== id)).filter((g) => g.length > 1)
         );
       }
-
       if (tipo === "ventas") {
         setDuplicadosVentas((prev) =>
           prev.map((g) => g.filter((p) => p._id !== id)).filter((g) => g.length > 1)
         );
       }
-
       if (tipo === "vendidos") {
         setDuplicadosVendidos((prev) =>
           prev.map((g) => g.filter((p) => p._id !== id)).filter((g) => g.length > 1)
         );
       }
-
       alert("Registro eliminado correctamente");
-
     } catch (error) {
       alert("Error de conexión eliminando registro");
     }
@@ -152,6 +151,20 @@ export default function Integridad() {
           Duplicados en Vendidos
         </button>
       </div>
+      <button
+        onClick={volverMenu}
+        style={{
+          padding: "10px 15px",
+          background: "#D98897",
+          color: "white",
+          border: "none",
+          borderRadius: "6px",
+          cursor: "pointer",
+          marginBottom: "20px"
+        }}
+      >
+        ⬅️ Volver al Menú
+      </button>
 
       {cargando && <p>Cargando...</p>}
 
@@ -186,7 +199,7 @@ export default function Integridad() {
 const btn = {
   padding: "10px 15px",
   marginRight: "10px",
-  background: "#6f42c1",
+  background: "#3d77eb",
   color: "white",
   border: "none",
   borderRadius: "6px",
