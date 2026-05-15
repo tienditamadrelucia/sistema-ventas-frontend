@@ -278,43 +278,39 @@ const ObtenerMovimientos = async () => {
         Movimientos del Producto
       </h3>
 
-      <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center", backgroundColor: "white" }}>
-        <thead>
-          <tr>
-            <th>Fecha Entrada</th>
-            <th>Cant</th>
-            <th>Obs</th>
+      <table
+  border="1"
+  cellPadding="8"
+  style={{ width: "100%", textAlign: "center", backgroundColor: "white" }}
+>
+  <thead>
+    <tr>
+      <th>Fecha</th>
+      <th>Tipo</th>
+      <th>Cantidad</th>
+      <th>Total</th>
+      <th>Observación</th>
+      <th>Factura</th>
+      <th>Código</th>
+      <th>Producto</th>
+    </tr>
+  </thead>
 
-            <th>Fecha Salida</th>
-            <th>Cant</th>
-            <th>Obs</th>
-
-            <th>Fecha Venta</th>
-            <th>Cant</th>
-
-            <th>Total</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {movimientosArray.map((m, index) => (
-            <tr key={index}>
-              <td>{m.fechaEntrada ? new Date(m.fechaEntrada).toLocaleDateString("es-VE") : ""}</td>
-              <td>{m.cantidadEntrada || ""}</td>
-              <td>{m.observacionEntrada || ""}</td>
-
-              <td>{m.fechaSalida ? new Date(m.fechaSalida).toLocaleDateString("es-VE") : ""}</td>
-              <td>{m.cantidadSalida || ""}</td>
-              <td>{m.observacionSalida || ""}</td>
-
-              <td>{m.fechaVenta ? new Date(m.fechaVenta).toLocaleDateString("es-VE") : ""}</td>
-              <td>{m.cantidadVenta || ""}</td>
-
-              <td>{m.total}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+  <tbody>
+    {movimientosArray.map((m, index) => (
+      <tr key={index}>
+        <td>{new Date(m.fecha).toLocaleDateString("es-VE")}</td>
+        <td>{m.tipo}</td>
+        <td>{m.cantidad}</td>
+        <td>{m.total || ""}</td>
+        <td>{m.observacion || ""}</td>
+        <td>{m.factura || ""}</td>
+        <td>{m.codigo || ""}</td>
+        <td>{m.producto || ""}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
 
       {/* STOCK FINAL */}
       <h3 style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold" }}>
