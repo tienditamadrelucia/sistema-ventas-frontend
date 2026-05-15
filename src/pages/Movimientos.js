@@ -185,8 +185,9 @@ const ObtenerMovimientos = async () => {
     setTotales({ totalEntradas, totalSalidas, totalVentas });
 
     // 7. Stock final (si lo necesitas)
-    let stock = 0;
-    movimientosArray.forEach(m => {
+    // Calcular stock final tomando en cuenta el stock inicial
+    let stock = stockInicial;
+      movimientosArray.forEach(m => {
       if (m.tipo === "ENTRADA") stock += m.cantidad;
       if (m.tipo === "SALIDA" || m.tipo === "VENTA") stock -= m.cantidad;
     });
@@ -304,7 +305,7 @@ const ObtenerMovimientos = async () => {
         Movimientos del Producto
       </h3>
 
-      <table border="1" cellPadding="8" style={{ width: "50%", textAlign: "center", backgroundColor: "white" }}>
+      <table border="1" cellPadding="8" style={{ width: "50%", textAlign: "center", backgroundColor: "white", justifyContent:"center" }}>
   <thead>
     <tr>
       <th>Fecha</th>
