@@ -1,0 +1,36 @@
+.boton-guardar-15 {
+  width: 15%;
+  padding: 10px;
+  background-color: #D98897;
+  color: white;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-weight: 900;
+  font-family: Arial, Arial, sans-serif;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: background-color 0.15s ease;
+}
+
+/* Hover: cuando el mouse está encima */
+.boton-guardar-15:hover {
+  background-color: #c96f80; /* un rosado más oscuro */
+  transform: scale(1.03);
+}
+
+/* Active: cuando se presiona */
+.boton-guardar-15:active {
+  transform: scale(0.95);
+  background-color: #b85f70; /* más oscuro aún */
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+/* Disabled: cuando está deshabilitado */
+.boton-guardar-15:disabled {
+  background-color: #d3d3d3;
+  color: #888;
+  border-color: #aaa;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
