@@ -304,39 +304,46 @@ const ObtenerMovimientos = async () => {
       <h3 style={{ textAlign: "center", marginTop: "2px", fontWeight: "bold" }}>
         Movimientos del Producto
       </h3>
-
-      <table border="1" cellPadding="8" style={{ width: "50%", display:"flez", textAlign: "center", backgroundColor: "white", justifyContent:"center" }}>
-  <thead>
-    <tr>
-      <th>Fecha</th>
-      <th>Entrada</th>
-      <th>Salida</th>
-      <th>Venta</th>
-      <th>Existencia Actual</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    {movimientosArray.map((m, index) => (
-      <tr key={index}>
-        <td>{new Date(m.fecha).toLocaleDateString("es-VE")}</td>
-        <td>{m.entrada}</td>
-        <td>{m.salida}</td>
-        <td>{m.venta}</td>
-        <td>{m.existenciaActual}</td>
-      </tr>
-    ))}
-
-    {/* FILA DE TOTALES */}
-    <tr style={{ fontWeight: "bold", backgroundColor: "#f0f0f0" }}>
-      <td>TOTALES</td>
-      <td>{totales.totalEntradas}</td>
-      <td>{totales.totalSalidas}</td>
-      <td>{totales.totalVentas}</td>
-      <td></td>
-    </tr>
-  </tbody>
-</table>
+      <div style={{ display:"flex", justifyContent:"center" }}>
+        <table 
+          border="1" 
+          cellPadding="8" 
+          style={{
+            width: "50%",
+            textAlign: "center",
+            backgroundColor: "white",
+          }}
+        >
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Entrada</th>
+              <th>Salida</th>
+              <th>Venta</th>
+              <th>Existencia Actual</th>
+            </tr>
+          </thead>
+          <tbody>
+            {movimientosArray.map((m, index) => (
+              <tr key={index}>
+                <td>{new Date(m.fecha).toLocaleDateString("es-VE")}</td>
+                <td>{m.entrada}</td>
+                <td>{m.salida}</td>
+                <td>{m.venta}</td>
+                <td>{m.existenciaActual}</td>
+              </tr>
+            ))}
+            {/* FILA DE TOTALES */}
+            <tr style={{ fontWeight: "bold", backgroundColor: "#f0f0f0" }}>
+              <td>TOTALES</td>
+              <td>{totales.totalEntradas}</td>
+              <td>{totales.totalSalidas}</td>
+              <td>{totales.totalVentas}</td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
       {/* STOCK FINAL */}
       <h3 style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold" }}>
