@@ -47,38 +47,31 @@ export default function Integridad() {
   // ============================
   const eliminarUno = async (tipo, id) => {
     if (!window.confirm("¿Eliminar este registro duplicado?")) return;
-
     try {
       const res = await fetch(`${API}/eliminar/${tipo}/${id}`, {
         method: "DELETE",
       });
-
       const data = await res.json();
       if (!data.ok) {
         alert("Error eliminando:\n" + data.error);
         return;
       }
-
       if (tipo === "moneda") {
         setDuplicadosMoneda((prev) =>
           prev.map((g) => g.filter((p) => p._id !== id)).filter((g) => g.length > 1)
         );
       }
-
       if (tipo === "ventas") {
         setDuplicadosVentas((prev) =>
           prev.map((g) => g.filter((p) => p._id !== id)).filter((g) => g.length > 1)
         );
       }
-
       if (tipo === "vendidos") {
         setDuplicadosVendidos((prev) =>
           prev.map((g) => g.filter((p) => p._id !== id)).filter((g) => g.length > 1)
         );
       }
-
       alert("Registro eliminado correctamente");
-
     } catch (error) {
       alert("Error de conexión eliminando registro");
     }
@@ -92,22 +85,17 @@ export default function Integridad() {
       alert("Debe seleccionar una fecha");
       return;
     }
-
     const res = await fetch(`${API}/corregir-fecha/${tipo}/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ fecha: nuevaFecha })
     });
-
     const data = await res.json();
-
     if (!data.ok) {
       alert("Error guardando fecha:\n" + data.error);
       return;
     }
-
     alert("Fecha actualizada correctamente");
-
     buscarDuplicados(tipo);
     setEditando(null);
   };
@@ -227,7 +215,10 @@ export default function Integridad() {
             {grupo.map((v) => (
               <tr key={v._id}>
                 <td style={td}>{v._id}</td>
-                <td style={td}>{v.productoId}</td>
+                <td style={td}>
+                  {v.productoId?.codigo || "SIN CÓDIGO"}<br />
+                  <small>{v.productoId?.descripcion || ""}</small>
+                </td>
                 <td style={td}>{v.cantidad}</td>
                 <td style={td}>{v.precio}</td>
                 <td style={td}>{v.total}</td>
