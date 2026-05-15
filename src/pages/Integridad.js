@@ -11,6 +11,7 @@ export default function Integridad() {
   const [duplicadosVentas, setDuplicadosVentas] = useState([]);
   const [duplicadosVendidos, setDuplicadosVendidos] = useState([]);
   const [cargando, setCargando] = useState(false);
+  const [vendidosTodos, setVendidosTodos] = useState([]);
 
   const [editando, setEditando] = useState(null);
   const [nuevaFecha, setNuevaFecha] = useState("");
@@ -300,6 +301,16 @@ export default function Integridad() {
     cursor: "pointer"
   };
 
+  const cargarVendidosTodos = async () => {
+  const res = await fetch(`${API}/vendidos-todos`);
+  const data = await res.json();
+  if (!data.ok) {
+    alert("Error cargando vendidos:\n" + data.error);
+    return;
+  }
+  setVendidosTodos(data.registros);
+};
+
   return (
     <div style={{ padding: "20px" }}>
       <button onClick={volverMenu} style={{ ...btn, background: "#6699FF" }}>
@@ -320,6 +331,9 @@ export default function Integridad() {
 
         <button onClick={() => buscarDuplicados("vendidos")} style={btn}>
           Duplicados en Vendidos
+        </button>
+        <button onClick={cargarVendidosTodos} style={btn}>
+          Mostrar TODOS los Vendidos
         </button>
       </div>
 

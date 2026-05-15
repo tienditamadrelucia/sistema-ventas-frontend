@@ -78,6 +78,22 @@ const Caja = () => {
     marginTop: "10px"
   };
 
+  const estiloBotonVolver = {
+    width: "20%",
+    display:"flex",
+    height:"30px",
+    padding: "6px",
+    backgroundColor: "#6699FF",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    fontFamily: "Arial Black",
+    cursor: "pointer",
+    marginTop: "0px",
+    justifyContent:"center",
+    alignItems:"center",
+  };
+
   const botonGuardar = {
     width: "30%",
     display:"flex",
@@ -743,7 +759,7 @@ const totalBolivaresContados =
                 >
                     {modo === "modificar" ? "Actualizar" : "Guardar"}
                 </button>
-                <button onClick={() => navigate("/menu")} style={botonP}>
+                <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
                     MENÚ
                 </button>
             </div>            
