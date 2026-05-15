@@ -148,30 +148,29 @@ const ObtenerMovimientos = async () => {
     //movimientosArray.sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
     setMovimientosArray(movimientosArray);
     const movimientosTransformados = movimientosArray.map(m => {
-    if (m.tipo === "ENTRADA") {
       return {
-        fechaEntrada: m.fecha,
-        cantidadEntrada: m.cantidad,
-        observacionEntrada: m.observacion
+      fecha: m.fecha,
+      entrada: m.tipo === "ENTRADA" ? m.cantidad : "",
+      salida: m.tipo === "SALIDA" ? m.cantidad : "",
+      venta: m.tipo === "VENTA" ? m.cantidad : "",
       };
-    }
-    if (m.tipo === "SALIDA") {
+    });
+    let existencia = 0;
+      const movimientosConExistencia = movimientosTransformados.map(m => {
+      const entrada = Number(m.entrada) || 0;
+      const salida = Number(m.salida) || 0;
+      const venta = Number(m.venta) || 0;
+      existencia = existencia + entrada - salida - venta;
       return {
-        fechaSalida: m.fecha,
-        cantidadSalida: m.cantidad,
-        observacionSalida: m.observacion
+        ...m,
+        existenciaActual: existencia
       };
-    }
-    if (m.tipo === "VENTA") {
-      return {
-        fechaVenta: m.fecha,
-        cantidadVenta: m.cantidad,
-        total: m.total
-      };
-    }
-    return {};
-  });
-  setMovimientosArray(movimientosTransformados);
+    });
+    setMovimientosArray(movimientosTransformados);
+    const totalEntradas = movimientosConExistencia.reduce((acc, m) => acc + (Number(m.entrada) || 0), 0);
+    const totalSalidas  = movimientosConExistencia.reduce((acc, m) => acc + (Number(m.salida) || 0), 0);
+    const totalVentas   = movimientosConExistencia.reduce((acc, m) => acc + (Number(m.venta) || 0), 0);
+    setTotales({ totalEntradas, totalSalidas, totalVentas });
 
     // Calcular stock final
     let stock = 0;
@@ -296,42 +295,35 @@ const ObtenerMovimientos = async () => {
       <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center", backgroundColor: "white" }}>
   <thead>
     <tr>
-      <th>Fecha Entrada</th>
-      <th>Cant</th>
-      <th>Obs</th>
-
-      <th>Fecha Salida</th>
-      <th>Cant</th>
-      <th>Obs</th>
-
-      <th>Fecha Venta</th>
-      <th>Cant</th>
-
-      <th>Total</th>
+      <th>Fecha</th>
+      <th>Entrada</th>
+      <th>Salida</th>
+      <th>Venta</th>
+      <th>Existencia Actual</th>
     </tr>
   </thead>
 
   <tbody>
     {movimientosArray.map((m, index) => (
       <tr key={index}>
-        <td>{m.fechaEntrada ? new Date(m.fechaEntrada).toLocaleDateString("es-VE") : ""}</td>
-        <td>{m.cantidadEntrada || ""}</td>
-        <td>{m.observacionEntrada || ""}</td>
-
-        <td>{m.fechaSalida ? new Date(m.fechaSalida).toLocaleDateString("es-VE") : ""}</td>
-        <td>{m.cantidadSalida || ""}</td>
-        <td>{m.observacionSalida || ""}</td>
-
-        <td>{m.fechaVenta ? new Date(m.fechaVenta).toLocaleDateString("es-VE") : ""}</td>
-        <td>{m.cantidadVenta || ""}</td>
-
-        <td>{m.total}</td>
+        <td>{new Date(m.fecha).toLocaleDateString("es-VE")}</td>
+        <td>{m.entrada}</td>
+        <td>{m.salida}</td>
+        <td>{m.venta}</td>
+        <td>{m.existenciaActual}</td>
       </tr>
     ))}
+
+    {/* FILA DE TOTALES */}
+    <tr style={{ fontWeight: "bold", backgroundColor: "#f0f0f0" }}>
+      <td>TOTALES</td>
+      <td>{totales.totalEntradas}</td>
+      <td>{totales.totalSalidas}</td>
+      <td>{totales.totalVentas}</td>
+      <td></td>
+    </tr>
   </tbody>
 </table>
-
-
 
       {/* STOCK FINAL */}
       <h3 style={{ textAlign: "center", marginTop: "20px", fontWeight: "bold" }}>
