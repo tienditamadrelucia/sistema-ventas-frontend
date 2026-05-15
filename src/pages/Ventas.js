@@ -1560,7 +1560,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
           </button>
           <button
             onClick={validarPagoAntes}
-            style={botonGuardar}
+            className="boton-guardar-15"
           >
             Guardar Venta
           </button>
