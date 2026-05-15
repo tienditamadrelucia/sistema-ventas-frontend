@@ -3,7 +3,7 @@ import { API_URL } from "../config";
 
 const API = `${API_URL}/admin`;
 
-export default function ControlIntegridad() {
+export default function Integridad() {
   const [duplicados, setDuplicados] = useState([]);
   const [cargando, setCargando] = useState(false);
 
