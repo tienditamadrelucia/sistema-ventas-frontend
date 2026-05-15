@@ -202,6 +202,53 @@ export default function Integridad() {
     </div>
   );
 
+  const TablaDuplicadosVendidos = ({ grupos }) => (
+  <div style={{ marginTop: "30px" }}>
+    <h3>Duplicados en Vendidos: {grupos.length}</h3>
+
+    {grupos.map((grupo, i) => (
+      <div key={i} style={{ marginBottom: "25px" }}>
+        <h4>Factura: {grupo[0].factura}</h4>
+
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ background: "#eee" }}>
+              <th style={th}>ID</th>
+              <th style={th}>Producto</th>
+              <th style={th}>Cantidad</th>
+              <th style={th}>Precio</th>
+              <th style={th}>Total</th>
+              <th style={th}>Fecha (createdAt)</th>
+              <th style={th}>Acción</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {grupo.map((v) => (
+              <tr key={v._id}>
+                <td style={td}>{v._id}</td>
+                <td style={td}>{v.productoId}</td>
+                <td style={td}>{v.cantidad}</td>
+                <td style={td}>{v.precio}</td>
+                <td style={td}>{v.total}</td>
+                <td style={td}>{v.createdAt || "SIN FECHA"}</td>
+                <td style={tdCenter}>
+                  <button
+                    onClick={() => eliminarUno("vendidos", v._id)}
+                    style={btnTrash}
+                  >
+                    🗑️
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    ))}
+  </div>
+);
+
   const th = { border: "1px solid #ccc", padding: "6px" };
   const td = { border: "1px solid #ccc", padding: "6px" };
   const tdCenter = { ...td, textAlign: "center" };
@@ -255,7 +302,7 @@ export default function Integridad() {
 
   return (
     <div style={{ padding: "20px" }}>
-      <button onClick={volverMenu} style={{ ...btn, background: "#198754" }}>
+      <button onClick={volverMenu} style={{ ...btn, background: "#6699FF" }}>
         ⬅️ Volver al Menú
       </button>
 
@@ -296,11 +343,7 @@ export default function Integridad() {
       )}
 
       {duplicadosVendidos.length > 0 && (
-        <TablaDuplicados
-          titulo="Duplicados en Vendidos"
-          grupos={duplicadosVendidos}
-          tipo="vendidos"
-        />
+      <TablaDuplicadosVendidos grupos={duplicadosVendidos} />
       )}
     </div>
   );
