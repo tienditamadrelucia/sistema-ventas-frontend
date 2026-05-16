@@ -14,7 +14,7 @@ const Categorias = () => {
     const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",

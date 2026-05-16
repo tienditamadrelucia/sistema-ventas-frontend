@@ -547,7 +547,7 @@ const Productos = () => {
       </h3>
 
       <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
-        <thead>
+        <thead style={{ backgroundColor: "#F9CEAE" }}>
           <tr>
             <th>Foto</th>
             <th>Código</th>
