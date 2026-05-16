@@ -7,6 +7,7 @@ const ReporteVentas = () => {
   const [desde, setDesde] = useState("");
   const [hasta, setHasta] = useState("");
   const [reporte, setReporte] = useState([]);
+  const [totales, setTotales] = useState(null);
   const [procesando, setProcesando] = useState(false);
 
   const consultar = async () => {
@@ -15,12 +16,16 @@ const ReporteVentas = () => {
       alert("Debe seleccionar ambas fechas");
       return;
     }
-
     const resp = await fetch(
       `${API_URL}/api/ventas/resumen?desde=${desde}&hasta=${hasta}`
     );
     const datos = await resp.json();
-    setReporte(datos);
+    if (!datos.ok) {
+     alert("No hay ventas en este rango");
+        return;
+    }
+    setReporte(datos.resumen);
+    setTotales(datos.totales);
     setProcesando(false);
   };
 
@@ -134,6 +139,14 @@ const ReporteVentas = () => {
           </table>
         </>
       )}
+      {totales && (
+  <div style={{ marginTop: "20px", fontSize: "14px", fontWeight: "bold" }}>
+    <p>Total dólares: {totales.dolares.toFixed(2)}</p>
+    <p>Total bolívares: {totales.bolivares.toFixed(2)}</p>
+    <p>Total pesos: {totales.pesos.toFixed(2)}</p>
+  </div>
+)}
+
 
     </div>
   );
