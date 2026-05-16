@@ -124,10 +124,10 @@ const ReporteVentas = () => {
             <tbody>
               {reporte.map((r, i) => (
                 <tr key={i}>
-                  <td style={{ padding: "4px", fontSize: "10px" }}>{r.fecha}</td>
-                  <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>{r.dolares.toFixed(2)}</td>
-                  <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>{r.bolivares.toFixed(2)}</td>
-                  <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>{r.pesos.toFixed(2)}</td>
+                  <td style={{ padding: "4px", fontSize: "12px" }}>{r.fecha}</td>
+                  <td style={{ padding: "4px", textAlign:"right", fontSize: "12px" }}>{r.dolares.toFixed(2)}</td>
+                  <td style={{ padding: "4px", textAlign:"right", fontSize: "12px" }}>{r.bolivares.toFixed(2)}</td>
+                  <td style={{ padding: "4px", textAlign:"right", fontSize: "12px" }}>{r.pesos.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
