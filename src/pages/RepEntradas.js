@@ -65,6 +65,7 @@ const ReporteEntradas = () => {
           onClick={() => navigate("/menu")}
             style={{
               padding: "6px 12px",
+              marginLeft: "10px",
               backgroundColor: "#D98897",
               color: "white",
               border: "none",
@@ -109,11 +110,11 @@ const ReporteEntradas = () => {
                     {new Date(e.fecha).toLocaleDateString("es-VE")}
                   </td>
 
-                  <td style={{ padding: "4px" }}>
+                  <td style={{ padding: "4px", textAlign:"center" }}>
                     {e.categoria}
                   </td>
 
-                  <td style={{ padding: "4px" }}>
+                  <td style={{ padding: "4px", textAlign:"center" }}>
                     {e.productoId?.codigo || e.codigo}
                   </td>
 
