@@ -12,7 +12,7 @@ const ReporteEntradas = () => {
     }
 
     const resp = await fetch(
-      `/entradas/reporte?desde=${fechaDesde}&hasta=${fechaHasta}`
+      `/api/entradas/reporte?desde=${fechaDesde}&hasta=${fechaHasta}`
     );
     const datos = await resp.json();
     setReporte(datos);
