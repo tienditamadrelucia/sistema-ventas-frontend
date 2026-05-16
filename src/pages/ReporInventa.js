@@ -4,10 +4,18 @@ import { useNavigate } from "react-router-dom";
 
 const ReporteInventario = () => {
   const navigate = useNavigate();
+  const [fecha, setFecha] = useState("");
   const [reporte, setReporte] = useState([]);
 
   const consultar = async () => {
-    const resp = await fetch(`${API_URL}/api/inventario/reporte`);
+    if (!fecha) {
+      alert("Debe seleccionar la fecha de corte");
+      return;
+    }
+
+    const resp = await fetch(
+      `${API_URL}/api/inventario/reporte?fecha=${fecha}`
+    );
     const datos = await resp.json();
     setReporte(datos);
   };
@@ -15,19 +23,29 @@ const ReporteInventario = () => {
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
 
-      {/* BOTONES */}
+      {/* FORMULARIO */}
       <div style={{ marginBottom: "20px" }}>
+        <label style={{ marginRight: "10px" }}>
+          Fecha de corte:
+          <input
+            type="date"
+            value={fecha}
+            onChange={(e) => setFecha(e.target.value)}
+            style={{ marginLeft: "5px" }}
+          />
+        </label>
+
         <button
           onClick={consultar}
           style={{
+            marginLeft: "20px",
             padding: "6px 12px",
             backgroundColor: "#F9CEAE",
             color: "white",
             border: "none",
             borderRadius: "6px",
             fontFamily: "Arial Black",
-            cursor: "pointer",
-            marginRight: "10px" 
+            cursor: "pointer"
           }}
         >
           Consultar
@@ -37,12 +55,14 @@ const ReporteInventario = () => {
           onClick={() => navigate("/menu")}
           style={{
             padding: "6px 12px",
+            marginLeft: "10px",
             backgroundColor: "#D98897",
             color: "white",
             border: "none",
             borderRadius: "6px",
             fontFamily: "Arial Black",
-            cursor: "pointer"
+            cursor: "pointer",
+            marginBottom: "20px"
           }}
         >
           Volver al Menú
@@ -57,7 +77,8 @@ const ReporteInventario = () => {
           </h2>
 
           <p style={{ textAlign: "center", marginTop: "5px", marginBottom: "20px" }}>
-            <strong>Reporte de Inventario</strong>
+            <strong>Reporte de Inventario</strong><br />
+            A la fecha: {fecha}
           </p>
 
           {/* TABLA */}
@@ -67,7 +88,7 @@ const ReporteInventario = () => {
                 <th style={{ textAlign: "left", padding: "4px" }}>Código</th>
                 <th style={{ textAlign: "left", padding: "4px" }}>Categoría</th>
                 <th style={{ textAlign: "left", padding: "4px" }}>Descripción</th>
-                <th style={{ textAlign: "center", padding: "4px" }}>Stock Real</th>
+                <th style={{ textAlign: "center", padding: "4px" }}>Stock real</th>
                 <th style={{ textAlign: "right", padding: "4px" }}>Costo</th>
                 <th style={{ textAlign: "right", padding: "4px" }}>Venta</th>
               </tr>
@@ -89,7 +110,7 @@ const ReporteInventario = () => {
                   </td>
 
                   <td style={{ padding: "4px", textAlign:"center", fontSize: "10px" }}>
-                    {p.stock}
+                    {p.stockReal}
                   </td>
 
                   <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>

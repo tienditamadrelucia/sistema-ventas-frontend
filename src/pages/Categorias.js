@@ -307,7 +307,7 @@ const Categorias = () => {
                 marginBottom: "10px",
                 opacity:procesando ? 0.6 :1,
                 cursor: procesando ? "not-allowed":"pointer",
-                backgroundColor: modo === "crear" ? "#D98897" : "#6699FF"
+                backgroundColor: modo === "crear" ? "#84B09C" : "#F9CEAE"
               }}              
             >
               {modo === "crear" ? "Guardar" : "Actualizar"}              
@@ -327,7 +327,7 @@ const Categorias = () => {
         </h3>
 
         <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
-          <thead>
+          <thead style={{ backgroundColor: "#F9CEAE" }}>
             <tr>
               <th>Código</th>
               <th>Descripción</th>
