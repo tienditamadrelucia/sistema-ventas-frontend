@@ -27,7 +27,7 @@ const ReporteInventario = () => {
             borderRadius: "6px",
             fontFamily: "Arial Black",
             cursor: "pointer",
-            marginRight: "10px"
+            marginRight: "10px" 
           }}
         >
           Consultar
