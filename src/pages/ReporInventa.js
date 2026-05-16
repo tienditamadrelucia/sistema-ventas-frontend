@@ -7,23 +7,40 @@ const ReporteInventario = () => {
   const [desde, setDesde] = useState("");
   const [hasta, setHasta] = useState("");
   const [reporte, setReporte] = useState([]);
+  const [procesando, setProcesando] = useState(false);
 
   const consultar = async () => {
+    setProcesando(true); // ⭐ NUEVO
     if (!desde || !hasta) {
       alert("Debe seleccionar ambas fechas");
       return;
     }
-
     const resp = await fetch(
       `${API_URL}/api/inventario/reporte?desde=${desde}&hasta=${hasta}`
     );
     const datos = await resp.json();
     setReporte(datos);
+    setProcesando(false); // ⭐ NUEVO
   };
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
-
+      {procesando && (
+        <div style={{
+          background: "#6699FF",
+          color: "white",
+          padding: "8px",
+          textAlign: "center",
+          fontWeight: "bold",
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 1000
+        }}>
+          Procesando, por favor espere...
+        </div>
+      )}
       {/* FORMULARIO */}
       <div style={{ marginBottom: "20px" }}>
         <label style={{ marginRight: "10px" }}>
@@ -111,7 +128,7 @@ const ReporteInventario = () => {
                   <td style={{ padding: "4px", fontSize: "10px" }}>{p.codigo}</td>
                   <td style={{ padding: "4px", fontSize: "10px" }}>{p.categoria}</td>
                   <td style={{ padding: "4px", fontSize: "10px" }}>{p.descripcion}</td>
-                  <td style={{ padding: "4px", textAlign:"center", fontSize: "10px" }}>{p.stockReal}</td>
+                  <td style={{ padding: "4px", textAlign:"center", fontSize: "10px" }}>{p.stockReal.toFixed(2)}</td>
                   <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>{Number(p.costo).toFixed(2)}</td>
                   <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>{Number(p.venta).toFixed(2)}</td>
                 </tr>
