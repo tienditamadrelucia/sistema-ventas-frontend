@@ -139,7 +139,7 @@ function Menu() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#6699FF", 
+                backgroundColor: "#84B09C", 
                 border: "1px solid #cccccc", 
                 color: "white",
                 borderRadius: "4px",
@@ -152,7 +152,7 @@ function Menu() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#6699FF", 
+                backgroundColor: "#84B09CF", 
                 border: "1px solid #cccccc", 
                 color: "white",
                 borderRadius: "4px",
@@ -165,7 +165,7 @@ function Menu() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#6699FF", 
+                backgroundColor: "#84B09C", 
                 border: "1px solid #cccccc", 
                 color: "white",
                 borderRadius: "4px"
