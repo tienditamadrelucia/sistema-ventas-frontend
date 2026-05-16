@@ -433,7 +433,15 @@ function Menu() {
                   Diario de Ventas
               </button>
 
-              <button style={botonSubmenu}>Entradas</button>
+              <button 
+                style={botonSubmenu}
+                onClick={async() => {
+                await registrarAccion("Entró al módulo Reporte de Entradas")
+                 window.open("/repentradas", "_blank")}}
+                 >
+                  Entradas
+                </button>
+                
               <button style={botonSubmenu}>Salidas</button>
               <button style={botonSubmenu}>Gastos</button>
               <button style={botonSubmenu}>Ventas</button>
@@ -454,7 +462,7 @@ function Menu() {
 
           {/* SALIR */}
           <button
-            style={{ ...botonPrincipalSimple, backgroundColor: "#999" }}
+            style={{ ...botonPrincipalSimple, backgroundColor: "#CAD9FB" }}
             onClick={async() => {
               await registrarAccion("Salió del Sistema")
               localStorage.clear()
