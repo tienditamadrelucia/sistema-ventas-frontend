@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const ReporteEntradas = () => {
   const [fechaDesde, setFechaDesde] = useState("");
@@ -12,7 +13,7 @@ const ReporteEntradas = () => {
     }
 
     const resp = await fetch(
-      `/api/entradas/reporte?desde=${fechaDesde}&hasta=${fechaHasta}`
+      `${API_URL}$/api/entradas/reporte?desde=${fechaDesde}&hasta=${fechaHasta}`
     );
     const datos = await resp.json();
     setReporte(datos);
