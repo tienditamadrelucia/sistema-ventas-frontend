@@ -7,8 +7,10 @@ const ReporteVentas = () => {
   const [desde, setDesde] = useState("");
   const [hasta, setHasta] = useState("");
   const [reporte, setReporte] = useState([]);
+  const [procesando, setProcesando] = useState(false);
 
   const consultar = async () => {
+    setProcesando(true);
     if (!desde || !hasta) {
       alert("Debe seleccionar ambas fechas");
       return;
@@ -19,11 +21,27 @@ const ReporteVentas = () => {
     );
     const datos = await resp.json();
     setReporte(datos);
+    setProcesando(false);
   };
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
-
+      {procesando && (
+        <div style={{
+          background: "#6699FF",
+          color: "white",
+          padding: "8px",
+          textAlign: "center",
+          fontWeight: "bold",
+          position: "fixed",
+          bottom: 0,
+          left: 0,
+          width: "100%",
+          zIndex: 1000
+        }}>
+          Procesando, por favor espere...
+        </div>
+      )} 
       {/* FORMULARIO */}
       <div style={{ marginBottom: "20px" }}>
         <label style={{ marginRight: "10px" }}>
