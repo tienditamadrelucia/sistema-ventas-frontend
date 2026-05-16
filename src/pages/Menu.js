@@ -465,7 +465,8 @@ function Menu() {
                 style={botonSubmenu}
                 onClick={async() => {
                   await registrarAccion("Entró al módulo Reporte de Inventario")
-                 window.open("/repinventa", "_blank")}}
+              
+                  window.open("/repinventa", "_blank")}}
               >
                 Inventario
               </button>
