@@ -49,7 +49,7 @@ const Gastos = () => {
   };
 
   const botonGuardar = {
-    width: "50%",
+    width: "30%",
     padding: "6px",
     backgroundColor: "#84B09C",
     color: "white",
