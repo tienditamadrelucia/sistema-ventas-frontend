@@ -50,7 +50,7 @@ const Encabezado = () => {
     <div
       style={{
         width: "100%",
-        backgroundColor: "#F9CEAE",
+        backgroundColor: "#84B09C",
         padding: "8px 20px",
         color: "#000000",
         borderRadius: "0 0 8px 8px",

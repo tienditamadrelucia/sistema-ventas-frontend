@@ -49,7 +49,7 @@ const ReporteEntradas = () => {
           style={{
             marginLeft: "20px",
             padding: "6px 12px",
-            backgroundColor: "#D98897",
+            backgroundColor: "#F9CEAE",
             color: "white",
             border: "none",
             borderRadius: "6px",
@@ -58,6 +58,21 @@ const ReporteEntradas = () => {
           }}
         >
           Consultar
+        </button>
+        <button
+          onClick={() => navigate("/menu")}
+            style={{
+              padding: "6px 12px",
+              backgroundColor: "#D98897",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              fontFamily: "Arial Black",
+              cursor: "pointer",
+              marginBottom: "20px"
+            }}
+        >
+          Volver al Menú
         </button>
       </div>
 
@@ -74,7 +89,7 @@ const ReporteEntradas = () => {
           </p>
 
           {/* TABLA SIN BORDES */}
-          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <table style={{ width: "80%", borderCollapse: "collapse" }}>
             <thead>
               <tr>
                 <th style={{ textAlign: "left", padding: "4px" }}>Fecha</th>
@@ -104,8 +119,8 @@ const ReporteEntradas = () => {
                     {e.productoId?.descripcion}
                   </td>
 
-                  <td style={{ padding: "4px", textAlign: "right" }}>
-                    {e.cantidad}
+                  <td style={{ padding: "4px", textAlign: "center" }}>
+                    {Number(e.cantidad).toFixed(2)}
                   </td>
                 </tr>
               ))}
