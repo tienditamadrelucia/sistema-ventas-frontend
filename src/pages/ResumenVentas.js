@@ -21,8 +21,8 @@ const ReporteVentas = () => {
     );
     const datos = await resp.json();
     if (!datos.ok) {
-     alert("No hay ventas en este rango");
-        return;
+      alert("No hay ventas en este rango");
+      return;
     }
     setReporte(datos.resumen);
     setTotales(datos.totales);
@@ -46,7 +46,8 @@ const ReporteVentas = () => {
         }}>
           Procesando, por favor espere...
         </div>
-      )} 
+      )}
+
       {/* FORMULARIO */}
       <div style={{ marginBottom: "20px" }}>
         <label style={{ marginRight: "10px" }}>
@@ -115,39 +116,48 @@ const ReporteVentas = () => {
             Desde: {desde} — Hasta: {hasta}
           </p>
 
-          {/* TABLA */}
-          <table style={{ width: "80% !important", borderCollapse: "collapse", margin: "0 auto" }}>
+          {/* TABLA MEJORADA */}
+          <table style={{ width: "90%", borderCollapse: "collapse", margin: "0 auto" }}>
             <thead style={{ backgroundColor: "#F9CEAE" }}>
               <tr>
-                <th style={{ padding: "4px" }}>Fecha</th>
-                <th style={{ padding: "4px", textAlign:"right" }}>Dólares</th>
-                <th style={{ padding: "4px", textAlign:"right" }}>Bolívares</th>
-                <th style={{ padding: "4px", textAlign:"right" }}>Pesos</th>
+                <th style={{ padding: "8px", fontSize: "14px" }}>Fecha</th>
+                <th style={{ padding: "8px", textAlign:"right", fontSize: "14px" }}>Dólares</th>
+                <th style={{ padding: "8px", textAlign:"right", fontSize: "14px" }}>Bolívares</th>
+                <th style={{ padding: "8px", textAlign:"right", fontSize: "14px" }}>Pesos</th>
               </tr>
             </thead>
 
             <tbody>
               {reporte.map((r, i) => (
                 <tr key={i}>
-                  <td style={{ padding: "4px", fontSize: "12px" }}>{r.fecha}</td>
-                  <td style={{ padding: "4px", textAlign:"right", fontSize: "12px" }}>{r.dolares.toFixed(2)}</td>
-                  <td style={{ padding: "4px", textAlign:"right", fontSize: "12px" }}>{r.bolivares.toFixed(2)}</td>
-                  <td style={{ padding: "4px", textAlign:"right", fontSize: "12px" }}>{r.pesos.toFixed(2)}</td>
+                  <td style={{ padding: "8px", fontSize: "13px" }}>{r.fecha}</td>
+                  <td style={{ padding: "8px", textAlign:"right", fontSize: "13px" }}>{r.dolares.toFixed(2)}</td>
+                  <td style={{ padding: "8px", textAlign:"right", fontSize: "13px" }}>{r.bolivares.toFixed(2)}</td>
+                  <td style={{ padding: "8px", textAlign:"right", fontSize: "13px" }}>{r.pesos.toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
+
+            {/* TOTALES DEBAJO DE CADA COLUMNA */}
+            {totales && (
+              <tfoot style={{ backgroundColor: "#F9CEAE" }}>
+                <tr>
+                  <th style={{ padding: "8px", fontSize: "14px" }}>Totales</th>
+                  <th style={{ padding: "8px", textAlign:"right", fontSize: "14px" }}>
+                    {totales.dolares.toFixed(2)}
+                  </th>
+                  <th style={{ padding: "8px", textAlign:"right", fontSize: "14px" }}>
+                    {totales.bolivares.toFixed(2)}
+                  </th>
+                  <th style={{ padding: "8px", textAlign:"right", fontSize: "14px" }}>
+                    {totales.pesos.toFixed(2)}
+                  </th>
+                </tr>
+              </tfoot>
+            )}
           </table>
         </>
       )}
-      {totales && (
-  <div style={{ marginTop: "20px", fontSize: "14px", fontWeight: "bold" }}>
-    <p>Total dólares: {totales.dolares.toFixed(2)}</p>
-    <p>Total bolívares: {totales.bolivares.toFixed(2)}</p>
-    <p>Total pesos: {totales.pesos.toFixed(2)}</p>
-  </div>
-)}
-
-
     </div>
   );
 };
