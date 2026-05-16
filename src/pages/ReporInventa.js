@@ -4,17 +4,18 @@ import { useNavigate } from "react-router-dom";
 
 const ReporteInventario = () => {
   const navigate = useNavigate();
-  const [fecha, setFecha] = useState("");
+  const [desde, setDesde] = useState("");
+  const [hasta, setHasta] = useState("");
   const [reporte, setReporte] = useState([]);
 
   const consultar = async () => {
-    if (!fecha) {
-      alert("Debe seleccionar la fecha de corte");
+    if (!desde || !hasta) {
+      alert("Debe seleccionar ambas fechas");
       return;
     }
 
     const resp = await fetch(
-      `${API_URL}/api/inventario/reporte?fecha=${fecha}`
+      `${API_URL}/api/inventario/reporte?desde=${desde}&hasta=${hasta}`
     );
     const datos = await resp.json();
     setReporte(datos);
@@ -26,11 +27,21 @@ const ReporteInventario = () => {
       {/* FORMULARIO */}
       <div style={{ marginBottom: "20px" }}>
         <label style={{ marginRight: "10px" }}>
-          Fecha de corte:
+          Desde:
           <input
             type="date"
-            value={fecha}
-            onChange={(e) => setFecha(e.target.value)}
+            value={desde}
+            onChange={(e) => setDesde(e.target.value)}
+            style={{ marginLeft: "5px" }}
+          />
+        </label>
+
+        <label style={{ marginLeft: "20px", marginRight: "10px" }}>
+          Hasta:
+          <input
+            type="date"
+            value={hasta}
+            onChange={(e) => setHasta(e.target.value)}
             style={{ marginLeft: "5px" }}
           />
         </label>
@@ -78,12 +89,12 @@ const ReporteInventario = () => {
 
           <p style={{ textAlign: "center", marginTop: "5px", marginBottom: "20px" }}>
             <strong>Reporte de Inventario</strong><br />
-            A la fecha: {fecha}
+            Desde: {desde} — Hasta: {hasta}
           </p>
 
           {/* TABLA */}
           <table style={{ width: "80% !important", borderCollapse: "collapse", margin: "0 auto" }}>
-            <thead>
+            <thead style={{ backgroundColor: "#F9CEAE" }}>
               <tr>
                 <th style={{ textAlign: "left", padding: "4px" }}>Código</th>
                 <th style={{ textAlign: "left", padding: "4px" }}>Categoría</th>
@@ -97,29 +108,12 @@ const ReporteInventario = () => {
             <tbody>
               {reporte.map((p) => (
                 <tr key={p._id}>
-                  <td style={{ padding: "4px", fontSize: "10px" }}>
-                    {p.codigo}
-                  </td>
-
-                  <td style={{ padding: "4px", fontSize: "10px" }}>
-                    {p.categoria}
-                  </td>
-
-                  <td style={{ padding: "4px", fontSize: "10px" }}>
-                    {p.descripcion}
-                  </td>
-
-                  <td style={{ padding: "4px", textAlign:"center", fontSize: "10px" }}>
-                    {p.stockReal}
-                  </td>
-
-                  <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>
-                    {Number(p.costo).toFixed(2)}
-                  </td>
-
-                  <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>
-                    {Number(p.venta).toFixed(2)}
-                  </td>
+                  <td style={{ padding: "4px", fontSize: "10px" }}>{p.codigo}</td>
+                  <td style={{ padding: "4px", fontSize: "10px" }}>{p.categoria}</td>
+                  <td style={{ padding: "4px", fontSize: "10px" }}>{p.descripcion}</td>
+                  <td style={{ padding: "4px", textAlign:"center", fontSize: "10px" }}>{p.stockReal}</td>
+                  <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>{Number(p.costo).toFixed(2)}</td>
+                  <td style={{ padding: "4px", textAlign:"right", fontSize: "10px" }}>{Number(p.venta).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
