@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import { useNavigate } from "react-router-dom";
 
 const ReporteEntradas = () => {
   const [fechaDesde, setFechaDesde] = useState("");
