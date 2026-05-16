@@ -91,7 +91,7 @@ const ReporteEntradas = () => {
           </p>
 
           {/* TABLA SIN BORDES */}
-          <table style={{ width: "80%", borderCollapse: "collapse" }}>
+          <table style={{ width: "80% !important", borderCollapse: "collapse", margin: "0 auto" }}>
             <thead>
               <tr>
                 <th style={{ textAlign: "left", padding: "4px" }}>Fecha</th>
