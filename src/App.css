@@ -176,6 +176,7 @@ select, option {
 @media print {
   input,
   button,
+  label,
   .btn-pdf,
   .btn-whatsapp,
   .btn-eliminar,

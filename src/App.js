@@ -25,6 +25,7 @@ import TipoGastos from "./pages/TipoGastos";
 import PorStock from "./pages/PorStock";
 import Integridad from "./pages/Integridad";
 import ReporteEntradas from "./pages/RepEntradas";
+import ReporteSalidas from "./pages/RepSalidas";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -81,6 +82,7 @@ function App() {
         <Route path="/porstock" element={<ProtectedRoute><PorStock /></ProtectedRoute>} />
         <Route path="/integridad" element={<ProtectedRoute><Integridad /></ProtectedRoute>} />
         <Route path="/repentradas" element={<ProtectedRoute><ReporteEntradas /></ProtectedRoute>} />
+        <Route path="/salidas" element={<ProtectedRoute><ReporteSalidas /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

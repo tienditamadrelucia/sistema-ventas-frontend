@@ -442,7 +442,15 @@ function Menu() {
                   Entradas
                 </button>
                 
-              <button style={botonSubmenu}>Salidas</button>
+              <button 
+                style={botonSubmenu}
+                onClick={async() => {
+                  await registrarAccion("Entró al módulo Reporte de Salidas")
+                 window.open("/repsalidas", "_blank")}}
+              >
+                Salidas
+              </button>
+
               <button style={botonSubmenu}>Gastos</button>
               <button style={botonSubmenu}>Ventas</button>
               <button style={botonSubmenu}>Inventario</button>
