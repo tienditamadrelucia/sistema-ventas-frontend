@@ -106,23 +106,23 @@ const ReporteEntradas = () => {
             <tbody>
               {reporte.map((e) => (
                 <tr key={e._id}>
-                  <td style={{ padding: "4px" }}>
+                  <td style={{ padding: "4px", fontSize: "10px" }}>
                     {new Date(e.fecha).toLocaleDateString("es-VE")}
                   </td>
 
-                  <td style={{ padding: "4px", textAlign:"center" }}>
+                  <td style={{ padding: "4px", textAlign:"center", fontSize: "10px" }}>
                     {e.categoria}
                   </td>
 
-                  <td style={{ padding: "4px", textAlign:"center" }}>
+                  <td style={{ padding: "4px", textAlign:"center", fontSize: "10px" }}>
                     {e.productoId?.codigo || e.codigo}
                   </td>
 
-                  <td style={{ padding: "4px" }}>
+                  <td style={{ padding: "4px", fontSize: "10px" }}>
                     {e.productoId?.descripcion}
                   </td>
 
-                  <td style={{ padding: "4px", textAlign: "center" }}>
+                  <td style={{ padding: "4px", textAlign: "center", fontSize: "10px" }}>
                     {Number(e.cantidad).toFixed(2)}
                   </td>
                 </tr>
