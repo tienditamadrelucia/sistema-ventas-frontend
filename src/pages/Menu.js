@@ -462,7 +462,7 @@ function Menu() {
 
           {/* SALIR */}
           <button
-            style={{ ...botonPrincipalSimple, backgroundColor: "#CAD9FB" }}
+            style={{ ...botonPrincipalSimple, backgroundColor: "#84868a" }}
             onClick={async() => {
               await registrarAccion("Salió del Sistema")
               localStorage.clear()
