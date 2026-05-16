@@ -152,7 +152,7 @@ function Menu() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#84B09CF", 
+                backgroundColor: "#84B09C", 
                 border: "1px solid #cccccc", 
                 color: "white",
                 borderRadius: "4px",
@@ -461,7 +461,15 @@ function Menu() {
               </button>
               
               <button style={botonSubmenu}>Ventas</button>
-              <button style={botonSubmenu}>Inventario</button>
+              <button 
+                style={botonSubmenu}
+                onClick={async() => {
+                  await registrarAccion("Entró al módulo Reporte de Inventario")
+                 window.open("/repinventa", "_blank")}}
+              >
+                Inventario
+              </button>
+              
               <button style={botonSubmenu}
                 onClick={async() => {
                   await registrarAccion("Entró al módulo Reporte de Crédito")

@@ -13,7 +13,6 @@ const ReporteGastos = () => {
       alert("Debe seleccionar ambas fechas");
       return;
     }
-
     const resp = await fetch(
       `${API_URL}/api/gastos/reporte?desde=${fechaDesde}&hasta=${fechaHasta}`
     );
