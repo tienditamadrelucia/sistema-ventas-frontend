@@ -38,7 +38,7 @@ const Gastos = () => {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -51,7 +51,7 @@ const Gastos = () => {
   const botonGuardar = {
     width: "50%",
     padding: "6px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -60,7 +60,7 @@ const Gastos = () => {
     opacity: procesando ? 0.6 : 1,
     cursor: procesando ? "not-allowed" : "pointer"
   };
-
+  
   const iconoEditar = {
     fontSize: "22px",
     cursor: "pointer",
