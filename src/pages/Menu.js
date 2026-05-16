@@ -47,7 +47,7 @@ function Menu() {
   const botonPrincipal = {
     width: "100%",
     padding: "12px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -68,7 +68,7 @@ function Menu() {
   const botonSubmenu = {
     width: "90%",
     padding: "9px",
-    backgroundColor: "#6699FF",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -460,7 +460,15 @@ function Menu() {
                 Gastos
               </button>
               
-              <button style={botonSubmenu}>Ventas</button>
+              <button 
+                style={botonSubmenu}
+                onClick={async() => {
+                  await registrarAccion("Entró al módulo Resumen de Ventas")
+                 window.open("/resumenventas", "_blank")}}
+              >
+                Resumen de Ventas
+              </button>
+              
               <button 
                 style={botonSubmenu}
                 onClick={async() => {
