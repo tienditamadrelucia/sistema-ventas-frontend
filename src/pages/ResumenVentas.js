@@ -117,7 +117,7 @@ const ReporteVentas = () => {
           </p>
 
           {/* TABLA MEJORADA */}
-          <table style={{ width: "70%", borderCollapse: "collapse", margin: "0 auto" }}>
+          <table style={{ width: "40%", borderCollapse: "collapse", margin: "0 auto" }}>
             <thead style={{ backgroundColor: "#F9CEAE" }}>
               <tr>
                 <th style={{ padding: "8px", fontSize: "14px" }}>Fecha</th>
