@@ -27,7 +27,7 @@ import Integridad from "./pages/Integridad";
 import ReporteEntradas from "./pages/RepEntradas";
 import ReporteSalidas from "./pages/RepSalidas";
 import ReporteGastos from "./pages/RepGastos";
-import ReporteInventario from "./pages/RepInventa";
+import ReporteInventario from "./pages/RepInventa.js";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
