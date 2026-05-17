@@ -161,19 +161,18 @@ const Productos = () => {
 
   const handleChange = (e) => {
   const { name, value, files } = e.target;
-
   // ⭐ Imagen
   if (name === "foto") {
-    const file = files[0];
-    if (file) {
-      setFormData((prev) => ({
-        ...prev,
-        foto: URL.createObjectURL(file),
-        fotoFile: file   // guardamos el File REAL para enviarlo al backend
-      }));
-    }
-    return;
+  const file = files[0];
+  if (file) {
+    setFormData((prev) => ({
+      ...prev,
+      foto: file,      // guardamos SOLO el File real
+    }));
   }
+  return;
+}
+
 
   // ⭐ Campos numéricos SIN convertir a número
   const camposNumericos = ["stock", "costo", "venta"];
@@ -199,95 +198,82 @@ const Productos = () => {
   // -------------------------
   // GUARDAR / ACTUALIZAR
   // -------------------------
-
   const guardarProducto = async () => {    
-  // -------------------------
-  // VALIDAR CAMPOS OBLIGATORIOS
-  // -------------------------
+  // VALIDAR CAMPOS
   if (
     !formData.descripcion ||
     !formData.categoria ||
     !formData.venta ||
-    !formData.stock === "" ||
+    formData.stock === "" ||
     !formData.medida ||
     !formData.fechaIngreso
   ) {
     alert("Complete todos los campos obligatorios");
     return;
   }
-
-  // -------------------------
-  // VALIDAR COSTO < VENTA
-  // -------------------------
   if (Number(formData.venta) <= Number(formData.costo)) {
     alert("El precio de venta debe ser mayor al costo.");
     return;
   }
-
-  // -------------------------
+  setProcesando(true);
+  // ⭐ SUBIR FOTO SI ES UN ARCHIVO
+  let fotoURL = formData.foto;
+  if (formData.foto instanceof File) {
+    const fd = new FormData();
+    fd.append("foto", formData.foto);
+    const resp = await fetch(`${API_URL}/api/productos/upload`, {
+      method: "POST",
+      body: fd
+    });
+    const data = await resp.json();
+    fotoURL = data.url; // ⭐ URL pública
+  }
+  // ⭐ PREPARAR FORM DATA DEL PRODUCTO
+  const fdProducto = new FormData();
+  for (const key in formData) {
+    if (key === "foto") {
+      fdProducto.append("foto", fotoURL);
+    } else {
+      fdProducto.append(key, formData[key]);
+    }
+  }
   // CREAR PRODUCTO
-  // -------------------------
   if (modo === "crear") {
-       setProcesando(true);
-
-    // No enviamos el código porque lo genera el backend
-    const { codigo, ...productoSinCodigo } = formData;
-
     const respuesta = await fetch(`${API_URL}/api/productos`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(productoSinCodigo)
+      body: fdProducto
     });
-
     const data = await respuesta.json();
-
-    // 👇 AQUÍ guardas el código generado
-    setFormData((prev) => ({
+    setFormData(prev => ({
       ...prev,
       codigo: data.producto.codigo
     }));
-
     await registrarAccion(`Registró el producto "${formData.descripcion}"`);
-
   } else {
-    if (!productoEditando) {
-    alert("Error interno: no hay producto seleccionado para editar.");
-    return;
-  }    
-    // -------------------------
     // EDITAR PRODUCTO
-    // -------------------------
-    setProcesando(true);
     await fetch(`${API_URL}/api/productos/${productoEditando}`, {
       method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData)
+      body: fdProducto
     });
-    setProcesando(false);
     await registrarAccion(`Actualizó el producto "${formData.descripcion}"`);
   }
-
-  // -------------------------
-  // RECARGAR LISTA DE PRODUCTOS
-  // -------------------------
-  // ⭐ Recargar productos de la categoría actual
+  // RECARGAR LISTA
   if (categoriaSeleccionada) {
     cargarProductos(categoriaSeleccionada);
   } else {
     cargarProductos(formData.categoria);
   }
-
-  // -------------------------
-  // LIMPIAR FORMULARIO
-  // -------------------------
+  // LIMPIAR
   const cat = categoriaSeleccionada || formData.categoria;
   limpiarFormulario();
   setProcesando(false);
+
   setFormData(prev => ({
-  ...prev,
-  categoria: cat
-}));
+    ...prev,
+    categoria: cat
+  }));
 };
+
 
   // -------------------------
   // EDITAR
@@ -379,7 +365,7 @@ const Productos = () => {
     <div>
       {procesando && (
     <div style={{
-      background: "#6699FF",
+      background: "#84868a",
       color: "white",
       padding: "8px",
       textAlign: "center",
@@ -523,9 +509,9 @@ const Productos = () => {
           type="file"
           name="foto"
           accept="image/*"
-          ref={inputFotoRef}
-          onChange={handleChange}
-          style={{ marginBottom: "10px" }}
+          onChange={(e) =>
+          setFormData({ ...formData, foto: e.target.files[0] })
+          }
         />
 
         <div style={{ display: "flex", justifyContent: "center",marginBottom: "10px" }}>
