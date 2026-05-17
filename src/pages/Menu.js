@@ -85,27 +85,27 @@ function Menu() {
 
       {/* 🌟 ENCABEZADO SUPERIOR */}
       <div style={{
-          position: "fixed",
+          position: "fixed",          
           top: 0,
           left: 0,
           width: "100%",
           backgroundColor: "white",
           padding: "10px 0 5px 0",
-          textAlign: "left",
+          textAlign: "center",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           zIndex: 10
         }}>
         <img 
             src={encabezado}
             alt="Encabezado"
-            style={{ width: "60%", maxWidth: "400px", marginLeft:"10px", alignContent:"center" }}
+            style={{ width: "60%", maxWidth: "400px", alignContent:"center", marginTop:"0px" }}
         />
 
         {/* Línea rosada */}
         <div style={{
             width: "100%",
             height: "6px",
-            backgroundColor: "#D98897",
+            backgroundColor: "#84868a",
             marginTop: "1px"
            }}>           
         </div>
