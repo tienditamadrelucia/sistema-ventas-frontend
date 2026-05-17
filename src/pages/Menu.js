@@ -98,7 +98,7 @@ function Menu() {
         <img 
             src={encabezado}
             alt="Encabezado"
-            style={{ width: "100%", maxWidth: "600px", marginLeft:"10px" }}
+            style={{ width: "50%", maxWidth: "300px", marginLeft:"10px" }}
         />
 
         {/* Línea rosada */}
