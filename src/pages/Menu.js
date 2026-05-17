@@ -182,8 +182,8 @@ function Menu() {
           width: "250px",
           backgroundColor: "white",
           padding: "20px",
-          marginTop: "180px",
-          height: "calc(100vh - 180px)",
+          marginTop: "150px",
+          height: "calc(100vh - 150px)",
           overflowY: "auto",
           borderRight: "1px solid #ddd"
           }}>

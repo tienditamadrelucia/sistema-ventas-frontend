@@ -408,7 +408,7 @@ const abrirModalPagoConFecha = () => {
   <div>
     {procesando && (
       <div style={{
-        background: "#6699FF",
+        background: "#84868a",
         color: "white",
         padding: "8px",
         textAlign: "center",

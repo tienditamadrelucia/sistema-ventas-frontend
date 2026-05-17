@@ -95,7 +95,7 @@ export default function PorStock() {
     <div>
       {procesando && (
         <div style={{
-        background: "#6699FF",
+        background: "#84868A",
         color: "white",
         padding: "8px",
         textAlign: "center",

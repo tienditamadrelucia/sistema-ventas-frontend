@@ -269,7 +269,6 @@ const cargarInventario = async () => {
   console.log("PAYLOAD INVENTARIO:", payload); // 👈 AÑADE ESTO
   await guardarInventario(payload);
 }
-
   async function editarToma(codigo) {
     const id = toma[codigo].id;
 
@@ -277,36 +276,29 @@ const cargarInventario = async () => {
       stockFisico: toma[codigo].stockFisico === "" ? "" : Number(toma[codigo].stockFisico),
       observacion: toma[codigo].observacion
     };
-
   //  const res = await editarTomaInventario(id, formData);
     //if (res.ok) cargarInventario();
   }
-
   async function eliminarToma(codigo) {
     const id = toma[codigo].id;
     await eliminarTomaInventario(id);
     //cargarInventario();
   }
-
  async function registrarAjuste(producto) {
   setProcesando(true);
   const codigo = producto.codigo;
   const productoId = producto._id;
   const registro = toma[codigo] ?? {};
-
   const stockSistema = Number(producto.stockReal ?? 0);
   const stockFisico =
     registro.stockFisico === "" || registro.stockFisico == null
       ? 0
       : Number(registro.stockFisico);
-
   const diferencia = stockFisico - stockSistema;
-
   if (diferencia === 0) {
     alert("No hay diferencia para ajustar.");
     return;
   }
-
   try {
     // 🔹 AQUÍ VA EL NUEVO BLOQUE
     if (!inventarioGuardado) {      
@@ -363,7 +355,7 @@ const cargarInventario = async () => {
   <div>    
     {procesando && (
     <div style={{
-      background: "#6699FF",
+      background: "#84868A",
       color: "white",
       padding: "8px",
       textAlign: "center",
