@@ -7,6 +7,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Caja = () => {
   const navigate = useNavigate();
+  const [procesando, setProcesando] = useState(false);
   const [fecha, setFecha] = useState("");  
   const [fechaFormateada, setfechaFormateada] = useState("");  
   const [data, setData] = useState(null);
