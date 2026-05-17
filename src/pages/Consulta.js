@@ -571,13 +571,13 @@ const abrirModalPagoConFecha = () => {
             >
             <thead>
               <tr style={{ backgroundColor: "#F9CEAE", color: "black" }}>
-                <th style={{ border: "1px solid #9b9898", padding: "5px", width:"70px", fontWeight: "50", fontFamily: "Arial Black" }}>Código</th>
-                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"440px", fontWeight: "50", fontFamily: "Arial Black"  }}>Descripción</th>
-                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"50px", fontWeight: "80", fontFamily: "Arial Black"  }}>Cant</th>
-                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "80", fontFamily: "Arial Black"  }}>Precio Sistema</th>
-                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "80", fontFamily: "Arial Black"  }}>Precio Factura</th>
-                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "50", fontFamily: "Arial Black"  }}>Dscto</th>
-                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "50", fontFamily: "Arial Black"  }}>Total</th>
+                <th style={{ border: "1px solid #9b9898", padding: "5px", width:"70px", fontWeight: "50" }}>Código</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"440px", fontWeight: "50" }}>Descripción</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"50px", fontWeight: "80" }}>Cant</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "80" }}>Precio Sistema</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "80" }}>Precio Factura</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "50" }}>Dscto</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "50" }}>Total</th>
               </tr>
             </thead>
             <tbody>
