@@ -124,11 +124,28 @@ const Consulta = () => {
         cursor:"pointer",
         height:"20px"
     };
-    const estiloBotonVerde = {
+    const estiloBotonEliminar = {
+        display:"flex",
+        width: "15%",
+        padding: "15px",
+        backgroundColor: "#84868a",
+        color: "white",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        fontWeight: "800",
+        fontFamily: "Arial Black",        
+        marginTop: "1px",
+        justifyContent: "center",
+        alignItems:"center",
+        cursor:"pointer",
+        height:"20px"
+    };
+    
+    const estiloBotonGuardar = {
         display:"flex",
         width: "20%",
         padding: "15px",
-        backgroundColor: "#74c769",
+        backgroundColor: "#84B09C",
         color: "white",
         border: "1px solid #ccc",
         borderRadius: "8px",
@@ -489,21 +506,21 @@ const abrirModalPagoConFecha = () => {
                 type="date"
                 value={venta ? venta.fecha.substring(0,10) : ""}
                 readOnly
-                style={{ backgroundColor: "#acadaf", width:"95px" }}
+                style={{ backgroundColor: "#cdced1", width:"95px" }}
               />
               <label>Hora</label>
               <input
                 type="text"
                 value={venta ? venta.hora : ""}
                 readOnly
-                style={{ backgroundColor: "#acadaf", width:"80px" }}
+                style={{ backgroundColor: "#cdced1", width:"80px" }}
               />
               <label>Usuario</label>
               <input
                 type="text"
                 value={venta ? venta.usuario : ""}
                 readOnly
-                style={{ backgroundColor: "#acadaf", width:"100px" }}
+                style={{ backgroundColor: "#cdced1", width:"100px" }}
               />
             </div>
           </div>        
@@ -517,7 +534,7 @@ const abrirModalPagoConFecha = () => {
                     type="text"
                     value={cliente ? cliente.identificacion : ""}
                     readOnly
-                    style={{ backgroundColor: "#acadaf", width:"80px" }}
+                    style={{ backgroundColor: "#cdced1", width:"80px" }}
                   />
               
               <div style={{ display: "flex", flexDirection: "column", width: "300px" }}>                
@@ -525,7 +542,7 @@ const abrirModalPagoConFecha = () => {
                     type="text"
                     value={cliente ? cliente.nombreCompleto : ""}
                     readOnly
-                    style={{ backgroundColor: "#acadaf", width:"200px" }}
+                    style={{ backgroundColor: "#cdced1", width:"200px" }}
                 />
               </div>
             </div>
@@ -553,14 +570,14 @@ const abrirModalPagoConFecha = () => {
                 }}
             >
             <thead>
-              <tr style={{ backgroundColor: "#F9CEAE", color: "white" }}>
-                <th style={{ border: "1px solid #000000", padding: "5px", width:"70px", fontWeight: "50", fontFamily: "Arial Black" }}>Código</th>
-                <th style={{ border: "1px solid #000000", padding: "6px", width:"440px", fontWeight: "50", fontFamily: "Arial Black"  }}>Descripción</th>
-                <th style={{ border: "1px solid #000000", padding: "6px", width:"50px", fontWeight: "80", fontFamily: "Arial Black"  }}>Cant</th>
-                <th style={{ border: "1px solid #000000", padding: "6px", width:"140px", fontWeight: "80", fontFamily: "Arial Black"  }}>Precio Sistema</th>
-                <th style={{ border: "1px solid #000000", padding: "6px", width:"140px", fontWeight: "80", fontFamily: "Arial Black"  }}>Precio Factura</th>
-                <th style={{ border: "1px solid #000000", padding: "6px", width:"140px", fontWeight: "50", fontFamily: "Arial Black"  }}>Dscto</th>
-                <th style={{ border: "1px solid #000000", padding: "6px", width:"140px", fontWeight: "50", fontFamily: "Arial Black"  }}>Total</th>
+              <tr style={{ backgroundColor: "#F9CEAE", color: "black" }}>
+                <th style={{ border: "1px solid #9b9898", padding: "5px", width:"70px", fontWeight: "50", fontFamily: "Arial Black" }}>Código</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"440px", fontWeight: "50", fontFamily: "Arial Black"  }}>Descripción</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"50px", fontWeight: "80", fontFamily: "Arial Black"  }}>Cant</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "80", fontFamily: "Arial Black"  }}>Precio Sistema</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "80", fontFamily: "Arial Black"  }}>Precio Factura</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "50", fontFamily: "Arial Black"  }}>Dscto</th>
+                <th style={{ border: "1px solid #9b9898", padding: "6px", width:"140px", fontWeight: "50", fontFamily: "Arial Black"  }}>Total</th>
               </tr>
             </thead>
             <tbody>
@@ -777,12 +794,12 @@ const abrirModalPagoConFecha = () => {
     Limpiar
   </button>
 
-  <button onClick={eliminarFactura} style={estiloBoton}>
+  <button onClick={eliminarFactura} style={estiloBotonEliminar}>
     Eliminar
   </button>
   
   {esCredito && (
-    <button onClick={setMostrarFechaAbono} style={estiloBotonVerde}
+    <button onClick={setMostrarFechaAbono} style={estiloBotonGuardar}
       className="btn-abono"
     >    
       Registrar abono
