@@ -92,11 +92,27 @@ const Consulta = () => {
 
     const API = `${API_URL}/api`;
 
-    const estiloBoton = {
+    const estiloBotonVolver = {
         display:"flex",
         width: "15%",
         padding: "15px",
         backgroundColor: "#D98897",
+        color: "white",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        fontWeight: "800",
+        fontFamily: "Arial Black",        
+        marginTop: "1px",
+        justifyContent: "center",
+        alignItems:"center",
+        cursor:"pointer",
+        height:"20px"
+    };
+    const estiloBoton = {
+        display:"flex",
+        width: "15%",
+        padding: "15px",
+        backgroundColor: "#F9CEAE",
         color: "white",
         border: "1px solid #ccc",
         borderRadius: "8px",
@@ -123,6 +139,23 @@ const Consulta = () => {
         alignItems:"center",
         cursor:"pointer",
         height:"20px"
+    };
+    const botonGuardar = {
+      width: "30%",
+      display:"flex",
+      height:"40px",
+      padding: "6px",
+      backgroundColor: "#84B09C",
+      color: "white",
+      border: "none",
+      borderRadius: "6px",
+      fontFamily: "Arial Black",
+      cursor: "pointer",
+      marginTop: "8px",
+      justifyContent:"center",
+      alignItems:"center",
+      opacity:procesando ? 0.6 :1,
+      cursor: procesando ? "not-allowed":"pointer"    
     };
 
     // -----------------------------
@@ -456,21 +489,21 @@ const abrirModalPagoConFecha = () => {
                 type="date"
                 value={venta ? venta.fecha.substring(0,10) : ""}
                 readOnly
-                style={{ backgroundColor: "#EDC5CD", width:"95px" }}
+                style={{ backgroundColor: "#84868a", width:"95px" }}
               />
               <label>Hora</label>
               <input
                 type="text"
                 value={venta ? venta.hora : ""}
                 readOnly
-                style={{ backgroundColor: "#EDC5CD", width:"80px" }}
+                style={{ backgroundColor: "#84868a", width:"80px" }}
               />
               <label>Usuario</label>
               <input
                 type="text"
                 value={venta ? venta.usuario : ""}
                 readOnly
-                style={{ backgroundColor: "#EDC5CD", width:"100px" }}
+                style={{ backgroundColor: "#84868a", width:"100px" }}
               />
             </div>
           </div>        
@@ -484,7 +517,7 @@ const abrirModalPagoConFecha = () => {
                     type="text"
                     value={cliente ? cliente.identificacion : ""}
                     readOnly
-                    style={{ backgroundColor: "#EDC5CD", width:"80px" }}
+                    style={{ backgroundColor: "#84868a", width:"80px" }}
                   />
               
               <div style={{ display: "flex", flexDirection: "column", width: "300px" }}>                
@@ -492,7 +525,7 @@ const abrirModalPagoConFecha = () => {
                     type="text"
                     value={cliente ? cliente.nombreCompleto : ""}
                     readOnly
-                    style={{ backgroundColor: "#EDC5CD", width:"200px" }}
+                    style={{ backgroundColor: "#84868a", width:"200px" }}
                 />
               </div>
             </div>
@@ -520,7 +553,7 @@ const abrirModalPagoConFecha = () => {
                 }}
             >
             <thead>
-              <tr style={{ backgroundColor: "#6699FF", color: "white" }}>
+              <tr style={{ backgroundColor: "#F9CEAE", color: "white" }}>
                 <th style={{ border: "1px solid #ccc", padding: "5px", width:"70px", fontWeight: "50", fontFamily: "Arial Black" }}>Código</th>
                 <th style={{ border: "1px solid #ccc", padding: "6px", width:"440px", fontWeight: "50", fontFamily: "Arial Black"  }}>Descripción</th>
                 <th style={{ border: "1px solid #ccc", padding: "6px", width:"50px", fontWeight: "80", fontFamily: "Arial Black"  }}>Cant</th>
@@ -736,7 +769,7 @@ const abrirModalPagoConFecha = () => {
 )}
 
 <div style={{ marginTop: "10px", width: "950px", display: "flex", justifyContent: "center", gap: "20px" }}>
-  <button onClick={volverAlMenu} style={estiloBoton}>
+  <button onClick={volverAlMenu} style={estiloBotonVolver}>
     Volver al Menú
   </button>
 

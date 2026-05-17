@@ -67,7 +67,7 @@ const Caja = () => {
   const estiloBoton = {
     width: "25%",
     padding: "1px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#F9CEAE",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -83,7 +83,7 @@ const Caja = () => {
     display:"flex",
     height:"30px",
     padding: "6px",
-    backgroundColor: "#6699FF",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -99,7 +99,7 @@ const Caja = () => {
     display:"flex",
     height:"40px",
     padding: "6px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -107,7 +107,9 @@ const Caja = () => {
     cursor: "pointer",
     marginTop: "8px",
     justifyContent:"center",
-    alignItems:"center",    
+    alignItems:"center",
+    opacity:procesando ? 0.6 :1,
+    cursor: procesando ? "not-allowed":"pointer"    
   };
 
   const botonP = {
@@ -115,7 +117,7 @@ const Caja = () => {
     display:"flex",
     height:"30px",
     padding: "6px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#F9CEAE",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -752,7 +754,7 @@ const totalBolivaresContados =
                 />                
                 <button style={botonP} onClick={verificarFecha}>Consultar</button>
                 <button
-                    style={botonP}
+                    style={botonGuardar}
                     onClick={modo === "modificar" ? actualizarCaja : guardarCaja}
                     disabled={modo === "lectura"}
                     className="btn-guardar"
@@ -1003,7 +1005,7 @@ const totalBolivaresContados =
             disabled={modo === "lectura"}
             style={{
                 padding: "6px 12px",
-                backgroundColor: "#6699FF",
+                backgroundColor: "#F9CEAE",
                 color: "white",
                 border: "none",
                 borderRadius: "6px",
@@ -1183,7 +1185,7 @@ const totalBolivaresContados =
           disabled={modo === "lectura"}
           style={{
               padding: "6px 12px",
-              backgroundColor: "#6699FF",
+              backgroundColor: "#F9CEAE",
               color: "white",
               border: "none",
               borderRadius: "6px",
@@ -1382,7 +1384,7 @@ const totalBolivaresContados =
           disabled={modo === "lectura"}
           style={{
               padding: "6px 12px",
-              backgroundColor: "#6699FF",
+              backgroundColor: "#F9CEAE",
               color: "white",
               border: "none",
               borderRadius: "6px",

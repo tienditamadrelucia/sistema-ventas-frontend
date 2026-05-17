@@ -38,7 +38,7 @@ const Clientes = () => {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#F9CEAE",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -49,9 +49,9 @@ const Clientes = () => {
   };
 
   const botonGuardar = {
-    width: "50%",
+    width: "30%",
     padding: "6px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
