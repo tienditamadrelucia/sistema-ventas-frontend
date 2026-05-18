@@ -497,7 +497,7 @@ const abrirModalPagoConFecha = () => {
             />
 
             <button onClick={() => consultarFactura(numeroFactura)} style={estiloBoton}>
-              BUSCAR
+              Buscar
             </button>   
           
             <div style={{ display: "flex", gap: "15px", marginTop:"10px" }}>
@@ -625,22 +625,22 @@ const abrirModalPagoConFecha = () => {
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Efectivo P:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.efectivoP)} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={formatoVE(pagosMoneda[0]?.efectivoP)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Transferencia P:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.transferenciaP)} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={formatoVE(pagosMoneda[0]?.transferenciaP)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Referencia:</label>
-      <input type="text" value={pagosMoneda[0]?.referenciaP} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={pagosMoneda[0]?.referenciaP} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Banco:</label>
-      <input type="text" value={pagosMoneda[0]?.bancoP} readOnly style={{ backgroundColor:"#EDC5CD", width:"140px" }} />
+      <input type="text" value={pagosMoneda[0]?.bancoP} readOnly style={{ backgroundColor:"#CCC", width:"140px" }} />
     </div>
   </div>
 
@@ -650,37 +650,37 @@ const abrirModalPagoConFecha = () => {
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Efectivo Bs:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.efectivoBs)} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={formatoVE(pagosMoneda[0]?.efectivoBs)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Transferencia Bs:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.transferenciaBs)} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={formatoVE(pagosMoneda[0]?.transferenciaBs)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Referencia:</label>
-      <input type="text" value={pagosMoneda[0]?.referenciaTBs} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={pagosMoneda[0]?.referenciaTBs} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Banco:</label>
-      <input type="text" value={pagosMoneda[0]?.bancoTBs} readOnly style={{ backgroundColor:"#EDC5CD", width:"140px" }} />
+      <input type="text" value={pagosMoneda[0]?.bancoTBs} readOnly style={{ backgroundColor:"#CCC", width:"140px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Punto:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.puntoBs)} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={formatoVE(pagosMoneda[0]?.puntoBs)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Ref Punto:</label>
-      <input type="text" value={pagosMoneda[0]?.refPunto} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={pagosMoneda[0]?.refPunto} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Lote:</label>
-      <input type="text" value={pagosMoneda[0]?.lotePunto} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={pagosMoneda[0]?.lotePunto} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
   </div>
 
@@ -690,22 +690,22 @@ const abrirModalPagoConFecha = () => {
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Efectivo $:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.efectivoD)} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={formatoVE(pagosMoneda[0]?.efectivoD)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Zelle:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.zelleD)} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={formatoVE(pagosMoneda[0]?.zelleD)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Referencia:</label>
-      <input type="text" value={pagosMoneda[0]?.referenciaZ} readOnly style={{ backgroundColor:"#EDC5CD", width:"100px" }} />
+      <input type="text" value={pagosMoneda[0]?.referenciaZ} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
     </div>
 
     <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
       <label style={{ width:"110px" }}>Banco:</label>
-      <input type="text" value={pagosMoneda[0]?.bancoZ} readOnly style={{ backgroundColor:"#EDC5CD", width:"140px" }} />
+      <input type="text" value={pagosMoneda[0]?.bancoZ} readOnly style={{ backgroundColor:"#CCC", width:"140px" }} />
     </div>
   </div>
 
