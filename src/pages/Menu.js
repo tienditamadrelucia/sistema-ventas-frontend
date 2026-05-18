@@ -17,6 +17,7 @@ function Menu() {
   const [openUsuarios, setOpenUsuarios] = useState(false);
   const [openProductos, setOpenProductos] = useState(false);
   const [openAdministracion, setOpenAdministracion] = useState(false);
+  const [procesando, setProcesando] = useState(false);
   
   // 🔹 Estados para el usuario y fecha
   const [nombre, setNombre] = useState("");

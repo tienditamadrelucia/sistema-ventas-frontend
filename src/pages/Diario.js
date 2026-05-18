@@ -244,7 +244,7 @@ const ReporteVentas = () => {
 
       {/* ⭐⭐⭐ TABLA CONTINUA — UNA SOLA, SIN REPETICIONES ⭐⭐⭐ */}
       <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
-        <thead>
+        <thead style={{ backgroundColor: "#F9CEAE" }}>
           <tr>
             <th>Fecha</th>
             <th>Factura</th>
