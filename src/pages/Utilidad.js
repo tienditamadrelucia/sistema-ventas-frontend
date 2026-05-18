@@ -12,27 +12,22 @@ const Utilidad = () => {
       alert("Seleccione ambas fechas");
       return;
     }
-
     setCargando(true);
-
     try {
       const res = await fetch(
         `${API_URL}/api/ventas/reporte-categoria?desde=${desde}&hasta=${hasta}`
       );
       const data = await res.json();
-
       if (!data.ok) {
         alert("No se pudo generar el reporte");
         setCargando(false);
         return;
       }
-
       setReporte(data.reporte);
     } catch (error) {
       console.error("ERROR REPORTE FRONTEND:", error);
       alert("Error al obtener el reporte");
     }
-
     setCargando(false);
   };
 
@@ -41,7 +36,6 @@ const Utilidad = () => {
   // ============================
   const totalesGenerales = () => {
     let totalP = 0, totalBs = 0, totalD = 0;
-
     Object.values(reporte).forEach(cat => {
       Object.values(cat).forEach(prod => {
         totalP += prod.totalP;
@@ -49,16 +43,13 @@ const Utilidad = () => {
         totalD += prod.totalD;
       });
     });
-
     return { totalP, totalBs, totalD };
   };
 
   const { totalP, totalBs, totalD } = totalesGenerales();
-
   return (
     <div style={{ padding: "20px" }}>
       <h2>📊 Reporte de Utilidad por Categoría y Producto</h2>
-
       {/* Filtros */}
       <div style={{ marginBottom: "20px" }}>
         <label>Desde: </label>
@@ -71,9 +62,7 @@ const Utilidad = () => {
           Buscar
         </button>
       </div>
-
       {cargando && <p>Cargando reporte...</p>}
-
       {/* RESULTADOS */}
       {!cargando && Object.keys(reporte).length > 0 && (
         <div>

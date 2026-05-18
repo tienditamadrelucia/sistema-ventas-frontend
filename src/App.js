@@ -29,6 +29,7 @@ import ReporteSalidas from "./pages/RepSalidas";
 import ReporteGastos from "./pages/RepGastos";
 import ReporteInventario from "./pages/ReporInventa.js";
 import ResumenVentas from "./pages/ResumenVentas.js";
+import Utilidad from "./pages/Utilidad.js";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -89,6 +90,7 @@ function App() {
         <Route path="/repgastos" element={<ProtectedRoute><ReporteGastos /></ProtectedRoute>} />        
         <Route path="/repinventa" element={<ProtectedRoute><ReporteInventario /></ProtectedRoute>} />
         <Route path="/resumenventas" element={<ProtectedRoute><ResumenVentas /></ProtectedRoute>} />
+        <Route path="/utilidad" element={<ProtectedRoute><Utilidad /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
