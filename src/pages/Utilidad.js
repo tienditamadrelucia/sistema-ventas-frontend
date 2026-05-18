@@ -65,34 +65,49 @@ const Utilidad = () => {
       {cargando && <p>Cargando reporte...</p>}
       {/* RESULTADOS */}
       {!cargando && Object.keys(reporte).length > 0 && (
-        <div>
+        <div>            
           {Object.entries(reporte).map(([categoria, productos]) => (
             <div key={categoria} style={{ marginBottom: "30px" }}>
               <h3>📁 Categoría: {categoria}</h3>
-
               <table border="1" cellPadding="6" style={{ width: "100%", background: "white" }}>
                 <thead>
                   <tr>
                     <th>Producto</th>
-                    <th>Cantidad Vendida</th>
-                    <th>Total Pesos (P)</th>
-                    <th>Total Bolívares (Bs)</th>
-                    <th>Total Dólares (D)</th>
-                  </tr>
+                    <th>Cantidad</th>
+                    <th>Costo (U)</th>
+                    <th>Precio Venta (U)</th>
+                    <th>Utilidad</th>
+                    <th>Total P</th>
+                    <th>Total Bs</th>
+                    <th>Total D</th>
+                   </tr>
                 </thead>
-                <tbody>
-                  {Object.entries(productos).map(([descripcion, info]) => (
-                    <tr key={descripcion}>
-                      <td>{descripcion}</td>
-                      <td>{info.cantidadVendida}</td>
-                      <td>{info.totalP.toLocaleString()}</td>
-                      <td>{info.totalBs.toLocaleString()}</td>
-                      <td>{info.totalD.toLocaleString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+              <tbody>
+            {Object.entries(productos).map(([descripcion, info]) => (
+            <tr key={descripcion}>
+              <td>{descripcion}</td>
+              <td>{info.cantidadVendida}</td>
+              <td>{info.costo.toLocaleString()}</td>
+              <td>{info.precioVenta.toLocaleString()}</td>
+              <td style={{ fontWeight: "bold", color: "green" }}>
+                {info.utilidad.toLocaleString()}
+              </td>
+              <td>{info.totalP.toLocaleString()}</td>
+              <td>{info.totalBs.toLocaleString()}</td>
+              <td>{info.totalD.toLocaleString()}</td>
+            </tr>
+          ))}
+        </tbody>
+    </table>
+
+    {/* ⭐ UTILIDAD TOTAL POR CATEGORÍA */}
+    <h4 style={{ marginTop: "10px", color: "darkgreen" }}>
+        Utilidad total de la categoría {categoria}:{" "}
+        {Object.values(productos)
+          .reduce((acc, prod) => acc + prod.utilidad, 0)
+          .toLocaleString()}
+  </h4>
+</div>
           ))}
 
           {/* TOTALES GENERALES */}
