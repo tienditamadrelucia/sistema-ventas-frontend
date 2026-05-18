@@ -397,7 +397,7 @@ const Caja = () => {
     const GastosBs = gastosCajaChica
       .filter(g => g.moneda === "Bs")
       .reduce((acc, g) => acc + (g.monto || 0), 0);
-    if (gastosCajaChica.length === 0) {
+    if (gastosCajaChica.length === 0 && modo !== "lectura") {
       alert("No hay gastos de caja chica para esta fecha");
     }
     // 5. En modo crear o modificar → actualizar gastos

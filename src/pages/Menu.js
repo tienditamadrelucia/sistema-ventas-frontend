@@ -304,6 +304,23 @@ function Menu() {
           >
             Control de Usuarios
           </button>
+
+          <button
+            style={{
+            ...botonSubmenu,
+            opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+            cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+            }}
+            disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
+            onClick={async () => {
+            await registrarAccion("Entró al módulo Utilidad por producto");
+            if (localStorage.getItem("rolUsuario") === "ADMINISTRADOR") {
+              navigate("/utilidad");
+            }
+          }}
+          >
+            Utilidad Producto
+          </button>
         
               <button 
                 style={botonSubmenu}
