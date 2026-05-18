@@ -98,7 +98,7 @@ const Caja = () => {
   const botonGuardar = {
     width: "30%",
     display:"flex",
-    height:"40px",
+    height:"30px",
     padding: "6px",
     backgroundColor: "#84B09C",
     color: "white",
