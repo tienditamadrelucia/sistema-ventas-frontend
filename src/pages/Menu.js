@@ -478,14 +478,22 @@ function Menu() {
                 Gastos
               </button>
               
-              <button 
-                style={botonSubmenu}
-                onClick={async() => {
-                  await registrarAccion("Entró al módulo Resumen de Ventas")
-                 window.open("/resumenventas", "_blank")}}
+              <button
+                style={{
+                ...botonSubmenu,
+                  opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+                  cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+                  }}
+                disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
+                onClick={async () => {
+                await registrarAccion("Entró al módulo Resumen de Ventas");
+                if (localStorage.getItem("rolUsuario") === "ADMINISTRADOR") {
+                  navigate("/resumenventas");
+                  }
+                }}
               >
                 Resumen de Ventas
-              </button>
+              </button>              
               
               <button 
                 style={botonSubmenu}
