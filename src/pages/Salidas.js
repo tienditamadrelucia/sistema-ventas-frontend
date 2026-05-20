@@ -277,31 +277,34 @@ const editarSalida = (salida) => {
 // ===============================
 const eliminarSalida = async (salida) => {
   const rol = localStorage.getItem("rolUsuario");
+  // ⭐ SOLO ADMINISTRADOR puede eliminar AJUSTES
   if (salida.observacion === "AJUSTE") {
-    if (rol !== "ADMINISTRADOR") {      
-        alert ("No está permitido eliminar los registros de AJUSTE") 
-        return;
-      };
+    if (rol !== "ADMINISTRADOR") {
+      alert("No está permitido eliminar los registros de AJUSTE");
+      return;
     }
-
+  } else {
+    // ⭐ Ningún usuario puede eliminar salidas normales
+    alert("No está permitido eliminar este tipo de registro");
+    return;
+  }
+  // ⭐ Seguridad adicional para usuarios
   if (rol === "USUARIO") {
     alert("Debe dirigirse al Supervisor para realizar esta acción");
     return;
   }
-
   if (window.confirm("¿Eliminar esta salida?")) {
-    const res = await eliminarSalidaApi(id, usuarioActual);
+    const res = await eliminarSalidaApi(salida._id, usuarioActual); // ✔ CORRECTO
     if (!res.ok) {
       alert(res.error || "No se pudo eliminar la salida");
       return;
     }
     const recarga = await cargarSalidas(paginaActual, 20);
-      setSalidas(recarga.salidas || recarga.salidasdb || []);
-      setTotalPaginas(recarga.totalPages || 1);
-
+    setSalidas(recarga.salidas || recarga.salidasdb || []);
+    setTotalPaginas(recarga.totalPages || 1);
     await registrarAccion(`Eliminó una salida`);
   }
-}; 
+};
 
   // -------------------------
   // RETURN
