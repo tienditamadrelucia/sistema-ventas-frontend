@@ -12,7 +12,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   // -------------------------
   // ESTILOS
   // -------------------------
-const estiloBoton = {
+const estiloBotonVolver = {
     width: "15%",
     padding: "10px",
     backgroundColor: "#D98897",
@@ -37,9 +37,9 @@ const estiloBoton = {
   };
 
   const botonGuardar = {
-    width: "50%",
+    width: "30%",
     padding: "6px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -326,7 +326,7 @@ const ObtenerMovimientos = async () => {
           <tbody>
             {movimientosArray.map((m, index) => (
               <tr key={index}>
-                <td>{new Date(m.fecha).toLocaleDateString("es-VE")}</td>
+                <td>{m.fecha.slice(0, 10).split("-").reverse().join("/")}</td>
                 <td>{m.entrada}</td>
                 <td>{m.salida}</td>
                 <td>{m.venta}</td>

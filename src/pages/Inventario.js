@@ -34,7 +34,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#F9CEAE",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -45,10 +45,38 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
     marginLeft: "5px"
   };
 
-  const estiloBotonGde = {
+  const estiloBotonBorrar = {
+    width: "15%",
+    padding: "10px",
+    backgroundColor: "#84868a",
+    color: "white",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    fontWeight: "900",
+    fontFamily: "Arial Black",
+    cursor: "pointer",
+    marginTop: "5px",
+    marginLeft: "5px"
+  };
+
+  const estiloBotonGuardar = {
+    width: "15%",
+    padding: "10px",
+    backgroundColor: "#84B09C",
+    color: "white",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    fontWeight: "900",
+    fontFamily: "Arial Black",
+    cursor: "pointer",
+    marginTop: "5px",
+    marginLeft: "5px"
+  };
+
+  const estiloBotonVolver = {
     width: "25%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -61,7 +89,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
   const estiloBotonAjuste = (habilitado) => ({
     padding: "8px 12px",
-    backgroundColor: habilitado ? "#D98897" : "#aaa",
+    backgroundColor: habilitado ? "#CAD9FB" : "#aaa",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -440,7 +468,7 @@ const cargarInventario = async () => {
           <button
             type="button"
             onClick={handleGuardar} // tu función para limpiar filtros
-            style={estiloBoton}
+            style={estiloBotonGuardar}
           >
             Guardar
           </button>
@@ -448,12 +476,12 @@ const cargarInventario = async () => {
           <button
             type="button"
             onClick={handleBorrar} // tu función para limpiar filtros
-            style={estiloBoton}
+            style={estiloBotonBorrar}
           >
             Borrar
           </button>
           {/* BOTÓN VOLVER */}  
-          <button onClick={() => navigate("/menu")} style={estiloBotonGde}>
+          <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
             MENÚ PRINCIPAL
           </button>
         </div> 

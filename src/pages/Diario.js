@@ -267,7 +267,7 @@ const ReporteVentas = () => {
         <tr key={p._id || `${item.venta.factura}-${i}`}>
           {i === 0 ? (
             <>
-              <td>{item.venta.fecha.slice(0, 10)}</td>
+              <td>{item.venta.fecha.slice(0, 10).split("-").reverse().join("/")}</td>
               <td>{item.venta.factura}</td>
               <td>{item.clienteNombre}</td>
             </>
