@@ -16,7 +16,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 const Salidas = () => {
   const navigate = useNavigate();
 
-    const [procesando, setProcesando] = useState(false);
+    const [procesando, setProcesando] = useState(false);    
   // -------------------------
   // ESTILOS GLOBALES
   // -------------------------
@@ -275,9 +275,9 @@ const editarSalida = (salida) => {
 // ===============================
 // ELIMINAR SALIDA
 // ===============================
-const eliminarSalida = async (id) => {
+const eliminarSalida = async (salida) => {
   const rol = localStorage.getItem("rolUsuario");
-  if (s.observacion === "AJUSTE") {
+  if (salida.observacion === "AJUSTE") {
     if (rol !== "ADMINISTRADOR") {      
         alert ("No está permitido eliminar los registros de AJUSTE") 
         return;
