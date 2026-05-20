@@ -155,6 +155,15 @@ const Productos = () => {
   limpiarFormulario();   // 👈 genera el primer código al iniciar  
   }, []);
 
+  useEffect(() => {
+  return () => {
+    if (formData.preview) {
+      URL.revokeObjectURL(formData.preview);
+    }
+  };
+}, [formData.preview]);
+
+
     // -------------------------
   // MANEJO DE FORMULARIO
   // -------------------------
@@ -284,8 +293,9 @@ const Productos = () => {
   limpiarFormulario();
   setProcesando(false);
   setFormData(prev => ({
-    ...prev,
-    categoria: cat
+  ...prev,
+  categoria: cat,
+  preview: undefined
   }));
 };
 
