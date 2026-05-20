@@ -19,10 +19,10 @@ const Entradas = () => {
   // ESTILOS GLOBALES
   // -------------------------
   const [procesando, setProcesando] = useState(false);
-  const estiloBoton = {
+  const estiloBotonVolver = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -33,9 +33,9 @@ const Entradas = () => {
   };
 
   const botonGuardar = {
-    width: "50%",
+    width: "30%",
     padding: "6px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -285,6 +285,18 @@ const Entradas = () => {
   // -------------------------
 
   const eliminarEntrada = async (id) => {
+    if (entrada.observacion === "AJUSTE") {
+    if (rol !== "ADMINISTRADOR") {      
+        alert ("No está permitido eliminar los registros de AJUSTE") 
+        return;
+      };
+    }
+
+    if (rol === "USUARIO") {
+      alert("Debe dirigirse al Supervisor para realizar esta acción");
+      return;
+    }
+
   if (window.confirm("¿Eliminar esta entrada?")) {
     const res = await eliminarEntradaApi(id, usuarioActual);
     if (!res.ok) {
@@ -418,7 +430,7 @@ const Entradas = () => {
 
       {/* BOTÓN VOLVER */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-        <button onClick={() => navigate("/menu")} style={estiloBoton}>
+        <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
           Volver al MENÚ PRINCIPAL
         </button>
       </div>
@@ -444,7 +456,7 @@ const Entradas = () => {
         <tbody>
           {entradas.map((e) => (
             <tr key={e._id}>
-              <td>{e.fecha.slice(0, 10)}</td>
+              <td>{e.fecha.slice(0, 10).split("-").reverse().join("/")}</td>
               <td>{e.productoId?.categoria}</td>
               <td>{e.productoId?.codigo}</td>
               <td>{e.productoId?.descripcion}</td>
@@ -452,7 +464,7 @@ const Entradas = () => {
               <td>{e.observacion}</td>
               <td>
                 <span onClick={() => editarEntrada(e)} style={iconoEditar}>✏️</span>
-                <span onClick={() => eliminarEntrada(e._id)} style={iconoEliminar}>🗑️</span>
+                <span onClick={() => eliminarEntrada(e.id)} style={iconoEliminar}>🗑️</span>
               </td>
             </tr>
           ))}

@@ -21,10 +21,10 @@ const Salidas = () => {
   // ESTILOS GLOBALES
   // -------------------------
  
-  const estiloBoton = {
+  const estiloBotonVolver = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -35,9 +35,9 @@ const Salidas = () => {
   };
 
   const botonGuardar = {
-    width: "50%",
+    width: "30%",
     padding: "6px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -276,6 +276,19 @@ const editarSalida = (salida) => {
 // ELIMINAR SALIDA
 // ===============================
 const eliminarSalida = async (id) => {
+  const rol = localStorage.getItem("rolUsuario");
+  if (s.observacion === "AJUSTE") {
+    if (rol !== "ADMINISTRADOR") {      
+        alert ("No está permitido eliminar los registros de AJUSTE") 
+        return;
+      };
+    }
+
+  if (rol === "USUARIO") {
+    alert("Debe dirigirse al Supervisor para realizar esta acción");
+    return;
+  }
+
   if (window.confirm("¿Eliminar esta salida?")) {
     const res = await eliminarSalidaApi(id, usuarioActual);
     if (!res.ok) {
@@ -414,7 +427,7 @@ const eliminarSalida = async (id) => {
 
       {/* BOTÓN VOLVER */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-        <button onClick={() => navigate("/menu")} style={estiloBoton}>
+        <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
           Volver al MENÚ PRINCIPAL
         </button>
       </div>
@@ -440,7 +453,7 @@ const eliminarSalida = async (id) => {
         <tbody>
           {salidas.map((s) => (
             <tr key={s._id}>
-              <td>{s.fecha.slice(0, 10)}</td> 
+              <td>{s.fecha.slice(0, 10).split("-").reverse().join("/")}</td> 
               <td>{s.productoId?.categoria}</td>
               <td>{s.productoId?.codigo}</td>
               <td>{s.productoId?.descripcion}</td>
@@ -448,7 +461,7 @@ const eliminarSalida = async (id) => {
               <td>{s.observacion}</td>
               <td>
                 <span onClick={() => editarSalida(s)} style={iconoEditar}>✏️</span>
-                <span onClick={() => eliminarSalida(s._id)} style={iconoEliminar}>🗑️</span>
+                <span onClick={() => eliminarSalida(s.id)} style={iconoEliminar}>🗑️</span>
               </td>
             </tr>
           ))}
