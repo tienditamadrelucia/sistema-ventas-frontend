@@ -305,6 +305,11 @@ const Productos = () => {
   // -------------------------
 
   const eliminarProducto = async (id, descripcion) => {      
+    const rol = localStorage.getItem("rolUsuario");
+    if (rol == "USUARIO") {
+      alert("Debe dirigirse al Supervisor para realizar esta acción");
+      return;
+    }
     if (window.confirm("¿Eliminar este producto?")) {
         setProcesando(true);  
         try {
@@ -557,7 +562,7 @@ const Productos = () => {
               <td>{p.descripcion}</td>
               <td>{p.medida}</td>
               <td>{p.stock}</td>
-              <td>{p.fechaIngreso ? new Date(p.fechaIngreso).toLocaleDateString("es-VE") : "—"}</td>
+              <td>{p.fechaIngreso.slice(0, 10).split("-").reverse().join("/")}</td>
               <td>{p.costo}</td>
               <td>{p.venta}</td>
               <td style={{ textAlign: "center" }}>
