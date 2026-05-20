@@ -324,3 +324,49 @@ select, option {
   background: #84868a;
   color: white;
 }
+
+.modal-fecha {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 320px;                 /* más grande */
+  text-align: center;
+
+  position: fixed;              /* se centra correctamente */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+}
+
+.fila-fecha {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;                    /* separación entre elementos */
+  margin-top: 15px;
+}
+
+.input-fecha {
+  padding: 6px;
+  font-size: 14px;
+}
+
+.btn-ok, .btn-cancel {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-ok {
+  background: #F9CEAE;
+  color: white;
+}
+
+.btn-cancel {
+  background: #84868a;
+  color: white;
+}

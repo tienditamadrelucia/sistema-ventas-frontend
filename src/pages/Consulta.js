@@ -806,7 +806,7 @@ const abrirModalPagoConFecha = () => {
   )}
   {mostrarFechaAbono && (
   <div className="modal-fondo">
-    <div className="modal-contenido-fecha">
+    <div className="modal-fecha">
       <h3>Fecha del abono</h3>
 
       <div className="fila-fecha">
@@ -841,6 +841,7 @@ const abrirModalPagoConFecha = () => {
     </div>
   </div>
 )}
+
 
   {mostrarPago && (            
   <Pago            
