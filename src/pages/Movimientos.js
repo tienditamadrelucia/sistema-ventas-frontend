@@ -294,7 +294,7 @@ const ObtenerMovimientos = async () => {
         </div>
         {/* BOTÓN VOLVER */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "1px" }}>
-          <button onClick={() => navigate("/menu")} style={estiloBoton}>
+          <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
             Volver al MENÚ PRINCIPAL
           </button>
         </div>
