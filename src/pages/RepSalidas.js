@@ -89,7 +89,7 @@ const ReporteSalidas = () => {
 
           <p style={{ textAlign: "center", marginTop: "5px", marginBottom: "20px" }}>
             <strong>Reporte de Salidas</strong><br />
-            Desde: {fechaDesde} — Hasta: {fechaHasta}
+            Desde: {fechaDesde.slice(0, 10).split("-").reverse().join("/")} — Hasta: {fechaHasta.slice(0, 10).split("-").reverse().join("/")}
           </p>
 
           {/* TABLA */}

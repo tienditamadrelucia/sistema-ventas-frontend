@@ -285,35 +285,36 @@ const Entradas = () => {
   // -------------------------
 
   const eliminarEntrada = async (entrada) => {
-    const rol = localStorage.getItem("rolUsuario");
-
-    if (entrada.observacion === "AJUSTE") {
-    if (rol !== "ADMINISTRADOR") {      
-        alert ("No está permitido eliminar los registros de AJUSTE") 
-        return;
-      };
-    }
-
-    if (rol === "USUARIO") {
-      alert("Debe dirigirse al Supervisor para realizar esta acción");
+  const rol = localStorage.getItem("rolUsuario");
+  // ⭐ SOLO ADMINISTRADOR puede eliminar AJUSTES
+  if (entrada.observacion === "AJUSTE") {
+    if (rol !== "ADMINISTRADOR") {
+      alert("No está permitido eliminar los registros de AJUSTE");
       return;
     }
-
+  } else {
+    // ⭐ Ningún usuario puede eliminar entradas normales
+    alert("No está permitido eliminar este tipo de registro");
+    return;
+  }
+  // ⭐ Seguridad adicional
+  if (rol === "USUARIO") {
+    alert("Debe dirigirse al Supervisor para realizar esta acción");
+    return;
+  }
   if (window.confirm("¿Eliminar esta entrada?")) {
-    const res = await eliminarEntradaApi(id, usuarioActual);
+    const res = await eliminarEntradaApi(entrada._id, usuarioActual); // ✔ CORRECTO
     if (!res.ok) {
       alert(res.error || "No se pudo eliminar la entrada");
       return;
     }
-
-    const recarga = await cargarEntradas(paginaActual); //formData.fecha || "");
-      setEntradas(recarga.entradas);
-      setPaginaActual(recarga.page);          // ✔ backend devuelve "page"
-      setTotalPaginas(recarga.totalPages);    // ✔ backend devuelve "totalPages"
-
+    const recarga = await cargarEntradas(paginaActual);
+    setEntradas(recarga.entradas);
+    setPaginaActual(recarga.page);
+    setTotalPaginas(recarga.totalPages);
     await registrarAccion(`Eliminó una entrada`);
   }
-}; 
+};
   
   // -------------------------
   // RETURN

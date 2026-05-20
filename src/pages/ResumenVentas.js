@@ -120,7 +120,7 @@ const ReporteVentas = () => {
 
           <p style={{ textAlign: "center", marginTop: "5px", marginBottom: "20px" }}>
             <strong>Resumen de Ventas</strong><br />
-            Desde: {desde} — Hasta: {hasta}
+            Desde: {fechaDesde.slice(0, 10).split("-").reverse().join("/")} — Hasta: {fechaHasta.slice(0, 10).split("-").reverse().join("/")}
           </p>
 
           {/* TABLA MEJORADA */}
