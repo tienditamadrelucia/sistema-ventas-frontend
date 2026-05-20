@@ -29,6 +29,13 @@ const ReporteVentas = () => {
     setProcesando(false);
   };
 
+  const fechaVE = (f) => {
+    if (!f) return "";
+    const [a, m, d] = f.slice(0, 10).split("-");
+    return `${d}/${m}/${a}`;
+  };
+
+
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
       {procesando && (
@@ -130,7 +137,7 @@ const ReporteVentas = () => {
             <tbody>
               {reporte.map((r, i) => (
                 <tr key={i}>
-                  <td style={{ padding: "8px", fontSize: "13px" }}>{r.fecha}</td>
+                  <td style={{ padding: "8px", fontSize: "13px" }}>{fechaVE(r.fecha)}</td>
                   <td style={{ padding: "8px", textAlign:"right", fontSize: "13px" }}>{r.dolares.toFixed(2)}</td>
                   <td style={{ padding: "8px", textAlign:"right", fontSize: "13px" }}>{r.bolivares.toFixed(2)}</td>
                   <td style={{ padding: "8px", textAlign:"right", fontSize: "13px" }}>{r.pesos.toFixed(2)}</td>

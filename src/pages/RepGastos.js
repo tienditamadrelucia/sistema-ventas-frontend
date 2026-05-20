@@ -107,7 +107,7 @@ const ReporteGastos = () => {
               {reporte.map((g) => (
                 <tr key={g._id}>
                   <td style={{ padding: "4px", fontSize: "10px" }}>
-                    {new Date(g.fecha).toLocaleDateString("es-VE")}
+                    {g.fecha.slice(0, 10).split("-").reverse().join("/")}
                   </td>
 
                   <td style={{ padding: "4px", fontSize: "10px" }}>
