@@ -62,11 +62,11 @@ const ReporteEntradas = () => {
           Consultar
         </button>
         <button
-          onClick={() => navigate("/menu")}
+          onClick={() => window.close()}
             style={{
               padding: "6px 12px",
               marginLeft: "10px",
-              backgroundColor: "#D98897",
+              backgroundColor: "#FC9E9B",
               color: "white",
               border: "none",
               borderRadius: "6px",
