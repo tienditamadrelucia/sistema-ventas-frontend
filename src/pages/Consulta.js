@@ -450,7 +450,6 @@ const abrirModalPagoConFecha = () => {
   setMostrarPago(true);
 };
 
-
     // -----------------------------
     // Render
     // -----------------------------
@@ -807,22 +806,19 @@ const abrirModalPagoConFecha = () => {
   )}
   {mostrarFechaAbono && (
   <div className="modal-fondo">
-    <div className="modal-contenido">
+    <div className="modal-contenido-fecha">
       <h3>Fecha del abono</h3>
 
-      <input
-        type="date"
-        value={fechaAbono}
-        onChange={(e) => setFechaAbono(e.target.value)}
-        className="input-fecha"
-      />
-
-      <div className="modal-botones-fecha">
-        <button onClick={() => setMostrarFechaAbono(false)}>
-          Cancelar
-        </button>
+      <div className="fila-fecha">
+        <input
+          type="date"
+          value={fechaAbono}
+          onChange={(e) => setFechaAbono(e.target.value)}
+          className="input-fecha"
+        />
 
         <button
+          className="btn-ok"
           onClick={() => {
             if (!fechaAbono) {
               alert("Debe seleccionar una fecha");
@@ -831,9 +827,15 @@ const abrirModalPagoConFecha = () => {
             setMostrarFechaAbono(false);
             abrirModalPagoConFecha();
           }}
-          className="btn-ok"
         >
           Aceptar
+        </button>
+
+        <button
+          className="btn-cancel"
+          onClick={() => setMostrarFechaAbono(false)}
+        >
+          Cancelar
         </button>
       </div>
     </div>
