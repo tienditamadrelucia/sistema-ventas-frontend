@@ -284,7 +284,9 @@ const Entradas = () => {
   // ELIMINAR ENTRADA
   // -------------------------
 
-  const eliminarEntrada = async (id) => {
+  const eliminarEntrada = async (entrada) => {
+    const rol = localStorage.getItem("rolUsuario");
+
     if (entrada.observacion === "AJUSTE") {
     if (rol !== "ADMINISTRADOR") {      
         alert ("No está permitido eliminar los registros de AJUSTE") 
