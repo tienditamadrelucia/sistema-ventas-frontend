@@ -36,7 +36,7 @@ function Usuarios() {
   const botonGuardar = {
     width: "100%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -55,7 +55,7 @@ function Usuarios() {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -281,6 +281,7 @@ function Usuarios() {
         >
           <option value="">Seleccione un rol</option>
           <option value="ADMINISTRADOR">ADMINISTRADOR</option>
+          <option value="SUPERVISOR">SUPERVISOR</option>
           <option value="USUARIO">USUARIO</option>
         </select>
 

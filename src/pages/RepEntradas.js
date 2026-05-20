@@ -107,7 +107,7 @@ const ReporteEntradas = () => {
               {reporte.map((e) => (
                 <tr key={e._id}>
                   <td style={{ padding: "4px", fontSize: "10px" }}>
-                    {new Date(e.fecha).toLocaleDateString("es-VE")}
+                    {e.fecha.slice(0, 10).split("-").reverse().join("/")}
                   </td>
 
                   <td style={{ padding: "4px", textAlign:"center", fontSize: "10px" }}>

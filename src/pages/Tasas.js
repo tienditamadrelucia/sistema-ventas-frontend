@@ -37,7 +37,7 @@ const Tasas = () => {
     backgroundColor: "white"
   };
 
-  const estiloBoton = {
+  const estiloBotonVolver = {
     width: "15%",
     padding: "10px",
     backgroundColor: "#FC9E9B",
@@ -50,7 +50,33 @@ const Tasas = () => {
     marginTop: "10px"
   };
 
-  const botonGuardar = {
+  const estiloBoton = {
+    width: "30%",
+    padding: "6px",
+    backgroundColor: "#F9CEAE",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    fontFamily: "Arial Black",
+    cursor: "pointer",
+    marginTop: "8px",
+    marginLeft: "40px"
+  };
+
+  const estiloBotonBorrar = {
+    width: "30%",
+    padding: "6px",
+    backgroundColor: "#84868a",
+    color: "white",
+    border: "none",
+    borderRadius: "6px",
+    fontFamily: "Arial Black",
+    cursor: "pointer",
+    marginTop: "8px",
+    marginLeft: "40px"
+  };
+
+  const estiloBotonGuardar = {
     width: "30%",
     padding: "6px",
     backgroundColor: "#84B09C",
@@ -254,15 +280,15 @@ const Tasas = () => {
             <div style={{ height: "20px" }}></div>
 
             <div style={{ display: "flex", width: "85%", justifyContent: "center", marginLeft: "20px" }}>
-              <button style={botonGuardar} onClick={handleGuardar} disabled={!inputsHabilitados}>
+              <button style={estiloBotonGuardar} onClick={handleGuardar} disabled={!inputsHabilitados}>
                 Guardar
               </button>
 
-              <button style={botonGuardar} onClick={handleModificar} disabled={!existeHoy}>
+              <button style={estiloBoton} onClick={handleModificar} disabled={!existeHoy}>
                 Modificar
               </button>
 
-              <button style={botonGuardar} onClick={handleBorrar}>
+              <button style={estiloBotonBorrar} onClick={handleBorrar}>
                 Borrar
               </button>
             </div>
@@ -270,7 +296,7 @@ const Tasas = () => {
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
-          <button onClick={handleVolver} style={estiloBoton}>
+          <button onClick={handleVolver} style={estiloBotonVolver}>
             Volver al MENÚ PRINCIPAL
           </button>
         </div>
