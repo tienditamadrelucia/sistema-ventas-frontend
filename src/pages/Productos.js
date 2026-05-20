@@ -198,7 +198,7 @@ const Productos = () => {
   // -------------------------
   // GUARDAR / ACTUALIZAR
   // -------------------------
-  const guardarProducto = async () => {    
+  const guardarProducto = async () => {
   // VALIDAR CAMPOS
   if (
     !formData.descripcion ||
@@ -216,8 +216,8 @@ const Productos = () => {
     return;
   }
   setProcesando(true);
-  // ⭐ SUBIR FOTO SI ES UN ARCHIVO
-  let fotoURL = formData.foto;
+  // ⭐ 1. SUBIR FOTO SI ES ARCHIVO
+  let fotoURL = formData.foto; // puede ser URL o File
   if (formData.foto instanceof File) {
     const fd = new FormData();
     fd.append("foto", formData.foto);
@@ -226,53 +226,69 @@ const Productos = () => {
       body: fd
     });
     const data = await resp.json();
-    fotoURL = data.url; // ⭐ URL pública
-  }
-  // ⭐ PREPARAR FORM DATA DEL PRODUCTO
-  const fdProducto = new FormData();
-  for (const key in formData) {
-    if (key === "foto") {
-      fdProducto.append("foto", fotoURL);
-    } else {
-      fdProducto.append(key, formData[key]);
+    if (!data.ok) {
+      alert("Error subiendo la imagen");
+      setProcesando(false);
+      return;
     }
+    fotoURL = data.url; // ⭐ URL pública devuelta por el backend
   }
-  // CREAR PRODUCTO
+  // ⭐ 2. PREPARAR FORM DATA DEL PRODUCTO (SIEMPRE JSON)
+  const payload = {
+    ...formData,
+    foto: fotoURL,   // aquí va la URL final
+    preview: undefined // limpiar preview
+  };
+  // ⭐ 3. CREAR PRODUCTO
   if (modo === "crear") {
     const respuesta = await fetch(`${API_URL}/api/productos`, {
       method: "POST",
-      body: fdProducto
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
     const data = await respuesta.json();
+    if (!data.ok) {
+      alert(data.error || "No se pudo guardar el producto");
+      setProcesando(false);
+      return;
+    }
     setFormData(prev => ({
       ...prev,
       codigo: data.producto.codigo
     }));
     await registrarAccion(`Registró el producto "${formData.descripcion}"`);
-  } else {
-    // EDITAR PRODUCTO
-    await fetch(`${API_URL}/api/productos/${productoEditando}`, {
+  }
+  // ⭐ 4. EDITAR PRODUCTO
+  else {
+    const respuesta = await fetch(`${API_URL}/api/productos/${productoEditando}`, {
       method: "PUT",
-      body: fdProducto
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
     });
+    const data = await respuesta.json();
+    if (!data.ok) {
+      alert(data.error || "No se pudo actualizar el producto");
+      setProcesando(false);
+      return;
+    }
     await registrarAccion(`Actualizó el producto "${formData.descripcion}"`);
   }
-  // RECARGAR LISTA
+  // ⭐ 5. RECARGAR LISTA
   if (categoriaSeleccionada) {
     cargarProductos(categoriaSeleccionada);
   } else {
     cargarProductos(formData.categoria);
   }
-  // LIMPIAR
+  // ⭐ 6. LIMPIAR FORMULARIO
   const cat = categoriaSeleccionada || formData.categoria;
   limpiarFormulario();
   setProcesando(false);
-
   setFormData(prev => ({
     ...prev,
     categoria: cat
   }));
 };
+
 
 
   // -------------------------
@@ -500,7 +516,7 @@ const Productos = () => {
           <div style={cajaImagen}>
             {formData.foto ? (
               <img
-                src={formData.foto}
+                src={formData.preview || formData.foto}
                 alt="foto"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
@@ -514,9 +530,16 @@ const Productos = () => {
           type="file"
           name="foto"
           accept="image/*"
-          onChange={(e) =>
-          setFormData({ ...formData, foto: e.target.files[0] })
+          onChange={(e) => {
+            const file = e.target.files[0];
+            if (file) {
+              setFormData({
+              ...formData,
+              foto: file,                     // archivo real
+              preview: URL.createObjectURL(file) // URL para mostrar
+            });          
           }
+          }}
         />
 
         <div style={{ display: "flex", justifyContent: "center",marginBottom: "10px" }}>
