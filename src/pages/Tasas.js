@@ -40,7 +40,7 @@ const Tasas = () => {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -53,7 +53,7 @@ const Tasas = () => {
   const botonGuardar = {
     width: "30%",
     padding: "6px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
