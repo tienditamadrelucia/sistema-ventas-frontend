@@ -314,7 +314,7 @@ const ObtenerMovimientos = async () => {
             backgroundColor: "white",
           }}
         >
-          <thead>
+          <thead style={{ backgroundColor: "#F9CEAE" }}>
             <tr>
               <th>Fecha</th>
               <th>Entrada</th>
