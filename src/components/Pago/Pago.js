@@ -124,6 +124,19 @@ const dataMoneda = {
     marginTop: "5px"
   };
 
+  const estiloBotonGuardar = {
+    width: "20%",
+    padding: "5px",
+    backgroundColor: "#84B09C",
+    color: "white",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    fontWeight: "800",
+    fontFamily: "Arial Black",
+    cursor: "pointer",
+    marginTop: "5px"
+  };
+
   const BANCOS = [
     "100% Activo",
     "Agrícola de Venezuela",
@@ -787,7 +800,7 @@ const facturaCancelada = modoCredito
 
             <button              
               style={{                
-              ...estiloBoton,
+              ...estiloBotonGuardar,
               opacity: facturaCancelada ? 1 : 0.4,
               cursor: facturaCancelada ? "pointer" : "not-allowed"
               }}
