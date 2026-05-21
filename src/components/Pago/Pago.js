@@ -388,7 +388,7 @@ const facturaCancelada = modoCredito
         }}>
           <div style={{
             flex: 1,
-            backgroundColor: "#CAD9FB",
+            backgroundColor: "#F9CEAE",
             padding: "10px",
             borderRadius: "8px",
             textAlign: "center",
@@ -409,7 +409,7 @@ const facturaCancelada = modoCredito
 
           <div style={{
             flex: 1,
-            backgroundColor: "#CAD9FB",
+            backgroundColor: "#F9CEAE",
             padding: "10px",
             borderRadius: "8px",
             textAlign: "center",
@@ -430,7 +430,7 @@ const facturaCancelada = modoCredito
 
           <div style={{
             flex: 1,
-            backgroundColor: "#CAD9FB",
+            backgroundColor: "#F9CEAE",
             padding: "10px",
             borderRadius: "8px",
             textAlign: "center",
