@@ -114,7 +114,7 @@ const dataMoneda = {
   const estiloBoton = {
     width: "20%",
     padding: "5px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -365,7 +365,7 @@ const facturaCancelada = modoCredito
         >
           <div
             style={{
-              fontSize: "10px",
+              fontSize: "12px",
               color: "#444",
               marginBottom: "10px",
               padding: "4px 8px",
@@ -388,7 +388,7 @@ const facturaCancelada = modoCredito
         }}>
           <div style={{
             flex: 1,
-            backgroundColor: "#6699ff",
+            backgroundColor: "#CAD9FB",
             padding: "10px",
             borderRadius: "8px",
             textAlign: "center",
@@ -409,7 +409,7 @@ const facturaCancelada = modoCredito
 
           <div style={{
             flex: 1,
-            backgroundColor: "#6699ff",
+            backgroundColor: "#CAD9FB",
             padding: "10px",
             borderRadius: "8px",
             textAlign: "center",
@@ -430,7 +430,7 @@ const facturaCancelada = modoCredito
 
           <div style={{
             flex: 1,
-            backgroundColor: "#6699ff",
+            backgroundColor: "#CAD9FB",
             padding: "10px",
             borderRadius: "8px",
             textAlign: "center",
@@ -467,11 +467,11 @@ const facturaCancelada = modoCredito
         <label>--Bs.</label>                
         <input type="number" step="1" value={pagoBsEfectivo}              
           onChange={(e) => setPagoBsEfectivo(e.target.value)}
-          style={{ width: "110px", padding: "8px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+          style={{ width: "110px", padding: "8px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
         />     
         <input type="number" step="0.1" value={pagoBsTransferencia}              
           onChange={(e) => setPagoBsTransferencia(e.target.value)}
-          style={{ width: "110px", padding: "8px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+          style={{ width: "110px", padding: "8px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
         />
         <input type="number" value={refBsTransferencia}              
           onChange={(e) => setRefBsTransferencia(e.target.value)}
@@ -493,11 +493,11 @@ const facturaCancelada = modoCredito
         </datalist>        
         <input type="number" step="0.1" value={pagoBsMovil}              
           onChange={(e) => setPagoBsMovil(e.target.value)}
-          style={{ width: "110px", padding: "8px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+          style={{ width: "110px", padding: "8px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
         />
         <input type="number" step="0.1" value={pagoBsPunto}              
           onChange={(e) => setPagoBsPunto(e.target.value)}
-          style={{ width: "110px", padding: "8px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+          style={{ width: "110px", padding: "8px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
         />        
       </div>    
         
@@ -505,11 +505,11 @@ const facturaCancelada = modoCredito
         <label>USD</label>
         <input type="number" step="1" value={pagoUsdEfectivo}              
           onChange={(e) => setPagoUsdEfectivo(e.target.value)}
-          style={{ width: "110px", padding: "8px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+          style={{ width: "110px", padding: "8px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
         />
         <input type="number" step="0.1" value={pagoUsdZelle}              
           onChange={(e) => setPagoUsdZelle(e.target.value)}
-          style={{ width: "110px", padding: "8px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+          style={{ width: "110px", padding: "8px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
         />
         <input type="number" value={refUsdZelle}              
           onChange={(e) => setRefUsdZelle(e.target.value)}
@@ -540,11 +540,11 @@ const facturaCancelada = modoCredito
         <label>COP</label>
           <input type="number" step="1" value={pagoCopEfectivo}              
             onChange={(e) => setPagoCopEfectivo(e.target.value)}
-            style={{ width: "110px", padding: "8px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+            style={{ width: "110px", padding: "8px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
           />
           <input type="number" step="1" value={pagoCopTransferencia}              
             onChange={(e) => setPagoCopTransferencia(e.target.value)}
-            style={{ width: "110px", padding: "8px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+            style={{ width: "110px", padding: "8px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
           />
           <input type="number" value={refCopTransferencia}              
             onChange={(e) => setRefCopTransferencia(e.target.value)}
@@ -580,7 +580,7 @@ const facturaCancelada = modoCredito
         }}>
         <div style={{
             flex: 1,
-            backgroundColor: "#6699ff",
+            backgroundColor: "#CAD9FB",
             padding: "5px",
             borderRadius: "8px",
             textAlign: "center",            
@@ -600,7 +600,7 @@ const facturaCancelada = modoCredito
         </div>
         <div style={{
             flex: 1,
-            backgroundColor: "#6699ff",
+            backgroundColor: "#CAD9FB",
             padding: "5px",
             borderRadius: "8px",
             fontWeight: "bold",
@@ -620,7 +620,7 @@ const facturaCancelada = modoCredito
         </div>
         <div style={{
             flex: 1,
-            backgroundColor: "#6699ff",
+            backgroundColor: "#CAD9FB",
             padding: "5px",
             borderRadius: "8px",            
             fontWeight: "bold",
@@ -667,7 +667,7 @@ const facturaCancelada = modoCredito
             {/* USD */}
             <div style={{
               flex: 1,
-              backgroundColor: "#C27D8B",
+              backgroundColor: "#FC9E9B",
               padding: "1px",
               borderRadius: "8px",
               textAlign: "center",
@@ -686,7 +686,7 @@ const facturaCancelada = modoCredito
             {/* COP */}
             <div style={{
               flex: 1,
-              backgroundColor: "#C27D8B",
+              backgroundColor: "#FC9E9B",
               padding: "1px",
               borderRadius: "8px",
               textAlign: "center",
@@ -705,7 +705,7 @@ const facturaCancelada = modoCredito
             {/* BS */}
             <div style={{
               flex: 1,
-              backgroundColor: "#C27D8B",
+              backgroundColor: "#FC9E9B",
               padding: "1px",
               borderRadius: "8px",
               textAlign: "center",
@@ -739,21 +739,21 @@ const facturaCancelada = modoCredito
                 value={vueltoUsdUsuario}
                 disabled={modoCredito}
                 onChange={(e) => setVueltoUsdUsuario(e.target.value)}
-                style={{ width: "110px", padding: "5px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+                style={{ width: "110px", padding: "5px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
               />                      
               <label>COP--</label>
               <input type="number"
                 value={vueltoCopUsuario}
                 disabled={modoCredito}
                 onChange={(e) => setVueltoCopUsuario(e.target.value)}
-                style={{ width: "110px", padding: "5px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+                style={{ width: "110px", padding: "5px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
               />          
               <label>Bs--</label>
               <input type="number"
                 value={vueltoBsUsuario}
                 disabled={modoCredito}
                 onChange={(e) => setVueltoBsUsuario(e.target.value)}
-                style={{ width: "110px", padding: "5px", backgroundColor:"#EDC5CD", borderRadius: "6px", border: "1px solid #bbb" }}
+                style={{ width: "110px", padding: "5px", backgroundColor:"#84868a", borderRadius: "6px", border: "1px solid #bbb" }}
               />  
             </div>        
             {/* RESTANTE DEL VUELTO */}
