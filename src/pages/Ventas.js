@@ -93,7 +93,7 @@ const Ventas = () => {
   const estiloBoton = {
     width: "20%",
     padding: "5px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -105,7 +105,7 @@ const Ventas = () => {
   const estiloBotonVerde = {
     width: "20%",
     padding: "5px",
-    backgroundColor: "#74c769",
+    backgroundColor: "#84B09C",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -118,9 +118,9 @@ const Ventas = () => {
   width: "15%",
   padding: "6px",
   backgroundColor:
-    estado === "hover" ? "#c97a87" :
-    estado === "active" ? "#b86c78" :
-    "#D98897",
+    estado === "hover" ? "#84868a" :
+    estado === "active" ? "#84B09C" :
+    "#628173",
   color: "white",
   border: "none",
   borderRadius: "6px",
@@ -979,12 +979,12 @@ const cargarFacturaParaPago = async (dataVenta) => {
               {/* FACTURA */}
               <div style={{ display:"flex", flexDirection:"column", width:"100px" }}>
                 <label>N° Factura</label>
-                <input type="text" value={numeroFactura || ""} readOnly style={{ background:"#EDC5CD" }} />
+                <input type="text" value={numeroFactura || ""} readOnly style={{ background:"#84868a" }} />
               </div>
               {/* HORA */}
               <div style={{ display:"flex", flexDirection:"column", width:"100px" }}>
                 <label>Hora</label>
-                <input type="text" value={hora} readOnly style={{ background:"#EDC5CD" }} />
+                <input type="text" value={hora} readOnly style={{ background:"#84868a" }} />
               </div>
               {/* BOTÓN */}
               <button onClick={pagarFactura} style={estiloBotonVerde }>Buscar</button>
@@ -1047,11 +1047,11 @@ const cargarFacturaParaPago = async (dataVenta) => {
               </div>
               <button
                 onClick={() => setMostrarModalCliente(true)}
-                style={{ height: "38px", width: "70px" }}
+                style={{ height: "38px", width: "70px", background:"#F9CEAE" }}
               >
                 Agregar Cliente
               </button>
-              <button onClick={limpiarCliente} style={{ height: "38px" }}>
+              <button onClick={limpiarCliente} style={{ height: "38px", background:"#F9CEAE" }}>
                 Limpiar
               </button>
             </div>
@@ -1202,7 +1202,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                 readOnly
                 style={{
                   backgroundColor:
-                    stockActual <= 0 ? "#ffb3b3" : "#EDC5CD",
+                    stockActual <= 0 ? "#84868a" : "#EDC5CD",
                   height: "16px"
                 }}
               />
@@ -1305,7 +1305,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                 type="text"
                 value={formatoVE(totalProducto.toFixed(2))}
                 readOnly
-                style={{ backgroundColor: "#EDC5CD" }}
+                style={{ backgroundColor: "#84868a" }}
               />
             </div>
 
@@ -1388,8 +1388,8 @@ const cargarFacturaParaPago = async (dataVenta) => {
             <thead>
               <tr
                 style={{
-                  backgroundColor: "#6699FF",
-                  color: "#FFFFFF"
+                  backgroundColor: "#F9CEAE",
+                  color: "black"
                 }}
               >
                 <th
@@ -1591,7 +1591,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
               border: "1px solid #8AB6D6",
               borderRadius: "8px",
               padding: "10px",
-              backgroundColor: "#EDC5CD"
+              backgroundColor: "#84868a"
             }}
           >
             <div
@@ -1682,7 +1682,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
             }}
             style={{
               ...estiloBoton,
-              backgroundColor: "#6699FF"
+              backgroundColor: "#CAD9FB"
             }}
           >
             Crédito
