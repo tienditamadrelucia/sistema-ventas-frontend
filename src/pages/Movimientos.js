@@ -15,7 +15,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 const estiloBotonVolver = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
