@@ -106,7 +106,7 @@ const Caja = () => {
     borderRadius: "6px",
     fontFamily: "Arial Black",
     cursor: "pointer",
-    marginTop: "8px",
+    marginTop: "0px",
     justifyContent:"center",
     alignItems:"center",
     opacity:procesando ? 0.6 :1,
