@@ -261,10 +261,12 @@ const ReporteVentas = () => {
           </tr>
         </thead>
         <tbody>
-  {reporte.map((item) => (
-    <React.Fragment key={item.venta.factura}>
+  {reporte
+    .filter(item => item && item.venta && item)
+    .map((item) => (
+    <React.Fragment key={item.venta.factura || `fact-${idx}`}>
       {item.productos.map((p, i) => (
-        <tr key={p._id || `${item.venta.factura}-${i}`}>
+        <tr key={p._id || `${item.venta.factura || `fact-${idx}`}-${i}`}>
           {i === 0 ? (
             <>
               <td>{item.venta.fecha.slice(0, 10).split("-").reverse().join("/")}</td>
@@ -301,6 +303,8 @@ const ReporteVentas = () => {
           )}
 
         </tr>
+      ))}
+      </React.Fragment>
       ))}
 
       {/* FILA DE PAGO */}
@@ -375,9 +379,7 @@ const ReporteVentas = () => {
 
         </td>
       </tr>
-
-    </React.Fragment>
-    ))}
+   
     </tbody>
 
       </table>
