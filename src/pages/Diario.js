@@ -302,9 +302,7 @@ const ReporteVentas = () => {
               </td>
             )}
           </tr>
-        ))}
-        </React.Fragment>
-      ))}
+        ))}        
 
       {/* FILA DE PAGO */}
       <tr key={`pago-${item.venta.factura}`}>
@@ -378,7 +376,8 @@ const ReporteVentas = () => {
 
         </td>
       </tr>
-   
+      </React.Fragment>
+    ))}
     </tbody>
 
       </table>
