@@ -262,49 +262,48 @@ const ReporteVentas = () => {
         </thead>
         <tbody>
   {reporte
-    .filter(item => item && item.venta && item)
-    .map((item) => (
-    <React.Fragment key={item.venta.factura || `fact-${idx}`}>
-      {item.productos.map((p, i) => (
-        <tr key={p._id || `${item.venta.factura || `fact-${idx}`}-${i}`}>
-          {i === 0 ? (
-            <>
-              <td>{item.venta.fecha.slice(0, 10).split("-").reverse().join("/")}</td>
-              <td>{item.venta.factura}</td>
-              <td>{item.clienteNombre}</td>
-            </>
-          ) : (
-            <>
-              <td></td>
-              <td></td>
-              <td></td>
-            </>
-          )}
-          <td>{p.codigo}</td>
-          <td>{p.descripcion}</td>
-          <td>{item.venta.estado}</td>
-          <td>{p.cantidad}</td>
-          <td>{formatoVE(p.precioSistema)}</td>
-          <td>{formatoVE(p.precioVenta)}</td>
-          <td>{formatoVE(p.dscto)}</td>
-          <td>{formatoVE(p.total)}</td>
-          {i === 0 && (
-          <td
-            rowSpan={item.productos.length}
-            style={{ textAlign: "center", verticalAlign: "middle" }}
-          >
-            <button
-              className="btn-eliminar"
-              onClick={() => eliminarFacturaDesdeDiario(item.venta.factura)}
-            >
-              🗑️
-            </button>
-          </td>
-          )}
-
-        </tr>
-      ))}
-      </React.Fragment>
+    .filter(item => item && item.venta && item.productos && item.productos.length > 0)
+    .map((item, idx) => (
+      <React.Fragment key={item.venta.factura || `fact-${idx}`}>
+        {item.productos.map((p, i) => (
+          <tr key={p._id || `${item.venta.factura || `fact-${idx}`}-${i}`}>
+            {i === 0 ? (
+              <>
+                <td>{item.venta.fecha?.slice(0, 10).split("-").reverse().join("/")}</td>
+                <td>{item.venta.factura}</td>
+                <td>{item.clienteNombre}</td>
+              </>
+            ) : (
+              <>
+                <td></td>
+                <td></td>
+                <td></td>
+              </>
+            )}
+            <td>{p.codigo}</td>
+            <td>{p.descripcion}</td>
+            <td>{item.venta.estado}</td>
+            <td>{p.cantidad}</td>
+            <td>{formatoVE(p.precioSistema)}</td>
+            <td>{formatoVE(p.precioVenta)}</td>
+            <td>{formatoVE(p.dscto)}</td>
+            <td>{formatoVE(p.total)}</td>
+            {i === 0 && (
+              <td
+                rowSpan={item.productos.length}
+                style={{ textAlign: "center", verticalAlign: "middle" }}
+              >
+                <button
+                  className="btn-eliminar"
+                  onClick={() => eliminarFacturaDesdeDiario(item.venta.factura)}
+                >
+                  🗑️
+                </button>
+              </td>
+            )}
+          </tr>
+        ))}
+        </React.Fragment>
       ))}
 
       {/* FILA DE PAGO */}
