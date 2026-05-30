@@ -249,6 +249,17 @@ const Ventas = () => {
     setTotalBs(total * tasaDolar || 0);
   }, [listaFactura, iva, tasaPeso, tasaDolar]);
 
+  useEffect(() => {
+  const handler = (e) => {
+    e.preventDefault();
+    e.returnValue = "";
+  };
+  window.addEventListener("beforeunload", handler);
+  return () => {
+    window.removeEventListener("beforeunload", handler);
+  };
+  }, []);
+
   // -----------------------------
   // HORA
   // -----------------------------
