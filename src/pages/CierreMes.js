@@ -7,7 +7,7 @@ export default function CierreMes() {
 
   // === ESTILOS QUE USTED ME ENVIÓ ===
   const estiloBotonVolver = {
-    width: "15%",
+    width: "40%",
     padding: "10px",
     backgroundColor: "#FC9E9B",
     color: "white",
