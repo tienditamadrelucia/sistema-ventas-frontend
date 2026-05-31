@@ -122,11 +122,9 @@ export default function CierreMes() {
       </button>
 
       {/* BOTÓN VOLVER */}
-      <div style={{ marginTop: "20px" }}>
         <button style={estiloBotonVolver} onClick={() => window.history.back()}>
-          Volver
+          Volver al MENÚ
         </button>
       </div>
-    </div>
   );
 }
