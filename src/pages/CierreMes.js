@@ -8,7 +8,7 @@ export default function CierreMes() {
   // === ESTILOS QUE USTED ME ENVIÓ ===
   const estiloBotonVolver = {
     width: "40%",
-    padding: "10px",
+    padding: "6px",
     backgroundColor: "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
@@ -24,8 +24,8 @@ export default function CierreMes() {
     padding: "6px",
     backgroundColor: "#84B09C",
     color: "white",
-    border: "none",
-    borderRadius: "6px",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
     fontFamily: "Arial Black",
     marginTop: "8px",
     opacity: procesando ? 0.6 : 1,
