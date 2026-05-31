@@ -30,6 +30,7 @@ import ReporteGastos from "./pages/RepGastos";
 import ReporteInventario from "./pages/ReporInventa.js";
 import ResumenVentas from "./pages/ResumenVentas.js";
 import Utilidad from "./pages/Utilidad.js";
+import CierreMes from "./pages/CierreMes.js"
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -91,6 +92,7 @@ function App() {
         <Route path="/repinventa" element={<ProtectedRoute><ReporteInventario /></ProtectedRoute>} />
         <Route path="/resumenventas" element={<ProtectedRoute><ResumenVentas /></ProtectedRoute>} />
         <Route path="/utilidad" element={<ProtectedRoute><Utilidad /></ProtectedRoute>} />
+        <Route path="/cierre" element={<ProtectedRoute><CierreMes /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );
