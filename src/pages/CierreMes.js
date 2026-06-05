@@ -61,9 +61,9 @@ export default function CierreMes() {
     if (!confirmar) return;
 
     setProcesando(true);
-
+ 
     try {
-      const res = await fetch("/api/cierre-mes", {
+      const res = await fetch("https://sistema-ventas-backend-qxbi.onrender.com/api/cierre-mes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mes, año })
