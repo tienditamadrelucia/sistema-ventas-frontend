@@ -497,7 +497,7 @@ const Productos = () => {
             value={formData.stock}
             onChange={handleChange}
             style={input25}            
-            disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
+            disabled={localStorage.getItem("rolUsuario") === "USUARIO"}
           />
 
 
