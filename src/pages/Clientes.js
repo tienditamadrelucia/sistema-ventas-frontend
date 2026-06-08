@@ -208,8 +208,8 @@ const Clientes = () => {
     // 🔁 Recargar lista desde el backend
     const resp = await fetch(`${API_URL}/api/clientes`);
     const data = await resp.json();
-    setClientes(data.lista);
-
+    setClientes(data);
+    
     await registrarAccion(`Eliminó un cliente`);
   }
 };
