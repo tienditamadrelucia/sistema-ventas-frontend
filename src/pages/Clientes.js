@@ -200,7 +200,7 @@ const Clientes = () => {
   if (window.confirm("¿Eliminar este cliente?")) {
     const res = await eliminarCliente(id, usuarioActual);
     
-    if (!res.ok) {
+    if (res.ok !== true) {
       alert(res.error || "No se pudo eliminar el cliente");
       return;
     }
@@ -208,7 +208,7 @@ const Clientes = () => {
     // 🔁 Recargar lista desde el backend
     const resp = await fetch(`${API_URL}/api/clientes`);
     const data = await resp.json();
-    setClientes(data);
+    setClientes(data.lista);
 
     await registrarAccion(`Eliminó un cliente`);
   }
