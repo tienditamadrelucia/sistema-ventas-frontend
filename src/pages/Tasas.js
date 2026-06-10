@@ -141,7 +141,7 @@ const Tasas = () => {
     if (!existeHoy) {
       res = await guardarTasas({
         ...form,
-        fecha: fechaUTC   // ⭐ SIEMPRE UTC
+        fecha: hoy   // ⭐ SIEMPRE UTC
       });
 
       if (res.ok) {
