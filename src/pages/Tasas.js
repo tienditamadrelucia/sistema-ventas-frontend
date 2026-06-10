@@ -10,15 +10,10 @@ const Tasas = () => {
 
   // ⭐ Fecha de hoy en UTC (00:00:00)
   const hoy = new Date();
-  const fechaUTC = new Date(Date.UTC(
-    hoy.getFullYear(),
-    hoy.getMonth(),
-    hoy.getDate(),
-    0, 0, 0
-  ));
+  const fecha = hoy.toISOString().slice(0, 10);  // "YYYY-MM-DD"
 
   const [form, setForm] = useState({
-    fecha: fechaUTC,
+    fecha: fecha,
     cajachicaP: "",
     cajachicaD: "",
     tasaP: "",
@@ -104,7 +99,7 @@ const Tasas = () => {
 
         setForm({
           _id: res.tasa._id,
-          fecha: fechaUTC,
+          fecha: fecha,
           cajachicaP: res.tasa.cajachicaP,
           cajachicaD: res.tasa.cajachicaD,
           tasaP: res.tasa.tasaP,
@@ -141,7 +136,7 @@ const Tasas = () => {
     if (!existeHoy) {
       res = await guardarTasas({
         ...form,
-        fecha: hoy   // ⭐ SIEMPRE UTC
+        fecha: fecha   // ⭐ SIEMPRE UTC
       });
 
       if (res.ok) {
@@ -161,7 +156,7 @@ const Tasas = () => {
 
     // ⭐ MODIFICAR TASA EXISTENTE
     else {
-      const ventas = await buscarVentasDelDia(fechaUTC);
+      const ventas = await buscarVentasDelDia(fecha);
 
       if ((ventas.VentasP + ventas.VentasD + ventas.VentasBs) > 0) {
         alert("No se pueden modificar las tasas porque ya existen ventas registradas hoy.");
@@ -170,7 +165,7 @@ const Tasas = () => {
 
       res = await modificarTasas({
         ...form,
-        fecha: fechaUTC
+        fecha: fecha
       });
 
       if (res.ok) {
@@ -197,7 +192,7 @@ const Tasas = () => {
   const handleBorrar = () => {
     registrarAccion("Limpió formulario de tasas");
     setForm({
-      fecha: fechaUTC,
+      fecha: fecha,
       cajachicaP: "",
       cajachicaD: "",
       tasaP: "",
