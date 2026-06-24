@@ -179,7 +179,7 @@ const Entradas = () => {
   }
 
   // ⭐ Otros motivos → no se usan precios
-  if (value !== "COMPRAS" && value !== "PRODUCCIÓN DEL MONASTERIO")) {
+  if (value !== "COMPRAS" && value !== "PRODUCCIÓN DEL MONASTERIO") {
     nuevoPrecioCompra = 0;
   }
 
