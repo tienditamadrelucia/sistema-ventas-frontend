@@ -87,6 +87,8 @@ const Entradas = () => {
     productoId: "",
     codigo: 0,
     cantidad: 0,
+    pcompra: 0,
+    pventa: 0,
     observacion: ""
   });
   
@@ -163,80 +165,143 @@ const Entradas = () => {
   // 3. PRODUCTO (Mongo _id)
   // -----------------------------
   if (name === "productoId") {
-    const prod = productos.find((p) => p._id === value);
-    setFormData({
-      ...formData,
-      productoId: value,
-      codigo: prod ? prod.codigo : ""
-    });
+  const prod = productos.find((p) => p._id === value);
+    
+  // -----------------------------
+  // 4. OBSERVACIÓN 
+  // -----------------------------
+  if (name === "observacion") {
+  let nuevoPrecioCompra = formData.precioCompra;
 
-    return;
+  // ⭐ PRODUCCIÓN DEL MONASTERIO → precioCompra = 50% del precioVenta
+  if (value === "PRODUCCIÓN DEL MONASTERIO") {
+    nuevoPrecioCompra = formData.precioVenta * 0.50;
   }
 
-  // -----------------------------
-  // 4. CUALQUIER OTRO CAMPO
-  // -----------------------------
+  // ⭐ Otros motivos → no se usan precios
+  if (value !== "COMPRAS" && value !== "PRODUCCIÓN DEL MONASTERIO")) {
+    nuevoPrecioCompra = 0;
+  }
+
   setFormData({
     ...formData,
-    [name]: typeof value === "string" ? value.toUpperCase() : value
+    observacion: value,
+    precioCompra: nuevoPrecioCompra
   });
-};
+
+  return;
+}
 
   // -------------------------
   // GUARDAR / ACTUALIZAR ENTRADA
   // -------------------------
-
   const guardarEntrada = async () => {
-    if (procesando) return; //evita doble clic
-    setProcesando(true);
-  
-    try {
-  if (
-    !formData.fecha ||
-    !formData.categoria ||
-    !formData.productoId ||
-    !formData.codigo ||
-    !formData.cantidad ||
-    !formData.observacion
-  ) {
-    alert("Complete todos los campos");
-    return;
-  }
+  if (procesando) return; 
+  setProcesando(true);
 
-  // ⭐ VALIDACIÓN ESPECIAL PARA EDITAR
-  if (modo === "editar") {
-    if (!formData.cantidad || formData.cantidad <= 0) {
-      alert("Debe ingresar una cantidad válida.");
+  try {
+    if (
+      !formData.fecha ||
+      !formData.categoria ||
+      !formData.productoId ||
+      !formData.codigo ||
+      !formData.cantidad ||      
+      !formData.observacion
+    ) {
+      alert("Complete todos los campos");
       return;
     }
-  }
 
-  if (modo === "crear") {
-    const res = await crearEntrada(formData);
-    if (!res.ok) {
-      alert(res.error || "Error creando entrada en pages");
-      return;
-    }
-    await registrarAccion(`Registró entrada de ${formData.cantidad} del producto ${formData.codigo}`);
-  } else {
-    const res = await actualizarEntrada(entradaEditando, formData);
-    if (!res.ok) {
-      alert(res.error || "Error actualizando entrada");
-      return;
-    }
-    await registrarAccion(`Actualizó entrada del producto ${formData.codigo}`);
-  }
-
-  const recarga = await cargarEntradas(paginaActual, formData.fecha || "");
-  setEntradas(recarga.entradas);
-  setPaginaActual(recarga.paginaActual);
-  setTotalPaginas(recarga.totalPaginas);
-
-  limpiarFormulario();
-  } finally {
-        // ⭐ SIEMPRE se ejecuta, incluso si hubo return arriba
-        setProcesando(false);
+    // ⭐ VALIDACIÓN ESPECIAL PARA EDITAR
+    if (modo === "editar") {
+      if (!formData.cantidad || formData.cantidad <= 0) {
+        alert("Debe ingresar una cantidad válida.");
+        return;
       }
+    }
+
+    // ⭐ VALIDACIONES DE PRECIOS SEGÚN MOTIVO
+    if (formData.observacion === "COMPRAS") {
+      // precioCompra obligatorio
+      if (!formData.precioCompra || formData.precioCompra <= 0) {
+        alert("Debe ingresar el precio de compra.");
+        return;
+      }
+
+      // precioVenta obligatorio
+      if (!formData.precioVenta || formData.precioVenta <= 0) {
+        alert("Debe ingresar el precio de venta.");
+        return;
+      }
+
+      // Validación del 30%
+      if (Number(formData.precioVenta) < Number(formData.precioCompra) * 1.30) {
+        alert("El precio de venta debe ser al menos 30% mayor que el precio de compra.");
+        return;
+      }
+    }
+
+    if (formData.observacion === "PRODUCCIÓN DEL MONASTERIO") {
+      // precioVenta obligatorio
+      if (!formData.precioVenta || formData.precioVenta <= 0) {
+        alert("Debe ingresar el precio de venta.");
+        return;
+      }
+
+      // precioCompra = 50% del precioVenta
+      const precioCompraCalc = Number(formData.precioVenta) * 0.50;
+      formData.precioCompra = precioCompraCalc;
+
+      // Validación del 30%
+      if (Number(formData.precioVenta) < precioCompraCalc * 1.30) {
+        alert("El precio de venta no cumple el margen mínimo del 30%.");
+        return;
+      }
+    }
+
+    // ⭐ Otros motivos → no se usan precios
+    if (
+      formData.observacion !== "COMPRAS" &&
+      formData.observacion !== "PRODUCCIÓN DEL MONASTERIO"
+    ) {
+      formData.precioCompra = 0;
+      formData.precioVenta = 0;
+    }
+
+    // ⭐ CREAR O EDITAR
+    let res;
+
+    if (modo === "crear") {
+      res = await crearEntrada(formData);
+      if (!res.ok) {
+        alert(res.error || "Error creando entrada en pages");
+        return;
+      }
+      await registrarAccion(
+        `Registró entrada de ${formData.cantidad} del producto ${formData.codigo}`
+      );
+    } else {
+      res = await actualizarEntrada(entradaEditando, formData);
+      if (!res.ok) {
+        alert(res.error || "Error actualizando entrada");
+        return;
+      }
+      await registrarAccion(
+        `Actualizó entrada del producto ${formData.codigo}`
+      );
+    }
+
+    // ⭐ RECARGAR LISTA
+    const recarga = await cargarEntradas(paginaActual, formData.fecha || "");
+    setEntradas(recarga.entradas);
+    setPaginaActual(recarga.paginaActual);
+    setTotalPaginas(recarga.totalPaginas);
+
+    limpiarFormulario();
+
+  } finally {
+    setProcesando(false);
+  }
 };
 
   // -------------------------
@@ -256,6 +321,8 @@ const Entradas = () => {
       codigo: entrada.productoId?.codigo || "",
       descripcion: entrada.productoId?.descripcion || "",
       cantidad: entrada.cantidad,
+      cantidad: entrada.precioCompra,
+      cantidad: entrada.precioVenta,
       observacion: entrada.observacion || ""   
     });
     
@@ -276,6 +343,8 @@ const Entradas = () => {
       productoId: "",
       codigo: 0,
       cantidad: 0,
+      precioCompra: 0,
+      precioVenta: 0,
       observacion: ""
     });
   };
@@ -406,6 +475,33 @@ const Entradas = () => {
                 style={{ width: "40%" }}
             />
         </div>
+        {(formData.observacion === "COMPRAS" || formData.observacion === "PRODUCCIÓN DEL MONASTERIO") && (
+        <div style={{ display: "flex", gap: "40px", marginBottom: "10px" }}>
+    
+          {/* PRECIO COMPRA */}
+          <input
+            name="precioCompra"
+            placeholder="Precio compra"
+            type="number"
+            step="0.01"
+            value={formData.precioCompra}
+            onChange={handleChange}
+            disabled={formData.observacion === "PRODUCCIÓN DEL MONASTERIO"} 
+            style={{ width: "40%" }}
+          />
+
+          {/* PRECIO VENTA */}
+          <input
+            name="precioVenta"
+            placeholder="Precio venta"
+            type="number"
+            step="0.01"
+            value={formData.precioVenta}
+            onChange={handleChange}
+            style={{ width: "40%" }}
+          />
+        </div>
+        )}
 
         <select
           name="observacion"
