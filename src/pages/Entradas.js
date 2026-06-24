@@ -138,59 +138,70 @@ const Entradas = () => {
   const { name, value } = e.target;
 
   // -----------------------------
-  // 1. CANTIDAD (decimales libres)
+  // 1. CANTIDAD
   // -----------------------------
   if (name === "cantidad") {
-    // permitir escribir vacío, punto, coma, etc.
     let numero = value.replace(",", ".");
-
-    // guardar tal cual lo escribe el usuario
     setFormData({ ...formData, cantidad: numero });
     return;
   }
 
   // -----------------------------
-  // 2. CATEGORÍA (descripción → código)
+  // 2. CATEGORÍA
   // -----------------------------
   if (name === "categoria") {
-    const categoriaObj = categorias.find((c) => c.descripcion === value);
     setFormData({
       ...formData,
-      categoria: value      
+      categoria: value
     });
     return;
   }
 
   // -----------------------------
-  // 3. PRODUCTO (Mongo _id)
+  // 3. PRODUCTO
   // -----------------------------
   if (name === "productoId") {
-  const prod = productos.find((p) => p._id === value);
-    
+    const prod = productos.find((p) => p._id === value);
+
+    setFormData({
+      ...formData,
+      productoId: value,
+      codigo: prod?.codigo || "",
+      precioCompra: prod?.costo || 0,
+      precioVenta: prod?.venta || 0
+    });
+
+    return;   // ⭐ IMPORTANTE
+  }
+
   // -----------------------------
-  // 4. OBSERVACIÓN 
+  // 4. OBSERVACIÓN
   // -----------------------------
   if (name === "observacion") {
-  let nuevoPrecioCompra = formData.precioCompra;
+    let nuevoPrecioCompra = formData.precioCompra;
 
-  // ⭐ PRODUCCIÓN DEL MONASTERIO → precioCompra = 50% del precioVenta
-  if (value === "PRODUCCIÓN DEL MONASTERIO") {
-    nuevoPrecioCompra = formData.precioVenta * 0.50;
+    if (value === "PRODUCCIÓN DEL MONASTERIO") {
+      nuevoPrecioCompra = formData.precioVenta * 0.50;
+    }
+
+    if (value !== "COMPRAS" && value !== "PRODUCCIÓN DEL MONASTERIO") {
+      nuevoPrecioCompra = 0;
+    }
+
+    setFormData({
+      ...formData,
+      observacion: value,
+      precioCompra: nuevoPrecioCompra
+    });
+
+    return;
   }
 
-  // ⭐ Otros motivos → no se usan precios
-  if (value !== "COMPRAS" && value !== "PRODUCCIÓN DEL MONASTERIO") {
-    nuevoPrecioCompra = 0;
-  }
-
-  setFormData({
-    ...formData,
-    observacion: value,
-    precioCompra: nuevoPrecioCompra
-  });
-
-  return;
-}
+  // -----------------------------
+  // 5. CUALQUIER OTRO CAMPO
+  // -----------------------------
+  setFormData({ ...formData, [name]: value });
+};
 
   // -------------------------
   // GUARDAR / ACTUALIZAR ENTRADA
