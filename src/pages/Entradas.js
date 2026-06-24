@@ -539,7 +539,7 @@ const Entradas = () => {
         Listado de Entradas por fecha
       </h3>
 
-      <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
+      <table border="1" cellPadding="10" style={{ width: "100%", textAlign: "center" }}>
         <thead>
           <tr>
             <th>Fecha</th>
@@ -547,6 +547,8 @@ const Entradas = () => {
             <th>Código</th>
             <th>Producto</th>
             <th>Cantidad</th>
+            <th>P-Compra</th>
+            <th>P-Venta</th>
             <th>Observación</th>
             <th>Acciones</th>
           </tr>
@@ -560,6 +562,14 @@ const Entradas = () => {
               <td>{e.productoId?.codigo}</td>
               <td>{e.productoId?.descripcion}</td>
               <td>{Number(e.cantidad).toFixed(3)}</td>
+              {/* ⭐ Mostrar precioCompra si existe */}
+              <td>
+                {e.precioCompra != null ? Number(e.precioCompra).toFixed(2) : "-"}
+              </td>
+              {/* ⭐ Mostrar precioVenta si existe */}
+              <td>
+                {e.precioVenta != null ? Number(e.precioVenta).toFixed(2) : "-"}
+              </td>
               <td>{e.observacion}</td>
               <td>
                 <span onClick={() => editarEntrada(e)} style={iconoEditar}>✏️</span>
