@@ -474,8 +474,7 @@ const Entradas = () => {
                     padding: "5px",
                     backgroundColor: "#eee"
                 }}
-            />
-          <label>Stock-Inicial: </label>
+            />          
           <input          
                 name="cantidad"
                 placeholder="Cantidad"
@@ -483,7 +482,7 @@ const Entradas = () => {
                 step="0.1"
                 value={formData.cantidad}
                 onChange={handleChange}
-                style={{ width: "30%" }}
+                style={{ width: "40%" }}
             />
         </div>
         {(formData.observacion === "COMPRAS" || formData.observacion === "PRODUCCIÓN DEL MONASTERIO") && (
@@ -498,7 +497,7 @@ const Entradas = () => {
             value={formData.precioCompra}
             onChange={handleChange}
             disabled={formData.observacion === "PRODUCCIÓN DEL MONASTERIO"} 
-            style={{ width: "20%" }}
+            style={{ width: "40%" }}
           />
 
           {/* PRECIO VENTA */}          
