@@ -475,7 +475,7 @@ const Entradas = () => {
                     backgroundColor: "#eee"
                 }}
             />
-          <label>Stock Inicial: </label>
+          <label>Stock-Inicial: </label>
           <input          
                 name="cantidad"
                 placeholder="Cantidad"
@@ -489,8 +489,7 @@ const Entradas = () => {
         {(formData.observacion === "COMPRAS" || formData.observacion === "PRODUCCIÓN DEL MONASTERIO") && (
         <div style={{ display: "flex", gap: "40px", marginBottom: "10px" }}>
     
-          {/* PRECIO COMPRA */}
-          <label>Precio de Compra: </label>
+          {/* PRECIO COMPRA */}          
           <input
             name="precioCompra"
             placeholder="Precio compra"
@@ -502,8 +501,7 @@ const Entradas = () => {
             style={{ width: "20%" }}
           />
 
-          {/* PRECIO VENTA */}
-          <label>Precio de Venta: </label>
+          {/* PRECIO VENTA */}          
           <input
             name="precioVenta"
             placeholder="Precio venta"
