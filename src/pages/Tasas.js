@@ -145,8 +145,7 @@ const Tasas = () => {
       }
     }
     // ⭐ MODIFICAR TASA EXISTENTE
-    else {
-      alert("grabar modificaciones");
+    else {      
       const ventas = await buscarVentasDelDia(fecha);
       if ((ventas.VentasP + ventas.VentasD + ventas.VentasBs) > 0) {
         alert("No se pueden modificar las tasas porque ya existen ventas registradas hoy.");
@@ -156,6 +155,7 @@ const Tasas = () => {
         ...form,
         fecha: fecha
       });
+      alert("grabar modificaciones");
       if (res.ok) {
         registrarAccion("Modificó tasas del día");
         alert(res.mensaje);
