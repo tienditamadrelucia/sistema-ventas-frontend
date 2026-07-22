@@ -88,15 +88,12 @@ const Tasas = () => {
   // CARGAR TASA DEL DÍA
   // ============================
   useEffect(() => {
-    registrarAccion("Ingreso al módulo Tasas de Cambio");
-
+    registrarAccion("Ingresó al módulo Tasas de Cambio");
     const cargar = async () => {
       const res = await obtenerTasaHoy();
-
-      if (res.ok && res.tasa) {
+      if (res.tasa) {
         setExisteHoy(true);
         setModoModificar(false);
-
         setForm({
           _id: res.tasa._id,
           fecha: fecha,
@@ -110,7 +107,6 @@ const Tasas = () => {
         setModoModificar(true);
       }
     };
-
     cargar();
   }, []);
 
@@ -129,54 +125,43 @@ const Tasas = () => {
       alert("Debe completar todos los campos");
       return;
     }
-
     let res;
-
     // ⭐ GUARDAR NUEVA TASA
     if (!existeHoy) {
       res = await guardarTasas({
         ...form,
         fecha: fecha   // ⭐ SIEMPRE UTC
       });
-
       if (res.ok) {
         registrarAccion("Registró tasas del día");
         alert(res.mensaje);
-
         localStorage.setItem("tasaDolar", form.tasaD);
         localStorage.setItem("tasaPeso", form.tasaP);
         localStorage.setItem("cajaDolar", form.cajachicaD);
         localStorage.setItem("cajaPeso", form.cajachicaP);
-
         window.location.reload();
       } else {
         alert(res.mensaje || "Error al guardar");
       }
     }
-
     // ⭐ MODIFICAR TASA EXISTENTE
     else {
       const ventas = await buscarVentasDelDia(fecha);
-
       if ((ventas.VentasP + ventas.VentasD + ventas.VentasBs) > 0) {
         alert("No se pueden modificar las tasas porque ya existen ventas registradas hoy.");
         return;
       }
-
       res = await modificarTasas({
         ...form,
         fecha: fecha
       });
-
       if (res.ok) {
         registrarAccion("Modificó tasas del día");
         alert(res.mensaje);
-
         localStorage.setItem("tasaDolar", form.tasaD);
         localStorage.setItem("tasaPeso", form.tasaP);
         localStorage.setItem("cajaDolar", form.cajachicaD);
         localStorage.setItem("cajaPeso", form.cajachicaP);
-
         window.location.reload();
       } else {
         alert(res.mensaje || "Error al modificar");
