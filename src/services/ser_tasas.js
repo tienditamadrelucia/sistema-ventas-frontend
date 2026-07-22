@@ -22,7 +22,7 @@ export const guardarTasas = async (datos) => {
 // 📌 Modificar tasas del día
 export const modificarTasas = async (datos) => {
   console.log("Llamando a backend con:", datos);
-  const res = await fetch(`${API_TASAS}/modificar`, {
+  const res = await fetch(`${API_TASAS}/modificar/:id`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(datos)
