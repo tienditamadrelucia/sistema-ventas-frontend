@@ -91,7 +91,7 @@ const Tasas = () => {
     registrarAccion("Ingresó al módulo Tasas de Cambio");
     const cargar = async () => {
       const res = await obtenerTasaHoy();
-      if (res.tasa) {
+      if (res.ok && res.tasa) {
         setExisteHoy(true);
         setModoModificar(false);
         setForm({
@@ -146,6 +146,7 @@ const Tasas = () => {
     }
     // ⭐ MODIFICAR TASA EXISTENTE
     else {
+      alert("grabar modificaciones");
       const ventas = await buscarVentasDelDia(fecha);
       if ((ventas.VentasP + ventas.VentasD + ventas.VentasBs) > 0) {
         alert("No se pueden modificar las tasas porque ya existen ventas registradas hoy.");
