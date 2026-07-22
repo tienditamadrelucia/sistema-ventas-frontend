@@ -150,12 +150,14 @@ const Tasas = () => {
       if ((ventas.VentasP + ventas.VentasD + ventas.VentasBs) > 0) {
         alert("No se pueden modificar las tasas porque ya existen ventas registradas hoy.");
         return;
-      }
+      }      
       res = await modificarTasas({
         ...form,
         fecha: fecha
       });
-      alert("grabar modificaciones");
+      console.log("Respuesta de modificarTasas:", res);
+alert("Salí de modificarTasas");
+
       if (res.ok) {
         registrarAccion("Modificó tasas del día");
         alert(res.mensaje);
