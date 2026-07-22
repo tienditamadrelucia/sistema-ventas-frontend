@@ -12,7 +12,9 @@ export const guardarVendido = (data) =>
 
 export const buscarVentasDelDia = async (fecha) => {
   console.log("buscarventasdeldia", fecha);
+  console.log("👉 API_URL:", API_URL);
   const url = `${API_URL}/api/ventas/${fecha}`;
+  console.log("👉 URL construida:", url);
   const { data } = await axios.get(url);
   return data;
 };
