@@ -21,7 +21,7 @@ export const guardarTasas = async (datos) => {
 
 // 📌 Modificar tasas del día
 export const modificarTasas = async (datos) => {  
-  const res = await fetch(`${API_TASAS}/modificar/${id}`, {
+  const res = await fetch(`${API_TASAS}/modificar/${datos._id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(datos)
