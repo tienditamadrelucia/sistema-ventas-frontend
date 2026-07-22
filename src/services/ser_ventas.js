@@ -10,11 +10,8 @@ export const guardarVta = (data) => axios.post(API_VENTAS, data);
 export const guardarVendido = (data) =>
   axios.post(API_VENDIDOS, data); 
 
-export const buscarVentasDelDia = async (fecha) => {
-  console.log("buscarventasdeldia", fecha);
-  console.log("👉 API_URL:", API_URL);
-  const url = `${API_URL}/api/ventas/${fecha}`;
-  console.log("👉 URL construida:", url);
+export const buscarVentasDelDia = async (fecha) => {  
+  const url = `${API_URL}/api/moneda/fecha/${fecha}`;  
   const { data } = await axios.get(url);
   return data;
 };
