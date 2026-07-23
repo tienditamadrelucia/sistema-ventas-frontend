@@ -106,7 +106,8 @@ const Tasas = () => {
         setExisteHoy(false);
         setModoModificar(true);
       }
-    };    
+    };
+    cargar();
   }, []);
 
   // ============================
@@ -165,8 +166,7 @@ const Tasas = () => {
       } else {
         alert(res.mensaje || "Error al modificar");
       }
-    }
-    cargar()
+    }    
   };
 
   const handleModificar = () => {
