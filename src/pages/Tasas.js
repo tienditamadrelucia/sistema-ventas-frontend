@@ -134,7 +134,6 @@ const Tasas = () => {
       });
       if (res.ok) {
         registrarAccion("Registró tasas del día");
-        alert(res.mensaje);
         localStorage.setItem("tasaDolar", form.tasaD);
         localStorage.setItem("tasaPeso", form.tasaP);
         localStorage.setItem("cajaDolar", form.cajachicaD);
@@ -155,9 +154,7 @@ const Tasas = () => {
         ...form,
         fecha: fecha
       });
-      console.log("Respuesta de modificarTasas:", res);
-alert("Salí de modificarTasas");
-
+      
       if (res.ok) {
         registrarAccion("Modificó tasas del día");
         alert(res.mensaje);
