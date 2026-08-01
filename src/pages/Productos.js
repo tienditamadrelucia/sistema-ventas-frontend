@@ -130,6 +130,7 @@ const Productos = () => {
   const productosFiltrados = formData.categoria
     ? productos.filter((p) => p.categoria === formData.categoria)
     : productos;
+    console.log("FOTO RECIBIDA EN REACT:", p.foto);
 
   const inputFotoRef = useRef(null);
   
@@ -590,7 +591,7 @@ const Productos = () => {
         </thead>
 
         <tbody>
-          {productosFiltrados.map((p) => (
+          {productosFiltrados.map((p) => (            
             <tr key={p._id}>
               <td>
                 {p.foto && (
