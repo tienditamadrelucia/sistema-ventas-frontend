@@ -596,11 +596,11 @@ const Productos = () => {
                 {p.foto && (
                 <img
                   src={
-                  p.foto.startsWith("data:image")
-                  ? p.foto
-                  : p.foto.startsWith("http")
-                  ? p.foto
-                  : `https://sistema-ventas-backend-qxbi.onrender.com/${p.foto.replace(/^\//, "")}`
+                    p.foto.startsWith("data:image")
+                    ? p.foto
+                    : p.foto.startsWith("http")
+                    ? p.foto
+                    : `https://sistema-ventas-backend-qxbi.onrender.com/${p.foto.replace(/^\//, "")}`
                   }
                 alt="foto"
                 width="60"
