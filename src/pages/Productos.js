@@ -593,10 +593,7 @@ const Productos = () => {
             <tr key={p._id}>
               <td>{p.foto && (
                 <img 
-                  src={p.foto.startsWith("http")
-                    ? p.foto
-                    : `https://sistema-ventas-backend-qxbi.onrender.com/${p.foto.replace(/^\//, "")}`
-                  }
+                  src={p.foto}
                   alt="foto" 
                   width="60" 
                 />
