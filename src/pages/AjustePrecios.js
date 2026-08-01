@@ -156,11 +156,7 @@ const AjustePrecios = () => {
   // AJUSTAR PRECIOS
   // -------------------------
 
-  const handleAjustar = async () => {
-    if (usuario.rol !== "ADMIN") {
-      alert("Solo la administradora puede ajustar los precios.");
-      return;
-    }
+  const handleAjustar = async () => {    
     if (!tasaAnterior || !tasaActual) {
       alert("Debe ingresar ambas tasas.");
       return;
@@ -235,7 +231,7 @@ const AjustePrecios = () => {
             placeholder="Tasa anterior"
             value={tasaAnterior}
             onChange={(e) => setTasaAnterior(e.target.value)}
-            style={inputEstilo}
+            style={input25}
           />
 
           <input
@@ -243,7 +239,7 @@ const AjustePrecios = () => {
             placeholder="Tasa actual"
             value={tasaActual}
             onChange={(e) => setTasaActual(e.target.value)}
-            style={inputEstilo}
+            style={input25}
           />
 
           <button style={estiloBoton} onClick={handleAjustar}>
