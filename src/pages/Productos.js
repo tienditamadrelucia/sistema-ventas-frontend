@@ -129,8 +129,7 @@ const Productos = () => {
 
   const productosFiltrados = formData.categoria
     ? productos.filter((p) => p.categoria === formData.categoria)
-    : productos;
-    console.log("FOTO RECIBIDA EN REACT:", p.foto);
+    : productos;    
 
   const inputFotoRef = useRef(null);
   
