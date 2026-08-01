@@ -522,8 +522,13 @@ const Productos = () => {
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
           <div style={cajaImagen}>
             {formData.foto ? (
-              <img
-                src={formData.preview || formData.foto}
+              <img                
+                src={
+                  formData.preview ||
+                  (formData.foto?.startsWith("http")
+                  ? formData.foto
+                  : `https://sistema-ventas-backend-qxbi.onrender.com/${formData.foto?.replace(/^\//, "")}`)
+                  }
                 alt="foto"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
