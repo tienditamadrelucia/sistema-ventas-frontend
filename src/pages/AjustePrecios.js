@@ -265,8 +265,7 @@ const AjustePrecios = () => {
             <th>Ingreso</th>
             <th>Costo</th>
             <th>Precio Anterior</th>
-            <th>Venta</th>
-            <th>Acciones</th>
+            <th>Venta</th>            
           </tr>
         </thead>
 
