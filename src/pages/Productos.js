@@ -583,6 +583,7 @@ const Productos = () => {
             <th>Stock</th>
             <th>Ingreso</th>
             <th>Costo</th>
+            <th>PrecioAnterior</th>
             <th>Venta</th>
             <th>Acciones</th>
           </tr>
@@ -606,6 +607,7 @@ const Productos = () => {
               <td>{p.stock}</td>
               <td>{p.fechaIngreso.slice(0, 10).split("-").reverse().join("/")}</td>
               <td>{p.costo}</td>
+              <td>{p.precioanterior}</td>
               <td>{p.venta}</td>
               <td style={{ textAlign: "center" }}>
                 <span onClick={() => editarProducto(p)} style={iconoEditar}>
