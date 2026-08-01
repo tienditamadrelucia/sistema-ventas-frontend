@@ -299,8 +299,6 @@ const Productos = () => {
   }));
 };
 
-
-
   // -------------------------
   // EDITAR
   // -------------------------
@@ -500,7 +498,6 @@ const Productos = () => {
             disabled={localStorage.getItem("rolUsuario") === "USUARIO"}
           />
 
-
           <input
             name="costo"
             placeholder="Precio de Costo"
@@ -589,7 +586,13 @@ const Productos = () => {
         <tbody>
           {productosFiltrados.map((p) => (
             <tr key={p._id}>
-              <td>{p.foto && <img src={p.foto} alt="foto" width="60" />}</td>
+              <td>{p.foto && 
+                <img 
+                  src={`${API_URL.replace('/api', '')}/${p.foto.replace(/^\//, '')}`}
+                  alt="foto" 
+                  width="60" 
+                />}
+              </td>
               <td>{p.codigo}</td>
               <td>{p.categoria}</td>
               <td>{p.descripcion}</td>
