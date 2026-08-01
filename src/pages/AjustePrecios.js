@@ -244,8 +244,13 @@ const AjustePrecios = () => {
 
           <button style={estiloBoton} onClick={handleAjustar}>
             Ajustar precios
-          </button>
+          </button>          
         </div>
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
+          <button onClick={() => navigate("/menu")} style={estiloBoton}>
+              Volver al MENÚ PRINCIPAL
+            </button>
+          </div>
       </div>
 
       {/* TABLA */}
