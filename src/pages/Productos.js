@@ -323,7 +323,10 @@ const guardarProducto = async () => {
       : "",
     costo: prod.costo,
     venta: prod.venta,
-    foto: prod.foto,   // siempre string
+    // ⭐ AQUÍ ESTÁ LA SOLUCIÓN
+    foto: prod.foto.startsWith("http")
+      ? prod.foto
+      : `https://sistema-ventas-backend-qxbi.onrender.com/${prod.foto.replace(/^\//, "")}`,
     preview: undefined
   });
   setTimeout(() => {
