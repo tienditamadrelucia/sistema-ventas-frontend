@@ -586,12 +586,16 @@ const Productos = () => {
         <tbody>
           {productosFiltrados.map((p) => (
             <tr key={p._id}>
-              <td>{p.foto && 
+              <td>{p.foto && (
                 <img 
-                  src={`${API_URL.replace('/api', '')}/${p.foto.replace(/^\//, '')}`}
+                  src={p.foto.startsWith("http")
+                    ? p.foto
+                    : `https://sistema-ventas-backend-qxbi.onrender.com/${p.foto.replace(/^\//, "")}`
+                  }
                   alt="foto" 
                   width="60" 
-                />}
+                />
+                )}
               </td>
               <td>{p.codigo}</td>
               <td>{p.categoria}</td>
