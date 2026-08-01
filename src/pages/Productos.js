@@ -176,12 +176,12 @@ const Productos = () => {
   if (file) {
     setFormData((prev) => ({
       ...prev,
-      foto: file,      // guardamos SOLO el File real
+      foto: file,
+      preview: URL.createObjectURL(file)
     }));
   }
   return;
 }
-
 
   // ⭐ Campos numéricos SIN convertir a número
   const camposNumericos = ["stock", "costo", "venta"];
@@ -207,7 +207,7 @@ const Productos = () => {
   // -------------------------
   // GUARDAR / ACTUALIZAR
   // -------------------------
-  const guardarProducto = async () => {
+const guardarProducto = async () => {
   // VALIDAR CAMPOS
   if (
     !formData.descripcion ||
@@ -225,6 +225,7 @@ const Productos = () => {
     return;
   }
   setProcesando(true);
+
   // ⭐ 1. SUBIR FOTO SI ES ARCHIVO
   let fotoURL = formData.foto; // puede ser URL o File
   if (formData.foto instanceof File) {
@@ -242,25 +243,14 @@ const Productos = () => {
     }
     fotoURL = data.url; // ⭐ URL pública devuelta por el backend
   }
-  // ⭐ 2. PREPARAR FORM DATA DEL PRODUCTO (SIEMPRE JSON)
-  fotoURL = formData.foto;
-  // Si es archivo, subirlo primero
-  if (formData.foto instanceof File) {
-    const fd = new FormData();
-    fd.append("foto", formData.foto);
-    const resp = await fetch(`${API_URL}/api/productos/upload`, {
-      method: "POST",
-      body: fd
-    });
-    const data = await resp.json();
-    fotoURL = data.url; // ⭐ URL real del backend
-  }
 
+  // ⭐ 2. PREPARAR FORM DATA DEL PRODUCTO (SIEMPRE JSON)
   const payload = {
     ...formData,
-    foto: fotoURL,   // aquí va la URL final
-    preview: undefined // limpiar preview
+    foto: fotoURL,   // siempre string
+    preview: undefined
   };
+
   // ⭐ 3. CREAR PRODUCTO
   if (modo === "crear") {
     const respuesta = await fetch(`${API_URL}/api/productos`, {
@@ -280,6 +270,7 @@ const Productos = () => {
     }));
     await registrarAccion(`Registró el producto "${formData.descripcion}"`);
   }
+
   // ⭐ 4. EDITAR PRODUCTO
   else {
     const respuesta = await fetch(`${API_URL}/api/productos/${productoEditando}`, {
@@ -295,20 +286,22 @@ const Productos = () => {
     }
     await registrarAccion(`Actualizó el producto "${formData.descripcion}"`);
   }
+
   // ⭐ 5. RECARGAR LISTA
   if (categoriaSeleccionada) {
     cargarProductos(categoriaSeleccionada);
   } else {
     cargarProductos(formData.categoria);
   }
+
   // ⭐ 6. LIMPIAR FORMULARIO
   const cat = categoriaSeleccionada || formData.categoria;
   limpiarFormulario();
   setProcesando(false);
   setFormData(prev => ({
-  ...prev,
-  categoria: cat,
-  preview: undefined
+    ...prev,
+    categoria: cat,
+    preview: undefined
   }));
 };
 
@@ -330,7 +323,8 @@ const Productos = () => {
       : "",
     costo: prod.costo,
     venta: prod.venta,
-    foto: prod.foto
+    foto: prod.foto,   // siempre string
+    preview: undefined
   });
   setTimeout(() => {
     formularioRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -537,10 +531,13 @@ const Productos = () => {
             {formData.foto ? (
               <img                
                 src={
-                  formData.preview ||
-                  (formData.foto?.startsWith("http")
+                  formData.preview
+                  ? formData.preview
+                  : typeof formData.foto === "string" && formData.foto.startsWith("http")
                   ? formData.foto
-                  : `https://sistema-ventas-backend-qxbi.onrender.com/${formData.foto?.replace(/^\//, "")}`)
+                  : typeof formData.foto === "string"
+                  ? `https://sistema-ventas-backend-qxbi.onrender.com/${formData.foto?.replace(/^\//, "")}`
+                  : ""
                   }
                 alt="foto"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
