@@ -243,7 +243,7 @@ const Productos = () => {
     fotoURL = data.url; // ⭐ URL pública devuelta por el backend
   }
   // ⭐ 2. PREPARAR FORM DATA DEL PRODUCTO (SIEMPRE JSON)
-  let fotoURL = formData.foto;
+  fotoURL = formData.foto;
   // Si es archivo, subirlo primero
   if (formData.foto instanceof File) {
     const fd = new FormData();
