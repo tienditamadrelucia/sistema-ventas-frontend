@@ -591,7 +591,9 @@ const Productos = () => {
         </thead>
 
         <tbody>
-          {productosFiltrados.map((p) => (            
+          {productosFiltrados.map((p) => {
+            console.log("FOTO RECIBIDA EN REACT:", p.foto);
+            return (
             <tr key={p._id}>
               <td>
                 {p.foto && (
@@ -627,7 +629,8 @@ const Productos = () => {
                 </span>
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
   </div>
