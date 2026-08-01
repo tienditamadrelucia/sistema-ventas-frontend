@@ -226,27 +226,28 @@ const AjustePrecios = () => {
           backgroundColor: "white",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
         }}>
-        <input
-            type="number"
-            placeholder="Tasa anterior"
-            value={tasaAnterior}
-            onChange={(e) => setTasaAnterior(e.target.value)}
-            style={input25}
-          />
+        <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <input
+                type="number"
+                placeholder="Tasa anterior"
+                value={tasaAnterior}
+                onChange={(e) => setTasaAnterior(e.target.value)}
+                style={input25}
+              />
 
-          <input
-            type="number"
-            placeholder="Tasa actual"
-            value={tasaActual}
-            onChange={(e) => setTasaActual(e.target.value)}
-            style={input25}
-          />
-
+              <input
+                type="number"
+                placeholder="Tasa actual"
+                value={tasaActual}
+                onChange={(e) => setTasaActual(e.target.value)}
+                style={input25}
+              />        
           <button style={estiloBoton} onClick={handleAjustar}>
-            Ajustar precios
-          </button>          
-        </div>
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
+            Ajustar
+          </button>
+        </div> 
+       </div>
+       <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
           <button onClick={() => navigate("/menu")} style={estiloBoton}>
               Volver al MENÚ PRINCIPAL
             </button>
