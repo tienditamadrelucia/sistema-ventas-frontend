@@ -103,8 +103,8 @@ const AjustePrecios = () => {
   const formularioRef = useRef(null);  
   const [procesando, setProcesando] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
-  const [tasaAnterior, setTasaAnterior] = useState([]);
-  const [tasaActual, setTasaActual] = useState([]);
+  const [tasaAnterior, setTasaAnterior] = useState("");
+  const [tasaActual, setTasaActual] = useState("");
 
   const [formData, setFormData] = useState({
     codigo: 0,
