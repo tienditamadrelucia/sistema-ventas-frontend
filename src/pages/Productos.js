@@ -243,6 +243,19 @@ const Productos = () => {
     fotoURL = data.url; // ⭐ URL pública devuelta por el backend
   }
   // ⭐ 2. PREPARAR FORM DATA DEL PRODUCTO (SIEMPRE JSON)
+  let fotoURL = formData.foto;
+  // Si es archivo, subirlo primero
+  if (formData.foto instanceof File) {
+    const fd = new FormData();
+    fd.append("foto", formData.foto);
+    const resp = await fetch(`${API_URL}/api/productos/upload`, {
+      method: "POST",
+      body: fd
+    });
+    const data = await resp.json();
+    fotoURL = data.url; // ⭐ URL real del backend
+  }
+
   const payload = {
     ...formData,
     foto: fotoURL,   // aquí va la URL final
@@ -591,7 +604,7 @@ const Productos = () => {
 
         <tbody>
           {productosFiltrados.map((p) => {
-            console.log("FOTO RECIBIDA EN REACT:", p.foto);
+            console.log("FOTO RECIBIDA EN REACT:", typeof p.foto, p.foto);
             return (
             <tr key={p._id}>
               <td>
