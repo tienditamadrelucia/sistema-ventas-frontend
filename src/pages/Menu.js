@@ -388,7 +388,7 @@ function Menu() {
             onClick={async () => {
             await registrarAccion("Entró al módulo AJUSTE DE PRECIOS");
             if (localStorage.getItem("rolUsuario") === "ADMINISTRADOR") {
-              navigate("/integridad");
+              navigate("/ajusteprecios");
             }
           }}
           >
