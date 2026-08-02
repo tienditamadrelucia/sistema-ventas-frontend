@@ -324,9 +324,7 @@ const guardarProducto = async () => {
     costo: prod.costo,
     venta: prod.venta,
     // ⭐ AQUÍ ESTÁ LA SOLUCIÓN
-    foto: prod.foto.startsWith("http")
-      ? prod.foto
-      : `https://sistema-ventas-backend-qxbi.onrender.com/${prod.foto.replace(/^\//, "")}`,
+    foto: prod.foto,      
     preview: undefined
   });
   setTimeout(() => {
@@ -373,7 +371,6 @@ const guardarProducto = async () => {
   // -------------------------
   // LIMPIAR FORMULARIO
   // -------------------------
-
   const limpiarFormulario = async () => {
   setModo("crear");
   setProductoEditando(null);
@@ -533,15 +530,7 @@ const guardarProducto = async () => {
           <div style={cajaImagen}>
             {formData.foto ? (
               <img                
-                src={
-                  formData.preview
-                  ? formData.preview
-                  : typeof formData.foto === "string" && formData.foto.startsWith("http")
-                  ? formData.foto
-                  : typeof formData.foto === "string"
-                  ? `https://sistema-ventas-backend-qxbi.onrender.com/${formData.foto?.replace(/^\//, "")}`
-                  : ""
-                  }
+                src={formData.preview ? formData.preview : formData.foto}                  
                 alt="foto"
                 style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
@@ -610,15 +599,9 @@ const guardarProducto = async () => {
               <td>
                 {p.foto && (
                 <img
-                  src={
-                    p.foto.startsWith("data:image")
-                    ? p.foto
-                    : p.foto.startsWith("http")
-                    ? p.foto
-                    : `https://sistema-ventas-backend-qxbi.onrender.com/${p.foto.replace(/^\//, "")}`
-                  }
-                alt="foto"
-                width="60"
+                  src={p.foto}                    
+                  alt="foto"
+                  width="60"
                 />
                 )}
               </td>
