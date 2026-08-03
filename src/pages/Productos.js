@@ -226,7 +226,7 @@ const guardarProducto = async () => {
   }
   setProcesando(true);
 
-  // ⭐ 1. SUBIR FOTO SI ES ARCHIVO
+  // ⭐ 1. SUBIR FOTO SOLO SI ES ARCHIVO
   let fotoURL = formData.foto; // puede ser URL o File
   if (formData.foto instanceof File) {
     const fd = new FormData();
@@ -236,18 +236,18 @@ const guardarProducto = async () => {
       body: fd
     });
     const data = await resp.json();
-    if (!data.ok) {
+    if (!data.url) {
       alert("Error subiendo la imagen");
       setProcesando(false);
       return;
     }
-    fotoURL = data.url; // ⭐ URL pública devuelta por el backend
+    fotoURL = data.url; // URL pública de Cloudinary
   }
 
-  // ⭐ 2. PREPARAR FORM DATA DEL PRODUCTO (SIEMPRE JSON)
+  // ⭐ 2. PREPARAR PAYLOAD DEL PRODUCTO
   const payload = {
     ...formData,
-    foto: fotoURL,   // siempre string
+    foto: fotoURL,
     preview: undefined
   };
 
@@ -304,6 +304,7 @@ const guardarProducto = async () => {
     preview: undefined
   }));
 };
+
 
   // -------------------------
   // EDITAR
