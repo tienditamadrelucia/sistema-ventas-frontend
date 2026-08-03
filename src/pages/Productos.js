@@ -592,8 +592,7 @@ const guardarProducto = async () => {
         </thead>
 
         <tbody>
-          {productosFiltrados.map((p) => {
-            console.log("FOTO RECIBIDA EN REACT:", typeof p.foto, p.foto);
+          {productosFiltrados.map((p) => {            
             return (
             <tr key={p._id}>
               <td>
