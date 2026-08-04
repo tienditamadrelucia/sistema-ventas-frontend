@@ -143,7 +143,9 @@ const Gastos = () => {
       }
 
       if (modo === "crear") {
+        console.log("gasto");
         await crearGasto(formData);
+        console.log("guardó gasto");
         await registrarAccion(`Registró un gasto: ${formData.descripcion}`);
       } else {
         await actualizarGasto(gastoEditando._id, formData);
