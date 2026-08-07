@@ -105,6 +105,7 @@ const Productos = () => {
   const formularioRef = useRef(null);  
   const [procesando, setProcesando] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
+  const [guardando, setGuardando] = useState(false);
 
   const [formData, setFormData] = useState({
     codigo: 0,
@@ -208,103 +209,126 @@ const Productos = () => {
   // GUARDAR / ACTUALIZAR
   // -------------------------
 const guardarProducto = async () => {
-  // VALIDAR CAMPOS
-  if (
-    !formData.descripcion ||
-    !formData.categoria ||
-    !formData.venta ||
-    formData.stock === "" ||
-    !formData.medida ||
-    !formData.fechaIngreso
-  ) {
-    alert("Complete todos los campos obligatorios");
-    return;
-  }
-  if (Number(formData.venta) <= Number(formData.costo)) {
-    alert("El precio de venta debe ser mayor al costo.");
-    return;
-  }
-  setProcesando(true);
+  if (guardando) return; // evita doble click
+  setGuardando(true); // deshabilita el botón
 
-  // ⭐ 1. SUBIR FOTO SOLO SI ES ARCHIVO
-  let fotoURL = formData.foto; // puede ser URL o File
-  if (formData.foto instanceof File) {
-    const fd = new FormData();
-    fd.append("foto", formData.foto);
-    const resp = await fetch(`${API_URL}/api/productos/upload`, {
-      method: "POST",
-      body: fd
-    });
-    const data = await resp.json();
-    if (!data.url) {
-      alert("Error subiendo la imagen");
-      setProcesando(false);
+  try {
+    // VALIDAR CAMPOS
+    if (
+      !formData.descripcion ||
+      !formData.categoria ||
+      !formData.venta ||
+      formData.stock === "" ||
+      !formData.medida ||
+      !formData.fechaIngreso
+    ) {
+      alert("Complete todos los campos obligatorios");
+      setGuardando(false); // 🔓 reactivar botón
       return;
     }
-    fotoURL = data.url; // URL pública de Cloudinary
-  }
 
-  // ⭐ 2. PREPARAR PAYLOAD DEL PRODUCTO
-  const payload = {
-    ...formData,
-    foto: fotoURL,
-    preview: undefined
-  };
-
-  // ⭐ 3. CREAR PRODUCTO
-  if (modo === "crear") {
-    const respuesta = await fetch(`${API_URL}/api/productos`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const data = await respuesta.json();
-    if (!data.ok) {
-      alert(data.error || "No se pudo guardar el producto");
-      setProcesando(false);
+    if (Number(formData.venta) <= Number(formData.costo)) {
+      alert("El precio de venta debe ser mayor al costo.");
+      setGuardando(false); // 🔓 reactivar botón
       return;
     }
+
+    setProcesando(true);
+
+    // ⭐ 1. SUBIR FOTO SOLO SI ES ARCHIVO
+    let fotoURL = formData.foto;
+    if (formData.foto instanceof File) {
+      const fd = new FormData();
+      fd.append("foto", formData.foto);
+
+      const resp = await fetch(`${API_URL}/api/productos/upload`, {
+        method: "POST",
+        body: fd
+      });
+
+      const data = await resp.json();
+      if (!data.url) {
+        alert("Error subiendo la imagen");
+        setProcesando(false);
+        setGuardando(false); // 🔓 reactivar botón
+        return;
+      }
+
+      fotoURL = data.url;
+    }
+
+    // ⭐ 2. PREPARAR PAYLOAD
+    const payload = {
+      ...formData,
+      foto: fotoURL,
+      preview: undefined
+    };
+
+    // ⭐ 3. CREAR PRODUCTO
+    if (modo === "crear") {
+      const respuesta = await fetch(`${API_URL}/api/productos`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await respuesta.json();
+      if (!data.ok) {
+        alert(data.error || "No se pudo guardar el producto");
+        setProcesando(false);
+        setGuardando(false); // 🔓 reactivar botón
+        return;
+      }
+
+      setFormData(prev => ({
+        ...prev,
+        codigo: data.producto.codigo
+      }));
+
+      await registrarAccion(`Registró el producto "${formData.descripcion}"`);
+    }
+
+    // ⭐ 4. EDITAR PRODUCTO
+    else {
+      const respuesta = await fetch(`${API_URL}/api/productos/${productoEditando}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+
+      const data = await respuesta.json();
+      if (!data.ok) {
+        alert(data.error || "No se pudo actualizar el producto");
+        setProcesando(false);
+        setGuardando(false); // 🔓 reactivar botón
+        return;
+      }
+
+      await registrarAccion(`Actualizó el producto "${formData.descripcion}"`);
+    }
+
+    // ⭐ 5. RECARGAR LISTA
+    if (categoriaSeleccionada) {
+      cargarProductos(categoriaSeleccionada);
+    } else {
+      cargarProductos(formData.categoria);
+    }
+
+    // ⭐ 6. LIMPIAR FORMULARIO
+    const cat = categoriaSeleccionada || formData.categoria;
+    limpiarFormulario();
+    setProcesando(false);
+
     setFormData(prev => ({
       ...prev,
-      codigo: data.producto.codigo
+      categoria: cat,
+      preview: undefined
     }));
-    await registrarAccion(`Registró el producto "${formData.descripcion}"`);
-  }
 
-  // ⭐ 4. EDITAR PRODUCTO
-  else {
-    const respuesta = await fetch(`${API_URL}/api/productos/${productoEditando}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    const data = await respuesta.json();
-    if (!data.ok) {
-      alert(data.error || "No se pudo actualizar el producto");
-      setProcesando(false);
-      return;
-    }
-    await registrarAccion(`Actualizó el producto "${formData.descripcion}"`);
+  } finally {
+    setGuardando(false); // 🔓 SIEMPRE se reactiva el botón
   }
-
-  // ⭐ 5. RECARGAR LISTA
-  if (categoriaSeleccionada) {
-    cargarProductos(categoriaSeleccionada);
-  } else {
-    cargarProductos(formData.categoria);
-  }
-
-  // ⭐ 6. LIMPIAR FORMULARIO
-  const cat = categoriaSeleccionada || formData.categoria;
-  limpiarFormulario();
-  setProcesando(false);
-  setFormData(prev => ({
-    ...prev,
-    categoria: cat,
-    preview: undefined
-  }));
 };
-
 
   // -------------------------
   // EDITAR
@@ -557,9 +581,13 @@ const guardarProducto = async () => {
           }}
         />
 
-        <div style={{ display: "flex", justifyContent: "center",marginBottom: "10px" }}>
-          <button style={botonGuardar} onClick={guardarProducto}>
-            {modo === "crear" ? "Guardar" : "Actualizar"}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
+          <button
+            style={botonGuardar}
+            onClick={guardarProducto}
+            disabled={modo === "crear" && guardando}   // 🔒 solo bloquea cuando es nuevo
+          >
+            {guardando ? "Guardando..." : (modo === "crear" ? "Guardar" : "Actualizar")}
           </button>
         </div>
       </div>
