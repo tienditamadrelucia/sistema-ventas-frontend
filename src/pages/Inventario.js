@@ -314,66 +314,70 @@ const cargarInventario = async () => {
   }
  async function registrarAjuste(producto) {
   setProcesando(true);
-  const codigo = producto.codigo;
+
   const productoId = producto._id;
-  const registro = toma[codigo] ?? {};
+  const codigo = producto.codigo;
+
+  // Usar _id como clave, no codigo
+  const registro = toma[productoId] ?? {};
+
   const stockSistema = Number(producto.stockReal ?? 0);
   const stockFisico =
     registro.stockFisico === "" || registro.stockFisico == null
       ? 0
       : Number(registro.stockFisico);
+
   const diferencia = stockFisico - stockSistema;
+
   if (diferencia === 0) {
     alert("No hay diferencia para ajustar.");
+    setProcesando(false);
     return;
   }
+
   try {
-    // 🔹 AQUÍ VA EL NUEVO BLOQUE
-    if (!inventarioGuardado) {      
-      await handleGuardar();          // guarda toda la toma      
-      setInventarioGuardado(true);    // marcamos que ya existe inventario
-    }
-    const data = {
-      fecha: formData.fecha,
-      productoId,
-      cantidad: diferencia,
-      observacion: "AJUSTE"
-    };
+    // Guardar toma solo una vez
     if (!inventarioGuardado) {
       await handleGuardar();
       setInventarioGuardado(true);
-    }    
-    if (diferencia < 0) {
-      // SALIDA → cantidad siempre positiva
-      data.cantidad = Math.abs(diferencia);
-      await crearSalida(data);
-
-      } else if (diferencia > 0) {
-        // ENTRADA → cantidad positiva
-        data.cantidad = diferencia;
-        await crearEntrada(data);
-
-      } else {
-        // diferencia === 0
-        alert("No hay diferencia para ajustar.");
-        return;
     }
 
+    const data = {
+      fecha: formData.fecha,
+      productoId,
+      cantidad: Math.abs(diferencia),
+      observacion: "AJUSTE"
+    };
+
+    if (diferencia < 0) {
+      await crearSalida(data);
+    } else {
+      await crearEntrada(data);
+    }
+
+    // Obtener stock real actualizado
     const resp = await fetch(`${APIURL}/inventario/stock-real/${codigo}`);
     const info = await resp.json();
+
+    // Actualizar estado correctamente
     setProductos(prev =>
       prev.map(p =>
         p._id === productoId ? { ...p, stockReal: info.stockReal } : p
       )
     );
-    setTimeout(() => guardarToma(producto), 50);
+
+    // Guardar toma SIN timeout
+    await guardarToma(producto);
+
     alert("Ajuste realizado correctamente.");
-    setProcesando(false);
   } catch (error) {
     console.error("Error registrando ajuste:", error);
     alert("Error registrando el ajuste.");
+  } finally {
+    setProcesando(false);
   }
 }
+
  
   // -------------------------
   // RETURN
