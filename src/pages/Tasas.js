@@ -22,6 +22,7 @@ const Tasas = () => {
 
   const [existeHoy, setExisteHoy] = useState(false);
   const [modoModificar, setModoModificar] = useState(false);
+  const [historial, setHistorial] = useState([]);
 
   const formularioinput = {
     width: "550px",
@@ -109,6 +110,16 @@ const Tasas = () => {
     };
     cargar();
   }, []);
+
+  useEffect(() => {
+  const cargarHistorial = async () => {
+    const res = await obtenerHistorialTasas();
+    if (res.ok) {
+      setHistorial(res.lista);
+    }
+  };
+  cargarHistorial();
+}, []);
 
   // ============================
   // HANDLERS
@@ -280,6 +291,44 @@ const Tasas = () => {
             Volver al MENÚ PRINCIPAL
           </button>
         </div>
+        <div style={{ marginTop: "40px" }}>
+          <h3 style={{ textAlign: "center", fontWeight: "bold", marginBottom: "15px" }}>
+            Historial de Tasas Registradas
+          </h3>
+
+          <table
+            style={{
+            width: "90%",
+            margin: "0 auto",
+            borderCollapse: "collapse",
+            backgroundColor: "white"
+            }}
+          >
+          <thead>
+            <tr style={{ backgroundColor: "#F9CEAE", color: "white" }}>
+              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Fecha</th>
+              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Caja Chica P</th>
+              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Caja Chica D</th>
+              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Tasa P</th>
+              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Tasa D</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {historial.map((tasa) => (
+            <tr key={tasa._id}>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>
+              {new Date(tasa.fecha).toISOString().slice(0, 10)}
+              </td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{tasa.cajachicaP}</td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{tasa.cajachicaD}</td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{tasa.tasaP}</td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{tasa.tasaD}</td>
+            </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
       </div>
     </div>
   );
