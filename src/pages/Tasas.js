@@ -314,10 +314,10 @@ const Tasas = () => {
           <thead>
             <tr style={{ backgroundColor: "#F9CEAE", color: "white" }}>
               <th style={{ padding: "8px", border: "1px solid #ccc" }}>Fecha</th>
-              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Caja Chica P</th>
-              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Caja Chica D</th>
-              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Tasa P</th>
-              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Tasa D</th>
+              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Caja Chica Pesos</th>
+              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Caja Chica Dolares</th>
+              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Tasa Pesos</th>
+              <th style={{ padding: "8px", border: "1px solid #ccc" }}>Tasa Dólar</th>
             </tr>
           </thead>
 
@@ -327,10 +327,10 @@ const Tasas = () => {
               <td style={{ padding: "8px", border: "1px solid #ccc" }}>
               {new Date(tasa.fecha).toISOString().slice(0, 10)}
               </td>
-              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.cajachicaP.tofixed(2))}</td> 
-              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.cajachicaD.tofixed(2))}</td>
-              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.tasaP.tofixed(2))}</td>
-              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.tasaD.tofixed(2))}</td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.cajachicaP.toFixed(2))}</td> 
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.cajachicaD.toFixed(2))}</td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.tasaP.toFixed(2))}</td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.tasaD.toFixed(2))}</td>
             </tr>
             ))}
           </tbody>
