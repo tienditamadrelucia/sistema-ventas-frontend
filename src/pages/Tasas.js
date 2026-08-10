@@ -320,10 +320,10 @@ const Tasas = () => {
               <td style={{ padding: "8px", border: "1px solid #ccc" }}>
               {new Date(tasa.fecha).toISOString().slice(0, 10)}
               </td>
-              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{tasa.cajachicaP}</td>
-              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{tasa.cajachicaD}</td>
-              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{tasa.tasaP}</td>
-              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{tasa.tasaD}</td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.cajachicaP.tofixed(2))}</td> 
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.cajachicaD.tofixed(2))}</td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.tasaP.tofixed(2))}</td>
+              <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.tasaD.tofixed(2))}</td>
             </tr>
             ))}
           </tbody>
