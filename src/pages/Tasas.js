@@ -325,7 +325,7 @@ const Tasas = () => {
             {historial.map((tasa) => (
             <tr key={tasa._id}>
               <td style={{ padding: "8px", border: "1px solid #ccc" }}>
-              {new Date(tasa.fecha).toISOString().slice(0, 10)}
+              {tasa.fecha.slice(0, 10).split("-").reverse().join("/")}
               </td>
               <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.cajachicaP.toFixed(2))}</td> 
               <td style={{ padding: "8px", border: "1px solid #ccc" }}>{formatoVE(tasa.cajachicaD.toFixed(2))}</td>
