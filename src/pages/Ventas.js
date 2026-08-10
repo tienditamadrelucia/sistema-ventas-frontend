@@ -1209,7 +1209,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
               <label>Stock</label>
               <input
                 type="text"
-                value={stockActual}
+                value={Number(stockActual).toFixed(2)}
                 readOnly
                 style={{
                   backgroundColor:
@@ -1225,7 +1225,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                     fontWeight: "bold"
                   }}
                 >
-                  Real: {stockActual.toFixed(2)}
+                  Real: {Number(stockActual).toFixed(2)}
                 </span>
               )}
               {errorStock && (
