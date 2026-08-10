@@ -11,7 +11,7 @@ const Tasas = () => {
   // ⭐ Fecha de hoy en UTC (00:00:00)
   const hoy = new Date();
   const fecha = hoy.toISOString().slice(0, 10);  // "YYYY-MM-DD"
-
+  
   const [form, setForm] = useState({
     fecha: fecha,
     cajachicaP: "",
@@ -23,6 +23,13 @@ const Tasas = () => {
   const [existeHoy, setExisteHoy] = useState(false);
   const [modoModificar, setModoModificar] = useState(false);
   const [historial, setHistorial] = useState([]);
+
+  const formatoVE = (valor) => {
+  return Number(valor).toLocaleString("es-VE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
 
   const formularioinput = {
     width: "550px",
