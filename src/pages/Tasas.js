@@ -2,7 +2,7 @@ import Encabezado from "../components/Encabezado";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../services/logs";
-import { obtenerTasaHoy, guardarTasas, modificarTasas, cargarTasasPorFecha } from "../services/ser_tasas.js";
+import { obtenerTasaHoy, guardarTasas, modificarTasas, cargarTasasPorFecha,obtenerHistorialTasas } from "../services/ser_tasas.js";
 import { buscarVentasDelDia } from "../services/ser_ventas.js";
 
 const Tasas = () => {
