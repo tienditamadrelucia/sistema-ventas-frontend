@@ -699,12 +699,16 @@ const Ventas = () => {
 
   const volverAlMenu = () => {
   try {
+    window.onbeforeunload = null;
     if (window.opener) {
       window.opener.location.reload(); // refresca el menú
     }
     window.close(); // cierra esta ventana
   } catch (error) {
     console.error("Error al volver al menú:", error);
+
+    window.onbeforeunload = null;
+
     if (window.opener) {
       window.opener.location.reload();
     }
