@@ -21,7 +21,7 @@ const Ventas = () => {
   // -----------------------------
   // ESTADOS PRINCIPALES
   // -----------------------------
-
+ 
   // FACTURA
   const [numeroFactura, setNumeroFactura] = useState("");
   const [hora, setHora] = useState("");    
@@ -1225,7 +1225,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                     fontWeight: "bold"
                   }}
                 >
-                  Real: {stockActual}
+                  Real: {stockActual.toFixed(2)}
                 </span>
               )}
               {errorStock && (
