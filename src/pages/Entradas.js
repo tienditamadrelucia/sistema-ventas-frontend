@@ -332,8 +332,8 @@ const Entradas = () => {
       codigo: entrada.productoId?.codigo || "",
       descripcion: entrada.productoId?.descripcion || "",
       cantidad: entrada.cantidad,
-      cantidad: entrada.precioCompra,
-      cantidad: entrada.precioVenta,
+      precioCompra: entrada.precioCompra,
+      precioVenta: entrada.precioVenta,
       observacion: entrada.observacion || ""   
     });
     
