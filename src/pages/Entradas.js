@@ -372,10 +372,10 @@ const Entradas = () => {
       alert("No está permitido eliminar los registros de AJUSTE");
       return;
     }
-  } else {
-    // ⭐ Ningún usuario puede eliminar entradas normales
-    alert("No está permitido eliminar este tipo de registro");
-    return;
+  //} else {
+  //  // ⭐ Ningún usuario puede eliminar entradas normales
+  //  alert("No está permitido eliminar este tipo de registro");
+  //  return;
   }
   // ⭐ Seguridad adicional
   if (rol === "USUARIO") {
