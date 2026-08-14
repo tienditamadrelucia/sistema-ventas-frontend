@@ -583,7 +583,7 @@ const Entradas = () => {
               <td>{e.observacion}</td>
               <td>
                 <span onClick={() => editarEntrada(e)} style={iconoEditar}>✏️</span>
-                <span onClick={() => eliminarEntrada(e.id)} style={iconoEliminar}>🗑️</span>
+                <span onClick={() => eliminarEntrada(e)} style={iconoEliminar}>🗑️</span>
               </td>
             </tr>
           ))}
