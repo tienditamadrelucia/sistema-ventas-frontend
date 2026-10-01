@@ -98,8 +98,8 @@ function MenuMonasterio() {
         }}>
         <img 
             src={encabezado}
-            alt="Encabezado"
-            style={{ width: "60%", maxWidth: "400px", alignContent:"center", marginTop:"0px" }}
+            alt="Monasterio de Madres Carmelitas Descalzas"
+            style={{ width: "380px", maxWidth: "90%", height: "auto", display: "black", alignContent:"center", marginTop:"0 auto" }}
         />
 
         {/* Línea rosada */}
@@ -140,7 +140,7 @@ function MenuMonasterio() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#84B09C", 
+                backgroundColor: "#B8862D", 
                 border: "1px solid #cccccc", 
                 color: "white",
                 borderRadius: "4px",
