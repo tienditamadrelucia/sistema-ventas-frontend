@@ -819,13 +819,31 @@ const abrirModalPagoConFecha = () => {
 
         <button
           className="btn-ok"
-          onClick={() => {
+          onClick={async () => {
             if (!fechaAbono) {
               alert("Debe seleccionar una fecha");
               return;
+              }
+            try {
+              const res = await fetch(
+              `${API_URL}/api/tasas/por-fecha/${fechaAbono}`
+              );
+              const data = await res.json();
+            if (!data.ok) {
+              alert(
+                `No hay tasas registradas para la fecha ${fechaAbono}.`
+            );
+            return;
             }
+            setTasaDolar(Number(data.tasa.tasaD));
+            setTasaPeso(Number(data.tasa.tasaP));
             setMostrarFechaAbono(false);
-            abrirModalPagoConFecha();
+            setModoCredito(true);
+            setMostrarPago(true);
+            } catch (error) {
+              console.error("Error cargando tasas del abono:", error);
+              alert("Error al buscar las tasas de la fecha del abono.");
+            }
           }}
         >
           Aceptar
