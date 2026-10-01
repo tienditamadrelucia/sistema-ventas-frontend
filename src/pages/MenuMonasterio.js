@@ -536,11 +536,7 @@ function MenuMonasterio() {
           <button style={botonPrincipalSimple}>CIERRE</button>
 
         <button
-            style={{
-                ...botonPrincipalSimple,
-                backgroundColor: "#B8862D",
-                marginTop: "20px"
-                }}
+            style={{ ...botonPrincipalSimple, backgroundColor: "#B8862D"}}
                 onClick={() => navigate("/seleccion-sede")}
             >
             ⇄ CAMBIAR SEDE
