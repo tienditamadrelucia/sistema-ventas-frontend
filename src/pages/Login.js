@@ -57,7 +57,7 @@ function Login() {
     return;
   }
   setProcesando(false);
-  navigate("/menu", { replace: true });
+  navigate("/seleccionar-sede", { replace: true });
 };
 
   return (

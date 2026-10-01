@@ -4,6 +4,7 @@ import "./App.css";
 
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
+import SeleccionSede from "./pages/SeleccionSede";
 import Usuarios from "./pages/Usuarios";
 import Productos from "./pages/Productos";
 import Entradas from "./pages/Entradas";
@@ -44,6 +45,15 @@ function App() {
 
         {/* LOGIN */}
         <Route path="/" element={<Login />} />
+
+        <Route
+          path="/seleccionar-sede"
+          element={
+          <ProtectedRoute>
+          <SeleccionSede />
+          </ProtectedRoute>
+          }
+        />
 
         {/* MENU PROTEGIDO */}
         <Route
