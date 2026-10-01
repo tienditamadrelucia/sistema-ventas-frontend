@@ -537,7 +537,7 @@ function MenuMonasterio() {
 
         <button
             style={{
-                ...estiloBoton,
+                ...botonPrincipalSimple,
                 backgroundColor: "#B8862D",
                 marginTop: "20px"
                 }}
