@@ -443,7 +443,7 @@ const guardarProducto = async () => {
       Procesando, por favor espere...
     </div>
   )}      
-      <Encabezado />
+      <Encabezado sede={sede} />
 
     <div style={{ padding: "1px" }}>
 
