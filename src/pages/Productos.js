@@ -6,6 +6,8 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Productos = () => {
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
 
   // -------------------------
   // ESTILOS GLOBALES
@@ -14,7 +16,7 @@ const Productos = () => {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -28,7 +30,7 @@ const Productos = () => {
   const botonGuardar = {
     width: "25%",
     padding: "6px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#75421F" : "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -66,7 +68,7 @@ const Productos = () => {
     marginBottom: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    backgroundColor: "#EDC5CD",
+    backgroundColor: esMonasterio ? "#E8D1A5" : "#EDC5CD",
     fontFamily: "Arial",
     fontSize: "14px"
   };
@@ -135,7 +137,7 @@ const Productos = () => {
   const inputFotoRef = useRef(null);
   
   const cargarProductos = async (categoria = "") => {
-  const res = await fetch(`${API_URL}/api/productos`);
+  const res = await fetch(`${API_URL}/api/productos?sede=${encodeURIComponent(sede)}`);
   const data = await res.json();
 
   if (categoria) {
@@ -260,6 +262,7 @@ const guardarProducto = async () => {
     // ⭐ 2. PREPARAR PAYLOAD
     const payload = {
       ...formData,
+      sede: sede,
       foto: fotoURL,
       preview: undefined
     };
@@ -382,7 +385,7 @@ const guardarProducto = async () => {
             }  
             await registrarAccion(`Eliminó el producto "${descripcion}"`);  
             // Actualiza la lista de productos después de la eliminación
-            const res2 = await fetch(`${API_URL}/api/productos`);
+            const res2 = await fetch(`${API_URL}/api/productos?sede=${encodeURIComponent(sede)}`);
             setProductos(await res2.json());
         } catch (error) {
             console.error("Error al eliminar el producto:", error);
@@ -400,7 +403,7 @@ const guardarProducto = async () => {
   setModo("crear");
   setProductoEditando(null);
   // pedir el próximo código al backend
-  const res = await fetch(`${API_URL}/api/productos/proximo-codigo`);
+  const res = await fetch(`${API_URL}/api/productos/proximo-codigo?sede=${encodeURIComponent(sede)}`);
   const data = await res.json();
     //alert("codigo + data.codigo")
   setFormData({
@@ -593,7 +596,7 @@ const guardarProducto = async () => {
       </div>
 
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-        <button onClick={() => navigate("/menu")} style={estiloBoton}>
+        <button onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")} style={estiloBoton}>
           Volver al MENÚ PRINCIPAL
         </button>
       </div>
@@ -604,7 +607,7 @@ const guardarProducto = async () => {
       </h3>
 
       <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
-        <thead style={{ backgroundColor: "#F9CEAE" }}> 
+        <thead style={{ backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}> 
           <tr>
             <th>Foto</th>
             <th>Código</th>
