@@ -4,6 +4,7 @@ import "./App.css";
 
 import Login from "./pages/Login";
 import Menu from "./pages/Menu";
+import MenuMonasterio from "./pages/MenuMonasterio";
 import SeleccionSede from "./pages/SeleccionSede";
 import Usuarios from "./pages/Usuarios";
 import Productos from "./pages/Productos";
@@ -64,6 +65,15 @@ function App() {
             </ProtectedRoute>
           }
         /> 
+
+        <Route
+          path="/menu-monasterio"
+          element={
+            <ProtectedRoute>
+            <MenuMonasterio />
+            </ProtectedRoute>
+          }
+        />
 
         {/* USUARIOS (solo admin) */}
         <Route

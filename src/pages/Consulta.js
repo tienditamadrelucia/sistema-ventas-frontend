@@ -226,7 +226,7 @@ useEffect(() => {
           return;
         }
         // 1. Guardar datos de la venta
-        setVenta(data.venta);        
+        //setVenta(data.venta);        
         cargarTasaDeLaFactura(data.venta.fecha);
         // 2. Validar si es crédito
         if (data.venta.estado === "CREDITO") {
@@ -445,9 +445,41 @@ useEffect(() => {
   setMostrarPago(true);
 };
 
-const abrirModalPagoConFecha = () => {
-  setModoCredito(true);
-  setMostrarPago(true);
+const abrirModalPagoConFecha = async () => {
+
+  if (!fechaAbono) {
+    alert("Debe seleccionar la fecha del abono.");
+    return;
+  }
+
+  try {
+    // Buscar las tasas correspondientes AL DÍA DEL ABONO
+    const res = await fetch(
+      `${API_URL}/api/tasas/por-fecha/${fechaAbono}`
+    );
+    const data = await res.json();
+    if (!data.ok || !data.tasa) {
+      alert(
+        `No hay tasas registradas para la fecha ${fechaAbono}.`
+      );
+      return;
+    }
+    const nuevaTasaDolar = Number(data.tasa.tasaD);
+    const nuevaTasaPeso = Number(data.tasa.tasaP);
+    if (!nuevaTasaDolar || !nuevaTasaPeso) {
+      alert("Las tasas registradas para esta fecha no son válidas.");
+      return;
+    }
+    setTasaDolar(nuevaTasaDolar);
+    setTasaPeso(nuevaTasaPeso);
+    setModoCredito(true);
+    setMostrarPago(true);
+  } catch (error) {
+    console.error("Error cargando tasas del abono:", error);
+    alert(
+      "No se pudieron cargar las tasas correspondientes a la fecha del abono."
+    );
+  }
 };
 
     // -----------------------------

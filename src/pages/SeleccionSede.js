@@ -12,7 +12,7 @@ function SeleccionSede() {
 
   const entrarMonasterio = () => {
     localStorage.setItem("sede", "MONASTERIO");
-    alert("Módulo MONASTERIO en preparación");
+    navigate("/menu-monasterio", { replace: true });
   };
 
   const boton = {

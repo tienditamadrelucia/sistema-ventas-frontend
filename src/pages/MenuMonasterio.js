@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import encabezado from "../assets/encabezado.png";
+import encabezado from "../assets/encabezadoMonasterio.png";
 import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../utils/registrarAccion";
 import { obtenerFechaLocalComoDate } from "../utils/fechaLocal";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
-function Menu() {
+function MenuMonasterio() {
 
   // 🔹 Navegación
   const navigate = useNavigate();
@@ -48,8 +48,8 @@ function Menu() {
   const botonPrincipal = {
     width: "100%",
     padding: "12px",
-    backgroundColor: "#FC9E9B",
-    color: "white",
+    backgroundColor: "#5A2D16",
+      color: "white",
     border: "none",
     borderRadius: "6px",
     fontFamily: "Arial Black",
@@ -69,7 +69,7 @@ function Menu() {
   const botonSubmenu = {
     width: "90%",
     padding: "9px",
-    backgroundColor: "#84B09C",
+    backgroundColor: "#B8862D",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -82,7 +82,7 @@ function Menu() {
   };
 
   return (  
-    <div style={{ display: "flex", height: "100vh" }}>
+    <div style={{ display: "flex", minHeight: "100vh", backgroundColor: "#FBF7EF" }}>
 
       {/* 🌟 ENCABEZADO SUPERIOR */}
       <div style={{
@@ -561,4 +561,4 @@ function Menu() {
   );
 }
 
-export default Menu;
+export default MenuMonasterio;
