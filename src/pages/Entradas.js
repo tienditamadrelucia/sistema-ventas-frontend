@@ -16,7 +16,6 @@ const Entradas = () => {
   const navigate = useNavigate();
   const sede = localStorage.getItem("sede") || "TIENDITA";
   const esMonasterio = sede === "MONASTERIO";
-  console.log("SEDE EN ENTRADAS:", sede);
 
   // -------------------------
   // ESTILOS GLOBALES
@@ -100,8 +99,7 @@ const Entradas = () => {
     const cats = await cargarCategorias();
     setCategorias(cats.categorias || cats);
 
-    const prods = await cargarProductos(sede);
-    console.log("PRODUCTOS RECIBIDOS EN ENTRADAS:", prods);
+    const prods = await cargarProductos(sede);    
     setProductos(prods.productos || prods);
 
     const res = await cargarEntradas(paginaActual, 20, sede);

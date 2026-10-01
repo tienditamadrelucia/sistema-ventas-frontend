@@ -15,6 +15,8 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Salidas = () => {
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
 
     const [procesando, setProcesando] = useState(false);    
   // -------------------------
@@ -24,7 +26,7 @@ const Salidas = () => {
   const estiloBotonVolver = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -37,7 +39,7 @@ const Salidas = () => {
   const botonGuardar = {
     width: "30%",
     padding: "6px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -53,7 +55,7 @@ const Salidas = () => {
     marginBottom: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    backgroundColor: "#EDC5CD",
+    backgroundColor: esMonasterio ? "#E8D1A5" : "#EDC5CD",
     fontFamily: "Arial",
     fontSize: "14px"
   };
@@ -105,16 +107,16 @@ useEffect(() => {
     const cats = await cargarCategorias();   // ⬅ trae los datos
     setCategorias(cats.categorias || cats);  // ⬅ GUARDA LOS DATOS
 
-    const prods = await cargarProductos();
+    const prods = await cargarProductos(sede);
     setProductos(prods.productos || prods);
 
-    const res = await cargarSalidas(paginaActual, 20);
+    const res = await cargarSalidas(paginaActual, 20, sede);
     setSalidas(res.salidas);
     setTotalPaginas(res.totalPages || 1);
   };
 
   cargar();
-}, [paginaActual]);
+}, [paginaActual, sede]);
 
 
  
@@ -206,22 +208,26 @@ const guardarSalida = async () => {
           return;
         }
       }
+      const datosSalida = {
+        ...formData,
+        sede
+      };
       if (modo === "crear") {
-        const res = await crearSalida(formData);
+        const res = await crearSalida(datosSalida);
         if (!res || res.ok !== true) {
           alert(res?.error || "Error creando salida en pages");
           return;
       }    
         await registrarAccion(`Registró salida de ${formData.cantidad} del producto ${formData.codigo}`);
       } else {
-        const res = await actualizarSalida(salidaEditando, formData);
+        const res = await actualizarSalida(salidaEditando, datosSalida);
         if (!res.ok) {
           alert(res.error || "Error actualizando salida pages");
          return;
         }
         await registrarAccion(`Actualizó salida del producto ${formData.codigo}`);
       }
-      const recarga = await cargarSalidas(paginaActual, 20);
+      const recarga = await cargarSalidas(paginaActual, 20, sede);
         setSalidas(recarga.salidas || recarga.salidasdb || []);
         setTotalPaginas(recarga.totalPages || 1);
         limpiarFormulario();
@@ -299,7 +305,7 @@ const eliminarSalida = async (salida) => {
       alert(res.error || "No se pudo eliminar la salida");
       return;
     }
-    const recarga = await cargarSalidas(paginaActual, 20);
+    const recarga = await cargarSalidas(paginaActual, 20, sede);
     setSalidas(recarga.salidas || recarga.salidasdb || []);
     setTotalPaginas(recarga.totalPages || 1);
     await registrarAccion(`Eliminó una salida`);
@@ -312,7 +318,7 @@ const eliminarSalida = async (salida) => {
 
   return (
     <div>
-      <Encabezado />
+      <Encabezado sede={sede} />
 
     <div style={{ padding: "20px" }}>
       <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
@@ -430,7 +436,7 @@ const eliminarSalida = async (salida) => {
 
       {/* BOTÓN VOLVER */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-        <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
+        <button onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")} style={estiloBotonVolver}>
           Volver al MENÚ PRINCIPAL
         </button>
       </div>

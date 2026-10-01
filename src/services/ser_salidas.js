@@ -4,9 +4,16 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 const API_SALIDAS = `${API_URL}/api/salidas`;
 
 // GET paginado
-export async function cargarSalidas(page = 1, limit = 20) {
+export async function cargarSalidas(
+  page = 1,
+  limit = 20,
+  sede = "TIENDITA"
+) {
   try {
-    const res = await fetch(`${API_SALIDAS}?page=${page}&limit=${limit}`);
+    const res = await fetch(
+      `${API_SALIDAS}?page=${page}&limit=${limit}&sede=${encodeURIComponent(sede)}`
+    );
+
     const data = await res.json();
 
     if (!data.salidas) {
@@ -14,7 +21,7 @@ export async function cargarSalidas(page = 1, limit = 20) {
       return { salidas: [], page: 1, totalPages: 1 };
     }
 
-    return data; // { total, page, totalPages, salidas }
+    return data;
   } catch (error) {
     alert(error + " Error cargando salidas");
     return { salidas: [], page: 1, totalPages: 1 };
