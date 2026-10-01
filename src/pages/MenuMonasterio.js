@@ -91,7 +91,7 @@ function MenuMonasterio() {
           left: 0,
           width: "100%",
           backgroundColor: "white",
-          padding: "10px 0 5px 0",
+          padding: "0",
           textAlign: "center",
           boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
           zIndex: 10
@@ -107,7 +107,7 @@ function MenuMonasterio() {
             width: "100%",
             height: "6px",
             backgroundColor: "#84868a",
-            marginTop: "1px"
+            marginTop: "0px"
            }}>           
         </div>
 
@@ -183,8 +183,8 @@ function MenuMonasterio() {
           width: "250px",
           backgroundColor: "white",
           padding: "20px",
-          marginTop: "150px",
-          height: "calc(100vh - 150px)",
+          marginTop: "190px",
+          height: "calc(100vh - 190px)",
           overflowY: "auto",
           borderRight: "1px solid #ddd"
           }}>
