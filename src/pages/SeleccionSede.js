@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import encabezado from "../assets/encabezado.png";
+import encabezado from "../assets/encabezadoMonasterio.png";
 
 function SeleccionSede() {
   const navigate = useNavigate();
@@ -101,7 +101,7 @@ function SeleccionSede() {
           onClick={entrarMonasterio}
           style={{
             ...boton,
-            backgroundColor: "#84B09C"
+            backgroundColor: "#75421F"
           }}
         >
           MONASTERIO
