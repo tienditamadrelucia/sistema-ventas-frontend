@@ -4,6 +4,8 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Encabezado = () => {
   const nombre = localStorage.getItem("usuarioNombre") || "Usuario";
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
   
   const hoy = obtenerFechaLocalComoDate().toLocaleDateString("es-VE", {
     weekday: "long",
@@ -50,7 +52,7 @@ const Encabezado = () => {
     <div
       style={{
         width: "100%",
-        backgroundColor: "#84B09C",
+        backgroundColor: esMonasterio ? "#5A2D16" : "#84B09C",
         padding: "8px 20px",
         color: "#ffffff",
         borderRadius: "0 0 8px 8px",
