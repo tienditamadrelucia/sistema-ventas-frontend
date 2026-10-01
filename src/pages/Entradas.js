@@ -14,6 +14,8 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Entradas = () => {
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
 
   // -------------------------
   // ESTILOS GLOBALES
@@ -22,7 +24,7 @@ const Entradas = () => {
   const estiloBotonVolver = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -35,7 +37,7 @@ const Entradas = () => {
   const botonGuardar = {
     width: "30%",
     padding: "6px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -51,7 +53,7 @@ const Entradas = () => {
     marginBottom: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    backgroundColor: "#EDC5CD",
+    backgroundColor: esMonasterio ? "#E8D1A5" : "#EDC5CD",
     fontFamily: "Arial",
     fontSize: "14px"
   };
@@ -100,13 +102,13 @@ const Entradas = () => {
     const prods = await cargarProductos();
     setProductos(prods.productos || prods);
 
-    const res = await cargarEntradas(paginaActual, 20);
+    const res = await cargarEntradas(paginaActual, 20, sede);
     setEntradas(res.entradas);
     setTotalPaginas(res.totalPages || 1);
   };
 
   cargar();
-}, [paginaActual]);
+}, [paginaActual, sede]);
 
 
   // -------------------------
@@ -279,11 +281,16 @@ const Entradas = () => {
       formData.precioVenta = 0;
     }
 
+  const datosEntrada = {
+    ...formData,
+    sede
+  };
+
     // ⭐ CREAR O EDITAR
     let res;
 
     if (modo === "crear") {
-      res = await crearEntrada(formData);
+      res = await crearEntrada(datosEntrada);
       if (!res.ok) {
         alert(res.error || "Error creando entrada en pages");
         return;
@@ -292,7 +299,7 @@ const Entradas = () => {
         `Registró entrada de ${formData.cantidad} del producto ${formData.codigo}`
       );
     } else {
-      res = await actualizarEntrada(entradaEditando, formData);
+      res = await actualizarEntrada(entradaEditando, datosEntrada);
       if (!res.ok) {
         alert(res.error || "Error actualizando entrada");
         return;
@@ -303,7 +310,7 @@ const Entradas = () => {
     }
 
     // ⭐ RECARGAR LISTA
-    const recarga = await cargarEntradas(paginaActual, formData.fecha || "");
+    const recarga = await cargarEntradas(paginaActual, 20, sede);
     setEntradas(recarga.entradas);
     setPaginaActual(recarga.paginaActual);
     setTotalPaginas(recarga.totalPaginas);
@@ -388,7 +395,7 @@ const Entradas = () => {
       alert(res.error || "No se pudo eliminar la entrada");
       return;
     }
-    const recarga = await cargarEntradas(paginaActual);
+    const recarga = await cargarEntradas(paginaActual, 20, sede);
     setEntradas(recarga.entradas);
     setPaginaActual(recarga.page);
     setTotalPaginas(recarga.totalPages);
@@ -402,7 +409,7 @@ const Entradas = () => {
 
   return (
     <div>
-      <Encabezado />
+      <Encabezado sede={sede} />
 
     <div style={{ padding: "20px" }}>
       <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
@@ -539,7 +546,7 @@ const Entradas = () => {
 
       {/* BOTÓN VOLVER */}
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-        <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
+        <button onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")} style={estiloBotonVolver}>
           Volver al MENÚ PRINCIPAL
         </button>
       </div>

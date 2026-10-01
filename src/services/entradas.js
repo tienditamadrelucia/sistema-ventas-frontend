@@ -7,11 +7,12 @@ const API_ENTRADAS = `${API_URL}/api/entradas`;
 // ===============================
 // CARGAR ENTRADAS (PAGINADAS)
 // ===============================
-export async function cargarEntradas(page = 1, limit = 20) {
+export async function cargarEntradas(page = 1, limit = 20, sede = "TIENDITA") {
   try {
     const res = await fetch(
-      `${API_ENTRADAS}?page=${page}&limit=${limit}`
+      `${API_ENTRADAS}?page=${page}&limit=${limit}&sede=${encodeURIComponent(sede)}`
     );
+
     const data = await res.json();
 
     if (!data.entradas) {
@@ -19,7 +20,7 @@ export async function cargarEntradas(page = 1, limit = 20) {
       return { entradas: [], page: 1, totalPages: 1 };
     }
 
-    return data; // { total, page, totalPages, entradas }
+    return data;
   } catch (error) {
     alert(error + " Error cargando entradas");
     return { entradas: [], page: 1, totalPages: 1 };

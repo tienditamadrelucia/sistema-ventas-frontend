@@ -2,8 +2,11 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const API_PRODUCTOS = `${API_URL}/api/productos`;
 
-export async function cargarProductos() {
-  const res = await fetch(API_PRODUCTOS);
+export async function cargarProductos(sede = "TIENDITA") {
+  const res = await fetch(
+    `${API_PRODUCTOS}?sede=${encodeURIComponent(sede)}`
+  );
+
   return res.json();
 }
 

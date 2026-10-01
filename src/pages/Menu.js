@@ -536,7 +536,7 @@ function Menu() {
           <button style={botonPrincipalSimple}>CIERRE</button>
 
           <button
-            style={{ ...botonPrincipalSimple, backgroundColor: "#B8862D" }}
+            style={{ ...botonPrincipalSimple, backgroundColor: "#FC9E9B" }}
             onClick={() => navigate("/seleccionar-sede")}
           >
             ⇄ CAMBIAR SEDE
