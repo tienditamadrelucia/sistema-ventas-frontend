@@ -30,7 +30,7 @@ const Productos = () => {
   const botonGuardar = {
     width: "25%",
     padding: "6px",
-    backgroundColor: esMonasterio ? "#75421F" : "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
