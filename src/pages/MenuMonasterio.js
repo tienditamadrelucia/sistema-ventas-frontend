@@ -153,7 +153,7 @@ function MenuMonasterio() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#84B09C", 
+                backgroundColor: "#B8862D", 
                 border: "1px solid #cccccc", 
                 color: "white",
                 borderRadius: "4px",
@@ -166,7 +166,7 @@ function MenuMonasterio() {
               style={{
                 padding: "6px 10px", 
                 fontSize: "14px", 
-                backgroundColor: "#84B09C", 
+                backgroundColor: "#B8862D", 
                 border: "1px solid #cccccc", 
                 color: "white",
                 borderRadius: "4px"
