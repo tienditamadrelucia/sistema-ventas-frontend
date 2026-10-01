@@ -1,6 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
-import logo from "../assets/logo.png";
+import logo from "../assets/logoConvento.png";
 import { useNavigate } from "react-router-dom";
 import { buscarUsuario } from "../services/usuarios";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
@@ -80,9 +80,10 @@ function Login() {
       )}
 
     <div style={{
-      width: "350px",
-      margin: "80px auto",
-      padding: "25px",
+      width: "90%",
+      maxWidth: "700px",
+      margin: "40px auto",
+      padding: "30px",
       borderRadius: "12px",
       backgroundColor: "#ffffff",
       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.15)"
@@ -91,11 +92,13 @@ function Login() {
 
       <img
         src={logo}
-        alt="Logo Tiendita Madre Lucía"
+        alt="Monasterio de Madres Carmelitas Descalzas"
         style={{
-          width: "120px",
+          width: "100%",
+          maxWidth: "700px",
+          height: "auto",
           display: "block",
-          margin: "0 auto 20px"
+          margin: "0 auto 25px"
         }}
       />
 
@@ -105,7 +108,7 @@ function Login() {
         fontWeight: "bold",
         marginBottom: "20px"
       }}>
-        SISTEMA DE INVENTARIO Y VENTAS DE LA TIENDITA MADRE LUCÍA
+        SISTEMA DE GESTIÓN ADMINISTRATIVA
       </h2>
 
       <form onSubmit={manejarLogin}>
