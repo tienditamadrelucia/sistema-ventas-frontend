@@ -6,6 +6,9 @@ const Encabezado = () => {
   const nombre = localStorage.getItem("usuarioNombre") || "Usuario";
   const sede = localStorage.getItem("sede") || "TIENDITA";
   const esMonasterio = sede === "MONASTERIO";
+
+  console.log("SEDE ACTUAL:", sede);
+  console.log("ES MONASTERIO:", esMonasterio);
   
   const hoy = obtenerFechaLocalComoDate().toLocaleDateString("es-VE", {
     weekday: "long",
