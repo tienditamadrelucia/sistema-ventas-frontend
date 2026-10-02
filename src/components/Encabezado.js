@@ -30,7 +30,9 @@ const Encabezado = () => {
   useEffect(() => {
     async function cargarTasas() {
       try {
-        const res = await fetch(`${API_URL}/api/tasas/hoy`);        
+        const res = await fetch(
+          `${API_URL}/api/tasas/hoy?sede=${encodeURIComponent(sede)}`
+        );        
         if (!res.ok) {
           console.log("No hay tasas registradas hoy");
           return;
@@ -49,7 +51,7 @@ const Encabezado = () => {
       }
     }
     cargarTasas();
-  }, []);    
+  }, [sede]);    
 
   return (
     <div
