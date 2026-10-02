@@ -133,6 +133,7 @@ const Ventas = () => {
 
   const API = `${API_URL}/api`;
   const UsuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";
+  const sedeActual = localStorage.getItem("sede") || "TIENDITA";
   const hoyLocal = new Date();
   const hoyUTC = new Date(Date.UTC(
     hoyLocal.getFullYear(),
@@ -614,7 +615,8 @@ const Ventas = () => {
       IVA: iva,
       total: totalDolar,
       usuario: UsuarioActual,
-      estado
+      estado,
+      sede: sedeActual
     };
     // ============================
     // 4) GUARDAR LA VENTA NUEVA
@@ -744,7 +746,8 @@ const Ventas = () => {
       IVA: iva,
       total: totalDolar,
       usuario: UsuarioActual, // ya lo tienes
-      estado: "CREDITO"       // ⭐ PENDIENTE DE PAGO
+      estado: "CREDITO",       // ⭐ PENDIENTE DE PAGO
+      sede: sedeActual
     };
     console.log("VENTA QUE SE ENVÍA:", ventaData);
     // ============================
