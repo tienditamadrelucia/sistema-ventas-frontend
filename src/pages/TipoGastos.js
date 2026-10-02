@@ -6,6 +6,8 @@ import { registrarAccion } from "../utils/registrarAccion";
 
 const TipoGastos = () => {
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
 
   // -------------------------
   // ESTILOS
@@ -14,7 +16,7 @@ const TipoGastos = () => {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#D98897",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#D98897",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -205,7 +207,7 @@ const TipoGastos = () => {
         </div>
         )}
 
-      <Encabezado />
+      <Encabezado sede={sede} />
 
       <div style={{ padding: "1px" }}>
         <h2 style={{ textAlign: "center", marginBottom: "10px", fontWeight: "bold" }}>
@@ -259,7 +261,9 @@ const TipoGastos = () => {
                 marginBottom: "10px",
                 opacity: procesando ? 0.6 : 1,
                 cursor: procesando ? "not-allowed" : "pointer",
-                backgroundColor: modo === "crear" ? "#D98897" : "#6699FF"
+                backgroundColor: modo === "crear"
+                  ? (esMonasterio ? "#B8862D" : "#D98897")
+                  : "#6699FF"
               }}
             >
               {modo === "crear" ? "Guardar" : "Actualizar"}
@@ -268,7 +272,7 @@ const TipoGastos = () => {
         </div>
 
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-          <button onClick={() => navigate("/menu")} style={estiloBoton}>
+          <button onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")} style={estiloBoton}>
             Volver al MENÚ PRINCIPAL
           </button>
         </div>
@@ -280,7 +284,12 @@ const TipoGastos = () => {
 
         <table border="1" cellPadding="8" style={{ justifyContent: "center", width: "50%", textAlign: "center", margin: "0 auto" }}>
           <thead>
-            <tr>
+            <tr
+              style={{
+                backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+                color: esMonasterio ? "#33231A" : "#000"
+              }}
+            >
               <th>Descripción</th>
               <th>Acciones</th>
             </tr>
