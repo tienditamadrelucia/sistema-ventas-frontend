@@ -96,11 +96,11 @@ const Encabezado = () => {
           fontSize: "13px",
           fontWeight: "bold"
         }}
-      >
-        <div><strong>Caja Chica $:</strong> {cajaDolarHeader ? formatoVE.format(cajaDolarHeader) : "—"}</div>
+      >        
         <div><strong>Caja Chica Pesos:</strong> {cajaPesoHeader ? formatoVE.format(cajaPesoHeader) : "—"}</div>
-        <div><strong>Tasa $:</strong> {tasaDolarHeader ? formatoVE.format(tasaDolarHeader) : "—"}</div>
+        <div><strong>Caja Chica $:</strong> {cajaDolarHeader ? formatoVE.format(cajaDolarHeader) : "—"}</div>        
         <div><strong>Tasa Pesos:</strong> {tasaPesoHeader ? formatoVE.format(tasaPesoHeader) : "—"}</div>
+        <div><strong>Tasa $:</strong> {tasaDolarHeader ? formatoVE.format(tasaDolarHeader) : "—"}</div>
       </div>
     </div>
   );
