@@ -66,7 +66,7 @@ export const obtenerMovimientoPorId = async (id) => {
   }
 };
 
-export const buscarPagoPorFactura = async (factura) => {
+export const buscarPagoPorFactura = async (factura, sede) => {
   try {
     const res = await fetch(`${API}/factura/${factura}`);
     const json = await res.json();
@@ -80,9 +80,9 @@ export const buscarPagoPorFactura = async (factura) => {
   }
 };
 
-export const buscarVueltoPorFactura = async (factura) => {
+export const buscarVueltoPorFactura = async (factura, sede) => {
   try {
-    const res = await fetch(`${API}/factura/${factura}`);
+    const res = await fetch(`${API}/factura/${factura}?sede=${encodeURIComponent(sede)}`);
     const json = await res.json();
     if (!json.ok) return json;
     // Buscar el movimiento con operacion = "VUELTOS"

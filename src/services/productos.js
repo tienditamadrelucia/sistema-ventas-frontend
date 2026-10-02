@@ -15,8 +15,7 @@ const API_CATEGORIAS = `${API_URL}/api/categorias`;
 export async function cargarCategorias() {
   try {
     const res = await fetch(API_CATEGORIAS);
-    const data = await res.json();
-    alert("RESPUESTA RAW de services/productos: " + JSON.stringify(data));
+    const data = await res.json();    
     if (!data.ok) {
       console.error("Error cargando categorías:", data);
       return [];

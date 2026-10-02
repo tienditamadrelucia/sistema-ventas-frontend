@@ -16,6 +16,9 @@ const Pago = ({
   onCerrar,
   onPagoCompletado
 }) => {
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
+
   const [total, setTotal] = useState(0);
 
   const [efectivoP, setEfectivoP] = useState(0);
@@ -77,6 +80,7 @@ const formatoVE = new Intl.NumberFormat("es-VE", {
 
 const dataMoneda = {
   fecha,
+  sede,
   factura: facturaNumero,
   operacion: modoCredito ? "ABONO DE CREDITO" : "VENTA",
   total: totalDolar,
@@ -104,6 +108,7 @@ const dataMoneda = {
 
   const dataVuelto = {
   fecha,  
+  sede,
   operacion: "VUELTOS",
   montoUsd: Number(vueltoUsdUsuario || 0),
   montoBs: Number(vueltoBsUsuario || 0),
@@ -832,6 +837,7 @@ const facturaCancelada = modoCredito
               const fechaDate = new Date(y, m - 1, d);
               const dataMoneda = {
               fecha: fechaDate,
+              sede,
               factura: facturaNumero,
               operacion: modoCredito ? "ABONO DE CREDITO" : "VENTA",              
               total: modoCredito ? totalAbonado : totalDolar,

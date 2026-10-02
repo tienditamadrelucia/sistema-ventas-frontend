@@ -7,6 +7,8 @@ import { buscarVentasDelDia } from "../services/ser_ventas.js";
 
 const Tasas = () => {
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
 
   // ⭐ Fecha de hoy en UTC (00:00:00)
   const hoy = new Date();
@@ -43,7 +45,7 @@ const Tasas = () => {
   const estiloBotonVolver = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -56,7 +58,7 @@ const Tasas = () => {
   const estiloBoton = {
     width: "30%",
     padding: "6px",
-    backgroundColor: "#F9CEAE",
+    backgroundColor: esMonasterio ? "#B8862D" : "#F9CEAE",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -82,7 +84,7 @@ const Tasas = () => {
   const estiloBotonGuardar = {
     width: "30%",
     padding: "6px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -98,7 +100,7 @@ const Tasas = () => {
   useEffect(() => {
     registrarAccion("Ingresó al módulo Tasas de Cambio");
     const cargar = async () => {
-      const res = await obtenerTasaHoy();
+      const res = await obtenerTasaHoy(sede);
       if (res.ok && res.tasa) {
         setExisteHoy(true);
         setModoModificar(false);
@@ -120,7 +122,7 @@ const Tasas = () => {
 
   useEffect(() => {
   const cargarHistorial = async () => {
-    const res = await obtenerHistorialTasas();
+    const res = await obtenerHistorialTasas(sede);
     if (res.ok) {
       setHistorial(res.lista);
     }
@@ -148,7 +150,8 @@ const Tasas = () => {
     if (!existeHoy) {
       res = await guardarTasas({
         ...form,
-        fecha: fecha   // ⭐ SIEMPRE UTC
+        fecha: fecha,   // ⭐ SIEMPRE UTC
+        sede: sede
       });
       if (res.ok) {
         registrarAccion("Registró tasas del día");
@@ -163,14 +166,15 @@ const Tasas = () => {
     }
     // ⭐ MODIFICAR TASA EXISTENTE
     else {      
-      const ventas = await buscarVentasDelDia(fecha);
+      const ventas = await buscarVentasDelDia(fecha, sede);
       if (ventas.lista && ventas.lista.length > 0) {
         alert("No se pueden modificar las tasas porque ya existen ventas registradas hoy.");
         return;
       }   
       res = await modificarTasas({
         ...form,
-        fecha: fecha
+        fecha: fecha,
+        sede: sede
       });
       
       if (res.ok) {
@@ -205,7 +209,7 @@ const Tasas = () => {
   };
 
   const handleVolver = () => {
-    navigate("/menu");
+    navigate(esMonasterio ? "/menu-monasterio" : "/menu");
   };
 
   const inputsHabilitados = !existeHoy || modoModificar;
@@ -215,7 +219,7 @@ const Tasas = () => {
   // ============================
   return (
     <div>
-      <Encabezado />
+     <Encabezado sede={sede} />
       <div style={{ padding: "20px" }}>
         <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
           Gestión de Tasas de Cambio y Caja Chica
@@ -312,7 +316,7 @@ const Tasas = () => {
             }}
           >
           <thead>
-            <tr style={{ backgroundColor: "#F9CEAE", color: "white" }}>
+            <tr style={{ backgroundColor: esMonasterio ? "#5A2D16" : "#F9CEAE", color: "white" }}>
               <th style={{ padding: "8px", border: "1px solid #ccc" }}>Fecha</th>
               <th style={{ padding: "8px", border: "1px solid #ccc" }}>Caja Chica Pesos</th>
               <th style={{ padding: "8px", border: "1px solid #ccc" }}>Caja Chica Dolares</th>

@@ -150,7 +150,14 @@ const Ventas = () => {
   useEffect(() => {
     const validarTasasDeHoy = async () => {
       try {
-        const res = await axios.get(`${API}/tasas/por-fecha/${hoy}`);
+        const res = await axios.get(
+          `${API}/tasas/por-fecha/${hoy}`,
+            {
+            params: {
+            sede: sedeActual
+            }
+          }
+        );
         if (!res.data || !res.data.tasa) {
           alert("Debe registrar las tasas del día antes de entrar al módulo de Ventas.");
           navigate("/tasas");
@@ -178,7 +185,14 @@ const Ventas = () => {
   const cargarTasas = async () => {
     if (!fecha) return;
     try {
-      const res = await axios.get(`${API_URL}/api/tasas/por-fecha/${fecha}`);
+      const res = await axios.get(
+        `${API_URL}/api/tasas/por-fecha/${fecha}`,
+          {
+          params: {
+          sede: sedeActual
+          }
+        }
+      );
       const { tasaD, tasaP, cajachicaD, cajachicaP } = res.data.tasa;
       setTasaDolar(tasaD);
       setTasaPeso(tasaP);
@@ -219,7 +233,7 @@ const Ventas = () => {
     try {
       const categorias = await cargarCategorias();
       setCategoriasDisponibles(categorias);
-      const productos = await cargarProductos();
+      const productos = await cargarProductos(sedeActual);
       setListaProductos(productos);
     } catch (error) {
       console.error("Error cargando categorías o productos", error);
@@ -359,7 +373,9 @@ const Ventas = () => {
     setPrecioVenta(producto.venta);
 
     try {
-      const res = await fetch(`${API_URL}/api/inventario/stock-real/${codigoNormalizado}`);
+      const res = await fetch(
+        `${API_URL}/api/inventario/stock-real/${codigoNormalizado}?sede=${encodeURIComponent(sedeActual)}`
+      );
       const data = await res.json();
       if (data.ok) {
         setStockActual(data.stockReal);
@@ -506,8 +522,8 @@ const Ventas = () => {
   // Si ya tiene número → NO generar nada
 
   // ⭐ 2) VALIDAR PAGO EXISTENTE
-  const pago = await buscarPagoPorFactura(facturaNumero);
-  const vuelto = await buscarVueltoPorFactura(facturaNumero);
+  const pago = await buscarPagoPorFactura(facturaNumero, sedeActual);
+  const vuelto = await buscarVueltoPorFactura(facturaNumero, sedeActual);
   if (!pago.ok) {
     alert("Error al buscar pagos.");
     return;
@@ -641,7 +657,8 @@ const Ventas = () => {
           cantidad: item.cantidad,
           precio: item.precioVenta,
           dscto: item.descuento || 0, 
-          total: item.total
+          total: item.total,
+          sede: sedeActual
           };
           console.log("➡️ ENVIANDO VENDIDO:", vendidoData);
 
@@ -766,11 +783,12 @@ const Ventas = () => {
     for (const item of listaFactura) {
       const vendidoData = {
         factura: facturaNumero,
-        productoId: productoSeleccionado._id,
+        productoId: item._idProducto,
         cantidad: item.cantidad,
         precio: item.precioVenta,
         dscto: item.descuento || 0,
-        total: item.total
+        total: item.total,
+        sede: sedeActual
       };      
       await guardarVendido(vendidoData);
       
@@ -806,7 +824,9 @@ const Ventas = () => {
   try {
     setNumeroFactura(numero)
     // 1. Verificar si ya tiene pago
-    const respPago = await fetch(`${API_URL}/api/moneda/factura/${numero}`);
+    const respPago = await fetch(
+      `${API_URL}/api/moneda/factura/${numero}?sede=${encodeURIComponent(sedeActual)}`
+    );
     const dataPago = await respPago.json();
     if (dataPago.ok && Array.isArray(dataPago.lista) && dataPago.lista.length > 0) {
       alert("Esta factura ya tiene pago registrado.");
@@ -963,7 +983,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
         Procesando, por favor espere...
       </div>
       )}
-      <Encabezado />
+      <Encabezado sede={sedeActual} />
       <h2 style={{ textAlign: "left", marginTop: "5px", marginLeft: "250px" }}>
         REGISTRO DE VENTAS
       </h2>
@@ -986,7 +1006,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                   onChange={async (e) => {
                   const f = e.target.value;
                   setFecha(f);
-                  const tasa = await cargarTasasPorFecha(f);
+                  const tasa = await cargarTasasPorFecha(f, sedeActual);
                   if (!tasa) return setMostrarModalTasas(true);
                     const { tasaD, tasaP, cajachicaD, cajachicaP } = tasa;
                     setTasaDolar(tasaD); setTasaPeso(tasaP);
@@ -1171,7 +1191,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                     setPrecioVenta(producto.venta);
                     try {
                       const res = await fetch(
-                        `${API_URL}/api/inventario/stock-real/${producto.codigo}`
+                        `${API_URL}/api/inventario/stock-real/${producto.codigo}?sede=${encodeURIComponent(sedeActual)}`
                       );
                       const data = await res.json();
                       if (data.ok) {

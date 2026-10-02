@@ -1,58 +1,125 @@
-import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import { API_URL } from "../config";
 import axios from "axios";
 
-const API_TASAS = `${API_URL}/api/tasas`; 
+const API_TASAS = `${API_URL}/api/tasas`;
 
-// 📌 Consultar tasa del día
-export const obtenerTasaHoy = async () => {
-  const res = await fetch(`${API_TASAS}/hoy`);
+
+// ======================================================
+// CONSULTAR TASA DEL DÍA POR SEDE
+// ======================================================
+
+export const obtenerTasaHoy = async (sede) => {
+  const res = await fetch(
+    `${API_TASAS}/hoy?sede=${encodeURIComponent(sede)}`
+  );
+
   return await res.json();
-}; 
+};
 
-// 📌 Guardar tasas del día
+
+// ======================================================
+// GUARDAR TASAS DEL DÍA
+// La sede ya viene dentro de "datos"
+// ======================================================
+
 export const guardarTasas = async (datos) => {
   const res = await fetch(`${API_TASAS}/guardar`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify(datos)
   });
+
   return await res.json();
 };
 
-// 📌 Modificar tasas del día
-export const modificarTasas = async (datos) => {  
-  const res = await fetch(`${API_TASAS}/modificar/${datos._id}`, {
-    method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(datos)
-  });  
+
+// ======================================================
+// MODIFICAR TASAS DEL DÍA
+// ======================================================
+
+export const modificarTasas = async (datos) => {
+  const res = await fetch(
+    `${API_TASAS}/modificar/${datos._id}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(datos)
+    }
+  );
+
   return await res.json();
 };
 
-// 📌 Obtener historial
-export const obtenerHistorialTasas = async () => {
-  const res = await fetch(`${API_TASAS}/todas`);
+
+// ======================================================
+// OBTENER HISTORIAL POR SEDE
+// ======================================================
+
+export const obtenerHistorialTasas = async (sede) => {
+  const res = await fetch(
+    `${API_TASAS}/todas?sede=${encodeURIComponent(sede)}`
+  );
+
   return await res.json();
 };
 
-export const cargarTasasPorFecha = async (fecha) => {
-  console.log("👉 cargarTasasPorFecha llamada con fecha:", fecha);
+
+// ======================================================
+// CARGAR TASAS POR FECHA Y SEDE
+// ======================================================
+
+export const cargarTasasPorFecha = async (fecha, sede) => {
+
+  console.log(
+    "👉 cargarTasasPorFecha:",
+    fecha,
+    "Sede:",
+    sede
+  );
 
   try {
-    const res = await axios.get(`${API_TASAS}/por-fecha/${fecha}`);
-    console.log("✅ Respuesta OK backend:", res.data);
 
-    return res.data.tasa;   // si existe, la devuelve
+    const res = await axios.get(
+      `${API_TASAS}/por-fecha/${fecha}`,
+      {
+        params: {
+          sede: sede
+        }
+      }
+    );
+
+    console.log("✅ Respuesta backend:", res.data);
+
+    return res.data.tasa;
+
   } catch (error) {
-    console.log("🔥 ERROR COMPLETO:", error.response?.status, error.response?.data);
 
-    if (error.response && error.response.status === 404) {
-      console.log("⚠️ No hay tasas para esta fecha, devolveré null");
+    console.log(
+      "🔥 ERROR:",
+      error.response?.status,
+      error.response?.data
+    );
+
+    if (
+      error.response &&
+      error.response.status === 404
+    ) {
+      console.log(
+        "⚠️ No hay tasas para esta fecha y sede"
+      );
+
       return null;
     }
 
-    console.error("Error cargando tasas por fecha:", error);
+    console.error(
+      "Error cargando tasas por fecha:",
+      error
+    );
+
     return null;
   }
 };
-
