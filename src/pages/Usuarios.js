@@ -41,7 +41,7 @@ function Usuarios() {
   const botonGuardar = {
     width: "100%",
     padding: "10px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -370,7 +370,7 @@ function Usuarios() {
         style={{ borderCollapse: "collapse", marginBottom: "20px" }}
       >
         <thead>
-          <tr style={{ backgroundColor: "#eee" }}>
+          <tr style={{ backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE", color: esMonasterio ? "#33231A" : "#000"}}>
             <th>Nombre</th>
             <th>Usuario</th>
             <th>Contraseña</th>
