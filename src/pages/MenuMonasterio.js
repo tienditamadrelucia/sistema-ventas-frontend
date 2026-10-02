@@ -264,16 +264,7 @@ function MenuMonasterio() {
                   navigate("/movimientos")}}
               >
                 Movimientos
-              </button>
-
-              <button 
-                style={botonSubmenu}
-                onClick={async() => {
-                  await registrarAccion("Ingresó al módulo Toma de Inventario");
-                  navigate("/Inventario")}}
-              >
-                Toma de Inventario
-              </button>
+              </button>              
             </>
           )}
 

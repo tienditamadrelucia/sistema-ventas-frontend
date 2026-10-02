@@ -4,13 +4,25 @@ import encabezado from "../assets/encabezadoMonasterio.png";
 
 function SeleccionSede() {
   const navigate = useNavigate();
+  const accesoTiendita =
+  localStorage.getItem("accesoTiendita") === "true";
+  const accesoMonasterio =
+  localStorage.getItem("accesoMonasterio") === "true";
 
   const entrarTiendita = () => {
+  if (!accesoTiendita) {
+    alert("No tiene autorización para acceder a la Tiendita.");
+    return;
+  }
     localStorage.setItem("sede", "TIENDITA");
     navigate("/menu", { replace: true });
   };
 
   const entrarMonasterio = () => {
+  if (!accesoMonasterio) {
+    alert("No tiene autorización para acceder al Monasterio.");
+    return;
+  }
     localStorage.setItem("sede", "MONASTERIO");
     navigate("/menu-monasterio", { replace: true });
   };
@@ -78,43 +90,61 @@ function SeleccionSede() {
           marginTop: "25px"
         }}
       >
-        <button
-          onClick={entrarTiendita}
-          style={{
+        {accesoTiendita && (
+          <button
+            onClick={entrarTiendita}
+            style={{
             ...boton,
             backgroundColor: "#FC9E9B"
-          }}
-        >
-          TIENDITA
-          <div
-            style={{
-              fontFamily: "Arial",
-              fontSize: "14px",
-              marginTop: "8px"
             }}
           >
-            San Cristóbal
-          </div>
-        </button>
-
-        <button
-          onClick={entrarMonasterio}
-          style={{
-            ...boton,
-            backgroundColor: "#75421F"
-          }}
-        >
-          MONASTERIO
-          <div
-            style={{
+            TIENDITA
+            <div
+              style={{
               fontFamily: "Arial",
               fontSize: "14px",
               marginTop: "8px"
+              }}
+            >
+              San Cristóbal
+            </div>
+          </button>
+        )}
+
+        {accesoMonasterio && (
+          <button
+            onClick={entrarMonasterio}
+            style={{
+            ...boton,
+            backgroundColor: "#75421F"
+            }}
+          >
+            MONASTERIO
+          <div
+            style={{
+            fontFamily: "Arial",
+            fontSize: "14px",
+            marginTop: "8px"
             }}
           >
             Rubio
           </div>
-        </button>
+          </button>
+        )}
+        {!accesoTiendita && !accesoMonasterio && (
+          <div
+            style={{
+            marginTop: "25px",
+            padding: "15px 25px",
+            backgroundColor: "#f5f5f5",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            textAlign: "center"
+            }}
+          >
+            Este usuario no tiene acceso autorizado a ninguna sede.
+          </div>
+        )}
       </div>
     </div>
   );

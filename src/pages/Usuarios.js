@@ -24,7 +24,9 @@ function Usuarios() {
     nombre: "",
     usuario: "",
     clave: "",
-    rol: ""
+    rol: "",
+    accesoTiendita: true,
+    accesoMonasterio: false
   });
 
   const inputNombreRef = useRef(null);
@@ -142,6 +144,14 @@ function Usuarios() {
     });
   };
 
+  const handlePermiso = (e) => {
+  const { name, checked } = e.target;
+  setFormData({
+    ...formData,
+    [name]: checked
+  });
+};
+
   const handleGuardar = async () => {
     if (!formData.nombre || !formData.usuario || !formData.clave || !formData.rol) {
       alert("Complete todos los campos");
@@ -153,7 +163,7 @@ function Usuarios() {
     await registrarAccion(`Registró al usuario "${formData.usuario}"`);
     await recargarLogs();
 
-    setFormData({ nombre: "", usuario: "", clave: "", rol: "" });
+    setFormData({ nombre: "", usuario: "", clave: "", rol: "", accesoTiendita: true, accesoMonasterio: false });
     setModo("crear");
   };
 
@@ -164,7 +174,11 @@ function Usuarios() {
       nombre: user.nombre,
       usuario: user.usuario,
       clave: user.clave,
-      rol: user.rol
+      rol: user.rol,
+
+      // Usuarios antiguos: Tiendita sí, Monasterio no
+      accesoTiendita: user.accesoTiendita !== false,
+      accesoMonasterio: user.accesoMonasterio === true
     });
   };
 
@@ -178,7 +192,7 @@ function Usuarios() {
     );
 
     setUsuarios(actualizados);
-    setFormData({ nombre: "", usuario: "", clave: "", rol: "" });
+    setFormData({ nombre: "", usuario: "", clave: "", rol: "", accesoTiendita: true, accesoMonasterio: false });
     setModo("crear");
     setUsuarioEditando(null);
 
@@ -284,6 +298,36 @@ function Usuarios() {
           <option value="SUPERVISOR">SUPERVISOR</option>
           <option value="USUARIO">USUARIO</option>
         </select>
+        <div
+          style={{
+            border: "1px solid #ccc",
+            borderRadius: "6px",
+            padding: "10px",
+            marginBottom: "10px"
+            }}
+        >
+        <div style={{ fontWeight: "bold", marginBottom: "8px" }}>
+          Acceso a:
+        </div>
+        <label style={{ marginRight: "20px" }}>
+        <input
+          type="checkbox"
+          name="accesoTiendita"
+          checked={formData.accesoTiendita}
+          onChange={handlePermiso}
+        />
+        {" "}TIENDITA
+        </label>
+        <label>
+        <input
+          type="checkbox"
+          name="accesoMonasterio"
+          checked={formData.accesoMonasterio}
+          onChange={handlePermiso}
+        />
+        {" "}MONASTERIO
+        </label>
+      </div>
 
         {modo === "crear" ? (
           <button onClick={handleGuardar} style={botonGuardar}>
@@ -328,6 +372,8 @@ function Usuarios() {
             <th>Usuario</th>
             <th>Contraseña</th>
             <th>Rol</th>
+            <th>Tiendita</th>
+            <th>Monasterio</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -338,6 +384,8 @@ function Usuarios() {
               <td>{u.usuario}</td>
               <td>{u.clave}</td>
               <td>{u.rol}</td>
+              <td>{u.accesoTiendita !== false ? "✅" : "❌"}</td>
+              <td>{u.accesoMonasterio === true ? "✅" : "❌"}</td>
               <td>
                 <button
                   onClick={() => handleEditar(u)}
@@ -357,7 +405,7 @@ function Usuarios() {
 
           {usuarios.length === 0 && (
             <tr>
-              <td colSpan="5" style={{ textAlign: "center", padding: "20px" }}>
+              <td colSpan="7" style={{ textAlign: "center", padding: "20px" }}>
                 No hay usuarios registrados
               </td>
             </tr>

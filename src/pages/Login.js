@@ -36,10 +36,13 @@ function Login() {
   const encontrado = await buscarUsuario(nombre, contraseña);  
     if (!encontrado || !encontrado.ok) { // Asegúrate de verificar que encontrado no sea undefined
       setMensaje("Frontend: Usuario o contraseña incorrectos");
+      setProcesando(false);     
       return;
   }
   localStorage.setItem("usuarioNombre", encontrado.usuario.usuario);
   localStorage.setItem("rolUsuario", encontrado.usuario.rol);
+  localStorage.setItem("accesoTiendita", encontrado.usuario.accesoTiendita ? "true" : "false");
+  localStorage.setItem("accesoMonasterio", encontrado.usuario.accesoMonasterio ? "true" : "false");
   // 🔹 Verificar si existen tasas de hoy
   // Normalizar fecha local a UTC 00:00:00
   const hoy = new Date();
