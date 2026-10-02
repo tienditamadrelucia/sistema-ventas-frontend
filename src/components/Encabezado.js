@@ -41,11 +41,11 @@ const Encabezado = () => {
         if (!data.tasa) {
           console.log("No hay tasas registradas hoy");
           return;
-        }        
-        setCajaDolarHeader(data.tasa.cajachicaD);
+        }                
         setCajaPesoHeader(data.tasa.cajachicaP);
-        setTasaDolarHeader(data.tasa.tasaD);
+        setCajaDolarHeader(data.tasa.cajachicaD);
         setTasaPesoHeader(data.tasa.tasaP);
+        setTasaDolarHeader(data.tasa.tasaD);        
       } catch (error) {
         console.log("Error cargando tasas del encabezado:", error);
       }
