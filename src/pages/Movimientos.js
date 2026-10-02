@@ -8,6 +8,14 @@ import { cargarCategorias } from "../services/categorias";
 import { Consultar } from "../services/ser_movi";
 import { cargarProductos } from "../services/productos";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+  
+  // -------------------------
+  // ESTADOS
+  // -------------------------
+  export default function Movimientos() {
+  const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
 
   // -------------------------
   // ESTILOS
@@ -15,7 +23,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 const estiloBotonVolver = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -31,7 +39,7 @@ const estiloBotonVolver = {
     marginBottom: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    backgroundColor: "#EDC5CD",
+    backgroundColor: esMonasterio ? "#E8D1A5" : "#EDC5CD",
     fontFamily: "Arial",
     fontSize: "14px"
   };
@@ -39,7 +47,7 @@ const estiloBotonVolver = {
   const botonGuardar = {
     width: "30%",
     padding: "6px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -48,11 +56,6 @@ const estiloBotonVolver = {
     marginTop: "8px"
   };
 
-  // -------------------------
-  // ESTADOS
-  // -------------------------
-  export default function Movimientos() {
-  const navigate = useNavigate();
   const formularioRef = useRef(null);
 
   const [categorias, setCategorias] = useState([]);
@@ -67,7 +70,6 @@ const estiloBotonVolver = {
     totalSalidas: 0,
     totalVentas: 0
   });
-
 
   const [formData, setFormData] = useState({
     categoria: "",
@@ -95,7 +97,7 @@ const estiloBotonVolver = {
     const cargarDatos = async () => {
       try {
         const cats = await cargarCategorias();
-        const prods = await cargarProductos();
+        const prods = await cargarProductos(sede);
         setCategorias(cats || []);
         setProductos(prods || []);
       } catch (error) {
@@ -103,7 +105,7 @@ const estiloBotonVolver = {
       }
     };
     cargarDatos();
-  }, []);
+  }, [sede]);
   
   // ============================
   // FILTRAR PRODUCTOS POR CATEGORÍA
@@ -152,7 +154,8 @@ const ObtenerMovimientos = async () => {
     const movimientosArray = await Consultar(
       formData.productoId,
       formData.fechaInicio,
-      formData.fechaFin    
+      formData.fechaFin,
+      sede
     );
     // 3. Transformar movimientos
     setMovimientosArray(movimientosArray);
@@ -220,7 +223,7 @@ const ObtenerMovimientos = async () => {
         Procesando, por favor espere...
       </div>
       )}
-      <Encabezado />
+      <Encabezado sede={sede} />
 
       <div style={{ padding: "20px" }}>
         <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
@@ -294,7 +297,7 @@ const ObtenerMovimientos = async () => {
         </div>
         {/* BOTÓN VOLVER */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "1px" }}>
-          <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
+          <button onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")} style={estiloBotonVolver}>
             Volver al MENÚ PRINCIPAL
           </button>
         </div>
@@ -314,7 +317,7 @@ const ObtenerMovimientos = async () => {
             backgroundColor: "white",
           }}
         >
-          <thead style={{ backgroundColor: "#F9CEAE" }}>
+          <thead style={{ backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}>
             <tr>
               <th>Fecha</th>
               <th>Entrada</th>
