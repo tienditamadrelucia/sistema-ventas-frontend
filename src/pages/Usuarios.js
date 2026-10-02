@@ -13,6 +13,9 @@ function Usuarios() {
 
   const [usuarios, setUsuarios] = useState([]);
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
+
   const [modo, setModo] = useState("crear");
   const [usuarioEditando, setUsuarioEditando] = useState(null);
   const [logs, setLogs] = useState([]);
@@ -57,7 +60,7 @@ function Usuarios() {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -235,7 +238,7 @@ function Usuarios() {
         Procesando, por favor espere...
       </div>
       )}
-      <Encabezado />
+      <Encabezado sede={sede} />
 
     <div style={{ padding: "20px" }}>       
 
@@ -352,7 +355,7 @@ function Usuarios() {
       </div>
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "1px" }}> 
         <button
-          onClick={() => navigate("/menu")}
+          onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")}
           style={estiloBoton}
         >
           Volver al MENÚ PRINCIPAL
