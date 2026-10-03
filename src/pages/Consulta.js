@@ -11,6 +11,8 @@ import Pago from "../components/Pago/Pago";
 
 const Consulta = () => {
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
 
     // -----------------------------
     // ESTADOS PRINCIPALES USESTATE
@@ -183,7 +185,9 @@ const Consulta = () => {
     try {
       //const fechaFactura = venta.fecha.substring(0, 10);
       const fecha = fechaFactura.substring(0, 10);      
-      const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fecha}`);
+      const res = await fetch(
+        `${API_URL}/api/tasas/por-fecha/${fecha}?sede=${encodeURIComponent(sede)}`
+      );
       const data = await res.json();
       if (data.ok) {
         setTasaDolar(data.tasa.tasaD);
@@ -195,6 +199,38 @@ const Consulta = () => {
       console.error("Error cargando tasa:", error);
     }
   };  
+
+  const cargarTasasDeHoy = async () => {
+  try {
+    const res = await fetch(
+      `${API_URL}/api/tasas/hoy?sede=${encodeURIComponent(sede)}`
+    );
+
+    const data = await res.json();
+
+    if (!data.ok || !data.tasa) {
+      console.error("No hay tasas registradas para hoy");
+      return null;
+    }
+
+    const tasaD = Number(data.tasa.tasaD);
+    const tasaP = Number(data.tasa.tasaP);
+
+    setTasaDolar(tasaD);
+    setTasaPeso(tasaP);
+
+    // Además de actualizar la pantalla,
+    // devolvemos las tasas para poder usarlas inmediatamente.
+    return {
+      tasaD,
+      tasaP
+    };
+
+  } catch (error) {
+    console.error("Error cargando las tasas de hoy:", error);
+    return null;
+  }
+};
 
 useEffect(() => {
   if (!esCredito) return;
@@ -219,15 +255,17 @@ useEffect(() => {
       setProcesando(true);       
       if (!numeroFactura) return;
       try {            
-        const res = await fetch(`${API_URL}/api/ventas/detalle/${numeroFactura}`);
+        const res = await fetch(
+          `${API_URL}/api/ventas/detalle/${numeroFactura}?sede=${encodeURIComponent(sede)}`
+        );
         const data = await res.json();
         if (!data.ok) {
           alert("Factura no encontrada");
           return;
         }
         // 1. Guardar datos de la venta
-        //setVenta(data.venta);        
-        cargarTasaDeLaFactura(data.venta.fecha);
+        setVenta(data.venta);        
+        const tasasHoy = await cargarTasasDeHoy();
         // 2. Validar si es crédito
         if (data.venta.estado === "CREDITO") {
           setEsCredito(true);
@@ -243,7 +281,12 @@ useEffect(() => {
         // 4. Cargar detalle
         await cargarDetalleFactura(numeroFactura);
         // 5. Cargar pagos (incluye abonos posteriores)
-        await cargarPagos(numeroFactura, data.venta.estado === "CREDITO");
+        await cargarPagos(
+          numeroFactura,
+          data.venta.estado === "CREDITO",
+          tasasHoy,
+          data.venta
+        );
       } catch (error) {
         console.error("Error consultando factura:", error);
         alert("Frontend dice: Error consultando factura");
@@ -278,7 +321,9 @@ useEffect(() => {
   const cargarDetalleFactura = async (factura) => {
   try {
     // 1. LLAMAR LA RUTA CORRECTA
-    const res = await fetch(`${API_URL}/api/vendidos/${factura}`);
+    const res = await fetch(
+      `${API_URL}/api/vendidos/${factura}?sede=${encodeURIComponent(sede)}`
+    );
     const data = await res.json();
     // 2. VALIDAR SI HAY DETALLE
     if (!Array.isArray(data) || data.length === 0) {
@@ -310,16 +355,31 @@ useEffect(() => {
   }
   };
 
-  const cargarPagos = async (factura, esCreditoFactura) => {
+  const cargarPagos = async (
+    factura,
+    esCreditoFactura,
+    tasasSaldo = null,
+    ventaActual = null
+  ) => {
   try {
-    const res = await fetch(`${API_URL}/api/moneda/factura/${factura}`);
+    const res = await fetch(
+      `${API_URL}/api/moneda/factura/${factura}?sede=${encodeURIComponent(sede)}`
+    );
     const data = await res.json();
-    setPagosMoneda(data.lista || []);    
-  } catch (error) {
-    console.error("Error cargando pagos:", error);
-    alert("Error al buscar pagos");
-  }
-};
+    const lista = data.lista || [];
+    setPagosMoneda(lista);
+    if (esCreditoFactura) {
+      await calcularTotalesCredito(
+        lista,
+        tasasSaldo,
+        ventaActual
+      );
+      }    
+    } catch (error) {
+      console.error("Error cargando pagos:", error);
+      alert("Error al buscar pagos");
+    }
+  };
 
   const volverAlMenu = () => {
     window.opener.location.reload();
@@ -367,67 +427,220 @@ useEffect(() => {
     }
   };
 
-  const calcularTotalesCredito = async (pagos) => {
-  let usd = 0;
-  let bs  = 0;
-  let p   = 0;
-  pagos.forEach((pago) => {
-    usd += Number(pago.efectivoD || 0) + Number(pago.zelleD || 0);
-    bs  += Number(pago.efectivoBs || 0)
-        + Number(pago.transferenciaBs || 0)
-        + Number(pago.puntoBs || 0)
-        + Number(pago.pagomovilBs || 0);
-    p   += Number(pago.efectivoP || 0) + Number(pago.transferenciaP || 0);
-  });
-  setTotalUSD(usd);
-  setTotalBsPagado(bs);
-  setTotalPPagado(p);  
-  const tpeso = Number(tasaPeso);
-  const td = Number(tasaDolar);  
-  if (!venta || !venta.total) {
-    console.log("Venta incompleta, no se puede calcular total de factura");
-    return;
+  const obtenerTasasPorFecha = async (fechaMovimiento) => {
+  try {
+    const fecha = String(fechaMovimiento).substring(0, 10);
+
+    const res = await fetch(
+      `${API_URL}/api/tasas/por-fecha/${fecha}?sede=${encodeURIComponent(sede)}`
+    );
+
+    const data = await res.json();
+
+    if (!data.ok || !data.tasa) {
+      console.error(`No hay tasas registradas para ${fecha}`);
+      return null;
+    }
+
+    const tasaD = Number(data.tasa.tasaD);
+    const tasaP = Number(data.tasa.tasaP);
+
+    if (!tasaD || !tasaP) {
+      console.error(`Tasas inválidas para ${fecha}`);
+      return null;
+    }
+
+    return {
+      tasaD,
+      tasaP
+    };
+
+  } catch (error) {
+    console.error(
+      "Error obteniendo tasas para el movimiento:",
+      fechaMovimiento,
+      error
+    );
+
+    return null;
   }
-  const totalFacturaUSD = Number(venta.total);
-  if (!td || !tpeso || !totalFacturaUSD) {
-    console.log("Faltan tasaDolar, tasaPeso o total, no se puede calcular resta");
-    setRestaUSD(0);
-    setRestaBs(0);
-    setRestaP(0);
-    return;
-  }
-  const totalPagadoUSD = usd + (bs / td) + (p / tpeso);  
-  const restaUSD = totalFacturaUSD - totalPagadoUSD;
-  const restaBs  = restaUSD * td;
-  const restaP   = restaUSD * tpeso;
-  setRestaUSD(restaUSD);
-  setRestaBs(restaBs);
-  setRestaP(restaP);
-  // ===============================
-  // DETECTAR CANCELACIÓN COMPLETA
-  // ===============================
-  if (restaUSD <= 0 && venta?.estado === "CREDITO") {
-    alert("✔ La venta ha sido cancelada en su totalidad. Se cambiará a CONTADO.");
-    try {
-      const res = await fetch(`${API_URL}/api/ventas/cambiar-estado/${venta._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ estado: "CONTADO" })
-      });
-      const data = await res.json();
-      if (data.ok) {
-        setEsCredito(false);
-        // Recargar la venta actualizada
-        consultarFactura(numeroFactura);          
-      } else {
+};
+
+  const calcularTotalesCredito = async (
+    pagos,
+    tasasSaldo = null,
+    ventaActual = null
+  ) => {
+  try {
+    const ventaCalculo = ventaActual || venta;
+      if (!ventaCalculo || !ventaCalculo.total) {
+        console.log("Venta incompleta, no se puede calcular el crédito");
+        return;
+      }
+
+    let totalPagadoUSD = 0;
+
+    let totalDolares = 0;
+    let totalBolivares = 0;
+    let totalPesos = 0;
+
+    // =====================================================
+    // CALCULAR CADA MOVIMIENTO CON LA TASA DE SU PROPIA FECHA
+    // =====================================================
+    for (const pago of pagos) {
+
+      const usd =
+        Number(pago.efectivoD || 0) +
+        Number(pago.zelle || 0);
+
+      const bs =
+        Number(pago.efectivoBs || 0) +
+        Number(pago.transferenciaBs || 0) +
+        Number(pago.puntoBs || 0) +
+        Number(pago.pagomovilBs || 0);
+
+      const cop =
+        Number(pago.efectivoP || 0) +
+        Number(pago.transferenciaP || 0);
+
+      // Guardamos también los totales físicos para mostrarlos
+      totalDolares += usd;
+      totalBolivares += bs;
+      totalPesos += cop;
+
+      // Los dólares no necesitan conversión
+      let valorMovimientoUSD = usd;
+
+      // Si el movimiento tiene Bs o COP necesitamos
+      // las tasas correspondientes a SU fecha
+      if (bs !== 0 || cop !== 0) {
+
+        const tasas = await obtenerTasasPorFecha(pago.fecha);
+
+        if (!tasas) {
+          console.error(
+            "No se pudo calcular el movimiento por falta de tasa:",
+            pago
+          );
+          continue;
+        }
+
+        if (bs !== 0) {
+          valorMovimientoUSD += bs / tasas.tasaD;
+        }
+
+        if (cop !== 0) {
+          valorMovimientoUSD += cop / tasas.tasaP;
+        }
+      }
+
+      // Los VUELTOS ya vienen negativos desde MongoDB,
+      // por lo que automáticamente descuentan del pago.
+      totalPagadoUSD += valorMovimientoUSD;
+    }
+
+    // =====================================================
+    // TOTALES DE MONEDA ENTREGADA - VUELTOS
+    // =====================================================
+
+    setTotalUSD(totalDolares);
+    setTotalBsPagado(totalBolivares);
+    setTotalPPagado(totalPesos);
+
+    // =====================================================
+    // SALDO REAL EN DÓLARES
+    // =====================================================
+
+    const totalFacturaUSD = Number(ventaCalculo.total);
+
+    let saldoUSD = totalFacturaUSD - totalPagadoUSD;
+
+    // Tolerancia que ya usamos en Pago.jsx
+    const TOLERANCIA_USD = 0.25;
+
+    // Si queda una diferencia pequeña dentro de la tolerancia,
+    // consideramos la factura completamente cancelada.
+    if (Math.abs(saldoUSD) <= TOLERANCIA_USD) {
+      saldoUSD = 0;
+    }
+
+    setRestaUSD(saldoUSD);
+
+    // =====================================================
+    // EQUIVALENCIA DEL SALDO
+    //
+    // tasaDolar y tasaPeso son las tasas que Consulta tenga
+    // cargadas en ese momento:
+    //
+    // - consulta normal -> tasa de hoy
+    // - registrar abono -> tasa de la fecha seleccionada
+    // =====================================================
+
+    const td = tasasSaldo
+      ? Number(tasasSaldo.tasaD)
+      : Number(tasaDolar);
+
+    const tpeso = tasasSaldo
+      ? Number(tasasSaldo.tasaP)
+      : Number(tasaPeso);
+
+    setRestaBs(td ? saldoUSD * td : 0);
+    setRestaP(tpeso ? saldoUSD * tpeso : 0);
+
+    // =====================================================
+    // CRÉDITO TOTALMENTE CANCELADO
+    // =====================================================
+
+    if (
+      saldoUSD === 0 &&
+      ventaCalculo?.estado === "CREDITO"
+    ) {
+      alert(
+        "✔ La venta ha sido cancelada en su totalidad. Se cambiará a CONTADO."
+      );
+
+      try {
+        const res = await fetch(
+          `${API_URL}/api/ventas/cambiar-estado/${ventaCalculo._id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              estado: "CONTADO"
+            })
+          }
+        );
+
+        const data = await res.json();
+
+        if (data.ok) {
+          setEsCredito(false);
+
+          // Recargar la factura actualizada
+          consultarFactura(numeroFactura);
+        } else {
+          alert("Error cambiando estado a CONTADO");
+        }
+
+      } catch (error) {
+        console.error(
+          "Error cambiando estado:",
+          error
+        );
+
         alert("Error cambiando estado a CONTADO");
       }
-    } catch (error) {
-      console.error("Error cambiando estado:", error);
-      alert("Error cambiando estado a CONTADO");
     }
+
+  } catch (error) {
+    console.error(
+      "Error calculando totales del crédito:",
+      error
+    );
   }
-  };
+};
 
   const abonoCredito = () => {
   // Fecha de hoy en formato YYYY-MM-DD
@@ -455,7 +668,7 @@ const abrirModalPagoConFecha = async () => {
   try {
     // Buscar las tasas correspondientes AL DÍA DEL ABONO
     const res = await fetch(
-      `${API_URL}/api/tasas/por-fecha/${fechaAbono}`
+      `${API_URL}/api/tasas/por-fecha/${fechaAbono}?sede=${encodeURIComponent(sede)}`
     );
     const data = await res.json();
     if (!data.ok || !data.tasa) {
@@ -897,6 +1110,7 @@ const abrirModalPagoConFecha = async () => {
   <Pago            
     modoCredito={modoCredito}
     fecha={fechaAbono}
+    sede={sede}
     facturaNumero={numeroFactura}
     totalDolar={restaUSD}
     totalPeso={restaP}
