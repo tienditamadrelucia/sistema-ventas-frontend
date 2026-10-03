@@ -14,7 +14,7 @@ const ReporteVentas = () => {
   const colorAccion = esMonasterio ? "#B8862D" : "#84B09C";
   const colorTabla = esMonasterio ? "#E8D1A5" : "#F9CEAE";
   const colorSuave = esMonasterio ? "#F5EBDD" : "#EDC5CD";
-
+ 
   // -------------------------
   // ESTILOS (MISMOS QUE SALIDAS)
   // -------------------------
