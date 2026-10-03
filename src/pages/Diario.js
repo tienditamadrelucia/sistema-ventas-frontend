@@ -176,7 +176,7 @@ const Diario = () => {
 
     <div style={{ padding: "20px" }}>
       <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
-        Reporte Diario de Ventas MONASTERIO
+        Reporte Diario de Ventas
       </h2>
 
       {/* FILTRO */}
