@@ -1826,6 +1826,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
             <Pago            
               modoCredito={modoCredito}
               fecha={fecha}
+              sede={sedeActual}
               facturaNumero={numeroFactura}
               totalDolar={totalDolar}
               totalPeso={totalPeso}

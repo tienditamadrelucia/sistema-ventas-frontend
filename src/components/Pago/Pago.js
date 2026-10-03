@@ -5,6 +5,7 @@ import { registrarMoneda, buscarPagoPorFactura,
 const Pago = ({
   modoCredito,
   fecha,
+  sede: sedeProp,
   facturaNumero,
   totalDolar,
   totalPeso,
@@ -16,8 +17,12 @@ const Pago = ({
   onCerrar,
   onPagoCompletado
 }) => {
-  const sede = localStorage.getItem("sede") || "TIENDITA";
-  const esMonasterio = sede === "MONASTERIO";
+  const sede =
+    sedeProp ||
+    localStorage.getItem("sede") ||
+    "TIENDITA";
+
+  const esMonasterio = sede === "MONASTERIO";  
 
   const [total, setTotal] = useState(0);
 
@@ -119,7 +124,7 @@ const dataMoneda = {
   const estiloBoton = {
     width: "20%",
     padding: "5px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -132,7 +137,7 @@ const dataMoneda = {
   const estiloBotonGuardar = {
     width: "20%",
     padding: "5px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -406,7 +411,8 @@ const facturaCancelada = modoCredito
         }}>
           <div style={{
             flex: 1,
-            backgroundColor: "#F9CEAE",
+            backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+            color: esMonasterio ? "#5A2D16" : "white",
             padding: "10px",
             borderRadius: "8px",
             textAlign: "center",
@@ -427,7 +433,8 @@ const facturaCancelada = modoCredito
 
           <div style={{
             flex: 1,
-            backgroundColor: "#F9CEAE",
+            backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+            color: esMonasterio ? "#5A2D16" : "white",
             padding: "10px",
             borderRadius: "8px",
             textAlign: "center",
@@ -448,7 +455,8 @@ const facturaCancelada = modoCredito
 
           <div style={{
             flex: 1,
-            backgroundColor: "#F9CEAE",
+            backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+            color: esMonasterio ? "#5A2D16" : "white",
             padding: "10px",
             borderRadius: "8px",
             textAlign: "center",
@@ -598,12 +606,12 @@ const facturaCancelada = modoCredito
         }}>
         <div style={{
             flex: 1,
-            backgroundColor: "#CAD9FB",
+            backgroundColor: esMonasterio ? "#E8D1A5" : "#CAD9FB",
             padding: "5px",
             borderRadius: "8px",
             textAlign: "center",            
             fontWeight: "bold",
-            color:"white"
+            color: esMonasterio ? "#5A2D16" : "white"
           }}>
             <label>USD</label>
             <div style={{
@@ -618,12 +626,12 @@ const facturaCancelada = modoCredito
         </div>
         <div style={{
             flex: 1,
-            backgroundColor: "#CAD9FB",
+            backgroundColor: esMonasterio ? "#E8D1A5" : "#CAD9FB",
             padding: "5px",
             borderRadius: "8px",
             fontWeight: "bold",
             textAlign: "center",
-            color:"white"
+            color: esMonasterio ? "#5A2D16" : "white"
           }}>
             <label>COP</label>
             <div style={{
@@ -638,12 +646,12 @@ const facturaCancelada = modoCredito
         </div>
         <div style={{
             flex: 1,
-            backgroundColor: "#CAD9FB",
+            backgroundColor: esMonasterio ? "#E8D1A5" : "#CAD9FB",
             padding: "5px",
             borderRadius: "8px",            
             fontWeight: "bold",
             textAlign: "center",
-            color:"white"
+            color: esMonasterio ? "#5A2D16" : "white"
           }}>
             <label>Bs</label>
             <div style={{
@@ -685,7 +693,7 @@ const facturaCancelada = modoCredito
             {/* USD */}
             <div style={{
               flex: 1,
-              backgroundColor: "#FC9E9B",
+              backgroundColor: esMonasterio ? "#B8862D" : "#FC9E9B",
               padding: "1px",
               borderRadius: "8px",
               textAlign: "center",
@@ -704,7 +712,7 @@ const facturaCancelada = modoCredito
             {/* COP */}
             <div style={{
               flex: 1,
-              backgroundColor: "#FC9E9B",
+              backgroundColor: esMonasterio ? "#B8862D" : "#FC9E9B",
               padding: "1px",
               borderRadius: "8px",
               textAlign: "center",
@@ -723,7 +731,7 @@ const facturaCancelada = modoCredito
             {/* BS */}
             <div style={{
               flex: 1,
-              backgroundColor: "#FC9E9B",
+              backgroundColor: esMonasterio ? "#B8862D" : "#FC9E9B",
               padding: "1px",
               borderRadius: "8px",
               textAlign: "center",
@@ -889,6 +897,7 @@ const facturaCancelada = modoCredito
             if (hayVueltoNuevo) {
               const dataVuelto = {
               fecha: fecha,
+              sede: sede,
               factura: facturaNumero,
               operacion: "VUELTOS",              
               total: 0,
