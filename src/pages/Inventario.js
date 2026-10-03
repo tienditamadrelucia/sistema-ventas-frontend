@@ -15,9 +15,6 @@ import { manejarError } from "../utils/manejarError";
 import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
-  const navigate = useNavigate();
-  const sede = localStorage.getItem("sede") || "TIENDITA";
-  const esMonasterio = sede === "MONASTERIO";
   // -------------------------
   // ESTILOS
   // -------------------------
@@ -107,6 +104,11 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   // -------------------------
 
   const Inventario = () => {
+  
+  const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
+
   const [toma, setToma] = useState({});
   const [inventarioGuardado, setInventarioGuardado] = useState(false);
   const [fecha, setFecha] = useState("");
