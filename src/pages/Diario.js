@@ -176,7 +176,7 @@ const ReporteVentas = () => {
 
     <div style={{ padding: "20px" }}>
       <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
-        Reporte Diario de Ventas
+        Reporte Diario de Ventas MONASTERIO
       </h2>
 
       {/* FILTRO */}
