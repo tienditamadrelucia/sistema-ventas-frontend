@@ -23,6 +23,10 @@ const Pago = ({
     "TIENDITA";
 
   const esMonasterio = sede === "MONASTERIO";  
+  console.log("SEDE RECIBIDA EN PAGO:", sedeProp);
+console.log("SEDE EN LOCALSTORAGE:", localStorage.getItem("sede"));
+console.log("SEDE USADA EN PAGO:", sede);
+console.log("ES MONASTERIO:", esMonasterio);
 
   const [total, setTotal] = useState(0);
 
