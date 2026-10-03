@@ -7,6 +7,13 @@ import { API_URL } from "../config";
 const ReporteVentas = () => {
   const navigate = useNavigate();
   const formularioRef = useRef(null);
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
+
+  const colorPrincipal = esMonasterio ? "#5A2D16" : "#FC9E9B";
+  const colorAccion = esMonasterio ? "#B8862D" : "#84B09C";
+  const colorTabla = esMonasterio ? "#E8D1A5" : "#F9CEAE";
+  const colorSuave = esMonasterio ? "#F5EBDD" : "#EDC5CD";
 
   // -------------------------
   // ESTILOS (MISMOS QUE SALIDAS)
@@ -14,7 +21,7 @@ const ReporteVentas = () => {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: colorPrincipal,
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -27,7 +34,7 @@ const ReporteVentas = () => {
   const botonBuscar = {
     width: "30%",
     padding: "6px",
-    backgroundColor: "#F9CEAE",
+    backgroundColor: colorAccion,
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -42,7 +49,7 @@ const ReporteVentas = () => {
     marginBottom: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    backgroundColor: "#EDC5CD",
+    backgroundColor: colorSuave,
     fontFamily: "Arial",
     fontSize: "14px"
   };
@@ -84,7 +91,7 @@ const ReporteVentas = () => {
   }
   try {
     const res = await fetch(
-      `${API_URL}/api/ventas/reporte/${desde}/${hasta}`
+      `${API_URL}/api/ventas/reporte/${desde}/${hasta}?sede=${encodeURIComponent(sede)}`
     );
     const data = await res.json();
     if (!data.ok) {
@@ -122,7 +129,7 @@ const ReporteVentas = () => {
   if (!confirmar) return;
   try {
     const res = await fetch(
-      `${API_URL}/api/facturas/eliminar-completa/${factura}`,
+      `${API_URL}/api/facturas/eliminar-completa/${factura}?sede=${encodeURIComponent(sede)}`,
       { method: "DELETE" }
     );
     const json = await res.json();
@@ -165,7 +172,7 @@ const ReporteVentas = () => {
         Procesando, por favor espere...
       </div>
       )}
-    <Encabezado />
+    <Encabezado sede={sede} />
 
     <div style={{ padding: "20px" }}>
       <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
@@ -244,7 +251,7 @@ const ReporteVentas = () => {
 
       {/* ⭐⭐⭐ TABLA CONTINUA — UNA SOLA, SIN REPETICIONES ⭐⭐⭐ */}
       <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
-        <thead style={{ backgroundColor: "#F9CEAE" }}>
+        <thead style={{ backgroundColor: colorTabla }}>
           <tr>
             <th>Fecha</th>
             <th>Factura</th>
@@ -388,7 +395,7 @@ const ReporteVentas = () => {
         </h3>
 
         <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center", marginBottom: "40px" }}>
-          <thead>
+          <thead style={{ backgroundColor: colorTabla }}>
           <tr>
             <th>Efectivo P</th>
             <th>Transf P</th>
