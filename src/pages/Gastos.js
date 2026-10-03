@@ -7,6 +7,9 @@ import { API_URL } from "../config";
 
 const Gastos = () => {
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
+
   const usuarioActual = localStorage.getItem("usuario") || "ADMIN";
 
   const [gastos, setGastos] = useState([]);
@@ -38,7 +41,7 @@ const Gastos = () => {
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -51,7 +54,7 @@ const Gastos = () => {
   const botonGuardar = {
     width: "30%",
     padding: "6px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -79,7 +82,7 @@ const Gastos = () => {
 
   async function cargarGastos() {
     setProcesando(true); // ⭐ NUEVO
-    const data = await obtenerGastos();
+    const data = await obtenerGastos(sede);
     setGastos(data.lista);
     setProcesando(false); // ⭐ NUEVO
   }
@@ -142,15 +145,19 @@ const Gastos = () => {
         return;
       }
 
-      if (modo === "crear") {
-        console.log("gasto");
-        await crearGasto(formData);
-        console.log("guardó gasto");
-        await registrarAccion(`Registró un gasto: ${formData.descripcion}`);
-      } else {
-        await actualizarGasto(gastoEditando._id, formData);
-        await registrarAccion(`Actualizó un gasto: ${formData.descripcion}`);
-      }
+      const datosGasto = {
+  ...formData,
+  sede
+};
+
+if (modo === "crear") {
+  console.log("gasto");
+  await crearGasto(datosGasto);  
+  await registrarAccion(`Registró un gasto: ${formData.descripcion}`);
+} else {
+  await actualizarGasto(gastoEditando._id, datosGasto);
+  await registrarAccion(`Actualizó un gasto: ${formData.descripcion}`);
+}
 
       await cargarGastos();
       limpiarFormulario();
@@ -221,7 +228,7 @@ const Gastos = () => {
 
   return (
     <div>
-      <Encabezado />
+      <Encabezado sede={sede} />
 
       {/* ⭐ MENSAJE DE PROCESANDO */}
       {procesando && (
@@ -346,7 +353,7 @@ const Gastos = () => {
 
         {/* BOTÓN VOLVER */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "10px" }}>
-          <button onClick={() => navigate("/menu")} style={estiloBoton}>
+          <button onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")} style={estiloBoton}>
             Volver al MENÚ PRINCIPAL
           </button>
         </div>
@@ -358,7 +365,12 @@ const Gastos = () => {
 
         <table border="1" cellPadding="1" style={{ width: "100%", textAlign: "center" }}>
           <thead>
-            <tr>
+            <tr
+              style={{
+                backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+                color: esMonasterio ? "#33231A" : "#000"
+              }}
+            >
               <th>Fecha</th>
               <th>Descripción</th>
               <th>Moneda</th>

@@ -7,6 +7,9 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Caja = () => {
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
+
   const [procesando, setProcesando] = useState(false);
   const [fecha, setFecha] = useState("");  
   const [fechaFormateada, setfechaFormateada] = useState("");  
@@ -68,8 +71,8 @@ const Caja = () => {
   const estiloBoton = {
     width: "25%",
     padding: "1px",
-    backgroundColor: "#F9CEAE",
-    color: "white",
+    backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+    color: esMonasterio ? "#33231A" : "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
     fontWeight: "900",
@@ -84,7 +87,7 @@ const Caja = () => {
     display:"flex",
     height:"30px",
     padding: "6px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -100,7 +103,7 @@ const Caja = () => {
     display:"flex",
     height:"30px",
     padding: "6px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -118,8 +121,8 @@ const Caja = () => {
     display:"flex",
     height:"30px",
     padding: "6px",
-    backgroundColor: "#F9CEAE",
-    color: "white",
+    backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+    color: esMonasterio ? "#33231A" : "white",
     border: "none",
     borderRadius: "6px",
     fontFamily: "Arial Black",
@@ -183,7 +186,9 @@ const Caja = () => {
     }
     const fechaFormateada = new Date(fecha).toISOString().split("T")[0];
     registrarAccion("Consultó datos del Cuadre de Caja del día");
-    const res = await fetch(`${API_URL}/api/caja/${fechaFormateada}`);
+    const res = await fetch(
+      `${API_URL}/api/caja/${fechaFormateada}?sede=${encodeURIComponent(sede)}`
+    );
     const data = await res.json();
     const existe = data.existe === true;
     // NO EXISTE → CREAR
@@ -293,7 +298,9 @@ const Caja = () => {
       console.log("Modo lectura: no se carga caja chica.");
       return;
     }
-    const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fechaFormateada}`);
+    const res = await fetch(
+      `${API_URL}/api/tasas/por-fecha/${fechaFormateada}?sede=${encodeURIComponent(sede)}`
+    );
     const data = await res.json();    
     if (!data || data.ok !== true) {      
       alert("F: No hay caja chica registrada para esa fecha.");
@@ -326,7 +333,9 @@ const Caja = () => {
       console.log("Modo lectura: no se recalculan ventas.");
       return;
     }
-    const res = await fetch(`${API_URL}/api/moneda/fecha/${fechaFormateada}`);
+    const res = await fetch(
+      `${API_URL}/api/moneda/fecha/${fechaFormateada}?sede=${encodeURIComponent(sede)}`
+    );
     const data = await res.json();
     console.log("DATA VENTAS:", data);
     // 2. Validación
@@ -373,7 +382,9 @@ const Caja = () => {
       console.log("Modo lectura: no se recalculan gastos.");
       return;
     }
-    const res = await fetch(`${API_URL}/api/gastos/`);
+    const res = await fetch(
+      `${API_URL}/api/gastos/?sede=${encodeURIComponent(sede)}`
+    );
     const data = await res.json();
     if (!data || !data.ok || !data.lista) {
       alert("No se pudieron obtener los gastos");
@@ -573,6 +584,7 @@ const totalBolivaresContados =
     
         const payload = {
             fecha: fecha,
+            sede: sede,
             cajaChica: {
             D: cuadre.CajaChicaD,
             P: cuadre.CajaChicaP,
@@ -636,6 +648,7 @@ const totalBolivaresContados =
     const payload = {
         _id: idCuadre,
       fecha: fechaFormateada,
+      sede: sede,
       cajaChica: {
         P: cuadre.CajaChicaP,
         D: cuadre.CajaChicaD,
@@ -735,7 +748,7 @@ const totalBolivaresContados =
 
   return (
     <div>
-      <Encabezado />
+      <Encabezado sede={sede} />
       <div style={{ padding: "10px" }}>
         <h2 style={{ textAlign: "center", marginBottom: "1px", fontWeight: "bold" }}>
           Cuadre de Caja Diario
@@ -762,7 +775,7 @@ const totalBolivaresContados =
                 >
                     {modo === "modificar" ? "Actualizar" : "Guardar"}
                 </button>
-                <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
+                <button onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")} style={estiloBotonVolver}>
                     MENÚ
                 </button>
             </div>            
@@ -1006,8 +1019,8 @@ const totalBolivaresContados =
             disabled={modo === "lectura"}
             style={{
                 padding: "6px 12px",
-                backgroundColor: "#F9CEAE",
-                color: "white",
+                backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+                color: esMonasterio ? "#33231A" : "white",
                 border: "none",
                 borderRadius: "6px",
                 cursor: modo === "lectura" ? "not-allowed" : "pointer",
@@ -1186,8 +1199,8 @@ const totalBolivaresContados =
           disabled={modo === "lectura"}
           style={{
               padding: "6px 12px",
-              backgroundColor: "#F9CEAE",
-              color: "white",
+              backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+              color: esMonasterio ? "#33231A" : "white",
               border: "none",
               borderRadius: "6px",
               cursor: modo === "lectura" ? "not-allowed" : "pointer",
@@ -1385,8 +1398,8 @@ const totalBolivaresContados =
           disabled={modo === "lectura"}
           style={{
               padding: "6px 12px",
-              backgroundColor: "#F9CEAE",
-              color: "white",
+              backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+              color: esMonasterio ? "#33231A" : "white",
               border: "none",
               borderRadius: "6px",
               cursor: modo === "lectura" ? "not-allowed" : "pointer",

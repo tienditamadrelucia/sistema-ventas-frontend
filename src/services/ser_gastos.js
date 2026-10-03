@@ -7,11 +7,14 @@ const APIURL = `${API_URL}/api/gastos`;
 // -------------------------------------
 // OBTENER TODOS LOS GASTOS
 // -------------------------------------
-export async function obtenerGastos() {
+export async function obtenerGastos(sede = "TIENDITA") {
   try {
-    const res = await fetch(APIURL);
+    const res = await fetch(
+      `${APIURL}?sede=${encodeURIComponent(sede)}`
+    );
+
     const data = await res.json();
-    return data; // { ok, lista }
+    return data;
   } catch (error) {
     console.error("Error obteniendo gastos:", error);
     return { ok: false, lista: [] };
