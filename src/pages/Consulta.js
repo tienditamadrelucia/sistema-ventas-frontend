@@ -946,8 +946,22 @@ const abrirModalPagoConFecha = async () => {
   )}
   {mostrarFechaAbono && (
   <div className="modal-fondo">
-    <div className="modal-fecha">
-      <h3>Fecha del abono</h3>
+    <div
+      className="modal-fecha"
+      style={{
+        backgroundColor: esMonasterio ? "#F5EBDD" : "#FFF5F5",
+        border: `3px solid ${colorPrincipal}`,
+        borderRadius: "12px"
+      }}
+    >
+      <h3
+        style={{
+          color: colorPrincipal,
+          fontFamily: "Arial Black, Arial, sans-serif"
+        }}
+      >
+  Fecha del abono
+</h3>
 
       <div className="fila-fecha">
         <input
@@ -959,6 +973,11 @@ const abrirModalPagoConFecha = async () => {
 
         <button
           className="btn-ok"
+          style={{
+            backgroundColor: colorAccion,
+            color: "white",
+            fontWeight: "bold"
+          }}
           onClick={async () => {
             if (!fechaAbono) {
               alert("Debe seleccionar una fecha");
@@ -991,6 +1010,11 @@ const abrirModalPagoConFecha = async () => {
 
         <button
           className="btn-cancel"
+          style={{
+            backgroundColor: colorPrincipal,
+            color: "white",
+            fontWeight: "bold"
+          }}
           onClick={() => setMostrarFechaAbono(false)}
         >
           Cancelar
