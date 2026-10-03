@@ -319,13 +319,23 @@ useEffect(() => {
     ((Number(vueltoCopUsuario || 0) / tasaP) * tasaD)
   );
 
-const vueltoCorrecto = vueltoUsuarioUSD + 0.001 >= vueltoUsdSistema;
+// Tolerancia permitida para diferencias por cambio y redondeo
+const TOLERANCIA_USD = 0.25;
 
-const diferenciaUSD = Math.abs(totalPagadoUSD - totalDolar);
+// Pago neto real después de descontar el vuelto entregado
+const pagoNetoUSD = totalPagadoUSD - vueltoUsuarioUSD;
+
+// Diferencia final entre lo que debía pagar y lo que realmente quedó pagado
+const diferenciaUSD = pagoNetoUSD - totalDolar;
+
+// La factura se considera cuadrada si la diferencia está
+// dentro de ± 0.25 USD
+const pagoDentroDeTolerancia =
+  Math.abs(diferenciaUSD) <= TOLERANCIA_USD + 0.000001;
 
 const facturaCancelada = modoCredito
   ? totalAbonado > 0
-  : vueltoCorrecto;
+  : pagoDentroDeTolerancia;
 
  
   const limpiarTodo = () => {    
@@ -672,14 +682,18 @@ const facturaCancelada = modoCredito
 
       {/* FALTANTE */}
       <div style={{ textAlign: "center", marginBottom: "1px" }}>
-        {faltanteUSD > 0 ? (
+        {faltanteUSD > TOLERANCIA_USD ? (
           <span style={{ color: "red", fontWeight: "bold" }}>
-            Faltan: {formatoVE.format(faltanteUSD)} USD{"-------------------------"} {formatoVE.format(faltanteCOP)} COP{"-------------------------"} {formatoVE.format(faltanteBs)} Bs
+            Faltan: {formatoVE.format(faltanteUSD)} USD
+            {"-------------------------"}
+            {formatoVE.format(faltanteCOP)} COP
+            {"-------------------------"}
+            {formatoVE.format(faltanteBs)} Bs
           </span>
-          ) : (
-          <span style={{ color: "green", fontWeight: "bold" }}>
-            Pago completo
-          </span>
+        ) : (
+        <span style={{ color: "green", fontWeight: "bold" }}>
+          Pago completo
+        </span>
         )}
       </div>
 
@@ -789,7 +803,7 @@ const facturaCancelada = modoCredito
             {/* RESTANTE DEL VUELTO */}
             <div 
               style={{ textAlign: "left", marginTop: "1px" }}>
-              {vueltoUsuarioUSD < vueltoUsdSistema ? (
+              {(vueltoUsdSistema - vueltoUsuarioUSD) > TOLERANCIA_USD ? (
               <span style={{ color: "red", fontWeight: "bold" }}>
                 Falta entregar: {formatoVE.format(faltaXUSD || 0)} USD{"---------------"} {formatoVE.format(faltaXCOP || 0)} COP{"---------------"} {formatoVE.format(faltaXBs || 0)} Bs
                 </span>
