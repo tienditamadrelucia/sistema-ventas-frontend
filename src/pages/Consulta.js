@@ -163,7 +163,7 @@ const Consulta = () => {
         cursor:"pointer",
         height:"20px"
     };
-    const botonGuardar = {
+    const botonVarios = {
       width: "30%",
       display:"flex",
       height:"40px",
@@ -744,7 +744,7 @@ const abrirModalPagoConFecha = async () => {
               style={{ width:"60px" }}
             />
 
-            <button onClick={() => consultarFactura(numeroFactura)} style={estiloBoton}>
+            <button onClick={() => consultarFactura(numeroFactura)} style={botonVarios}>
               Buscar
             </button>   
           
@@ -1038,7 +1038,7 @@ const abrirModalPagoConFecha = async () => {
     Volver al Menú
   </button>
 
-  <button onClick={borrarCampos} style={estiloBoton}>
+  <button onClick={borrarCampos} style={botonVarios}>
     Limpiar
   </button>
 
