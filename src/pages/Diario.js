@@ -1,10 +1,10 @@
-// src/pages/ReporteVentas.jsx
+// src/pages/Diario.jsx
 import Encabezado from "../components/Encabezado";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 
-const ReporteVentas = () => {
+const Diario = () => {
   const navigate = useNavigate();
   const formularioRef = useRef(null);
   const sede = localStorage.getItem("sede") || "TIENDITA";
@@ -427,4 +427,4 @@ const ReporteVentas = () => {
   );
 };
 
-export default ReporteVentas;
+export default Diario;

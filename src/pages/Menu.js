@@ -462,7 +462,7 @@ function Menu() {
                 style={botonSubmenu}
                 onClick={async() => {
                 await registrarAccion("Entró al módulo Reporte Diario de Ventas")
-                 window.open("/diario", "_blank")}}
+                 window.open("/Diario", "_blank")}}
                 >
                   Diario de Ventas
               </button>
