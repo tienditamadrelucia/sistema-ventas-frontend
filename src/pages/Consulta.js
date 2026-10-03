@@ -856,116 +856,8 @@ const abrirModalPagoConFecha = async () => {
   Subtotal: ${venta.subtotal.toFixed(2)} — IVA: ${venta.IVA.toFixed(2)} — Total: ${venta.total.toFixed(2)}
 </div>
 )}
-{pagosMoneda.length === 1 && (
-  <div>  
-{/* TABLA DE PAGOS */}
-<div style={{ display:"flex", border: "1px solid #ccc", padding: "10px", gap: "8px", width: "1200px", marginTop: "1px", alignItems:"flex-start" }}>
-    <div style={{ marginTop: "1px" }}>
-        <h3 style={{ marginBottom: "1px" }}>Detalle del Pago</h3>           
-            
-{/* CONTENEDOR HORIZONTAL DE LAS 3 COLUMNAS */}
-<div style={{ display: "flex", gap: "40px", marginTop: "10px" }}>
 
-  {/* ===================== COLUMNA PESOS ===================== */}
-  <div style={{ display: "flex", flexDirection:"column", gap:"8px" }}>
-    <h4 style={{ margin: 0 }}>Pagos en Pesos</h4>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Efectivo P:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.efectivoP)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Transferencia P:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.transferenciaP)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Referencia:</label>
-      <input type="text" value={pagosMoneda[0]?.referenciaP} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Banco:</label>
-      <input type="text" value={pagosMoneda[0]?.bancoP} readOnly style={{ backgroundColor:"#CCC", width:"140px" }} />
-    </div>
-  </div>
-
-  {/* ===================== COLUMNA BOLÍVARES ===================== */}
-  <div style={{ display: "flex", flexDirection:"column", gap:"8px" }}>
-    <h4 style={{ margin: 0 }}>Pagos en Bolívares</h4>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Efectivo Bs:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.efectivoBs)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Transferencia Bs:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.transferenciaBs)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Referencia:</label>
-      <input type="text" value={pagosMoneda[0]?.referenciaTBs} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Banco:</label>
-      <input type="text" value={pagosMoneda[0]?.bancoTBs} readOnly style={{ backgroundColor:"#CCC", width:"140px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Punto:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.puntoBs)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Ref Punto:</label>
-      <input type="text" value={pagosMoneda[0]?.refPunto} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Lote:</label>
-      <input type="text" value={pagosMoneda[0]?.lotePunto} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-  </div>
-
-  {/* ===================== COLUMNA DÓLARES ===================== */}
-  <div style={{ display: "flex", flexDirection:"column", gap:"8px" }}>
-    <h4 style={{ margin: 0 }}>Pagos en Dólares</h4>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Efectivo $:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.efectivoD)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Zelle:</label>
-      <input type="text" value={formatoVE(pagosMoneda[0]?.zelleD)} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Referencia:</label>
-      <input type="text" value={pagosMoneda[0]?.referenciaZ} readOnly style={{ backgroundColor:"#CCC", width:"100px" }} />
-    </div>
-
-    <div style={{ display:"flex", alignItems:"center", gap:"5px" }}>
-      <label style={{ width:"110px" }}>Banco:</label>
-      <input type="text" value={pagosMoneda[0]?.bancoZ} readOnly style={{ backgroundColor:"#CCC", width:"140px" }} />
-    </div>
-  </div>
-
-</div>
-
-</div>
-
-</div>
-  </div>
-  
-)}
-
-{pagosMoneda.length > 1 && (
+{pagosMoneda.length >= 1 && (
   <div className="bloque-credito">
       <div
       style={{
@@ -1046,7 +938,7 @@ const abrirModalPagoConFecha = async () => {
   </button>
   
   {esCredito && (
-    <button onClick={setMostrarFechaAbono} style={estiloBotonGuardar}
+    <button onClick={() => setMostrarFechaAbono(true)} style={estiloBotonGuardar}
       className="btn-abono"
     >    
       Registrar abono
@@ -1074,7 +966,7 @@ const abrirModalPagoConFecha = async () => {
               }
             try {
               const res = await fetch(
-              `${API_URL}/api/tasas/por-fecha/${fechaAbono}`
+              `${API_URL}/api/tasas/por-fecha/${fechaAbono}?sede=${encodeURIComponent(sede)}`
               );
               const data = await res.json();
             if (!data.ok) {
