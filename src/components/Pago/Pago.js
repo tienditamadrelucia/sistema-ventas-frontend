@@ -405,7 +405,7 @@ const facturaCancelada = modoCredito
           </div>
 
         <h2 style={{ textAlign: "center", marginBottom: "1px" }}>
-          REGISTRO DE PAGO MONASTERIO
+          REGISTRO DE PAGO
         </h2>
         
         <div style={{
