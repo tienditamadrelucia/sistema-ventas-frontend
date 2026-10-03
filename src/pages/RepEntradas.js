@@ -24,6 +24,7 @@ const ReporteEntradas = () => {
   const [fechaHasta, setFechaHasta] = useState("");
   const [reporte, setReporte] = useState([]);
   const [procesando, setProcesando] = useState(false);
+  const [consultaRealizada, setConsultaRealizada] = useState(false);
 
   // =====================================================
   // CONSULTAR REPORTE
@@ -43,6 +44,7 @@ const ReporteEntradas = () => {
     try {
 
       setProcesando(true);
+      setConsultaRealizada(false);
 
       const resp = await fetch(
         `${API_URL}/api/entradas/reporte?desde=${fechaDesde}&hasta=${fechaHasta}&sede=${encodeURIComponent(sede)}`
@@ -51,23 +53,30 @@ const ReporteEntradas = () => {
       const datos = await resp.json();
 
       if (!resp.ok) {
-        alert(datos.mensaje || "Error consultando el reporte de entradas");
+        alert(
+          datos.mensaje ||
+          datos.error ||
+          "Error consultando el reporte de entradas"
+        );
+
         setReporte([]);
         return;
       }
 
-      // Compatible tanto si el backend devuelve directamente
-      // el arreglo como si devuelve { ok, reporte }
       if (Array.isArray(datos)) {
         setReporte(datos);
       } else {
         setReporte(datos.reporte || []);
       }
 
+      setConsultaRealizada(true);
+
     } catch (error) {
 
       console.error("Error consultando reporte de entradas:", error);
+
       alert("Error consultando el reporte de entradas");
+
       setReporte([]);
 
     } finally {
@@ -81,6 +90,7 @@ const ReporteEntradas = () => {
   // FORMATEAR FECHA
   // =====================================================
   const formatearFecha = (fecha) => {
+
     if (!fecha) return "";
 
     return fecha
@@ -97,19 +107,100 @@ const ReporteEntradas = () => {
     window.close();
   };
 
+  // =====================================================
+  // IMPRIMIR / GUARDAR PDF
+  // =====================================================
+  const imprimirReporte = () => {
+
+    if (reporte.length === 0) {
+      alert("Primero debe generar un reporte.");
+      return;
+    }
+
+    window.print();
+  };
+
+  // =====================================================
+  // ESTILOS DE IMPRESIÓN
+  // =====================================================
+  const estilosImpresion = `
+    @media print {
+
+      @page {
+        size: letter portrait;
+        margin: 12mm;
+      }
+
+      .no-print {
+        display: none !important;
+      }
+
+      body {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: white !important;
+      }
+
+      .contenedor-principal {
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+
+      .reporte-impresion {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+      }
+
+      .tabla-reporte {
+        width: 100% !important;
+        border-collapse: collapse !important;
+        margin: 0 auto !important;
+      }
+
+      .tabla-reporte thead {
+        display: table-header-group;
+      }
+
+      .tabla-reporte tr {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+
+      .tabla-reporte th {
+        font-size: 10px !important;
+        padding: 5px !important;
+      }
+
+      .tabla-reporte td {
+        font-size: 9px !important;
+        padding: 4px !important;
+      }
+
+      .encabezado-reporte {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+    }
+  `;
+
   return (
     <div
+      className="contenedor-principal"
       style={{
         padding: "20px",
         fontFamily: "Arial"
       }}
     >
 
+      <style>{estilosImpresion}</style>
+
       {/* =====================================================
           MENSAJE PROCESANDO
       ===================================================== */}
       {procesando && (
         <div
+          className="no-print"
           style={{
             backgroundColor: colorPrincipal,
             color: "white",
@@ -125,9 +216,10 @@ const ReporteEntradas = () => {
       )}
 
       {/* =====================================================
-          TÍTULO
+          TÍTULO DE PANTALLA
       ===================================================== */}
       <h2
+        className="no-print"
         style={{
           textAlign: "center",
           color: colorPrincipal,
@@ -138,66 +230,104 @@ const ReporteEntradas = () => {
       </h2>
 
       {/* =====================================================
-          FORMULARIO
+          SOLICITUD DEL REPORTE
       ===================================================== */}
       <div
+        className="no-print"
         style={{
-          width: "650px",
-          maxWidth: "95%",
-          margin: "0 auto 25px auto",
+          width: "550px",
+          maxWidth: "90%",
+          margin: "0 auto 20px auto",
           padding: "20px",
-          border: `1px solid ${colorPrincipal}`,
-          borderRadius: "10px",
+          border: "1px solid #ccc",
+          borderRadius: "8px",
           backgroundColor: "white",
-          boxShadow: "0 2px 5px rgba(0,0,0,0.12)"
+          boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
         }}
       >
+
+        <h3
+          style={{
+            textAlign: "center",
+            marginTop: 0,
+            marginBottom: "15px",
+            fontWeight: "bold"
+          }}
+        >
+          Seleccione rango de fechas
+        </h3>
 
         <div
           style={{
             display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "20px",
-            flexWrap: "wrap"
+            gap: "40px",
+            marginBottom: "20px"
           }}
         >
 
           {/* DESDE */}
-          <label style={{ fontWeight: "bold" }}>
-            Desde:
+          <div style={{ width: "50%" }}>
+
+            <label
+              style={{
+                display: "block",
+                fontWeight: "bold",
+                marginBottom: "5px"
+              }}
+            >
+              Desde
+            </label>
 
             <input
               type="date"
               value={fechaDesde}
-              onChange={(e) => setFechaDesde(e.target.value)}
+              onChange={(e) => {
+                setFechaDesde(e.target.value);
+                setConsultaRealizada(false);
+              }}
               style={{
-                marginLeft: "7px",
+                width: "100%",
                 padding: "7px",
+                boxSizing: "border-box",
                 backgroundColor: colorSuave,
                 border: `1px solid ${colorPrincipal}`,
                 borderRadius: "6px"
               }}
             />
-          </label>
+
+          </div>
 
           {/* HASTA */}
-          <label style={{ fontWeight: "bold" }}>
-            Hasta:
+          <div style={{ width: "50%" }}>
+
+            <label
+              style={{
+                display: "block",
+                fontWeight: "bold",
+                marginBottom: "5px"
+              }}
+            >
+              Hasta
+            </label>
 
             <input
               type="date"
               value={fechaHasta}
-              onChange={(e) => setFechaHasta(e.target.value)}
+              onChange={(e) => {
+                setFechaHasta(e.target.value);
+                setConsultaRealizada(false);
+              }}
               style={{
-                marginLeft: "7px",
+                width: "100%",
                 padding: "7px",
+                boxSizing: "border-box",
                 backgroundColor: colorSuave,
                 border: `1px solid ${colorPrincipal}`,
                 borderRadius: "6px"
               }}
             />
-          </label>
+
+          </div>
 
         </div>
 
@@ -206,17 +336,18 @@ const ReporteEntradas = () => {
           style={{
             display: "flex",
             justifyContent: "center",
-            gap: "15px",
-            marginTop: "20px"
+            gap: "12px",
+            flexWrap: "wrap"
           }}
         >
 
+          {/* BUSCAR */}
           <button
             onClick={consultar}
             disabled={procesando}
             style={{
-              minWidth: "130px",
-              padding: "8px 15px",
+              width: "140px",
+              padding: "8px",
               backgroundColor: colorAccion,
               color: "white",
               border: "none",
@@ -225,14 +356,35 @@ const ReporteEntradas = () => {
               cursor: procesando ? "not-allowed" : "pointer"
             }}
           >
-            Consultar
+            Buscar
           </button>
 
+          {/* IMPRIMIR / PDF */}
+          <button
+            onClick={imprimirReporte}
+            disabled={reporte.length === 0}
+            style={{
+              width: "150px",
+              padding: "8px",
+              backgroundColor:
+                reporte.length > 0 ? "#6C757D" : "#CCCCCC",
+              color: "white",
+              border: "none",
+              borderRadius: "6px",
+              fontFamily: "Arial Black",
+              cursor:
+                reporte.length > 0 ? "pointer" : "not-allowed"
+            }}
+          >
+            Imprimir / PDF
+          </button>
+
+          {/* VOLVER */}
           <button
             onClick={volverAlMenu}
             style={{
-              minWidth: "150px",
-              padding: "8px 15px",
+              width: "160px",
+              padding: "8px",
               backgroundColor: colorPrincipal,
               color: "white",
               border: "none",
@@ -249,43 +401,49 @@ const ReporteEntradas = () => {
       </div>
 
       {/* =====================================================
-          REPORTE
+          DOCUMENTO CONTABLE
       ===================================================== */}
       {reporte.length > 0 && (
-        <>
 
-          {/* ENCABEZADO DEL REPORTE */}
-          <h2
-            style={{
-              textAlign: "center",
-              margin: 0,
-              color: colorPrincipal
-            }}
-          >
-            {esMonasterio
-              ? "MONASTERIO DE MADRES CARMELITAS DESCALZAS – VENEZUELA"
-              : "TIENDITA MADRE LUCÍA – V10166638-3"}
-          </h2>
+        <div className="reporte-impresion">
 
-          <p
-            style={{
-              textAlign: "center",
-              marginTop: "5px",
-              marginBottom: "20px"
-            }}
-          >
-            <strong>Reporte de Entradas</strong>
-            <br />
+          {/* ENCABEZADO CONTABLE */}
+          <div className="encabezado-reporte">
 
-            Desde: {formatearFecha(fechaDesde)}
-            {" — "}
-            Hasta: {formatearFecha(fechaHasta)}
-          </p>
+            <h2
+              style={{
+                textAlign: "center",
+                margin: 0,
+                color: colorPrincipal
+              }}
+            >
+              {esMonasterio
+                ? "MONASTERIO DE MADRES CARMELITAS DESCALZAS – VENEZUELA"
+                : "TIENDITA MADRE LUCÍA – V10166638-3"}
+            </h2>
+
+            <p
+              style={{
+                textAlign: "center",
+                marginTop: "5px",
+                marginBottom: "20px"
+              }}
+            >
+              <strong>Reporte de Entradas</strong>
+              <br />
+
+              Desde: {formatearFecha(fechaDesde)}
+              {" — "}
+              Hasta: {formatearFecha(fechaHasta)}
+            </p>
+
+          </div>
 
           {/* =====================================================
               TABLA
           ===================================================== */}
           <table
+            className="tabla-reporte"
             style={{
               width: "90%",
               borderCollapse: "collapse",
@@ -294,6 +452,7 @@ const ReporteEntradas = () => {
           >
 
             <thead>
+
               <tr
                 style={{
                   backgroundColor: colorTabla
@@ -351,6 +510,7 @@ const ReporteEntradas = () => {
                 </th>
 
               </tr>
+
             </thead>
 
             <tbody>
@@ -359,6 +519,7 @@ const ReporteEntradas = () => {
 
                 <tr key={e._id || index}>
 
+                  {/* FECHA */}
                   <td
                     style={{
                       padding: "5px",
@@ -370,6 +531,7 @@ const ReporteEntradas = () => {
                     {formatearFecha(e.fecha)}
                   </td>
 
+                  {/* CATEGORÍA */}
                   <td
                     style={{
                       padding: "5px",
@@ -381,6 +543,7 @@ const ReporteEntradas = () => {
                     {e.categoria}
                   </td>
 
+                  {/* CÓDIGO */}
                   <td
                     style={{
                       padding: "5px",
@@ -392,6 +555,7 @@ const ReporteEntradas = () => {
                     {e.productoId?.codigo || e.codigo}
                   </td>
 
+                  {/* DESCRIPCIÓN */}
                   <td
                     style={{
                       padding: "5px",
@@ -402,6 +566,7 @@ const ReporteEntradas = () => {
                     {e.productoId?.descripcion || ""}
                   </td>
 
+                  {/* CANTIDAD */}
                   <td
                     style={{
                       padding: "5px",
@@ -421,17 +586,20 @@ const ReporteEntradas = () => {
 
           </table>
 
-        </>
+        </div>
       )}
 
       {/* =====================================================
           SIN RESULTADOS
       ===================================================== */}
       {!procesando &&
+        consultaRealizada &&
         fechaDesde &&
         fechaHasta &&
         reporte.length === 0 && (
+
           <div
+            className="no-print"
             style={{
               textAlign: "center",
               marginTop: "25px",
@@ -441,6 +609,7 @@ const ReporteEntradas = () => {
           >
             No hay entradas para mostrar en el período seleccionado.
           </div>
+
         )}
 
     </div>
