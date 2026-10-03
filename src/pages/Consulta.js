@@ -877,7 +877,7 @@ const abrirModalPagoConFecha = async () => {
 
       <table style={{ width:"100%", borderCollapse:"collapse", fontSize:"13px" }}>
         <thead>
-          <tr style={{ background:colorTabla, color:"white" }}>
+          <tr style={{ background:colorTabla, color:"black" }}>
             <th style={{ border:"1px solid #ccc", padding:"5px", width:"50px", fontFamily:"Arial Black" }}>Fecha</th>
             <th style={{ border:"1px solid #ccc", padding:"6px", width:"200px", fontFamily:"Arial Black" }}>Operación</th>
             <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>E-Pesos</th>
