@@ -17,6 +17,8 @@ import { guardarVta, guardarVendido} from "../services/ser_ventas";
 
 const Ventas = () => {
   const navigate = useNavigate();
+  const sedeActual = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sedeActual === "MONASTERIO";
 
   // -----------------------------
   // ESTADOS PRINCIPALES
@@ -93,7 +95,7 @@ const Ventas = () => {
   const estiloBoton = {
     width: "20%",
     padding: "5px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -105,7 +107,7 @@ const Ventas = () => {
   const estiloBotonVerde = {
     width: "20%",
     padding: "5px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -118,9 +120,15 @@ const Ventas = () => {
   width: "15%",
   padding: "6px",
   backgroundColor:
-    estado === "hover" ? "#84868a" :
-    estado === "active" ? "#84B09C" :
-    "#628173",
+    estado === "hover"
+      ? "#84868a"
+      : estado === "active"
+      ? esMonasterio
+        ? "#B8862D"
+        : "#84B09C"
+      : esMonasterio
+      ? "#B8862D"
+      : "#628173",
   color: "white",
   border: "none",
   borderRadius: "6px",
@@ -132,8 +140,7 @@ const Ventas = () => {
 };
 
   const API = `${API_URL}/api`;
-  const UsuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";
-  const sedeActual = localStorage.getItem("sede") || "TIENDITA";
+  const UsuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";  
   const hoyLocal = new Date();
   const hoyUTC = new Date(Date.UTC(
     hoyLocal.getFullYear(),
@@ -1160,11 +1167,11 @@ const cargarFacturaParaPago = async (dataVenta) => {
               </div>
               <button
                 onClick={() => setMostrarModalCliente(true)}
-                style={{ height: "38px", width: "70px", background:"#F9CEAE" }}
+                style={{ height: "38px", width: "70px", background: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}
               >
                 Agregar Cliente
               </button>
-              <button onClick={limpiarCliente} style={{ height: "38px", background:"#F9CEAE" }}>
+              <button onClick={limpiarCliente} style={{ height: "38px", background: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}>
                 Limpiar
               </button>
             </div>
@@ -1315,7 +1322,11 @@ const cargarFacturaParaPago = async (dataVenta) => {
                 readOnly
                 style={{
                   backgroundColor:
-                    stockActual <= 0 ? "#84868a" : "#EDC5CD",
+                    stockActual <= 0
+                    ? "#84868a"
+                    : esMonasterio
+                    ? "#E8D1A5"
+                    : "#EDC5CD",
                   height: "16px"
                 }}
               />
@@ -1501,7 +1512,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
             <thead>
               <tr
                 style={{
-                  backgroundColor: "#F9CEAE",
+                  backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
                   color: "black"
                 }}
               >
@@ -1795,7 +1806,8 @@ const cargarFacturaParaPago = async (dataVenta) => {
             }}
             style={{
               ...estiloBoton,
-              backgroundColor: "#CAD9FB"
+              backgroundColor: esMonasterio ? "#E8D1A5" : "#CAD9FB",
+              color: esMonasterio ? "#5A2D16" : "white"
             }}
           >
             Crédito
