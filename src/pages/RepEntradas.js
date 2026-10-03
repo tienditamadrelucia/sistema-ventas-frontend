@@ -367,7 +367,7 @@ const ReporteEntradas = () => {
               width: "150px",
               padding: "8px",
               backgroundColor:
-                reporte.length > 0 ? "#355C8A" : "#CCCCCC",
+                reporte.length > 0 ? "#355C8A" : "#355C8A",
               color: "white",
               border: "none",
               borderRadius: "6px",
