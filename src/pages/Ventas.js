@@ -39,8 +39,11 @@ const Ventas = () => {
   const [productoSeleccionado, setProductoSeleccionado] = useState("");
   const [cantidad, setCantidad] = useState(0);
   const cantidadRef = useRef(null);
+  const precioRef = useRef(null);
+  const descuentoRef = useRef(null);
   const carritoRef = useRef(null);
   const codigoRef = useRef(null);
+
   const [descuento, setDescuento] = useState(0);
   const [codigoProducto, setCodigoProducto] = useState("");
   const codigoProductoRef = useRef(null);
@@ -410,12 +413,18 @@ const Ventas = () => {
     }
   };
 
-  const validarStock = (cant) => {
-    if (cant > stockActual) {
-      alert("Stock insuficiente, pero puede continuar.");
-    }
-    setCantidad(cant);
-  };
+  const validarStock = () => {
+  const cant = Number(cantidad);
+
+  if (cant > Number(stockActual)) {
+    alert(
+      `Stock insuficiente.\n\n` +
+      `Cantidad solicitada: ${cant}\n` +
+      `Stock disponible: ${Number(stockActual).toFixed(2)}\n\n` +
+      `Puede continuar con la venta.`
+    );
+  }
+};
 
   const limpiarProducto = () => {
     setCodigoProducto("");
@@ -1130,7 +1139,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                   value={identificacion}
                   onChange={(e) => {
                     const valor = e.target.value.toUpperCase();
-                    const regex = /^[VEJG][0-9]*$/;
+                    const regex = /^[VEJG]?[0-9]*$/;
                     if (valor === "" || regex.test(valor)) setIdentificacion(valor);
                   }}
                   onKeyDown={(e) => {
@@ -1285,6 +1294,12 @@ const cargarFacturaParaPago = async (dataVenta) => {
                       console.error("Error obteniendo stock real:", error);
                       setStockActual(producto.stock);
                     }
+                    setTimeout(() => {
+                      if (cantidadRef.current) {
+                        cantidadRef.current.focus();
+                        cantidadRef.current.select();
+                      }
+                    }, 0);
                   }
                 }}
                 disabled={editando}
@@ -1365,16 +1380,21 @@ const cargarFacturaParaPago = async (dataVenta) => {
                 min="0"
                 ref={cantidadRef}
                 value={cantidad}
-                onChange={(e) =>
-                  validarStock(Number(e.target.value))
-                }
+                onChange={(e) => {
+                  setCantidad(e.target.value);
+                }}
+                onBlur={() => {
+                  validarStock();
+                }}
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    if (carritoRef.current) {
-                      carritoRef.current.focus();
-                      }
-                    }
+                    validarStock();
+                  if (precioRef.current) {
+                    precioRef.current.focus();
+                    precioRef.current.select();
+                  }
+                }
                 }}
               />
             </div>
@@ -1392,8 +1412,18 @@ const cargarFacturaParaPago = async (dataVenta) => {
                 type="number"
                 step="0.1"
                 inputMode="decimal"
+                ref={precioRef}
                 value={precioVenta}
                 onChange={(e) => validarPrecio(e.target.value)}
+                onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault();
+                if (descuentoRef.current) {
+                  descuentoRef.current.focus();
+                  descuentoRef.current.select();
+                  }
+                }
+                }}
               />
             </div>
 
@@ -1409,10 +1439,19 @@ const cargarFacturaParaPago = async (dataVenta) => {
               <input
                 type="number"
                 step="0.1"
+                ref={descuentoRef}
                 value={descuento}
-                onChange={(e) =>
-                  setDescuento(Number(e.target.value))
-                }
+                onChange={(e) => {
+                  setDescuento(Number(e.target.value));
+                  }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  if (carritoRef.current) {
+                    carritoRef.current.focus();
+                    }
+                    }
+                }}
               />
             </div>
 
