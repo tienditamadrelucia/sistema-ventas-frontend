@@ -15,6 +15,9 @@ import { manejarError } from "../utils/manejarError";
 import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
+  const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
   // -------------------------
   // ESTILOS
   // -------------------------
@@ -25,7 +28,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
     marginBottom: "10px",
     borderRadius: "6px",
     border: "1px solid #ccc",
-    backgroundColor: "#EDC5CD",
+    backgroundColor: esMonasterio ? "#E8D1A5" : "#EDC5CD",
     fontFamily: "Arial",
     fontSize: "14px",
     marginLeft: "20px"
@@ -34,7 +37,8 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   const estiloBoton = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#F9CEAE",
+    backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+    color: esMonasterio ? "#33231A" : "white",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -62,7 +66,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   const estiloBotonGuardar = {
     width: "15%",
     padding: "10px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -76,7 +80,7 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   const estiloBotonVolver = {
     width: "25%",
     padding: "10px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -103,8 +107,6 @@ import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   // -------------------------
 
   const Inventario = () => {
-  const navigate = useNavigate();
-
   const [toma, setToma] = useState({});
   const [inventarioGuardado, setInventarioGuardado] = useState(false);
   const [fecha, setFecha] = useState("");
@@ -143,11 +145,11 @@ const cargarInventario = async () => {
     const { fecha, categoria } = formData;
     if (!fecha || !categoria) return;
       // 1. Buscar inventario guardado
-      const guardado = await buscarInventarioGuardado(fecha, categoria);
+      const guardado = await buscarInventarioGuardado(fecha, categoria, sede);
     if (Array.isArray(guardado) && guardado.length > 0) {
       setInventarioGuardado(true);
       // ⭐ 1.1 Recalcular stockReal del sistema
-      const { productos } = await obtenerInventario(categoria);
+      const { productos } = await obtenerInventario(categoria, sede);
       // ⭐ 1.2 Mezclar productos con la toma guardada
       const productosConToma = productos.map(p => {
         const item = guardado.find(g => g.productoId === p._id);
@@ -221,6 +223,7 @@ const cargarInventario = async () => {
   try {
     const payload = {
       fecha: formData.fecha,
+      sede:sede,
       categoria: formData.categoria,
       items: productos.map(producto => ({
         productoId: producto._id,
@@ -286,6 +289,7 @@ const cargarInventario = async () => {
       : Number(registro.stockFisico);    
   const payload = {
     fecha: formData.fecha,    // ← viene del scope superior
+    sede: sede,
     categoria: formData.categoria,
     items: productos.map(p => ({
       productoId: p._id,
@@ -343,10 +347,11 @@ const cargarInventario = async () => {
     }
 
     const data = {
-      fecha: formData.fecha,
+      fecha: formData.fecha,      
       productoId,
       cantidad: Math.abs(diferencia),
-      observacion: "AJUSTE"
+      observacion: "AJUSTE",
+      sede
     };
 
     if (diferencia < 0) {
@@ -356,7 +361,9 @@ const cargarInventario = async () => {
     }
 
     // Obtener stock real actualizado
-    const resp = await fetch(`${APIURL}/inventario/stock-real/${codigo}`);
+    const resp = await fetch(
+      `${APIURL}/inventario/stock-real/${codigo}?sede=${encodeURIComponent(sede)}`
+    );
     const info = await resp.json();
 
     // Actualizar estado correctamente
@@ -402,7 +409,7 @@ const cargarInventario = async () => {
     </div>
   )}
 
-    <Encabezado />
+    <Encabezado sede={sede} />
 
     <div style={{ padding: "20px" }}>
       <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
@@ -485,7 +492,7 @@ const cargarInventario = async () => {
             Borrar
           </button>
           {/* BOTÓN VOLVER */}  
-          <button onClick={() => navigate("/menu")} style={estiloBotonVolver}>
+          <button onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")} style={estiloBotonVolver}>
             MENÚ PRINCIPAL
           </button>
         </div> 

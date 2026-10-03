@@ -4,24 +4,37 @@ import { useNavigate } from "react-router-dom";
 
 const ReporteInventario = () => {
   const navigate = useNavigate();
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
   const [desde, setDesde] = useState("");
   const [hasta, setHasta] = useState("");
   const [reporte, setReporte] = useState([]);
   const [procesando, setProcesando] = useState(false);
 
   const consultar = async () => {
-    setProcesando(true); // ⭐ NUEVO
-    if (!desde || !hasta) {
-      alert("Debe seleccionar ambas fechas");
-      return;
-    }
+  if (!desde || !hasta) {
+    alert("Debe seleccionar ambas fechas");
+    return;
+  }
+
+  setProcesando(true);
+
+  try {
     const resp = await fetch(
-      `${API_URL}/api/inventario/reporte?desde=${desde}&hasta=${hasta}`
+      `${API_URL}/api/inventario/reporte?desde=${desde}&hasta=${hasta}&sede=${encodeURIComponent(sede)}`
     );
+
     const datos = await resp.json();
     setReporte(datos);
-    setProcesando(false); // ⭐ NUEVO
-  };
+
+  } catch (error) {
+    console.error("Error consultando reporte:", error);
+    alert("Error consultando el reporte de inventario");
+
+  } finally {
+    setProcesando(false);
+  }
+};
 
   return (
     <div style={{ padding: "20px", fontFamily: "Arial" }}>
@@ -68,8 +81,8 @@ const ReporteInventario = () => {
           style={{
             marginLeft: "20px",
             padding: "6px 12px",
-            backgroundColor: "#F9CEAE",
-            color: "white",
+            backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+            color: esMonasterio ? "#33231A" : "white",
             border: "none",
             borderRadius: "6px",
             fontFamily: "Arial Black",
@@ -80,11 +93,11 @@ const ReporteInventario = () => {
         </button>
 
         <button
-          onClick={() => navigate("/menu")}
+          onClick={() => navigate(esMonasterio ? "/menu-monasterio" : "/menu")}
           style={{
             padding: "6px 12px",
             marginLeft: "10px",
-            backgroundColor: "#D98897",
+            backgroundColor: esMonasterio ? "#5A2D16" : "#D98897",
             color: "white",
             border: "none",
             borderRadius: "6px",
@@ -101,7 +114,9 @@ const ReporteInventario = () => {
       {reporte.length > 0 && (
         <>
           <h2 style={{ textAlign: "center", margin: 0 }}>
-            TIENDITA MADRE LUCÍA – V10166638-3
+            {esMonasterio
+            ? "MONASTERIO DE MADRES CARMELITAS DESCALZAS"
+            : "TIENDITA MADRE LUCÍA – V10166638-3"}
           </h2>
 
           <p style={{ textAlign: "center", marginTop: "5px", marginBottom: "20px" }}>
@@ -111,7 +126,7 @@ const ReporteInventario = () => {
 
           {/* TABLA */}
           <table style={{ width: "80% !important", borderCollapse: "collapse", margin: "0 auto" }}>
-            <thead style={{ backgroundColor: "#F9CEAE" }}>
+            <thead style={{ backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}>
               <tr>
                 <th style={{ textAlign: "left", padding: "4px" }}>Código</th>
                 <th style={{ textAlign: "left", padding: "4px" }}>Categoría</th>

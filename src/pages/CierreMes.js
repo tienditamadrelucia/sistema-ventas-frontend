@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 
 export default function CierreMes() {
+
+  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sede === "MONASTERIO";
   const [mes, setMes] = useState("");
   const [año, setAño] = useState(new Date().getFullYear());
   const [procesando, setProcesando] = useState(false);
@@ -9,7 +12,7 @@ export default function CierreMes() {
   const estiloBotonVolver = {
     width: "40%",
     padding: "6px",
-    backgroundColor: "#FC9E9B",
+    backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -22,7 +25,7 @@ export default function CierreMes() {
   const botonCierre = {
     width: "30%",
     padding: "6px",
-    backgroundColor: "#84B09C",
+    backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
     color: "white",
     border: "1px solid #ccc",
     borderRadius: "8px",
@@ -54,7 +57,7 @@ export default function CierreMes() {
     }
 
     const confirmar = window.confirm(
-      `¿Está segura que desea cerrar el mes de ${meses[mes - 1].n} ${año}?\n\n` +
+      `¿Está segura que desea cerrar el mes de ${meses[mes - 1].n} ${año} de ${sede}?\n\n` +
       "⚠️ Después del cierre, estos documentos NO podrán modificarse."
     );
 
@@ -66,7 +69,7 @@ export default function CierreMes() {
       const res = await fetch("https://sistema-ventas-backend-qxbi.onrender.com/api/cierre-mes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mes, año })
+        body: JSON.stringify({ mes, año, sede })
       });
 
       const data = await res.json();
