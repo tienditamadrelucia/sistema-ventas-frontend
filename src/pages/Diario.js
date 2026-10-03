@@ -26,7 +26,7 @@ const ReporteVentas = () => {
     border: "1px solid #ccc",
     borderRadius: "8px",
     fontWeight: "900",
-    fontFamily: "Arial Black",
+    fontFamily: "Arial Black", 
     cursor: "pointer",
     marginTop: "10px"
   };
