@@ -163,22 +163,21 @@ const Consulta = () => {
         cursor:"pointer",
         height:"20px"
     };
-    const botonVarios = {
-      width: "30%",
-      display:"flex",
-      height:"40px",
-      padding: "6px",
-      backgroundColor: colorAccion,
-      color: "white",
-      border: "none",
-      borderRadius: "6px",
-      fontFamily: "Arial Black",
-      cursor: "pointer",
-      marginTop: "8px",
-      justifyContent:"center",
-      alignItems:"center",
-      opacity:procesando ? 0.6 :1,
-      cursor: procesando ? "not-allowed":"pointer"    
+    const botonVarios = {      
+        display:"flex",
+        width: "15%",
+        padding: "15px",
+        backgroundColor: colorAccion,
+        color: "white",
+        border: "1px solid #ccc",
+        borderRadius: "8px",
+        fontWeight: "800",
+        fontFamily: "Arial Black",        
+        marginTop: "1px",
+        justifyContent: "center",
+        alignItems:"center",
+        cursor:"pointer",
+        height:"20px"    
     };
 
     // -----------------------------
