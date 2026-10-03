@@ -13,6 +13,10 @@ const Consulta = () => {
   const navigate = useNavigate();
   const sede = localStorage.getItem("sede") || "TIENDITA";
   const esMonasterio = sede === "MONASTERIO";
+  const colorPrincipal = esMonasterio ? "#5A2D16" : "#FC9E9B";
+  const colorAccion = esMonasterio ? "#B8862D" : "#84B09C";
+  const colorTabla = esMonasterio ? "#E8D1A5" : "#F9CEAE";
+  const colorSuave = esMonasterio ? "#F5EBDD" : "#EDC5CD";
 
     // -----------------------------
     // ESTADOS PRINCIPALES USESTATE
@@ -98,7 +102,7 @@ const Consulta = () => {
         display:"flex",
         width: "15%",
         padding: "15px",
-        backgroundColor: "#FC9E9B",
+        backgroundColor: colorPrincipal,
         color: "white",
         border: "1px solid #ccc",
         borderRadius: "8px",
@@ -114,7 +118,7 @@ const Consulta = () => {
         display:"flex",
         width: "15%",
         padding: "15px",
-        backgroundColor: "#F9CEAE",
+        backgroundColor: "colorTabla",
         color: "white",
         border: "1px solid #ccc",
         borderRadius: "8px",
@@ -147,7 +151,7 @@ const Consulta = () => {
         display:"flex",
         width: "20%",
         padding: "15px",
-        backgroundColor: "#84B09C",
+        backgroundColor: colorAccion,
         color: "white",
         border: "1px solid #ccc",
         borderRadius: "8px",
@@ -164,7 +168,7 @@ const Consulta = () => {
       display:"flex",
       height:"40px",
       padding: "6px",
-      backgroundColor: "#84B09C",
+      backgroundColor: colorAccion,
       color: "white",
       border: "none",
       borderRadius: "6px",
@@ -410,8 +414,8 @@ useEffect(() => {
     if (!confirmar) return;
     try {
       const res = await fetch(
-      `${API_URL}/api/facturas/eliminar-completa/${numeroFactura}`,
-      { method: "DELETE" }
+        `${API_URL}/api/facturas/eliminar-completa/${numeroFactura}?sede=${encodeURIComponent(sede)}`,
+        { method: "DELETE" }
       );
       const json = await res.json();
       if (!json.ok) {
@@ -716,7 +720,7 @@ const abrirModalPagoConFecha = async () => {
         Procesando, por favor espere...
       </div>
       )}
-    <Encabezado />
+    <Encabezado sede={sede} />
 
     <h2 style={{ textAlign: "left", marginTop: "1px", marginLeft:"400px" }}>
       CONSULTA DE VENTAS
@@ -814,7 +818,7 @@ const abrirModalPagoConFecha = async () => {
                 }}
             >
             <thead>
-              <tr style={{ backgroundColor: "#F9CEAE", color: "black" }}>
+              <tr style={{ backgroundColor: colorTabla, color: "black" }}>
                 <th style={{ border: "1px solid #9b9898", padding: "5px", width:"70px", fontWeight: "50" }}>Código</th>
                 <th style={{ border: "1px solid #9b9898", padding: "6px", width:"440px", fontWeight: "50" }}>Descripción</th>
                 <th style={{ border: "1px solid #9b9898", padding: "6px", width:"50px", fontWeight: "80" }}>Cant</th>
