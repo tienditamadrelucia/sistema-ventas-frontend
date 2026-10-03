@@ -498,10 +498,20 @@ const Ventas = () => {
   // OBTENER NÚMERO DE FACTURA (SOLO LECTURA)
   // -----------------------------
   const obtenerFacturaNro = async () => {
-  const res = await fetch(`${API_URL}/api/ventas/factura-actual`);
+  const res = await fetch(
+    `${API_URL}/api/ventas/factura-actual?sede=${encodeURIComponent(sedeActual)}`
+  );
+
   const data = await res.json();
-    return data.numero; // número actual del contador, SIN incrementar
-  };
+
+  if (!res.ok || !data.ok) {
+    throw new Error(
+      "No se pudo obtener el número de factura"
+    );
+  }
+
+  return data.numero;
+};
 
   // -----------------------------
   // PAGOS
@@ -602,7 +612,9 @@ const Ventas = () => {
     // ============================
     // 2) VERIFICAR SI LA FACTURA YA EXISTE
     // ============================
-    const respExiste = await fetch(`${API_URL}/api/ventas/${facturaNumero}`);
+    const respExiste = await fetch(
+      `${API_URL}/api/ventas/${facturaNumero}?sede=${encodeURIComponent(sedeActual)}`
+    );
     const dataExiste = await respExiste.json();
 
     if (dataExiste.ok && dataExiste.venta) {
@@ -736,85 +748,146 @@ const Ventas = () => {
 };
 
   const guardarSinPago = async () => {
+  if (procesando) return;
+
   try {
     // ============================
-    // VALIDAR QUE HAY PRODUCTOS
+    // 1) VALIDAR QUE HAY PRODUCTOS
     // ============================
     if (listaFactura.length === 0) {
       alert("No hay productos en la factura");
       return;
     }
+
     // ============================
-    // ASIGNAR NÚMERO DE FACTURA
+    // 2) VALIDAR CLIENTE
     // ============================
-    const numeroActual = await obtenerFacturaNro();
-    alert("factura "+numeroActual);
-    const facturaNumero = Number(numeroActual) + 1;
+    if (!clienteSeleccionado) {
+      alert("Debe seleccionar un cliente.");
+      return;
+    }
+
     // ============================
-    // ARMAR OBJETO DE VENTA
+    // 3) ASIGNAR NÚMERO DE FACTURA
     // ============================
     setProcesando(true);
+
+    const numeroActual = await obtenerFacturaNro();
+    const facturaNumero = Number(numeroActual) + 1;
+
+    setNumeroFactura(facturaNumero);
+
+    // ============================
+    // 4) ARMAR OBJETO DE VENTA
+    // ============================
     const ventaData = {
       fecha: fecha,
-      hora: hora,       // ya lo tienes en tu módulo
+      hora: hora,
       factura: facturaNumero,
-      cliente: identificacion,       // NO se puede cambiar luego
+      cliente: identificacion,
       subtotal: subtotalDolar,
       IVA: iva,
       total: totalDolar,
-      usuario: UsuarioActual, // ya lo tienes
-      estado: "CREDITO",       // ⭐ PENDIENTE DE PAGO
+      usuario: UsuarioActual,
+      estado: "CREDITO",
       sede: sedeActual
     };
+
     console.log("VENTA QUE SE ENVÍA:", ventaData);
+
     // ============================
-    // GUARDAR VENTA
+    // 5) GUARDAR VENTA
     // ============================
-    const respVenta = await guardarVta(ventaData);    
+    const respVenta = await guardarVta(ventaData);
+
     if (!respVenta.data || respVenta.data.ok !== true) {
       alert("Error guardando la venta");
       return;
-      }
+    }
 
     // ============================
-    // GUARDAR PRODUCTOS VENDIDOS
+    // 6) GUARDAR PRODUCTOS VENDIDOS
     // ============================
-    console.log("LISTA FACTURA COMPLETA:", listaFactura);
+    console.log(
+      "LISTA FACTURA COMPLETA:",
+      listaFactura
+    );
+
     for (const item of listaFactura) {
       const vendidoData = {
         factura: facturaNumero,
-        productoId: item._idProducto,
+
+        // CORRECTO:
+        // En el carrito el campo se llama idProducto
+        productoId: item.idProducto,
+
         cantidad: item.cantidad,
         precio: item.precioVenta,
         dscto: item.descuento || 0,
         total: item.total,
+
+        // MUY IMPORTANTE:
+        // separar TIENDITA de MONASTERIO
         sede: sedeActual
-      };      
+      };
+
+      console.log(
+        "VENDIDO QUE SE ENVÍA:",
+        vendidoData
+      );
+
       await guardarVendido(vendidoData);
-      
     }
+
     // ============================
-    // ALERTAR AL USUARIO
+    // 7) REGISTRAR ACCIÓN
     // ============================
-    setProcesando(false);
-    alert(`Factura guardada sin pago. \nNúmero: ${facturaNumero}`);
+    await registrarAccion(
+      `Guardó factura sin pago N° ${facturaNumero} - ${sedeActual}`
+    );
+
     // ============================
-    // LIMPIAR PANTALLA
+    // 8) AVISAR
+    // ============================
+    alert(
+      `Factura guardada sin pago.\nNúmero: ${facturaNumero}`
+    );
+
+    // ============================
+    // 9) LIMPIAR PANTALLA
     // ============================
     limpiarCliente();
+
     setPagoData(null);
     setPagoRegistrado(false);
     setIdPagoExistente(null);
     setIdVueltoExistente(null);
+
     setListaFactura([]);
     setClienteSeleccionado("");
     setModoCredito(false);
-    setNumeroFactura(0);
+    setNumeroFactura("");
+
+    setIva(0);
+
   } catch (error) {
-  console.error("ERROR COMPLETO:", error);
-  console.error("RESPUESTA DEL SERVIDOR:", error.response?.data);
-  alert("Error inesperado al guardar la factura sin pago");
-}
+    console.error(
+      "ERROR COMPLETO:",
+      error
+    );
+
+    console.error(
+      "RESPUESTA DEL SERVIDOR:",
+      error.response?.data
+    );
+
+    alert(
+      "Error inesperado al guardar la factura sin pago"
+    );
+
+  } finally {
+    setProcesando(false);
+  }
 };
 
   const pagarFactura = async () => {
@@ -833,7 +906,9 @@ const Ventas = () => {
       return;
     }
     // 2. Buscar venta + detalle (RUTA CORRECTA)
-    const res = await fetch(`${API_URL}/api/ventas/detalle/${numero}`);
+    const res = await fetch(
+      `${API_URL}/api/ventas/detalle/${numero}?sede=${encodeURIComponent(sedeActual)}`
+    );
     const data = await res.json();
     if (!data.ok) {
       alert("Factura no encontrada");
