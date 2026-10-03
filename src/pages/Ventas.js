@@ -298,50 +298,77 @@ const Ventas = () => {
   // UTILIDADES
   // -----------------------------  
   const buscarClientePorIdentificacion = async (cedula) => {
-    cedula = cedula.trim().toUpperCase();
-    if (!cedula) return;
-    try {
-      const res = await fetch(`${API_URL}/api/clientes/cedula/${cedula}`);
-      if (res.status === 404) {
-        console.log("❌ Cliente NO encontrado → abrir modal");
-        setIdentificacion(cedula);
-        setMostrarModalCliente(true);
-        return;
-      }
-      if (!res.ok) {
-        alert("Error buscando cliente");
-        return;
-      }
-      const data = await res.json();
-      const cliente = data.cliente ?? data;
-      if (!cliente || !cliente._id) {
-        alert("Respuesta inválida del servidor");
-        return;
-      }
-      setClienteSeleccionado(cliente);
-      setNombreCliente(cliente.nombreCompleto || "");
-      setIdentificacion(cliente.identificacion || "");
-      setListaClientes((prev) => {
-        const existe = prev.some((c) => c._id === cliente._id);
-        return existe ? prev : [...prev, cliente];
-      });
-      setTimeout(() => {
-        const incompleto =
-          cliente.nombreCompleto === "CLIENTE POR ACTUALIZAR" ||
-          cliente.direccion === "DIRECCIÓN POR ACTUALIZAR" ||
-          cliente.telefono === "TELÉFONO POR ACTUALIZAR";
-        if (incompleto) setMostrarEditorCliente(true);
-      }, 0);
-    } catch (error) {
-      console.error("Error buscando cliente:", error);
-      alert("Error buscando cliente");
+  cedula = cedula.trim().toUpperCase();
+
+  if (!cedula) return;
+
+  // Si escribió solamente números, asumimos cédula venezolana (V)
+  if (/^\d+$/.test(cedula)) {
+    cedula = `V${cedula}`;
+  }
+
+  // Mostrar también la identificación normalizada en pantalla
+  setIdentificacion(cedula);
+
+  try {
+    const res = await fetch(
+      `${API_URL}/api/clientes/cedula/${encodeURIComponent(cedula)}`
+    );
+
+    if (res.status === 404) {
+      console.log("❌ Cliente NO encontrado → abrir modal");
+
+      setIdentificacion(cedula);
+      setMostrarModalCliente(true);
+      return;
     }
-    // ⭐ ENFOCAR AUTOMÁTICAMENTE EN EL CÓDIGO DEL PRODUCTO
-    if (codigoProductoRef.current) {
-      codigoProductoRef.current.focus();
-      codigoProductoRef.current.select();
+
+    if (!res.ok) {
+      alert("Error buscando cliente");
+      return;
+    }
+
+    const data = await res.json();
+    const cliente = data.cliente ?? data;
+
+    if (!cliente || !cliente._id) {
+      alert("Respuesta inválida del servidor");
+      return;
+    }
+
+    setClienteSeleccionado(cliente);
+    setNombreCliente(cliente.nombreCompleto || "");
+    setIdentificacion(cliente.identificacion || "");
+
+    setListaClientes((prev) => {
+      const existe = prev.some((c) => c._id === cliente._id);
+      return existe ? prev : [...prev, cliente];
+    });
+
+    setTimeout(() => {
+      const incompleto =
+        cliente.nombreCompleto === "CLIENTE POR ACTUALIZAR" ||
+        cliente.direccion === "DIRECCIÓN POR ACTUALIZAR" ||
+        cliente.telefono === "TELÉFONO POR ACTUALIZAR";
+
+      if (incompleto) {
+        setMostrarEditorCliente(true);
       }
-  };
+    }, 0);
+
+    // Si encontró el cliente, pasar al código del producto
+    setTimeout(() => {
+      if (codigoProductoRef.current) {
+        codigoProductoRef.current.focus();
+        codigoProductoRef.current.select();
+      }
+    }, 0);
+
+  } catch (error) {
+    console.error("Error buscando cliente:", error);
+    alert("Error buscando cliente");
+  }
+};
 
   const limpiarCliente = () => {
     setIdentificacion("");
@@ -1389,7 +1416,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
-                    validarStock();
+                    
                   if (precioRef.current) {
                     precioRef.current.focus();
                     precioRef.current.select();
