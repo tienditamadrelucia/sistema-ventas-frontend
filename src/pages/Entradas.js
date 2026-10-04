@@ -592,7 +592,12 @@ const datosEntrada = {
       </h3>
 
       <table border="1" cellPadding="10" style={{ width: "100%", textAlign: "center" }}>
-        <thead>
+        <thead
+          style={{
+            backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
+            color: "white"
+            }}
+          >
           <tr>
             <th>Fecha</th>
             <th>Categoría</th>
