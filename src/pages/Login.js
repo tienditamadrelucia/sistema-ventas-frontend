@@ -24,6 +24,9 @@ const estiloBoton = {
 
 function Login() {
   const navigate = useNavigate();
+  const sedeActual = localStorage.getItem("sede") || "TIENDITA";
+  const esMonasterio = sedeActual === "MONASTERIO";
+
   const [nombre, setNombre] = useState("");
   const [contraseña, setContraseña] = useState("");
   const [mensaje, setMensaje] = useState("");
@@ -45,10 +48,10 @@ function Login() {
   localStorage.setItem("accesoTiendita", encontrado.usuario.accesoTiendita ? "true" : "false");
   localStorage.setItem("accesoMonasterio", encontrado.usuario.accesoMonasterio ? "true" : "false");
   // 🔹 Verificar si existen tasas de hoy
-  // Normalizar fecha local a UTC 00:00:00
+  
   const hoy = obtenerFechaVenezuela()  
   const res = await fetch(
-    `${API_URL}/api/tasas/por-fecha/${hoy}?sede=${encodeURIComponent(sede)}`
+    `${API_URL}/api/tasas/por-fecha/${hoy}?sede=${encodeURIComponent(sedeActual)}`
   );;
   const data = await res.json();
   if (!data.tasa) {
