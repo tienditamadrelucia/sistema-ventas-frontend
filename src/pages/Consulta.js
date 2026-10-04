@@ -84,15 +84,8 @@ const Consulta = () => {
     const [Saldo, setSaldo] = useState(0);
     const [totalBsPagado, setTotalBsPagado] = useState(0);
     const [totalPPagado, setTotalPPagado] = useState(0);
-    const hoyLocal = new Date();
-    const hoyUTC = new Date(Date.UTC(
-        hoyLocal.getFullYear(),
-        hoyLocal.getMonth(),
-        hoyLocal.getDate(),
-        0, 0, 0
-        ));
-    const hoy = hoyUTC.toISOString().slice(0, 10); // "YYYY-MM-DD"
-    const [fecha, setFecha] = useState(hoyUTC.toISOString().slice(0, 10));    
+    const hoy = obtenerFechaVenezuela();
+    const [fecha, setFecha] = useState(obtenerFechaVenezuela());   
     const [procesando, setProcesando] = useState(false);
     const [mostrarFechaAbono, setMostrarFechaAbono] = useState(false);    
 

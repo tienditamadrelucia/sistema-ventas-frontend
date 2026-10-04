@@ -1,11 +1,14 @@
 import React, { useState } from "react";
+import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 
 export default function CierreMes() {
 
   const sede = localStorage.getItem("sede") || "TIENDITA";
   const esMonasterio = sede === "MONASTERIO";
   const [mes, setMes] = useState("");
-  const [año, setAño] = useState(new Date().getFullYear());
+  const [año, setAño] = useState(
+    Number(obtenerFechaVenezuela().substring(0, 4))
+  );
   const [procesando, setProcesando] = useState(false);
 
   // === ESTILOS QUE USTED ME ENVIÓ ===

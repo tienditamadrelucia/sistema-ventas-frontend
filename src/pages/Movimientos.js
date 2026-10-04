@@ -7,6 +7,7 @@ import { registrarAccion } from "../utils/registrarAccion";
 import { cargarCategorias } from "../services/categorias";
 import { Consultar } from "../services/ser_movi";
 import { cargarProductos } from "../services/productos";
+import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
   
   // -------------------------

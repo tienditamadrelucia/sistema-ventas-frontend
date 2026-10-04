@@ -434,7 +434,11 @@ function Usuarios() {
         <tbody>
           {(logs || []).map((l) => (
           <tr key={l._id}>
-            <td>{new Date(l.fecha).toLocaleString()}</td>
+            <td>
+              {new Date(l.fecha).toLocaleString("es-VE", {
+                timeZone: "America/Caracas"
+              })}
+            </td>
             <td>{l.usuario || "—"}</td>
             <td>{l.accion || "—"}</td>
           </tr>

@@ -205,7 +205,7 @@ const Clientes = () => {
 
     try {
       // Siempre usar la fecha del día
-      const fechaFinal = new Date();
+      const fechaFinal = obtenerFechaVenezuela();
 
       if (modo === "crear") {
         await crearCliente({
@@ -291,7 +291,7 @@ const Clientes = () => {
       direccion: "",
       telefono: "",
       fechaIngreso:
-        new Date()
+        obtenerFechaVenezuela()
           .toISOString()
           .substring(0, 10)
     });

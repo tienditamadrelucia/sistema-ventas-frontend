@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { obtenerGastos, crearGasto, actualizarGasto, eliminarGasto } from "../services/ser_gastos";
 import { registrarAccion } from "../utils/registrarAccion";
+import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import { API_URL } from "../config";
 
 const Gastos = () => {
@@ -18,15 +19,9 @@ const Gastos = () => {
   const [gastoEditando, setGastoEditando] = useState(null);
   const formularioRef = useRef(null);
   const [procesando, setProcesando] = useState(false);
-  const hoyLocal = new Date();
-  const hoyUTC = new Date(Date.UTC(
-    hoyLocal.getFullYear(),
-    hoyLocal.getMonth(),
-    hoyLocal.getDate(),
-    0,0,0    
-  ));
+  const hoy = obtenerFechaVenezuela();
   const [formData, setFormData] = useState({
-    fecha: hoyUTC.toISOString().slice(0,10),
+    fecha: hoy,
     descripcion: "",
     moneda: "",
     monto: 0,

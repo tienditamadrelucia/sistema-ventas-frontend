@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../utils/registrarAccion";
 import { obtenerFechaLocalComoDate } from "../utils/fechaLocal";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 
 function MenuMonasterio() {
 
@@ -29,7 +30,7 @@ function MenuMonasterio() {
     setNombre(usuarioNombre);
 
     // Obtener la fecha actual
-    const fechaActual = new Date().toLocaleDateString("es-VE");  // Formato de fecha local
+    const fechaActual = obtenerFechaVenezuela();  // Formato de fecha local
     setHoy(fechaActual);
     
     // Manejar el evento de zoom

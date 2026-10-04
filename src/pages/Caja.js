@@ -4,6 +4,7 @@ import Encabezado from "../components/Encabezado";
 import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../utils/registrarAccion";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
+import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 
 const Caja = () => {
   const navigate = useNavigate();
@@ -184,7 +185,7 @@ const Caja = () => {
         alert("Debe seleccionar una fecha");
         return;
     }
-    const fechaFormateada = new Date(fecha).toISOString().split("T")[0];
+    const fechaFormateada = obtenerFechaVenezuela();
     registrarAccion("Consultó datos del Cuadre de Caja del día");
     const res = await fetch(
       `${API_URL}/api/caja/${fechaFormateada}?sede=${encodeURIComponent(sede)}`
@@ -644,7 +645,7 @@ const totalBolivaresContados =
   const actualizarCaja = async () => {
   if (modo !== "modificar") return;
   try {
-    const fechaFormateada = new Date(fecha).toISOString().split("T")[0];
+    const fechaFormateada = obtenerFechaVenezuela();
     const payload = {
         _id: idCuadre,
       fecha: fechaFormateada,

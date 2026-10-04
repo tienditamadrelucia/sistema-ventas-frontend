@@ -14,6 +14,7 @@ import { API_URL } from "../config";
 import ModalTasas from "../components/Tasas/ModalTasas";
 import { cargarTasasPorFecha } from "../services/ser_tasas";
 import { guardarVta, guardarVendido} from "../services/ser_ventas";
+import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 
 const Ventas = () => {
   const navigate = useNavigate();
@@ -144,15 +145,9 @@ const Ventas = () => {
 
   const API = `${API_URL}/api`;
   const UsuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";  
-  const hoyLocal = new Date();
-  const hoyUTC = new Date(Date.UTC(
-    hoyLocal.getFullYear(),
-    hoyLocal.getMonth(),
-    hoyLocal.getDate(),
-    0, 0, 0
-    ));
-  const hoy = hoyUTC.toISOString().slice(0, 10); // "YYYY-MM-DD"
-  const [fecha, setFecha] = useState(hoyUTC.toISOString().slice(0, 10));
+  const hoyLocal = obtenerFechaVenezuela()
+  const hoy = obtenerFechaVenezuela() // "YYYY-MM-DD"
+  const [fecha, setFecha] = useState(hoy);
 
   // -----------------------------
   // VALIDAR TASAS DEL DÍA
@@ -289,9 +284,7 @@ const Ventas = () => {
   // HORA
   // -----------------------------
   const generarHora = () => {
-    const ahora = new Date();
-    const h = ahora.toLocaleTimeString("es-VE", { hour12: false });
-    setHora(h);
+    setHora(obtenerFechaVenezuela());
   };
 
   // -----------------------------

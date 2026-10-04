@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../services/logs";
 import { obtenerTasaHoy, guardarTasas, modificarTasas, cargarTasasPorFecha,obtenerHistorialTasas } from "../services/ser_tasas.js";
 import { buscarVentasDelDia } from "../services/ser_ventas.js";
+import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
+
 
 const Tasas = () => {
   const navigate = useNavigate();
@@ -11,8 +13,8 @@ const Tasas = () => {
   const esMonasterio = sede === "MONASTERIO";
 
   // ⭐ Fecha de hoy en UTC (00:00:00)
-  const hoy = new Date();
-  const fecha = hoy.toISOString().slice(0, 10);  // "YYYY-MM-DD"
+  const hoy = obtenerFechaVenezuela()
+  const fecha = obtenerFechaVenezuela();  // "YYYY-MM-DD"
   
   const [form, setForm] = useState({
     fecha: fecha,

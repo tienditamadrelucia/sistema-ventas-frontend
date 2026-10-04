@@ -3,6 +3,7 @@ import axios from "axios";
 import logo from "../assets/logoConvento.png";
 import { useNavigate } from "react-router-dom";
 import { buscarUsuario } from "../services/usuarios";
+import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 axios.defaults.withCredentials = true;
@@ -45,14 +46,10 @@ function Login() {
   localStorage.setItem("accesoMonasterio", encontrado.usuario.accesoMonasterio ? "true" : "false");
   // 🔹 Verificar si existen tasas de hoy
   // Normalizar fecha local a UTC 00:00:00
-  const hoy = new Date();
-  const fechaUTC = new Date(Date.UTC(
-    hoy.getFullYear(),
-    hoy.getMonth(),
-    hoy.getDate(),
-    0, 0, 0
-    ));
-  const res = await fetch(`${API_URL}/api/tasas/por-fecha/${fechaUTC.toISOString().slice(0,10)}`);
+  const hoy = obtenerFechaVenezuela()  
+  const res = await fetch(
+    `${API_URL}/api/tasas/por-fecha/${hoy}?sede=${encodeURIComponent(sede)}`
+  );;
   const data = await res.json();
   if (!data.tasa) {
     alert("⚠️ No hay tasas registradas para hoy. Por favor regístrelas antes de continuar.");

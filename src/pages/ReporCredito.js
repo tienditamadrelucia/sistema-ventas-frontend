@@ -224,7 +224,11 @@ console.log("REPORTE:", reporte);
                   <tr key={`${item.venta.factura}-${i}`}>
                     {i === 0 ? (
                       <>
-                        <td>{new Date(item.venta.fecha).toLocaleDateString("es-VE")}</td>
+                        <td>
+                          {item.venta.fecha
+                            ? item.venta.fecha.slice(0, 10).split("-").reverse().join("/")
+                            : ""}
+                        </td>
                         <td>{item.venta.factura}</td>
                         <td>{item.clienteNombre}</td>
                       </>
@@ -283,7 +287,11 @@ console.log("REPORTE:", reporte);
                       <tbody>
                         {item.abonos.map((a, idx) => (
                           <tr key={idx}>
-                            <td>{new Date(a.fecha).toLocaleDateString("es-VE")}</td>
+                            <td>
+                              {a.fecha
+                                ? a.fecha.slice(0, 10).split("-").reverse().join("/")
+                              : ""}
+                            </td>
                             <td>{formatoVE(a.efectivoP)}</td>
                             <td>{formatoVE(a.transferenciaP)}</td>
                             <td>{formatoVE(a.efectivoBs)}</td>
