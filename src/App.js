@@ -102,7 +102,7 @@ function App() {
         <Route path="/consulta" element={<ProtectedRoute><Consulta /></ProtectedRoute>} />
         <Route path="/caja" element={<ProtectedRoute><Caja /></ProtectedRoute>} />
         <Route path="/gastos" element={<ProtectedRoute><Gastos /></ProtectedRoute>} />
-        <Route path="/diario" element={<ProtectedRoute><DiarioVentas /></ProtectedRoute>} />
+        <Route path="/diarioventas" element={<ProtectedRoute><DiarioVentas /></ProtectedRoute>} />
         <Route path="/reporcredito" element={<ProtectedRoute><ReporCredito /></ProtectedRoute>} />
         <Route path="/tipogastos" element={<ProtectedRoute><TipoGastos /></ProtectedRoute>} />
         <Route path="/porstock" element={<ProtectedRoute><PorStock /></ProtectedRoute>} />
