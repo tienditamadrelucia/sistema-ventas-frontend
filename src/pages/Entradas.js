@@ -595,7 +595,7 @@ const datosEntrada = {
         <thead
           style={{
             backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
-            color: "white"
+            color: "Black"
             }}
           >
           <tr>
@@ -612,19 +612,8 @@ const datosEntrada = {
         </thead> 
 
         <tbody>
-          {entradas.map((e, index) => (
-          <tr
-            key={e._id}
-            style={{
-              backgroundColor: esMonasterio
-              ? index % 2 === 0
-              ? "#F5EBDD"
-              : "#E8D1A5"
-              : index % 2 === 0
-              ? "#F9CEAE"
-              : "#EDC5CD"
-            }}
-          >
+          {entradas.map((e) => (
+          <tr key={e._id}>
               <td>{e.fecha.slice(0, 10).split("-").reverse().join("/")}</td>
               <td>{e.productoId?.categoria}</td>
               <td>{e.productoId?.codigo}</td>
