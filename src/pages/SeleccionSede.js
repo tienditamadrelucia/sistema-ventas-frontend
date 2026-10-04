@@ -1,7 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import encabezado from "../assets/encabezadoMonasterio.png";
-import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import { API_URL } from "../config";
 
 function SeleccionSede() {
@@ -15,27 +14,46 @@ function SeleccionSede() {
 
   const verificarTasas = async (sede) => {
   try {
-    const hoy = obtenerFechaVenezuela();
-
     const res = await fetch(
-      `${API_URL}/api/tasas/por-fecha/${hoy}?sede=${encodeURIComponent(sede)}`
+      `${API_URL}/api/tasas/hoy?sede=${encodeURIComponent(sede)}`
     );
 
     if (!res.ok) {
-      console.error("No se pudo verificar la tasa del día.");
+      alert(
+        `⚠️ No se pudieron verificar las tasas de ${sede}.\n\n` +
+        `Revise las tasas antes de realizar operaciones.`
+      );
       return;
     }
 
     const data = await res.json();
 
-    if (!data.tasa) {
+    console.log("Tasas encontradas:", sede, data);
+
+    // No existe registro de tasas para esta sede hoy
+    if (
+      !data ||
+      !data.tasa ||
+      (
+        !data.tasa.tasaP &&
+        !data.tasa.tasaD &&
+        !data.tasa.cajachicaP &&
+        !data.tasa.cajachicaD
+      )
+    ) {
       alert(
         `⚠️ No hay tasas registradas para hoy en ${sede}.\n\n` +
         `Por favor regístrelas antes de realizar operaciones.`
       );
     }
+
   } catch (error) {
     console.error("Error verificando tasas:", error);
+
+    alert(
+      `⚠️ No se pudieron verificar las tasas de ${sede}.\n\n` +
+      `Revise las tasas antes de realizar operaciones.`
+    );
   }
 };
 
