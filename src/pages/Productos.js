@@ -392,23 +392,22 @@ const payload = {
       await registrarAccion(`Actualizó el producto "${formData.descripcion}"`);
     }
 
-    // ⭐ 5. RECARGAR LISTA
-    if (categoriaSeleccionada) {
-      cargarProductos(categoriaSeleccionada);
-    } else {
-      cargarProductos(formData.categoria);
-    }
+    // ⭐ 5. GUARDAR LA CATEGORÍA QUE DEBE QUEDAR SELECCIONADA
+const cat = categoriaSeleccionada || formData.categoria;
 
-    // ⭐ 6. LIMPIAR FORMULARIO
-    const cat = categoriaSeleccionada || formData.categoria;
-    limpiarFormulario();
-    setProcesando(false);
+// ⭐ 6. LIMPIAR FORMULARIO
+limpiarFormulario();
 
-    setFormData(prev => ({
-      ...prev,
-      categoria: cat,
-      preview: undefined
-    }));
+setFormData(prev => ({
+  ...prev,
+  categoria: cat,
+  preview: undefined
+}));
+
+// ⭐ 7. RECARGAR LISTA Y ESPERAR A QUE TERMINE
+await cargarProductos(cat);
+
+setProcesando(false);
 
   } finally {
     setGuardando(false); // 🔓 SIEMPRE se reactiva el botón
