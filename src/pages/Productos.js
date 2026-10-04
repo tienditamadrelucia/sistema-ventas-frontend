@@ -901,6 +901,7 @@ const payload = {
             <th>PrecioAnterior</th>
             <th>Venta</th>
             <th>Origen</th>
+            <th>PRUEBA</th>
             <th>Participación</th>
             <th>Acciones</th>
           </tr>
@@ -933,6 +934,12 @@ const payload = {
                   ? "MONASTERIO"
                   : "COMPRADO"}
               </td>
+              <td>
+  {String(p.generaParticipacion)} |
+  {p.beneficiarioParticipacion || "SIN BENEFICIARIO"} |
+  {p.tipoParticipacion || "SIN TIPO"} |
+  {String(p.valorParticipacion)}
+</td>
               <td>
                 {p.origen === "PRODUCCION_MONASTERIO" &&
                 p.generaParticipacion ? (
