@@ -116,10 +116,15 @@ const Productos = () => {
     descripcion: "",
     medida: "",
     stock: "",
-    fechaIngreso: obtenerFechaVenezuela(), // ⭐ fecha de hoy
+    fechaIngreso: obtenerFechaVenezuela(),
     costo: "",
     venta: "",
-    foto: ""
+    foto: "",
+
+    origen: "COMPRADO",
+    liquidarAlMonasterio: false,
+    tipoLiquidacion: "NINGUNA",
+    valorLiquidacion: ""
   });
 
   useEffect(() => {
@@ -188,7 +193,7 @@ const Productos = () => {
 }
 
   // ⭐ Campos numéricos SIN convertir a número
-  const camposNumericos = ["stock", "costo", "venta"];
+  const camposNumericos = ["stock", "costo", "venta", "valorLiquidacion"];
   if (camposNumericos.includes(name)) {
     setFormData((prev) => ({
       ...prev,
@@ -230,11 +235,51 @@ const guardarProducto = async () => {
       return;
     }
 
-    if (Number(formData.venta) <= Number(formData.costo)) {
-      alert("El precio de venta debe ser mayor al costo.");
-      setGuardando(false); // 🔓 reactivar botón
-      return;
-    }
+    // PRODUCTO COMPRADO: debe tener costo real de adquisición
+if (formData.origen === "COMPRADO") {
+  if (formData.costo === "" || Number(formData.costo) < 0) {
+    alert("Debe indicar el precio de costo del producto comprado.");
+    setGuardando(false);
+    return;
+  }
+
+  if (Number(formData.venta) <= Number(formData.costo)) {
+    alert("El precio de venta debe ser mayor al costo.");
+    setGuardando(false);
+    return;
+  }
+}
+
+// PRODUCCIÓN DEL MONASTERIO:
+// el costo de adquisición para la Tiendita es 0
+if (formData.origen === "PRODUCCION_MONASTERIO") {
+  if (
+    formData.liquidarAlMonasterio &&
+    formData.tipoLiquidacion === "NINGUNA"
+  ) {
+    alert("Debe seleccionar cómo se liquidará al Monasterio.");
+    setGuardando(false);
+    return;
+  }
+
+  if (
+    formData.liquidarAlMonasterio &&
+    Number(formData.valorLiquidacion) <= 0
+  ) {
+    alert("Debe indicar el valor de la liquidación al Monasterio.");
+    setGuardando(false);
+    return;
+  }
+
+  if (
+    formData.tipoLiquidacion === "PORCENTAJE" &&
+    Number(formData.valorLiquidacion) > 100
+  ) {
+    alert("El porcentaje no puede ser mayor de 100%.");
+    setGuardando(false);
+    return;
+  }
+}
 
     setProcesando(true);
 
@@ -261,12 +306,34 @@ const guardarProducto = async () => {
     }
 
     // ⭐ 2. PREPARAR PAYLOAD
-    const payload = {
-      ...formData,
-      sede: sede,
-      foto: fotoURL,
-      preview: undefined
-    };
+    const esProduccionMonasterio =
+  formData.origen === "PRODUCCION_MONASTERIO";
+
+const payload = {
+  ...formData,
+  sede: sede,
+  foto: fotoURL,
+  preview: undefined,
+
+  // Si viene del Monasterio, la Tiendita no pagó por adquirirlo.
+  costo: esProduccionMonasterio
+    ? 0
+    : Number(formData.costo || 0),
+
+  liquidarAlMonasterio: esProduccionMonasterio
+    ? Boolean(formData.liquidarAlMonasterio)
+    : false,
+
+  tipoLiquidacion:
+    esProduccionMonasterio && formData.liquidarAlMonasterio
+      ? formData.tipoLiquidacion
+      : "NINGUNA",
+
+  valorLiquidacion:
+    esProduccionMonasterio && formData.liquidarAlMonasterio
+      ? Number(formData.valorLiquidacion || 0)
+      : 0
+};
 
     // ⭐ 3. CREAR PRODUCTO
     if (modo === "crear") {
@@ -352,6 +419,10 @@ const guardarProducto = async () => {
       : "",
     costo: prod.costo,
     venta: prod.venta,
+    origen: prod.origen || "COMPRADO",
+    liquidarAlMonasterio: prod.liquidarAlMonasterio || false,
+    tipoLiquidacion: prod.tipoLiquidacion || "NINGUNA",
+    valorLiquidacion: prod.valorLiquidacion || "",
     // ⭐ AQUÍ ESTÁ LA SOLUCIÓN
     foto: prod.foto,      
     preview: undefined
@@ -416,6 +487,10 @@ const guardarProducto = async () => {
     fechaIngreso: obtenerFechaVenezuela(), // ⭐ fecha de hoy
     costo: "",
     venta: "",
+    origen: "COMPRADO",
+    liquidarAlMonasterio: false,
+    tipoLiquidacion: "NINGUNA",
+    valorLiquidacion: "",
     foto: ""
   });
   if (inputFotoRef.current) inputFotoRef.current.value = "";
@@ -503,6 +578,171 @@ const guardarProducto = async () => {
           }}
         />
 
+        {/* ORIGEN DEL PRODUCTO */}
+        <div
+          style={{
+            padding: "10px",
+            marginBottom: "10px",
+            border: "1px solid #ccc",
+            borderRadius: "6px",
+            backgroundColor: esMonasterio ? "#F5EBDD" : "#fff7f7"
+          }}
+        >
+          <label
+            style={{
+              display: "block",
+              fontWeight: "bold",
+              marginBottom: "5px"
+            }}
+          >
+            Origen del producto
+          </label>
+
+          <select
+            name="origen"
+            value={formData.origen}
+            onChange={(e) => {
+            const nuevoOrigen = e.target.value;
+              setFormData((prev) => ({
+              ...prev,
+              origen: nuevoOrigen,
+
+        // Producción del Monasterio no tiene costo
+        // de adquisición para la Tiendita.
+              costo:
+              nuevoOrigen === "PRODUCCION_MONASTERIO"
+              ? "0"
+              : prev.costo,
+              liquidarAlMonasterio:
+              nuevoOrigen === "PRODUCCION_MONASTERIO"
+              ? prev.liquidarAlMonasterio
+              : false,
+              tipoLiquidacion:
+              nuevoOrigen === "PRODUCCION_MONASTERIO"
+              ? prev.tipoLiquidacion
+              : "NINGUNA",
+              valorLiquidacion:
+              nuevoOrigen === "PRODUCCION_MONASTERIO"
+              ? prev.valorLiquidacion
+              : ""
+            }));
+          }}
+          style={{
+            width: "100%",
+            padding: "6px",
+            borderRadius: "6px",
+            border: "1px solid #ccc"
+          }}
+          >
+          <option value="COMPRADO">
+            COMPRADO PARA REVENTA
+          </option>
+          <option value="PRODUCCION_MONASTERIO">
+            PRODUCCIÓN DEL MONASTERIO
+          </option>
+          </select>
+
+            {formData.origen === "PRODUCCION_MONASTERIO" && (
+            <div style={{ marginTop: "12px" }}>
+              <label
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  fontWeight: "bold"
+                }}
+              >
+                <input
+                  type="checkbox"
+                  checked={formData.liquidarAlMonasterio}
+                  onChange={(e) =>
+                  setFormData((prev) => ({
+                  ...prev,
+                  liquidarAlMonasterio: e.target.checked,
+                  tipoLiquidacion: e.target.checked
+                  ? prev.tipoLiquidacion
+                  : "NINGUNA",
+                  valorLiquidacion: e.target.checked
+                  ? prev.valorLiquidacion
+                  : ""
+                }))
+                }
+              />
+                Genera pago al Monasterio cuando se venda
+              </label>
+                {formData.liquidarAlMonasterio && (
+                <div
+                  style={{
+                    display: "flex",
+                    gap: "10px",
+                    marginTop: "10px"
+                  }}
+                >
+                <select
+                  name="tipoLiquidacion"
+                  value={formData.tipoLiquidacion}
+                  onChange={handleChange}
+                  style={{ width: "55%", padding: "5px" }}
+                >
+                  <option value="NINGUNA">
+                    Seleccione forma de liquidación
+                  </option>
+                  <option value="PORCENTAJE">
+                    PORCENTAJE DE LA VENTA
+                  </option>
+                  <option value="MONTO_FIJO">
+                    MONTO FIJO POR UNIDAD
+                  </option>
+                </select>
+                <input
+                  type="number"
+                  name="valorLiquidacion"
+                  min="0"
+                  step="0.01"
+                  placeholder={
+                  formData.tipoLiquidacion === "PORCENTAJE"
+                  ? "Ej: 60"
+                  : "Ej: 1.50"
+                  }
+                  value={formData.valorLiquidacion}
+                  onChange={handleChange}
+                  style={{
+                    width: "40%",
+                    padding: "5px"
+                  }}
+                />
+                  </div>
+                  )}
+                  {formData.liquidarAlMonasterio &&
+                  formData.tipoLiquidacion === "PORCENTAJE" &&
+                  formData.valorLiquidacion !== "" && (
+                <div
+                  style={{
+                  marginTop: "8px",
+                  fontWeight: "bold"
+                  }}
+                >
+                  Al Monasterio le corresponde{" "}
+                  {Number(formData.valorLiquidacion).toFixed(2)}% de la venta.
+                </div>
+                )}
+                  {formData.liquidarAlMonasterio &&
+                  formData.tipoLiquidacion === "MONTO_FIJO" &&
+                  formData.valorLiquidacion !== "" && (
+                <div
+                  style={{
+                    marginTop: "8px",
+                    fontWeight: "bold"
+                  }}
+                >
+                  Al Monasterio le corresponden US${" "}
+                  {Number(formData.valorLiquidacion).toFixed(2)} por unidad vendida.
+                </div>
+              )}
+            </div>
+          )}
+      </div>
+
         <div style={{ display: "flex", gap: "20px", marginBottom: "10px" }}>
           <input
             name="medida"
@@ -536,10 +776,15 @@ const guardarProducto = async () => {
 
           <input
             name="costo"
-            placeholder="Precio de Costo"
+            placeholder={
+              formData.origen === "PRODUCCION_MONASTERIO"
+              ? "Costo adquisición: 0"
+              : "Precio de Costo"
+            }
             type="number"
             step="0.1"
             value={formData.costo}
+            disabled={formData.origen === "PRODUCCION_MONASTERIO"}
             onChange={handleChange}
             style={input25}
           />
