@@ -3,6 +3,7 @@ import Encabezado from "../components/Encabezado";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
+import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
 
 const Diario = () => {
   const navigate = useNavigate();
