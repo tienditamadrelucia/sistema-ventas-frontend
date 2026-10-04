@@ -1,31 +1,73 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import encabezado from "../assets/encabezadoMonasterio.png";
+import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
+import { API_URL } from "../config";
 
 function SeleccionSede() {
   const navigate = useNavigate();
+  
   const accesoTiendita =
   localStorage.getItem("accesoTiendita") === "true";
+  
   const accesoMonasterio =
   localStorage.getItem("accesoMonasterio") === "true";
 
-  const entrarTiendita = () => {
+  const verificarTasas = async (sede) => {
+  try {
+    const hoy = obtenerFechaVenezuela();
+
+    const res = await fetch(
+      `${API_URL}/api/tasas/por-fecha/${hoy}?sede=${encodeURIComponent(sede)}`
+    );
+
+    if (!res.ok) {
+      console.error("No se pudo verificar la tasa del día.");
+      return;
+    }
+
+    const data = await res.json();
+
+    if (!data.tasa) {
+      alert(
+        `⚠️ No hay tasas registradas para hoy en ${sede}.\n\n` +
+        `Por favor regístrelas antes de realizar operaciones.`
+      );
+    }
+  } catch (error) {
+    console.error("Error verificando tasas:", error);
+  }
+};
+
+  const entrarTiendita = async () => {
   if (!accesoTiendita) {
     alert("No tiene autorización para acceder a la Tiendita.");
     return;
   }
-    localStorage.setItem("sede", "TIENDITA");
-    navigate("/menu", { replace: true });
-  };
 
-  const entrarMonasterio = () => {
+  localStorage.setItem("sede", "TIENDITA");
+
+  // Verificar únicamente las tasas de TIENDITA
+  await verificarTasas("TIENDITA");
+
+  // Haya o no tasas, continúa al menú
+  navigate("/menu", { replace: true });
+};
+
+  const entrarMonasterio = async () => {
   if (!accesoMonasterio) {
     alert("No tiene autorización para acceder al Monasterio.");
     return;
   }
-    localStorage.setItem("sede", "MONASTERIO");
-    navigate("/menu-monasterio", { replace: true });
-  };
+
+  localStorage.setItem("sede", "MONASTERIO");
+
+  // Verificar únicamente las tasas del MONASTERIO
+  await verificarTasas("MONASTERIO");
+
+  // Haya o no tasas, continúa al menú
+  navigate("/menu-monasterio", { replace: true });
+};
 
   const boton = {
     width: "280px",

@@ -3,8 +3,6 @@ import axios from "axios";
 import logo from "../assets/logoConvento.png";
 import { useNavigate } from "react-router-dom";
 import { buscarUsuario } from "../services/usuarios";
-import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
-import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 axios.defaults.withCredentials = true;
 
@@ -24,9 +22,7 @@ const estiloBoton = {
 
 function Login() {
   const navigate = useNavigate();
-  const sedeActual = localStorage.getItem("sede") || "TIENDITA";
-  const esMonasterio = sedeActual === "MONASTERIO";
-
+  
   const [nombre, setNombre] = useState("");
   const [contraseña, setContraseña] = useState("");
   const [mensaje, setMensaje] = useState("");
@@ -34,33 +30,58 @@ function Login() {
   const [procesando, setProcesando] = useState(false);
 
   const manejarLogin = async (e) => {
-  setProcesando(true);     
-  e.preventDefault();    
+  e.preventDefault();
 
-  const encontrado = await buscarUsuario(nombre, contraseña);  
-    if (!encontrado || !encontrado.ok) { // Asegúrate de verificar que encontrado no sea undefined
-      setMensaje("Frontend: Usuario o contraseña incorrectos");
-      setProcesando(false);     
+  if (procesando) return;
+
+  setProcesando(true);
+  setMensaje("");
+
+  try {
+    const encontrado = await buscarUsuario(nombre, contraseña);
+
+    if (!encontrado || !encontrado.ok) {
+      setMensaje("Usuario o contraseña incorrectos");
       return;
+    }
+
+    // Guardar datos del usuario
+    localStorage.setItem(
+      "usuarioNombre",
+      encontrado.usuario.usuario
+    );
+
+    localStorage.setItem(
+      "rolUsuario",
+      encontrado.usuario.rol
+    );
+
+    localStorage.setItem(
+      "accesoTiendita",
+      encontrado.usuario.accesoTiendita ? "true" : "false"
+    );
+
+    localStorage.setItem(
+      "accesoMonasterio",
+      encontrado.usuario.accesoMonasterio ? "true" : "false"
+    );
+
+    // IMPORTANTE:
+    // Todavía NO verificamos tasas porque aún
+    // no se ha seleccionado la sede.
+
+    navigate("/seleccionar-sede", { replace: true });
+
+  } catch (error) {
+    console.error("Error iniciando sesión:", error);
+
+    setMensaje(
+      "Ocurrió un error al iniciar sesión. Intente nuevamente."
+    );
+
+  } finally {
+    setProcesando(false);
   }
-  localStorage.setItem("usuarioNombre", encontrado.usuario.usuario);
-  localStorage.setItem("rolUsuario", encontrado.usuario.rol);
-  localStorage.setItem("accesoTiendita", encontrado.usuario.accesoTiendita ? "true" : "false");
-  localStorage.setItem("accesoMonasterio", encontrado.usuario.accesoMonasterio ? "true" : "false");
-  // 🔹 Verificar si existen tasas de hoy
-  
-  const hoy = obtenerFechaVenezuela()  
-  const res = await fetch(
-    `${API_URL}/api/tasas/por-fecha/${hoy}?sede=${encodeURIComponent(sedeActual)}`
-  );;
-  const data = await res.json();
-  if (!data.tasa) {
-    alert("⚠️ No hay tasas registradas para hoy. Por favor regístrelas antes de continuar.");
-    navigate("/tasas", { replace: true });
-    return;
-  }
-  setProcesando(false);
-  navigate("/seleccionar-sede", { replace: true });
 };
 
   return (
