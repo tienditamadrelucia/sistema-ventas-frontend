@@ -90,8 +90,8 @@ const Entradas = () => {
     productoId: "",
     codigo: 0,
     cantidad: 0,
-    pcompra: 0,
-    pventa: 0,
+    preciocompra: 0,
+    precioventa: 0,
     observacion: ""
   });
   
@@ -165,40 +165,55 @@ const Entradas = () => {
   // -----------------------------
   if (name === "productoId") {
     const prod = productos.find((p) => p._id === value);
-
+    const esProduccionMonasterio =
+      prod?.origen === "PRODUCCION_MONASTERIO";
     setFormData({
       ...formData,
       productoId: value,
-      codigo: prod?.codigo || "",
-      precioCompra: prod?.costo || 0,
-      precioVenta: prod?.venta || 0
+      codigo: prod?.codigo || "",      
+      precioCompra: esProduccionMonasterio
+        ? 0
+        : Number(prod?.costo || 0),
+      precioVenta: Number(prod?.venta || 0),
+      observacion: esProduccionMonasterio
+        ? "PRODUCCIÓN DEL MONASTERIO"
+        : ""
     });
 
     return;   // ⭐ IMPORTANTE
   }
 
   // -----------------------------
-  // 4. OBSERVACIÓN
-  // -----------------------------
-  if (name === "observacion") {
-    let nuevoPrecioCompra = formData.precioCompra;
+// 4. OBSERVACIÓN
+// -----------------------------
+if (name === "observacion") {
+  let nuevoPrecioCompra = formData.precioCompra;
+  let nuevoPrecioVenta = formData.precioVenta;
 
-    if (value === "PRODUCCIÓN DEL MONASTERIO") {
-      nuevoPrecioCompra = formData.precioVenta * 0.50;
-    }
-
-    if (value !== "COMPRAS" && value !== "PRODUCCIÓN DEL MONASTERIO") {
-      nuevoPrecioCompra = 0;
-    }
-
-    setFormData({
-      ...formData,
-      observacion: value,
-      precioCompra: nuevoPrecioCompra
-    });
-
-    return;
+  // PRODUCCIÓN DEL MONASTERIO:
+  // no tiene costo de adquisición
+  if (value === "PRODUCCIÓN DEL MONASTERIO") {
+    nuevoPrecioCompra = 0;
   }
+
+  // Otros motivos no manejan precios
+  if (
+    value !== "COMPRAS" &&
+    value !== "PRODUCCIÓN DEL MONASTERIO"
+  ) {
+    nuevoPrecioCompra = 0;
+    nuevoPrecioVenta = 0;
+  }
+
+  setFormData({
+    ...formData,
+    observacion: value,
+    precioCompra: nuevoPrecioCompra,
+    precioVenta: nuevoPrecioVenta
+  });
+
+  return;
+}
 
   // -----------------------------
   // 5. CUALQUIER OTRO CAMPO
@@ -256,36 +271,51 @@ const Entradas = () => {
     }
 
     if (formData.observacion === "PRODUCCIÓN DEL MONASTERIO") {
-      // precioVenta obligatorio
-      if (!formData.precioVenta || formData.precioVenta <= 0) {
-        alert("Debe ingresar el precio de venta.");
-        return;
-      }
 
-      // precioCompra = 50% del precioVenta
-      const precioCompraCalc = Number(formData.precioVenta) * 0.50;
-      formData.precioCompra = precioCompraCalc;
+  // Precio de venta obligatorio
+  if (
+    !formData.precioVenta ||
+    Number(formData.precioVenta) <= 0
+  ) {
+    alert("Debe ingresar el precio de venta.");
+    return;
+  }
 
-      // Validación del 30%
-      if (Number(formData.precioVenta) < precioCompraCalc * 1.30) {
-        alert("El precio de venta no cumple el margen mínimo del 30%.");
-        return;
-      }
-    }
+  // La producción del Monasterio no tiene
+  // costo de adquisición en Entradas.  
+}
 
-    // ⭐ Otros motivos → no se usan precios
-    if (
-      formData.observacion !== "COMPRAS" &&
-      formData.observacion !== "PRODUCCIÓN DEL MONASTERIO"
-    ) {
-      formData.precioCompra = 0;
-      formData.precioVenta = 0;
-    }
+    // ⭐ PREPARAR LOS PRECIOS SEGÚN EL MOTIVO
+let precioCompraFinal = Number(formData.precioCompra || 0);
+let precioVentaFinal = Number(formData.precioVenta || 0);
 
-  const datosEntrada = {
-    ...formData,
-    sede
-  };
+// PRODUCCIÓN DEL MONASTERIO:
+// no tiene costo de adquisición
+if (formData.observacion === "PRODUCCIÓN DEL MONASTERIO") {
+  precioCompraFinal = 0;
+}
+
+// DONACIONES, REPOSICIÓN Y AJUSTE:
+// no manejan precios
+if (
+  formData.observacion !== "COMPRAS" &&
+  formData.observacion !== "PRODUCCIÓN DEL MONASTERIO"
+) {
+  precioCompraFinal = 0;
+  precioVentaFinal = 0;
+}
+
+// ⭐ DATOS DEFINITIVOS QUE SE ENVIARÁN AL BACKEND
+const datosEntrada = {
+  ...formData,
+
+  cantidad: Number(formData.cantidad),
+
+  precioCompra: precioCompraFinal,
+  precioVenta: precioVentaFinal,
+
+  sede
+};
 
     // ⭐ CREAR O EDITAR
     let res;
@@ -499,7 +529,11 @@ const Entradas = () => {
           {/* PRECIO COMPRA */}          
           <input
             name="precioCompra"
-            placeholder="Precio compra"
+            placeholder={
+              formData.observacion === "PRODUCCIÓN DEL MONASTERIO"
+              ? "Costo adquisición: 0"
+              : "Precio compra"
+            }  
             type="number"
             step="0.01"
             value={formData.precioCompra}
