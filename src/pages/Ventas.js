@@ -144,8 +144,7 @@ const Ventas = () => {
 };
 
   const API = `${API_URL}/api`;
-  const UsuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";  
-  const hoyLocal = obtenerFechaVenezuela()
+  const UsuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";    
   const hoy = obtenerFechaVenezuela() // "YYYY-MM-DD"
   const [fecha, setFecha] = useState(hoy);
 
