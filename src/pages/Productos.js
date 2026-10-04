@@ -405,7 +405,7 @@ setFormData(prev => ({
 }));
 
 // ⭐ 7. RECARGAR LISTA Y ESPERAR A QUE TERMINE
-await cargarProductos(cat);
+await cargarProductos();
 
 setProcesando(false);
 
