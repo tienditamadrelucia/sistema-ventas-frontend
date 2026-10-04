@@ -852,7 +852,7 @@ const payload = {
         Lista de Productos
       </h3>
 
-      <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
+      <table border="1" cellPadding="13" style={{ width: "100%", textAlign: "center" }}>
         <thead style={{ backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}> 
           <tr>
             <th>Foto</th>
@@ -865,6 +865,8 @@ const payload = {
             <th>Costo</th>
             <th>PrecioAnterior</th>
             <th>Venta</th>
+            <th>Origen</th>
+            <th>Liquidación Monasterio</th>
             <th>Acciones</th>
           </tr>
         </thead>
@@ -891,6 +893,27 @@ const payload = {
               <td>{p.costo}</td>
               <td>{p.precioanterior}</td>
               <td>{p.venta}</td>
+              <td>
+                {p.origen === "PRODUCCION_MONASTERIO"
+                  ? "MONASTERIO"
+                  : "COMPRADO"}
+              </td>
+              <td>
+                {p.origen === "PRODUCCION_MONASTERIO" &&
+                p.liquidarAlMonasterio ? (
+                p.tipoLiquidacion === "PORCENTAJE" ? (
+                <strong>{Number(p.valorLiquidacion || 0).toFixed(2)}%</strong>
+                  ) : p.tipoLiquidacion === "MONTO_FIJO" ? (
+                <strong>
+                  US$ {Number(p.valorLiquidacion || 0).toFixed(2)} / unidad
+                </strong>
+                ) : (
+                "—"
+                )
+                ) : (
+                "—"
+                )}
+              </td>
               <td style={{ textAlign: "center" }}>
                 <span onClick={() => editarProducto(p)} style={iconoEditar}>
                   ✏️
