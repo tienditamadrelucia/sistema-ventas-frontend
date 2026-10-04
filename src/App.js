@@ -21,7 +21,7 @@ import Prueba from "./pages/Prueba";
 import Consulta from "./pages/Consulta";
 import Caja from "./pages/Caja";
 import Gastos from "./pages/Gastos";
-import Diario from "./pages/DiarioVentas";
+import DiarioVentas from "./pages/DiarioVentas";
 import ReporCredito from "./pages/ReporCredito";
 import TipoGastos from "./pages/TipoGastos";
 import PorStock from "./pages/PorStock";
