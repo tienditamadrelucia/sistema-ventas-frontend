@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../utils/registrarAccion";
 import { obtenerFechaLocalComoDate } from "../utils/fechaLocal";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
-import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
+import { obtenerFechaVenezuela, obtenerFechaCompletaVenezuela } from "../utils/fechaVenezuela";
 
 function MenuMonasterio() {
 
@@ -125,7 +125,7 @@ function MenuMonasterio() {
           alignItems: "center",
         }}>
           <div>
-            Bienvenida, {nombre}, hoy es — {hoy}
+            Bienvenida, {nombre}, hoy es — {obtenerFechaCompletaVenezuela()}
           </div>
   
           {/* Contenedor para los botones de reducción de pantalla */}

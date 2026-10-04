@@ -32,3 +32,13 @@ export const obtenerHoraVenezuela = () => {
     hour12: false
   }).format(new Date());
 };
+
+export const obtenerFechaCompletaVenezuela = () => {
+  return new Intl.DateTimeFormat("es-VE", {
+    timeZone: "America/Caracas",
+    weekday: "long",
+    day: "2-digit",
+    month: "long",
+    year: "numeric"
+  }).format(new Date());
+};
