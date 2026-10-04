@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
 import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
 
-const Diario = () => {
+const DiarioVentas = () => {
   const navigate = useNavigate();
   const formularioRef = useRef(null);
   const sede = localStorage.getItem("sede") || "TIENDITA";
@@ -428,4 +428,4 @@ const Diario = () => {
   );
 };
 
-export default Diario;
+export default DiarioVentas;
