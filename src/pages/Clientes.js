@@ -7,6 +7,7 @@ import {
   actualizarCliente,
   eliminarCliente
 } from "../services/clientes";
+import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
 import { registrarAccion } from "../utils/registrarAccion";
 
 const Clientes = () => {
@@ -41,7 +42,7 @@ const Clientes = () => {
     nombreCompleto: "",
     direccion: "",
     telefono: "",
-    fechaIngreso: new Date().toISOString().substring(0, 10)
+    fechaIngreso: obtenerFechaVenezuela()
   });
 
   // ============================

@@ -2,6 +2,7 @@ import Encabezado from "../components/Encabezado";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { registrarAccion } from "../utils/registrarAccion";
+import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Productos = () => {
@@ -115,7 +116,7 @@ const Productos = () => {
     descripcion: "",
     medida: "",
     stock: "",
-    fechaIngreso: new Date().toISOString().split("T")[0], // ⭐ fecha de hoy
+    fechaIngreso: obtenerFechaVenezuela(), // ⭐ fecha de hoy
     costo: "",
     venta: "",
     foto: ""
@@ -412,7 +413,7 @@ const guardarProducto = async () => {
     descripcion: "",
     medida: "",
     stock: "",
-    fechaIngreso: new Date().toISOString().split("T")[0], // ⭐ fecha de hoy
+    fechaIngreso: obtenerFechaVenezuela(), // ⭐ fecha de hoy
     costo: "",
     venta: "",
     foto: ""

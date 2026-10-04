@@ -2,6 +2,7 @@ import Encabezado from "../components/Encabezado";
 import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../config";
+import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
 
 const ReporCredito = () => {
   const navigate = useNavigate();
@@ -49,8 +50,8 @@ const ReporCredito = () => {
   // -------------------------
   // ESTADOS
   // -------------------------
-  const [desde, setDesde] = useState(new Date().toISOString().substring(0, 10));
-  const [hasta, setHasta] = useState(new Date().toISOString().substring(0, 10));
+  const [desde, setDesde] = useState(obtenerFechaVenezuela());
+  const [hasta, setHasta] = useState(obtenerFechaVenezuela());
   const [reporte, setReporte] = useState([]);
 
   const [procesando, setProcesando] = useState(false);

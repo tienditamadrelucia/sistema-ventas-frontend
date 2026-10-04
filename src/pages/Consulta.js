@@ -8,6 +8,7 @@ import { obtenerVentaPorFactura, obtenerProductosVendidos } from "../services/se
 import { obtenerAbonosPorFactura } from "../services/ser_moneda";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 import Pago from "../components/Pago/Pago";
+import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
 
 const Consulta = () => {
   const navigate = useNavigate();
@@ -647,7 +648,7 @@ useEffect(() => {
 
   const abonoCredito = () => {
   // Fecha de hoy en formato YYYY-MM-DD
-  const hoy = new Date().toISOString().substring(0, 10);
+  const hoy = obtenerFechaVenezuela();
   // Prompt con la fecha por defecto
   const fechaIngresada = prompt("Ingrese la fecha del abono:", hoy);
   if (!fechaIngresada) {

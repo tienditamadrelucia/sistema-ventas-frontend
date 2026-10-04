@@ -10,6 +10,7 @@ import {
   eliminarEntradaApi
 } from "../services/entradas";
 import { registrarAccion } from "../utils/registrarAccion";
+import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 
 const Entradas = () => {
@@ -84,7 +85,7 @@ const Entradas = () => {
   const usuarioActual = "ADMIN"; // o desde contexto/auth
   const [categorias, setCategorias] = useState([]);
   const [formData, setFormData] = useState({
-    fecha: new Date().toISOString().substring(0, 10),
+    fecha: obtenerFechaVenezuela(),
     categoria: "",
     productoId: "",
     codigo: 0,
@@ -356,7 +357,7 @@ const Entradas = () => {
     setModo("crear");
     setEntradaEditando(null);
     setFormData({
-      fecha: new Date().toISOString().substring(0, 10),
+      fecha: obtenerFechaVenezuela(),
       categoria: "",
       productoId: "",
       codigo: 0,

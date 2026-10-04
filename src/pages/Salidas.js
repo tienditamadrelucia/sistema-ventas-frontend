@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { cargarProductos } from "../services/productos";
 import { cargarCategorias } from "../services/categorias";
+import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
 import { 
   cargarSalidas, 
   crearSalida, 
@@ -90,7 +91,7 @@ const usuarioActual = "ADMIN";
 const [categorias, setCategorias] = useState([]);
 
 const [formData, setFormData] = useState({
-  fecha: new Date().toISOString().substring(0, 10),
+  fecha: obtenerFechaVenezuela(),
   categoria: "",
   productoId: "",
   codigo: 0,
@@ -269,7 +270,7 @@ const editarSalida = (salida) => {
     setModo("crear");
     setSalidaEditando(null);
     setFormData({
-      fecha: new Date().toISOString().substring(0, 10),
+      fecha: obtenerFechaVenezuela(),
       categoria: "",
       productoId: "",
       codigo: 0,

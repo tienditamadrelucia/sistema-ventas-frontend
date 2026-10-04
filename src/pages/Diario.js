@@ -57,8 +57,8 @@ const Diario = () => {
   // -------------------------
   // ESTADOS
   // -------------------------
-  const [desde, setDesde] = useState(new Date().toISOString().substring(0, 10));
-  const [hasta, setHasta] = useState(new Date().toISOString().substring(0, 10));
+  const [desde, setDesde] = useState(obtenerFechaVenezuela());
+  const [hasta, setHasta] = useState(obtenerFechaVenezuela());
   const [reporte, setReporte] = useState([]);
   const [totales, setTotales] = useState({
     totalEfectivoP: 0,
