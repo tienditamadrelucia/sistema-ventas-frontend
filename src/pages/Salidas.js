@@ -467,7 +467,12 @@ const eliminarSalida = async (salida) => {
       </h3>
 
       <table border="1" cellPadding="8" style={{ width: "100%", textAlign: "center" }}>
-        <thead>
+        <thead
+          style={{
+            backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+            color: "Black"
+            }}
+          >
           <tr>
             <th>Fecha</th>
             <th>Categoría</th>
