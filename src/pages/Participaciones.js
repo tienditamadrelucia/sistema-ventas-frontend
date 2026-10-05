@@ -739,23 +739,8 @@ const totalSeleccionado = ventasPendientes
               <label style={{ fontWeight: "bold" }}>Monto a liquidar $</label>
               <input type="text" value={formatearMonto(totalSeleccionado)} readOnly style={{ width: "100%", padding: "6px", boxSizing: "border-box", backgroundColor: "#eee", fontWeight: "bold" }} />
             </div>
-
-              <input
-                type="number"
-                step="0.01"
-                min="0.01"
-                name="monto"
-                value={formData.monto}
-                onChange={handleChange}
-                style={{
-                  width: "100%",
-                  padding: "6px",
-                  boxSizing: "border-box"
-                }}
-              />          
-
+             
           </div>
-
 
           <div
             style={{
