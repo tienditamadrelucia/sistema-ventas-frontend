@@ -8,9 +8,9 @@ import { API_URL } from "../config";
 const Ingresos = () => {
   const navigate = useNavigate();
   const sede = localStorage.getItem("sede") || "MONASTERIO";
-  const usuarioActual = localStorage.getItem("usuario") || "ADMIN";
+  const usuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";
   const hoy = obtenerFechaVenezuela();
-
+ 
   const [ingresos, setIngresos] = useState([]);
   const [tiposIngreso, setTiposIngreso] = useState([]);
   const [modo, setModo] = useState("crear");

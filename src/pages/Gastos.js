@@ -11,7 +11,7 @@ const Gastos = () => {
   const sede = localStorage.getItem("sede") || "TIENDITA";
   const esMonasterio = sede === "MONASTERIO";
 
-  const usuarioActual = localStorage.getItem("usuario") || "ADMIN";
+  const usuarioActual = localStorage.getItem("usuarioNombre") || "Usuario";
 
   const [gastos, setGastos] = useState([]);
   const [tiposGasto, setTiposGasto] = useState([]); // ⭐ NUEVO
