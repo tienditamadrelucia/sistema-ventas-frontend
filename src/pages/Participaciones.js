@@ -44,6 +44,8 @@ const Participaciones = () => {
           ? "TIENDITA"
           : "MONASTERIO",
       monto: "",
+      numeroReciboGasto: "",
+      numeroReciboIngreso: "",
       observacion: ""
     });
 
@@ -246,144 +248,96 @@ const Participaciones = () => {
 
 
   const cambiarSedePaga = (e) => {
-    const nuevaSede = e.target.value;
-
-    setFormData((prev) => ({
-      ...prev,
-      sedePaga: nuevaSede,
-      sedeRecibe:
-        nuevaSede === "MONASTERIO"
-          ? "TIENDITA"
-          : "MONASTERIO"
-    }));
-  };
-
+  const nuevaSede = e.target.value;
+  setFormData((prev) => ({
+    ...prev,
+    sedePaga: nuevaSede,
+    sedeRecibe: nuevaSede === "MONASTERIO" ? "TIENDITA" : "MONASTERIO",
+    numeroReciboIngreso: ""
+  }));
+};
 
   // ====================================================
   // GUARDAR PAGO
   // ====================================================
 
   const guardarPago = async () => {
-    if (procesando) return;
+  if (procesando) return;
 
-    if (!esAdministrador) {
-      alert(
-        "Solo el administrador puede registrar participaciones."
-      );
-      return;
+  if (!esAdministrador) {
+    alert("Solo el administrador puede registrar participaciones.");
+    return;
+  }
+
+  if (!formData.fecha || !formData.sedePaga || !formData.sedeRecibe || !formData.monto || !formData.numeroReciboGasto.trim()) {
+    alert("Debe completar fecha, sede que paga, monto y número de recibo de gastos.");
+    return;
+  }
+
+  if (formData.sedeRecibe === "MONASTERIO" && !formData.numeroReciboIngreso.trim()) {
+    alert("Debe indicar el número del recibo de ingreso del Monasterio.");
+    return;
+  }
+
+  const montoNumero = Number(formData.monto);
+
+  if (!Number.isFinite(montoNumero) || montoNumero <= 0) {
+    alert("El monto debe ser mayor que cero.");
+    return;
+  }
+
+  const documentoRecibe = formData.sedeRecibe === "TIENDITA"
+    ? "Factura automática en TIENDITA"
+    : `Recibo de ingreso: ${formData.numeroReciboIngreso}`;
+
+  const confirmar = window.confirm(
+    `¿Registrar esta liquidación de participación?\n\nPaga: ${formData.sedePaga}\nRecibe: ${formData.sedeRecibe}\nMonto: $${formatearMonto(montoNumero)}\nRecibo de gastos: ${formData.numeroReciboGasto}\n${documentoRecibe}`
+  );
+
+  if (!confirmar) return;
+
+  setProcesando(true);
+  setError("");
+
+  try {
+    const res = await fetch(`${API_URL}/api/participaciones/pago`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...formData, monto: montoNumero, usuario: usuarioActual })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(data.mensaje || "No fue posible registrar el pago.");
     }
 
-    if (
-      !formData.fecha ||
-      !formData.sedePaga ||
-      !formData.sedeRecibe ||
-      !formData.monto
-    ) {
-      alert(
-        "Debe completar fecha, sede que paga y monto."
-      );
-      return;
-    }
+    await registrarAccion(`Registró pago de participación: ${formData.sedePaga} → ${formData.sedeRecibe} por $${formatearMonto(montoNumero)}`);
 
-    const montoNumero =
-      Number(formData.monto);
+    let mensaje = "Pago de participación registrado correctamente.";
+    if (data.facturaTiendita) mensaje += `\nFactura TIENDITA N.º ${data.facturaTiendita}`;
+    alert(mensaje);
 
-    if (
-      !Number.isFinite(montoNumero) ||
-      montoNumero <= 0
-    ) {
-      alert(
-        "El monto debe ser mayor que cero."
-      );
-      return;
-    }
+    setFormData({
+      fecha: obtenerFechaVenezuela(),
+      sedePaga: sede,
+      sedeRecibe: sede === "MONASTERIO" ? "TIENDITA" : "MONASTERIO",
+      monto: "",
+      numeroReciboGasto: "",
+      numeroReciboIngreso: "",
+      observacion: ""
+    });
 
-    const confirmar =
-      window.confirm(
-        `¿Registrar un pago de $${formatearMonto(
-          montoNumero
-        )} de ${formData.sedePaga} para ${
-          formData.sedeRecibe
-        }?`
-      );
+    await Promise.all([cargarEstadoCuenta(), cargarPagos()]);
 
-    if (!confirmar) return;
-
-    setProcesando(true);
-    setError("");
-
-    try {
-      const res = await fetch(
-        `${API_URL}/api/participaciones/pago`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type":
-              "application/json"
-          },
-          body: JSON.stringify({
-            ...formData,
-            monto: montoNumero,
-            usuario: usuarioActual
-          })
-        }
-      );
-
-      const data = await res.json();
-
-      if (!res.ok || !data.ok) {
-        throw new Error(
-          data.mensaje ||
-            "No fue posible registrar el pago."
-        );
-      }
-
-      await registrarAccion(
-        `Registró pago de participación: ${formData.sedePaga} → ${formData.sedeRecibe} por $${formatearMonto(
-          montoNumero
-        )}`
-      );
-
-      alert(
-        "Pago de participación registrado correctamente."
-      );
-
-      setFormData({
-        fecha: obtenerFechaVenezuela(),
-        sedePaga: sede,
-        sedeRecibe:
-          sede === "MONASTERIO"
-            ? "TIENDITA"
-            : "MONASTERIO",
-        monto: "",
-        observacion: ""
-      });
-
-      await Promise.all([
-        cargarEstadoCuenta(),
-        cargarPagos()
-      ]);
-
-    } catch (error) {
-      console.error(
-        "Error guardando participación:",
-        error
-      );
-
-      setError(
-        error.message ||
-          "Error registrando el pago."
-      );
-
-      alert(
-        error.message ||
-          "Error registrando el pago."
-      );
-
-    } finally {
-      setProcesando(false);
-    }
-  };
+  } catch (error) {
+    console.error("Error guardando participación:", error);
+    setError(error.message || "Error registrando el pago.");
+    alert(error.message || "Error registrando el pago.");
+  } finally {
+    setProcesando(false);
+  }
+};
 
 
   // ====================================================
@@ -826,46 +780,45 @@ const Participaciones = () => {
             </div>
 
           </div>
+          {/* DOCUMENTOS DE LA LIQUIDACIÓN */}
+    <div style={{ display: "flex", gap: "15px", marginBottom: "15px" }}>
+      <div style={{ flex: 1 }}>
+        <label style={{ fontWeight: "bold" }}>
+          N.º Recibo de Gastos<br />
+          <span style={{ fontSize: "12px", fontWeight: "normal" }}>{formData.sedePaga}</span>
+        </label>
+        <input type="text" name="numeroReciboGasto" value={formData.numeroReciboGasto} onChange={handleChange} placeholder="Número del recibo" style={{ width: "100%", padding: "6px", boxSizing: "border-box" }} />
+      </div>
 
-
-          <label
-            style={{
-              fontWeight: "bold"
-            }}
-          >
-            Observación
+      {formData.sedeRecibe === "MONASTERIO" ? (
+        <div style={{ flex: 1 }}>
+          <label style={{ fontWeight: "bold" }}>
+            N.º Recibo de Ingreso<br />
+            <span style={{ fontSize: "12px", fontWeight: "normal" }}>MONASTERIO</span>
           </label>
-
-          <input
-            type="text"
-            name="observacion"
-            value={formData.observacion}
-            onChange={handleChange}
-            placeholder="Opcional"
-            style={{
-              width: "100%",
-              padding: "6px",
-              boxSizing: "border-box"
-            }}
-          />
-
-
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center"
-            }}
-          >
-            <button
-              style={botonGuardar}
-              onClick={guardarPago}
-              disabled={procesando}
-            >
-              Registrar Pago
-            </button>
-          </div>
-
+          <input type="text" name="numeroReciboIngreso" value={formData.numeroReciboIngreso} onChange={handleChange} placeholder="Número del recibo" style={{ width: "100%", padding: "6px", boxSizing: "border-box" }} />
         </div>
+      ) : (
+        <div style={{ flex: 1 }}>
+          <label style={{ fontWeight: "bold" }}>
+            Documento de Ingreso<br />
+            <span style={{ fontSize: "12px", fontWeight: "normal" }}>TIENDITA</span>
+          </label>
+          <div style={{ width: "100%", padding: "7px", boxSizing: "border-box", backgroundColor: "#eee", border: "1px solid #ccc" }}>
+            Factura automática — OTROS INGRESOS
+          </div>
+        </div>
+      )}
+    </div>
+
+    <label style={{ fontWeight: "bold" }}>Observación</label>
+    <input type="text" name="observacion" value={formData.observacion} onChange={handleChange} placeholder="Opcional" style={{ width: "100%", padding: "6px", boxSizing: "border-box" }} />
+
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <button style={botonGuardar} onClick={guardarPago} disabled={procesando}>Registrar Pago</button>
+    </div>
+
+    </div>
 
 
         {/* ========================================= */}
@@ -934,6 +887,8 @@ const Participaciones = () => {
               <th>Fecha</th>
               <th>Paga</th>
               <th>Recibe</th>
+              <th>Recibo de Gastos</th>
+              <th>Documento de Ingreso</th>
               <th>Monto</th>
               <th>Observación</th>
               <th>Usuario</th>
@@ -950,7 +905,7 @@ const Participaciones = () => {
                   backgroundColor: "white"
                 }}
               >
-                <td colSpan="6">
+                <td colSpan="8">
                   No hay pagos registrados.
                 </td>
               </tr>
@@ -978,7 +933,8 @@ const Participaciones = () => {
                   <td>
                     {pago.sedeRecibe}
                   </td>
-
+                  <td>{pago.numeroReciboGasto || "—"}</td>
+                  <td>{pago.sedeRecibe === "TIENDITA" ? (pago.facturaIngresoTiendita ? `Factura ${pago.facturaIngresoTiendita}` : "—") : (pago.numeroReciboIngreso ? `Recibo ${pago.numeroReciboIngreso}` : "—")}</td>
                   <td>
                     $
                     {formatearMonto(
