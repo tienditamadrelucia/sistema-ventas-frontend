@@ -625,8 +625,14 @@ setProcesando(false);
         />
         <select
           name="actividadProductiva"
-          value={formData.actividadProductiva}
-          onChange={handleChange}
+          value={formData.actividadProductiva || ""}
+          onChange={(e) => {
+            const valor = e.target.value;
+            setFormData((prev) => ({
+              ...prev,
+              actividadProductiva: valor
+            }));
+          }}
           style={selectEstilo}
         >
           <option value="">Seleccione una actividad productiva</option>
