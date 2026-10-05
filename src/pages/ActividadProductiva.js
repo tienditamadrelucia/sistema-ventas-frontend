@@ -60,7 +60,7 @@ const ActividadProductiva = () => {
   const cargarActividades = async () => {
     try {
       const res = await fetch(
-        `${API_URL}/api/actividades-productivas`
+        `${API_URL}/api/actividad-productiva`
       );
 
       const data = await res.json();
@@ -119,8 +119,8 @@ const ActividadProductiva = () => {
     try {
       const url =
         modo === "crear"
-          ? `${API_URL}/api/actividades-productivas`
-          : `${API_URL}/api/actividades-productivas/${editando}`;
+          ? `${API_URL}/api/actividad-productiva`
+          : `${API_URL}/api/actividad-productiva/${editando}`;
 
       const res = await fetch(url, {
         method: modo === "crear" ? "POST" : "PUT",
@@ -191,7 +191,7 @@ const ActividadProductiva = () => {
 
     try {
       const res = await fetch(
-        `${API_URL}/api/actividades-productivas/${actividad._id}/estado`,
+        `${API_URL}/api/actividad-productiva/${actividad._id}/estado`,
         {
           method: "PATCH",
           headers: {
