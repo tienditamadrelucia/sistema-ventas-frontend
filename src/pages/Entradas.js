@@ -506,7 +506,7 @@ const datosEntrada = {
             <label
               style={{
                 display: "block",
-                fontWeight: "bold",
+                //fontWeight: "bold",
                 marginBottom: "4px"
                 }}
               >
@@ -528,7 +528,7 @@ const datosEntrada = {
             <label
               style={{
                 display: "block",
-                fontWeight: "bold",
+                //fontWeight: "bold",
                 marginBottom: "4px"
                 }}
               >
@@ -560,7 +560,7 @@ const datosEntrada = {
             <label
               style={{
                 display: "block",
-                fontWeight: "bold",
+                //fontWeight: "bold",
                 marginBottom: "4px"
               }}
             >
@@ -592,7 +592,7 @@ const datosEntrada = {
             <label
               style={{
                 display: "block",
-                fontWeight: "bold",
+                //fontWeight: "bold",
                 marginBottom: "4px"
               }}
             >
