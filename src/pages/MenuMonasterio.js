@@ -14,6 +14,7 @@ function MenuMonasterio() {
   // 🔹 Estados de submenús
   const [openInventario, setOpenInventario] = useState(false);
   const [openVentas, setOpenVentas] = useState(false);
+  const [openGastosIngresos, setOpenGastosIngresos] = useState(false);
   const [openReportes, setOpenReportes] = useState(false);
   const [openUsuarios, setOpenUsuarios] = useState(false);
   const [openProductos, setOpenProductos] = useState(false);
