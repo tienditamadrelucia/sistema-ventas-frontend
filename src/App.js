@@ -82,9 +82,17 @@ function App() {
           path="/usuarios"
           element={
             <ProtectedRoute>
-              {localStorage.getItem("rolUsuario") === "ADMINISTRADOR"
-                ? <Usuarios />
-                : <Navigate to="/menu" replace />}
+
+              {localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? (
+                <Usuarios />              
+              ) : (
+                <Navigate to={localStorage.getItem("sede") === "MONASTERIO"
+                ? "/menu-monasterio"
+                : "/menu"
+            }
+              replace
+              />
+              )}          
             </ProtectedRoute>
           }
         />
