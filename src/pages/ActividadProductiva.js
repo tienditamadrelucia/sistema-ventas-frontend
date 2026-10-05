@@ -418,8 +418,8 @@ const ActividadProductiva = () => {
                 key={a._id}
                 style={{
                   backgroundColor: esMonasterio
-                    ? "#E8D1A5"
-                    : "#F9CEAE"
+                    ? "white"
+                    : "white"
                 }}
               >
                 <td>{a.descripcion}</td>
