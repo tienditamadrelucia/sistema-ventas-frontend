@@ -15,6 +15,7 @@ const Gastos = () => {
 
   const [gastos, setGastos] = useState([]);
   const [tiposGasto, setTiposGasto] = useState([]); // ⭐ NUEVO
+  const [actividadesProductivas, setActividadesProductivas] = useState([]);
   const [modo, setModo] = useState("crear");
   const [gastoEditando, setGastoEditando] = useState(null);
   const formularioRef = useRef(null);
@@ -23,6 +24,8 @@ const Gastos = () => {
   const [formData, setFormData] = useState({
     fecha: hoy,
     descripcion: "",
+    clasificacion: "",
+    actividadProductiva: "",
     moneda: "",
     monto: 0,
     numeroRecibo: 0,
@@ -111,20 +114,63 @@ const Gastos = () => {
   useEffect(() => {
     cargarGastos();
     cargarTiposGasto(); // ⭐ NUEVO
+    cargarActividadesProductivas();
   }, []);
+
+  async function cargarActividadesProductivas() {
+  try {
+    const res = await fetch(
+      `${API_URL}/api/actividad-productiva`
+    );
+
+    const data = await res.json();
+
+    if (Array.isArray(data)) {
+      setActividadesProductivas(data);
+    } else {
+      setActividadesProductivas([]);
+      console.error(
+        "Respuesta inesperada en actividades productivas:",
+        data
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Error cargando actividades productivas:",
+      error
+    );
+
+    setActividadesProductivas([]);
+  }
+}
 
   // -------------------------
   // MANEJO DE FORMULARIO
   // -------------------------
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const { name, value, type, checked } = e.target;
 
-    setFormData({
-      ...formData,
-      [name]: type === "checkbox" ? checked : value
-    });
-  }; 
+  const valor = type === "checkbox" ? checked : value;
+
+  setFormData((prev) => {
+    const nuevo = {
+      ...prev,
+      [name]: valor
+    };
+
+    // Si deja de ser costo de producción,
+    // eliminamos la actividad seleccionada.
+    if (
+      name === "clasificacion" &&
+      value !== "COSTO_PRODUCCION"
+    ) {
+      nuevo.actividadProductiva = "";
+    }
+
+    return nuevo;
+  });
+};
 
   // -------------------------
   // GUARDAR / ACTUALIZAR
@@ -135,10 +181,24 @@ const Gastos = () => {
     setProcesando(true); // ⭐ NUEVO
 
     try {
-      if (!formData.fecha || !formData.descripcion || !formData.moneda || !formData.monto) {
+      if (
+        !formData.fecha || 
+        !formData.descripcion || 
+        !formData.clasificacion || 
+        !formData.moneda || 
+        !formData.monto
+      ) {
         alert("Debe completar todos los campos obligatorios");
         return;
       }
+
+      if (
+        formData.clasificacion === "COSTO_PRODUCCION" &&
+        !formData.actividadProductiva
+      ) {
+        alert("Debe seleccionar la actividad productiva correspondiente a este costo.");
+        return;
+}
 
       const datosGasto = {
   ...formData,
@@ -169,22 +229,35 @@ if (modo === "crear") {
   // -------------------------
 
   const editarGasto = (g) => {
-    setModo("editar");
-    setGastoEditando(g);
+  setModo("editar");
+  setGastoEditando(g);
 
-    setFormData({
-      fecha: g.fecha?.substring(0, 10) || "",
-      descripcion: g.descripcion || "",
-      moneda: g.moneda || "",
-      monto: g.monto || "",
-      numeroRecibo: g.numeroRecibo || "",
-      cajaChica: g.cajaChica || false
+  setFormData({
+    fecha: g.fecha?.substring(0, 10) || "",
+    descripcion: g.descripcion || "",
+
+    clasificacion:
+      g.clasificacion === "SIN_CLASIFICAR"
+        ? ""
+        : g.clasificacion || "",
+
+    actividadProductiva:
+      g.actividadProductiva?._id ||
+      g.actividadProductiva ||
+      "",
+
+    moneda: g.moneda || "",
+    monto: g.monto || "",
+    numeroRecibo: g.numeroRecibo || "",
+    cajaChica: g.cajaChica || false
+  });
+
+  setTimeout(() => {
+    formularioRef.current?.scrollIntoView({
+      behavior: "smooth"
     });
-
-    setTimeout(() => {
-      formularioRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 50);
-  };
+  }, 50);
+};
 
   // -------------------------
   // ELIMINAR
@@ -205,17 +278,20 @@ if (modo === "crear") {
   // -------------------------
 
   const limpiarFormulario = () => {
-    setModo("crear");
-    setGastoEditando(null);
-    setFormData({
-      fecha: "",
-      descripcion: "",
-      moneda: "",
-      monto: "",
-      numeroRecibo: "",
-      cajaChica: false
-    });
-  };
+  setModo("crear");
+  setGastoEditando(null);
+
+  setFormData({
+    fecha: obtenerFechaVenezuela(),
+    descripcion: "",
+    clasificacion: "",
+    actividadProductiva: "",
+    moneda: "",
+    monto: "",
+    numeroRecibo: "",
+    cajaChica: false
+  });
+};
  
   // -------------------------
   // RENDER
@@ -306,6 +382,58 @@ if (modo === "crear") {
             ))}
           </select>
 
+          {/* CLASIFICACIÓN DEL GASTO */}
+          <select
+            name="clasificacion"
+            value={formData.clasificacion}
+            onChange={handleChange}
+            style={{
+              width: "100%",
+              marginBottom: "20px",
+              padding: "5px"
+            }}
+          >
+            <option value="">Seleccione la clasificación del gasto</option>
+
+            <option value="GASTO_OPERATIVO">
+              GASTO OPERATIVO
+            </option>
+
+            <option value="COSTO_PRODUCCION">
+              COSTO DE PRODUCCIÓN
+            </option>
+
+            <option value="SUELDOS_PERSONAL">
+              SUELDOS DEL PERSONAL
+            </option>
+          </select>
+
+          {/* ACTIVIDAD: SOLO PARA COSTOS DE PRODUCCIÓN */}
+          {formData.clasificacion === "COSTO_PRODUCCION" && (
+          <select
+            name="actividadProductiva"
+            value={formData.actividadProductiva}
+            onChange={handleChange}
+            style={{
+              width: "100%",
+              marginBottom: "20px",
+              padding: "5px"
+            }}
+          >
+            <option value="">
+              Seleccione la actividad productiva
+            </option>
+
+            {actividadesProductivas
+              .filter((a) => a.activa)
+              .map((a) => (
+              <option key={a._id} value={a._id}>
+                {a.descripcion}
+              </option>
+            ))}
+          </select>
+        )}
+
           {/* MONEDA + MONTO + CAJA CHICA */}
           <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
             <select
@@ -368,6 +496,8 @@ if (modo === "crear") {
             >
               <th>Fecha</th>
               <th>Descripción</th>
+              <th>Clasificación</th>
+              <th>Actividad</th>
               <th>Moneda</th>
               <th>Monto</th>
               <th>Recibo</th>
@@ -382,6 +512,16 @@ if (modo === "crear") {
                 <tr key={g._id}>
                   <td>{g.fecha.slice(0, 10)}</td>
                   <td>{g.descripcion}</td>
+                  <td>
+                    {g.clasificacion === "COSTO_PRODUCCION"
+                      ? "COSTO DE PRODUCCIÓN"
+                      : g.clasificacion === "GASTO_OPERATIVO"
+                      ? "GASTO OPERATIVO"
+                      : g.clasificacion === "SUELDOS_PERSONAL"
+                      ? "SUELDOS DEL PERSONAL"
+                      : "SIN CLASIFICAR"}
+                  </td>
+                  <td>{g.actividadProductiva?.descripcion || "—"}</td>
                   <td>{g.moneda}</td>
                   <td>{g.monto}</td>
                   <td>{g.numeroRecibo}</td>
