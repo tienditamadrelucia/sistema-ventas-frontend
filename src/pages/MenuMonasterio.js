@@ -329,7 +329,15 @@ function MenuMonasterio() {
                   navigate("/tipogastos")}}
               >
                 Tipo de Gastos
-              </button>                     
+              </button>   
+              <button 
+                style={botonSubmenu}
+                onClick={async() => {
+                await registrarAccion("Ingresó al módulo Lista de Actividades Productivas");
+                navigate("/actividades-productivas")}}
+              >
+                Lista de Actividades Productivas
+              </button>                   
               <button 
                 style={botonSubmenu}
                 onClick={async() => {

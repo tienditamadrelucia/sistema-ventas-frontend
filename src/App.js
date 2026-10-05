@@ -116,7 +116,7 @@ function App() {
         <Route path="/utilidad" element={<ProtectedRoute><Utilidad /></ProtectedRoute>} />
         <Route path="/cierremes" element={<ProtectedRoute><CierreMes /></ProtectedRoute>} />
         <Route path="/ajusteprecios" element={<ProtectedRoute><AjustePrecios /></ProtectedRoute>} />
-        <Route path="/actividad-productiva" element={<ProtectedRoute><ActividadProductiva /></ProtectedRoute>} />
+        <Route path="/actividades-productivas" element={<ProtectedRoute><ActividadProductiva /></ProtectedRoute>} />
       </Routes>
     </BrowserRouter>
   );

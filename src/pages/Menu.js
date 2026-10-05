@@ -343,7 +343,7 @@ function Menu() {
                 style={botonSubmenu}
                 onClick={async() => {
                   await registrarAccion("Ingresó al módulo Lista de Actividades Productivas");
-                  navigate("/ActividadProductiva")}}
+                  navigate("/actividades-productivas")}}
               >
                 Lista de Actividades Productivas
               </button>                     
