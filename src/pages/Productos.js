@@ -109,6 +109,7 @@ const Productos = () => {
   const [procesando, setProcesando] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
   const [guardando, setGuardando] = useState(false);
+  const [actividadesProductivas, setActividadesProductivas] = useState([]);
 
   const [formData, setFormData] = useState({
     codigo: 0,
@@ -125,7 +126,8 @@ const Productos = () => {
     generaParticipacion: false,
     beneficiarioParticipacion: "NINGUNO",
     tipoParticipacion: "NINGUNA",
-    valorParticipacion: ""
+    valorParticipacion: "",
+    actividadProductiva: ""
   });
 
   useEffect(() => {
@@ -135,7 +137,24 @@ const Productos = () => {
     setCategorias(data);
   };
   cargarCategorias();
+  cargarActividadesProductivas();
   }, []);
+
+  const cargarActividadesProductivas = async () => {
+  try {
+    const res = await fetch(`${API_URL}/api/actividad-productiva`);
+    const data = await res.json();
+
+    if (!res.ok) {
+      console.error("Error cargando actividades productivas:", data);
+      return;
+    }
+
+    setActividadesProductivas(data);
+  } catch (error) {
+    console.error("Error cargando actividades productivas:", error);
+  }
+};
 
   const productosFiltrados = formData.categoria
     ? productos.filter((p) => p.categoria === formData.categoria)
@@ -226,6 +245,7 @@ const guardarProducto = async () => {
     if (
       !formData.descripcion ||
       !formData.categoria ||
+      !formData.actividadProductiva ||
       !formData.venta ||
       formData.stock === "" ||
       !formData.medida ||
@@ -329,6 +349,8 @@ const payload = {
   sede: sede,
   foto: fotoURL,
   preview: undefined,
+
+  actividadProductiva: formData.actividadProductiva || null,
 
   costo: esProduccionMonasterio
     ? 0
@@ -443,7 +465,11 @@ setProcesando(false);
     prod.valorParticipacion || "",
     // ⭐ AQUÍ ESTÁ LA SOLUCIÓN
     foto: prod.foto,      
-    preview: undefined
+    preview: undefined,
+    actividadProductiva:
+      prod.actividadProductiva?._id ||
+      prod.actividadProductiva ||
+      "",
   });
   setTimeout(() => {
     formularioRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -510,6 +536,7 @@ setProcesando(false);
     beneficiarioParticipacion: "NINGUNO",
     tipoParticipacion: "NINGUNA",
     valorParticipacion: "",
+    actividadProductiva: "",
     foto: ""
   });
   if (inputFotoRef.current) inputFotoRef.current.value = "";
@@ -596,6 +623,21 @@ setProcesando(false);
             border: "1px solid #ccc"
           }}
         />
+        <select
+          name="actividadProductiva"
+          value={formData.actividadProductiva}
+          onChange={handleChange}
+          style={selectEstilo}
+        >
+          <option value="">Seleccione una actividad productiva</option>
+          {actividadesProductivas
+          .filter((a) => a.activa)
+          .map((a) => (
+          <option key={a._id} value={a._id}>
+            {a.descripcion}
+          </option>
+          ))}
+        </select>
 
         {/* ORIGEN DEL PRODUCTO */}
         <div
@@ -886,13 +928,14 @@ setProcesando(false);
         Lista de Productos
       </h3>
 
-      <table border="1" cellPadding="13" style={{ width: "100%", textAlign: "center" }}>
+      <table border="1" cellPadding="14" style={{ width: "100%", textAlign: "center" }}>
         <thead style={{ backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}> 
           <tr>
             <th>Foto</th>
             <th>Código</th>
             <th>Categoría</th>
             <th>Descripción</th>
+            <th>Actividad</th>
             <th>Medida</th>
             <th>Stock</th>
             <th>Ingreso</th>
@@ -921,6 +964,7 @@ setProcesando(false);
               <td>{p.codigo}</td>
               <td>{p.categoria}</td>
               <td>{p.descripcion}</td>
+              <td>{p.actividadProductiva?.descripcion  || "—"}</td>
               <td>{p.medida}</td>
               <td>{p.stock}</td>
               <td>{p.fechaIngreso.slice(0, 10).split("-").reverse().join("/")}</td>
