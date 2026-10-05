@@ -347,14 +347,16 @@ function Menu() {
               >
                 Lista de Actividades Productivas
               </button>                     
-              <button 
-                style={botonSubmenu}
-                onClick={async() => {
-                await registrarAccion("Ingresó al módulo Lista de Participaciones");
-                navigate("/participaciones")}}
-              >
-                Participaciones
-              </button>               
+              {localStorage.getItem("rolUsuario") === "ADMINISTRADOR" && (
+                <button 
+                  style={botonSubmenu}
+                  onClick={async() => {
+                  await registrarAccion("Ingresó al módulo Lista de Participaciones");
+                  navigate("/participaciones")}}
+                >
+                  Participaciones
+                </button>               
+              )}
               <button 
                 style={botonSubmenu}
                 onClick={async() => {
