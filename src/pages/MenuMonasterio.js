@@ -548,6 +548,15 @@ function MenuMonasterio() {
               >
                 Gastos
               </button>
+
+              <button 
+                style={botonSubmenu}
+                onClick={async() => {
+                  await registrarAccion("Entró al módulo Reporte de Ingresos")
+                 window.open("/repingresos", "_blank")}}
+              >
+                Ingresos
+              </button>
               
               <button
                 style={{
