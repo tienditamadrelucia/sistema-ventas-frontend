@@ -331,17 +331,16 @@ useEffect(() => {
     const listaReconstruida = [];
     // 3. RECONSTRUIR DETALLE
     for (const item of vendidos) {
-      const resProd = await fetch(`${API_URL}/api/productos/${item.productoId}`);
-      const dataProd = await resProd.json();
-      const producto = dataProd.producto ?? dataProd;
+      
+      const producto = item.producto || {};
       listaReconstruida.push({
         codigo: producto.codigo || "",
         descripcion: producto.descripcion || "",
-        cantidad: item.cantidad,
-        precioActual: producto.venta,
-        precioFactura: item.precio,
-        descuento: item.dscto,
-        total: item.total
+        cantidad: Number(item.cantidad || 0),
+        precioActual: Number(producto.venta  || 0),
+        precioFactura: Number(item.precio  || 0),
+        descuento: Number(item.dscto  || 0),
+        total: Number(item.total || 0)
       });
     }
     // 4. CARGAR EN LA TABLA
