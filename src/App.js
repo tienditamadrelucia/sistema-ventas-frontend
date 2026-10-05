@@ -35,6 +35,7 @@ import Utilidad from "./pages/Utilidad.js";
 import CierreMes from "./pages/CierreMes.js"
 import AjustePrecios from "./pages/AjustePrecios.js"
 import ActividadProductiva from "./pages/ActividadProductiva.js";
+import Participaciones from "./pages/Participaciones";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -117,6 +118,7 @@ function App() {
         <Route path="/cierremes" element={<ProtectedRoute><CierreMes /></ProtectedRoute>} />
         <Route path="/ajusteprecios" element={<ProtectedRoute><AjustePrecios /></ProtectedRoute>} />
         <Route path="/actividades-productivas" element={<ProtectedRoute><ActividadProductiva /></ProtectedRoute>} />
+        <Route path="/participaciones" element={<ProtectedRoute><Participaciones /></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   );
