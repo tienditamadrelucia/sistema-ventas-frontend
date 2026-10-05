@@ -34,6 +34,8 @@ const Participaciones = () => {
 
   const [pagos, setPagos] =
     useState([]);
+  const [ventasPendientes, setVentasPendientes] = useState([]);
+  const [ventasSeleccionadas, setVentasSeleccionadas] = useState([]);
 
   const [formData, setFormData] =
     useState({
@@ -199,6 +201,20 @@ const Participaciones = () => {
     }
   };
 
+  const cargarVentasPendientes = async (paga = formData.sedePaga, recibe = formData.sedeRecibe) => {
+  try {
+    const res = await fetch(`${API_URL}/api/participaciones/ventas-pendientes?sedePaga=${paga}&sedeRecibe=${recibe}`);
+    const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.mensaje || "No fue posible consultar las ventas pendientes.");
+    setVentasPendientes(Array.isArray(data.ventas) ? data.ventas : []);
+    setVentasSeleccionadas([]);
+  } catch (error) {
+    console.error("Error cargando ventas pendientes:", error);
+    setVentasPendientes([]);
+    setVentasSeleccionadas([]);
+    throw error;
+  }
+};
 
   const cargarTodo = async () => {
     if (!esAdministrador) return;
@@ -209,7 +225,8 @@ const Participaciones = () => {
     try {
       await Promise.all([
         cargarEstadoCuenta(),
-        cargarPagos()
+        cargarPagos(),
+        cargarVentasPendientes()
       ]);
 
     } catch (error) {
@@ -249,13 +266,32 @@ const Participaciones = () => {
 
   const cambiarSedePaga = (e) => {
   const nuevaSede = e.target.value;
-  setFormData((prev) => ({
+  const nuevaRecibe = nuevaSede === "MONASTERIO" ? "TIENDITA" : "MONASTERIO";
+
+  setFormData(prev => ({
     ...prev,
     sedePaga: nuevaSede,
-    sedeRecibe: nuevaSede === "MONASTERIO" ? "TIENDITA" : "MONASTERIO",
+    sedeRecibe: nuevaRecibe,
+    monto: "",
     numeroReciboIngreso: ""
   }));
+
+  setVentasSeleccionadas([]);
+  cargarVentasPendientes(nuevaSede, nuevaRecibe).catch(() => {});
 };
+
+  const seleccionarVenta = (id) => {
+  setVentasSeleccionadas(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
+};
+
+const seleccionarTodas = () => {
+  if (ventasSeleccionadas.length === ventasPendientes.length) setVentasSeleccionadas([]);
+  else setVentasSeleccionadas(ventasPendientes.map(v => v._id));
+};
+
+const totalSeleccionado = ventasPendientes
+  .filter(v => ventasSeleccionadas.includes(v._id))
+  .reduce((suma, v) => suma + Number(v.montoParticipacion || 0), 0);
 
   // ====================================================
   // GUARDAR PAGO
@@ -269,20 +305,18 @@ const Participaciones = () => {
     return;
   }
 
-  if (!formData.fecha || !formData.sedePaga || !formData.sedeRecibe || !formData.monto || !formData.numeroReciboGasto.trim()) {
-    alert("Debe completar fecha, sede que paga, monto y número de recibo de gastos.");
+  if (!formData.fecha || !formData.sedePaga || !formData.sedeRecibe || !formData.numeroReciboGasto?.trim()) {
+    alert("Debe completar fecha, sedes y número de recibo de gastos.");
     return;
   }
 
-  if (formData.sedeRecibe === "MONASTERIO" && !formData.numeroReciboIngreso.trim()) {
+  if (ventasSeleccionadas.length === 0) {
+    alert("Debe seleccionar al menos una venta para liquidar.");
+    return;
+  }
+
+  if (formData.sedeRecibe === "MONASTERIO" && !formData.numeroReciboIngreso?.trim()) {
     alert("Debe indicar el número del recibo de ingreso del Monasterio.");
-    return;
-  }
-
-  const montoNumero = Number(formData.monto);
-
-  if (!Number.isFinite(montoNumero) || montoNumero <= 0) {
-    alert("El monto debe ser mayor que cero.");
     return;
   }
 
@@ -291,7 +325,7 @@ const Participaciones = () => {
     : `Recibo de ingreso: ${formData.numeroReciboIngreso}`;
 
   const confirmar = window.confirm(
-    `¿Registrar esta liquidación de participación?\n\nPaga: ${formData.sedePaga}\nRecibe: ${formData.sedeRecibe}\nMonto: $${formatearMonto(montoNumero)}\nRecibo de gastos: ${formData.numeroReciboGasto}\n${documentoRecibe}`
+    `¿Registrar esta liquidación?\n\nPaga: ${formData.sedePaga}\nRecibe: ${formData.sedeRecibe}\nVentas: ${ventasSeleccionadas.length}\nMonto: $${formatearMonto(totalSeleccionado)}\nRecibo de gastos: ${formData.numeroReciboGasto}\n${documentoRecibe}`
   );
 
   if (!confirmar) return;
@@ -303,18 +337,24 @@ const Participaciones = () => {
     const res = await fetch(`${API_URL}/api/participaciones/pago`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...formData, monto: montoNumero, usuario: usuarioActual })
+      body: JSON.stringify({
+        fecha: formData.fecha,
+        sedePaga: formData.sedePaga,
+        sedeRecibe: formData.sedeRecibe,
+        numeroReciboGasto: formData.numeroReciboGasto,
+        numeroReciboIngreso: formData.numeroReciboIngreso,
+        observacion: formData.observacion,
+        usuario: usuarioActual,
+        vendidosSeleccionados: ventasSeleccionadas
+      })
     });
 
     const data = await res.json();
+    if (!res.ok || !data.ok) throw new Error(data.mensaje || "No fue posible registrar la liquidación.");
 
-    if (!res.ok || !data.ok) {
-      throw new Error(data.mensaje || "No fue posible registrar el pago.");
-    }
+    await registrarAccion(`Registró liquidación de participación: ${formData.sedePaga} → ${formData.sedeRecibe} por $${formatearMonto(data.monto)}`);
 
-    await registrarAccion(`Registró pago de participación: ${formData.sedePaga} → ${formData.sedeRecibe} por $${formatearMonto(montoNumero)}`);
-
-    let mensaje = "Pago de participación registrado correctamente.";
+    let mensaje = `Liquidación registrada correctamente.\nVentas liquidadas: ${data.cantidadVentas}\nMonto: $${formatearMonto(data.monto)}`;
     if (data.facturaTiendita) mensaje += `\nFactura TIENDITA N.º ${data.facturaTiendita}`;
     alert(mensaje);
 
@@ -328,17 +368,22 @@ const Participaciones = () => {
       observacion: ""
     });
 
-    await Promise.all([cargarEstadoCuenta(), cargarPagos()]);
+    setVentasSeleccionadas([]);
+
+    await Promise.all([
+      cargarEstadoCuenta(),
+      cargarPagos(),
+      cargarVentasPendientes(sede, sede === "MONASTERIO" ? "TIENDITA" : "MONASTERIO")
+    ]);
 
   } catch (error) {
     console.error("Error guardando participación:", error);
-    setError(error.message || "Error registrando el pago.");
-    alert(error.message || "Error registrando el pago.");
+    setError(error.message || "Error registrando la liquidación.");
+    alert(error.message || "Error registrando la liquidación.");
   } finally {
     setProcesando(false);
   }
 };
-
 
   // ====================================================
   // FORMATO
@@ -691,13 +736,9 @@ const Participaciones = () => {
 
 
             <div style={{ flex: 1 }}>
-              <label
-                style={{
-                  fontWeight: "bold"
-                }}
-              >
-                Monto $
-              </label>
+              <label style={{ fontWeight: "bold" }}>Monto a liquidar $</label>
+              <input type="text" value={formatearMonto(totalSeleccionado)} readOnly style={{ width: "100%", padding: "6px", boxSizing: "border-box", backgroundColor: "#eee", fontWeight: "bold" }} />
+            </div>
 
               <input
                 type="number"
@@ -711,8 +752,7 @@ const Participaciones = () => {
                   padding: "6px",
                   boxSizing: "border-box"
                 }}
-              />
-            </div>
+              />          
 
           </div>
 
@@ -780,6 +820,53 @@ const Participaciones = () => {
             </div>
 
           </div>
+
+          {/* VENTAS PENDIENTES */}
+<div style={{ marginBottom: "20px" }}>
+  <h4 style={{ textAlign: "center", marginBottom: "10px" }}>Ventas pendientes de liquidar</h4>
+
+  <table border="1" cellPadding="5" style={{ width: "100%", textAlign: "center", borderCollapse: "collapse" }}>
+    <thead>
+      <tr style={{ backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}>
+        <th>
+          <input type="checkbox" checked={ventasPendientes.length > 0 && ventasSeleccionadas.length === ventasPendientes.length} onChange={seleccionarTodas} />
+        </th>
+        <th>Fecha</th>
+        <th>Factura</th>
+        <th>Producto</th>
+        <th>Cant.</th>
+        <th>Venta</th>
+        <th>Participación</th>
+      </tr>
+    </thead>
+
+          <tbody>
+            {ventasPendientes.length === 0 ? (
+              <tr style={{ backgroundColor: "white" }}>
+                <td colSpan="7">No hay ventas pendientes de liquidar.</td>
+              </tr>
+            ) : ventasPendientes.map(v => (
+              <tr key={v._id} style={{ backgroundColor: "white" }}>
+                <td><input type="checkbox" checked={ventasSeleccionadas.includes(v._id)} onChange={() => seleccionarVenta(v._id)} /></td>
+                <td>{formatearFecha(v.fecha)}</td>
+                <td>{v.factura}</td>
+                <td>{v.producto || "—"}</td>
+                <td>{v.cantidad}</td>
+                <td>${formatearMonto(v.totalVenta)}</td>
+                <td><strong>${formatearMonto(v.montoParticipacion)}</strong></td>
+              </tr>
+              ))}
+            </tbody>
+
+              <tfoot>
+                <tr style={{ fontWeight: "bold", backgroundColor: "white" }}>
+                <td colSpan="6" style={{ textAlign: "right" }}>TOTAL A LIQUIDAR:</td>
+                <td>${formatearMonto(totalSeleccionado)}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
           {/* DOCUMENTOS DE LA LIQUIDACIÓN */}
     <div style={{ display: "flex", gap: "15px", marginBottom: "15px" }}>
       <div style={{ flex: 1 }}>
