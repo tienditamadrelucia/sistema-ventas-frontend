@@ -350,6 +350,14 @@ function Menu() {
               <button 
                 style={botonSubmenu}
                 onClick={async() => {
+                await registrarAccion("Ingresó al módulo Lista de Participaciones");
+                navigate("/participaciones")}}
+              >
+                Participaciones
+              </button>               
+              <button 
+                style={botonSubmenu}
+                onClick={async() => {
                   await registrarAccion("Ingresó al módulo Cuadre de Caja Diario");
                   navigate("/caja")}}
               >
