@@ -47,7 +47,7 @@ const ReporteIngresos = () => {
         return;
       }
 
-      setReporte(Array.isArray(datos) ? datos : datos.reporte || []);
+      setReporte(Array.isArray(datos) ? datos : datos.lista || []);
       setConsultaRealizada(true);
 
     } catch (error) {
