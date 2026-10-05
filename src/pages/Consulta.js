@@ -834,10 +834,10 @@ const abrirModalPagoConFecha = async () => {
                     <td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.codigo}</td>
                     <td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.descripcion}</td>
                     <td style={{ border: "1px solid #ccc", padding: "6px", textAlign: "center" }}>{item.cantidad}</td>
-                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.precioActual.toFixed(2)}</td>
-                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.precioFactura.toFixed(2)}</td>
-                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.descuento}</td>
-                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>{item.total.toFixed(2)}</td>            
+                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>{Number(item.precioActual || 0).toFixed(2)}</td>
+                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>{Number(item.precioFactura || 0).toFixed(2)}</td>
+                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>{Number(item.descuento || 0)}</td>
+                    <td style={{ border: "1px solid #ccc", padding: "6px" }}>{Number(item.total || 0).toFixed(2)}</td>            
                 </tr>
                 ))
                 )}
@@ -847,7 +847,7 @@ const abrirModalPagoConFecha = async () => {
 </div>
 {venta && (
 <div style={{ textAlign: "right", marginTop: "1px", fontSize: "18px", fontWeight: "bold", marginRight:"300px"}}>
-  Subtotal: ${venta.subtotal.toFixed(2)} — IVA: ${venta.IVA.toFixed(2)} — Total: ${venta.total.toFixed(2)}
+  Subtotal: ${Number(venta.subtotal || 0).toFixed(2)} — IVA: ${venta.IVA.toFixed(2)} — Total: ${venta.total.toFixed(2)}
 </div>
 )}
 
