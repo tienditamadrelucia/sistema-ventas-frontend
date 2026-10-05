@@ -381,32 +381,51 @@ const eliminarSalida = async (salida) => {
         </select>
 
         <div style={{ display: "flex", gap: "40px", marginBottom: "10px" }}>
-          <input
-            name="codigo"
-            placeholder="Código"
-            value={formData.codigo}
-            readOnly
-            style={{
-                width: "45%",
-                padding: "5px",
-                backgroundColor: "#eee"
-            }}
-            />
-
-          <input
-            name="cantidad"
-            placeholder="Cantidad"
-            type="number"
-            step="0.1"
-            value={formData.cantidad}
-            onChange={handleChange}
-            style={{
-                width: "45%",
-                padding: "5px"
-            }}
-            />
-        </div>
-
+          <div style={{ width: "40%" }}>
+            <label
+              style={{
+                display: "block",
+                fontWeight: "bold",
+                marginBottom: "4px"
+                }}
+              >
+                Código
+              </label>
+              <input
+                name="codigo"            
+                value={formData.codigo}
+                readOnly
+                style={{
+                  width: "45%",
+                  padding: "5px",
+                  boxSizing: "border-box",
+                  backgroundColor: "#eee"
+                }}
+              />
+            </div>
+            <div style={{ width: "40%" }}>
+            <label
+              style={{
+                display: "block",
+                fontWeight: "bold",
+                marginBottom: "4px"
+                }}
+              >
+                Cantidad
+              </label>
+              <input
+                name="cantidad"            
+                type="number"
+                step="0.1"
+                value={formData.cantidad}
+                onChange={handleChange}
+                style={{
+                  width: "45%",
+                  padding: "5px"
+                }}
+              />
+            </div>
+          </div>
         <select
           name="observacion"
           value={formData.observacion}

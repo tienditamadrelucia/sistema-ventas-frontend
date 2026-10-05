@@ -502,58 +502,118 @@ const datosEntrada = {
         </select>
 
         <div style={{ display: "flex", gap: "40px", marginBottom: "10px" }}>          
-            <input
-                name="codigo"
-                placeholder="Código"
+            <div style={{ width: "40%" }}>
+            <label
+              style={{
+                display: "block",
+                fontWeight: "bold",
+                marginBottom: "4px"
+                }}
+              >
+                Código
+              </label>
+              <input
+                name="codigo"            
                 value={formData.codigo}
                 readOnly
                 style={{
-                    width: "40%",
-                    padding: "5px",
-                    backgroundColor: "#eee"
+                  width: "45%",
+                  padding: "5px",
+                  boxSizing: "border-box",
+                  backgroundColor: "#eee"
                 }}
-            />          
-          <input          
-                name="cantidad"
-                placeholder="Cantidad"
+              />
+            </div>
+            <div style={{ width: "40%" }}>
+            <label
+              style={{
+                display: "block",
+                fontWeight: "bold",
+                marginBottom: "4px"
+                }}
+              >
+                Cantidad
+              </label>
+              <input
+                name="cantidad"            
                 type="number"
                 step="0.1"
                 value={formData.cantidad}
                 onChange={handleChange}
-                style={{ width: "40%" }}
-            />
-        </div>
-        {(formData.observacion === "COMPRAS" || formData.observacion === "PRODUCCIÓN DEL MONASTERIO") && (
-        <div style={{ display: "flex", gap: "40px", marginBottom: "10px" }}>
-    
-          {/* PRECIO COMPRA */}          
-          <input
-            name="precioCompra"
-            placeholder={
-              formData.observacion === "PRODUCCIÓN DEL MONASTERIO"
-              ? "Costo adquisición: 0"
-              : "Precio compra"
-            }  
-            type="number"
-            step="0.01"
-            value={formData.precioCompra}
-            onChange={handleChange}
-            disabled={formData.observacion === "PRODUCCIÓN DEL MONASTERIO"} 
-            style={{ width: "40%" }}
-          />
+                style={{
+                  width: "45%",
+                  padding: "5px"
+                }}
+              />
+            </div>
+          </div>
+        {(formData.observacion === "COMPRAS" ||
+        formData.observacion === "PRODUCCIÓN DEL MONASTERIO") && (
+        <div
+          style={{
+            display: "flex",
+            gap: "40px",
+            marginBottom: "10px"
+          }}
+        >
+          <div style={{ width: "40%" }}>
+            <label
+              style={{
+                display: "block",
+                fontWeight: "bold",
+                marginBottom: "4px"
+              }}
+            >
+              Precio de compra
+            </label>
 
-          {/* PRECIO VENTA */}          
-          <input
-            name="precioVenta"
-            placeholder="Precio venta"
-            type="number"
-            step="0.01"
-            value={formData.precioVenta}
-            onChange={handleChange}
-            style={{ width: "40%" }}
-          />
+            <input
+              name="precioCompra"
+              type="number"
+              step="0.01"
+              value={formData.precioCompra}
+              onChange={handleChange}
+              disabled={
+              formData.observacion === "PRODUCCIÓN DEL MONASTERIO"
+              }
+              style={{
+                width: "100%",
+                padding: "5px",
+                boxSizing: "border-box",
+                backgroundColor:
+                formData.observacion === "PRODUCCIÓN DEL MONASTERIO"
+                  ? "#eee"
+                  : "white"
+              }}
+            />
+          </div>
+
+          <div style={{ width: "40%" }}>
+            <label
+              style={{
+                display: "block",
+                fontWeight: "bold",
+                marginBottom: "4px"
+              }}
+            >
+              Precio de venta
+            </label>
+
+            <input
+              name="precioVenta"
+              type="number"
+              step="0.01"
+              value={formData.precioVenta}
+              onChange={handleChange}
+              style={{
+                width: "100%",
+                padding: "5px",
+                boxSizing: "border-box"
+              }}
+            />
+          </div>
         </div>
-        )}
+      )}
 
         <select
           name="observacion"
