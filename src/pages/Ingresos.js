@@ -292,7 +292,15 @@ const Ingresos = () => {
                 <td>{i.numeroReciboIngreso}</td>
                 <td>{i.tipoIngreso?.descripcion || "—"}</td>
                 <td>{i.descripcion || "—"}</td>
-                <td>{i.moneda}</td>
+                <td>
+                    {i.moneda === "D"
+                    ? "Dólares"
+                    : i.moneda === "P"
+                    ? "Pesos"
+                    : i.moneda === "Bs"
+                    ? "Bolívares"
+                    : "—"}
+                </td>
                 <td>{formatearMonto(i.monto)}</td>
                 <td>{i.origen === "PARTICIPACION" ? "PARTICIPACIÓN" : "MANUAL"}</td>
                 <td>{i.usuario || "—"}</td>
