@@ -249,8 +249,36 @@ useEffect(() => {
     // Funciones de búsqueda y filtros
     // -----------------------------  
     const consultarFactura = async () => {   
-      setProcesando(true);       
-      if (!numeroFactura) return;
+      if (!numeroFactura) {
+        alert("Debe ingresar un número de factura.");
+        return;
+      }
+
+      setProcesando(true);
+
+  // ==========================================
+  // LIMPIAR DATOS DE LA CONSULTA ANTERIOR
+  // ==========================================
+      setVenta(null);
+      setCliente(null);
+      setListaFactura([]);
+      setPagosMoneda([]);
+
+      setEsCredito(false);
+
+  // Totales pagados
+      setTotalUSD(0);
+      setTotalBsPagado(0);
+      setTotalPPagado(0);
+
+  // Saldo pendiente
+      setRestaUSD(0);
+      setRestaBs(0);
+      setRestaP(0);
+
+  // Datos de crédito
+      setAbono(0);
+      setSaldo(0);
       try {            
         const res = await fetch(
           `${API_URL}/api/ventas/detalle/${numeroFactura}?sede=${encodeURIComponent(sede)}`
@@ -412,6 +440,23 @@ useEffect(() => {
     setPagosMoneda([]);          // limpia pagos
     setEsCredito(false);
     //setDetalleFactura([]);       // si lo usas    
+    // Totales pagados
+    setTotalUSD(0);
+    setTotalBsPagado(0);
+    setTotalPPagado(0);
+
+    // Saldo pendiente
+    setRestaUSD(0);
+    setRestaBs(0);
+    setRestaP(0);
+
+    // Datos de crédito
+    setAbono(0);
+    setSaldo(0);
+
+    // Tasas
+    setTasaDolar(0);
+    setTasaPeso(0);
     alert("Campos borrados.");
   };
   
