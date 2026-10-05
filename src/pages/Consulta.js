@@ -317,39 +317,61 @@ useEffect(() => {
 
   const cargarDetalleFactura = async (factura) => {
   try {
-    // 1. LLAMAR LA RUTA CORRECTA
+
     const res = await fetch(
       `${API_URL}/api/vendidos/${factura}?sede=${encodeURIComponent(sede)}`
     );
+
+    if (!res.ok) {
+      throw new Error(
+        `Error ${res.status} consultando productos vendidos`
+      );
+    }
+
     const data = await res.json();
-    // 2. VALIDAR SI HAY DETALLE
+
     if (!Array.isArray(data) || data.length === 0) {
       alert("Frontend dice: No se encontró el detalle de la factura");
+      setListaFactura([]);
       return;
     }
-    const vendidos = data; // ← el backend devuelve directamente un array
-    const listaReconstruida = [];
-    // 3. RECONSTRUIR DETALLE
-    for (const item of vendidos) {
-      
-      const producto = item.producto || {};
-      listaReconstruida.push({
-        codigo: producto.codigo || "",
-        descripcion: producto.descripcion || "",
-        cantidad: Number(item.cantidad || 0),
-        precioActual: Number(producto.venta  || 0),
-        precioFactura: Number(item.precio  || 0),
-        descuento: Number(item.dscto  || 0),
-        total: Number(item.total || 0)
-      });
-    }
-    // 4. CARGAR EN LA TABLA
+
+    const listaReconstruida = data.map((item) => {
+
+      // productoId viene poblado desde el backend
+      const producto = item.productoId || {};
+
+      return {
+        codigo: producto.codigo ?? "",
+        descripcion: producto.descripcion ?? "",
+        cantidad: Number(item.cantidad ?? 0),
+        precioActual: Number(producto.venta ?? 0),
+        precioFactura: Number(item.precio ?? 0),
+        descuento: Number(item.dscto ?? 0),
+        total: Number(item.total ?? 0)
+      };
+    });
+
+    console.log(
+      "DETALLE RECONSTRUIDO:",
+      listaReconstruida
+    );
+
     setListaFactura(listaReconstruida);
+
   } catch (error) {
-    console.error("Frontend dice: Error cargando detalle:", error);
-    alert("Frontend dice: Error cargando detalle de la factura");
+    console.error(
+      "Frontend dice: Error cargando detalle:",
+      error
+    );
+
+    setListaFactura([]);
+
+    alert(
+      "Frontend dice: Error cargando detalle de la factura"
+    );
   }
-  };
+};
 
   const cargarPagos = async (
     factura,
