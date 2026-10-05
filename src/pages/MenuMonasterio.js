@@ -440,14 +440,35 @@ function MenuMonasterio() {
             CLIENTES
           </button>
 
-          {/* GASTOS */}
+          {/* GASTOS E INGRESOS*/}          
           <button 
-            style={botonPrincipalSimple}
-            onClick={async() => {
-              await registrarAccion("Entró al módulo de GASTOS")
-              navigate("/Gastos")}}
-            >
-              GASTOS</button>
+            style={botonPrincipal}
+            onClick={() => setOpenGastosIngresos(!openGastosIngresos)}
+          >
+            GASTOS e INGRESOS
+            <span>{openGastosIngresos ? "▲" : "▼"}</span>
+          </button>
+
+          {openGastosIngresos && (
+            <>
+              <button
+                style={botonSubmenu}
+                onClick={async() => {
+                await registrarAccion("Entró al módulo de Gastos")
+                navigate("/Gastos")}}
+              >
+                Gastos
+              </button>
+              <button
+                style={botonSubmenu}
+                onClick={async() => {
+                await registrarAccion("Entró al módulo de Ingresos")
+                navigate("/Ingresos")}}
+              >
+                Ingresos
+              </button>
+            </>      
+          )}    
 
           {/* VENTAS */}
           <button
