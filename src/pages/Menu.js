@@ -287,7 +287,7 @@ function Menu() {
             <span>{openAdministracion ? "▲" : "▼"}</span>
           </button>
 
-          {openAdministracion && (
+{openAdministracion && (
             <>
           <button
             style={{
@@ -338,16 +338,22 @@ function Menu() {
                   navigate("/tipogastos")}}
               >
                 Tipo de Gastos
-              </button>  
+              </button>
+
               <button 
-                style={botonSubmenu}
-                onClick={async() => {
-                  await registrarAccion("Ingresó al módulo Lista de Actividades Productivas");
-                  navigate("/actividades-productivas")}}
+                style={{
+                  ...botonSubmenu,
+                  opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+                  cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+                }}
+                disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
+                onClick={async () => {
+                await registrarAccion("Ingresó al módulo Lista de Actividades Productivas");
+                navigate("/actividades-productivas")}}          
               >
                 Lista de Actividades Productivas
-              </button>                     
-              {localStorage.getItem("rolUsuario") === "ADMINISTRADOR" && (
+              </button>  
+              {localStorage.getItem("rolUsuario") === "ADMINISTRADOR" && (                 
                 <button 
                   style={botonSubmenu}
                   onClick={async() => {
@@ -355,7 +361,7 @@ function Menu() {
                   navigate("/participaciones")}}
                 >
                   Participaciones
-                </button>               
+                </button> 
               )}
               <button 
                 style={botonSubmenu}
@@ -366,7 +372,12 @@ function Menu() {
                 Cuadre de Caja diario
               </button>              
               <button 
-                style={botonSubmenu}
+                style={{
+                  ...botonSubmenu,
+                  opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+                  cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+                }}
+                disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
                 onClick={async() => {
                   await registrarAccion("Ingresó al módulo Cierre de Mes");
                   navigate("/cierreMes")}}
@@ -374,7 +385,12 @@ function Menu() {
                 Cierre de Mes
               </button>              
               <button 
-                style={botonSubmenu}
+                style={{
+                  ...botonSubmenu,
+                  opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+                  cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+                }}
+                disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
                 onClick={async() => {
                   await registrarAccion("Ingresó al módulo Toma de Cierre de Año");
                   navigate("/cierreAño")}}

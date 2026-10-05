@@ -329,12 +329,25 @@ function MenuMonasterio() {
                   navigate("/tipogastos")}}
               >
                 Tipo de Gastos
-              </button>   
+              </button>
               <button 
                 style={botonSubmenu}
                 onClick={async() => {
+                  await registrarAccion("Ingresó al módulo Tipo de Ingresos");
+                  navigate("/tipoingresos")}}
+              >
+                Tipo de Ingresos
+              </button>
+              <button 
+                style={{
+                  ...botonSubmenu,
+                  opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+                  cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+                }}
+                disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
+                onClick={async () => {
                 await registrarAccion("Ingresó al módulo Lista de Actividades Productivas");
-                navigate("/actividades-productivas")}}
+                navigate("/actividades-productivas")}}          
               >
                 Lista de Actividades Productivas
               </button>  
@@ -357,7 +370,12 @@ function MenuMonasterio() {
                 Cuadre de Caja diario
               </button>              
               <button 
-                style={botonSubmenu}
+                style={{
+                  ...botonSubmenu,
+                  opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+                  cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+                }}
+                disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
                 onClick={async() => {
                   await registrarAccion("Ingresó al módulo Cierre de Mes");
                   navigate("/cierreMes")}}
@@ -365,7 +383,12 @@ function MenuMonasterio() {
                 Cierre de Mes
               </button>              
               <button 
-                style={botonSubmenu}
+                style={{
+                  ...botonSubmenu,
+                  opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+                  cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+                }}
+                disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
                 onClick={async() => {
                   await registrarAccion("Ingresó al módulo Toma de Cierre de Año");
                   navigate("/cierreAño")}}

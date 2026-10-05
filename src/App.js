@@ -24,6 +24,7 @@ import Gastos from "./pages/Gastos";
 import DiarioVentas from "./pages/DiarioVentas";
 import ReporCredito from "./pages/ReporCredito";
 import TipoGastos from "./pages/TipoGastos";
+import TipoIngresos from "./pages/TipoIngresos";
 import PorStock from "./pages/PorStock";
 import Integridad from "./pages/Integridad";
 import ReporteEntradas from "./pages/RepEntradas";
@@ -115,6 +116,7 @@ function App() {
         <Route path="/diarioventas" element={<ProtectedRoute><DiarioVentas /></ProtectedRoute>} />
         <Route path="/reporcredito" element={<ProtectedRoute><ReporCredito /></ProtectedRoute>} />
         <Route path="/tipogastos" element={<ProtectedRoute><TipoGastos /></ProtectedRoute>} />
+        <Route path="/tipoIngresos" element={<ProtectedRoute><TipoIngresos /></ProtectedRoute>} />
         <Route path="/porstock" element={<ProtectedRoute><PorStock /></ProtectedRoute>} />
         <Route path="/integridad" element={<ProtectedRoute><Integridad /></ProtectedRoute>} />
         <Route path="/repentradas" element={<ProtectedRoute><ReporteEntradas /></ProtectedRoute>} />
