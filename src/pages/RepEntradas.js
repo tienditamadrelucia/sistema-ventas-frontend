@@ -202,7 +202,7 @@ const ReporteEntradas = () => {
         <div
           className="no-print"
           style={{
-            backgroundColor: colorPrincipal,
+            backgroundColor: "#84868a",
             color: "white",
             padding: "8px",
             textAlign: "center",

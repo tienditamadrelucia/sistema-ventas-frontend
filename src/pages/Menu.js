@@ -75,7 +75,7 @@ function Menu() {
     border: "none",
     borderRadius: "6px",
     fontFamily: "Arial",
-    fontSize: "14px",
+    fontSize: "13px",
     fontWeight: "bold",
     margin: "5px 0 5px 20px",
     cursor: "pointer",
