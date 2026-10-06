@@ -81,6 +81,40 @@ const DiarioVentas = () => {
     });
   };
   
+  const resumenActividades = () => {
+  const resumen = {};
+
+  reporte.forEach((item) => {
+    (item.productos || []).forEach((p) => {
+      const id = p.actividadProductiva?.id || "SIN_ACTIVIDAD";
+      const descripcion = p.actividadProductiva?.descripcion || "SIN ACTIVIDAD ASIGNADA";
+
+      if (!resumen[id]) {
+        resumen[id] = {
+          id,
+          descripcion,
+          cantidad: 0,
+          total: 0
+        };
+      }
+
+      resumen[id].cantidad += Number(p.cantidad || 0);
+      resumen[id].total += Number(p.total || 0);
+    });
+  });
+
+  return Object.values(resumen).sort((a, b) =>
+    a.descripcion.localeCompare(b.descripcion, "es")
+  );
+};
+
+const actividadesResumen = resumenActividades();
+
+const totalResumenActividades = actividadesResumen.reduce(
+  (total, actividad) => total + Number(actividad.total || 0),
+  0
+);
+
   // -------------------------
   // CARGAR REPORTE
   // -------------------------
@@ -424,6 +458,87 @@ const DiarioVentas = () => {
         </table>
 
       </div>
+      {reporte.length > 0 && (
+  <>
+    <h3 style={{
+      textAlign: "center",
+      marginTop: "30px",
+      marginBottom: "10px",
+      fontWeight: "bold"
+    }}>
+      Resumen de Ventas por Actividad Productiva
+    </h3>
+
+    <table
+      border="1"
+      cellPadding="8"
+      style={{
+        width: "70%",
+        margin: "0 auto 40px auto",
+        borderCollapse: "collapse",
+        textAlign: "center",
+        backgroundColor: "white"
+      }}
+    >
+      <thead style={{ backgroundColor: colorTabla }}>
+        <tr>
+          <th>Actividad Productiva</th>
+          <th>Cantidad</th>
+          <th>Total Ventas</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {actividadesResumen.map((actividad) => (
+          <tr
+            key={actividad.id}
+            style={{
+              backgroundColor: "white",
+              fontWeight: actividad.id === "SIN_ACTIVIDAD" ? "bold" : "normal"
+            }}
+          >
+            <td style={{ textAlign: "left" }}>
+              {actividad.descripcion}
+            </td>
+
+            <td>
+              {formatoVE(actividad.cantidad)}
+            </td>
+
+            <td style={{ textAlign: "right" }}>
+              $ {formatoVE(actividad.total)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+
+      <tfoot>
+        <tr style={{
+          backgroundColor: colorTabla,
+          fontWeight: "bold"
+        }}>
+          <td style={{ textAlign: "left" }}>
+            TOTAL
+          </td>
+
+          <td>
+            {formatoVE(
+              actividadesResumen.reduce(
+                (total, actividad) =>
+                  total + Number(actividad.cantidad || 0),
+                0
+              )
+            )}
+          </td>
+
+          <td style={{ textAlign: "right" }}>
+            $ {formatoVE(totalResumenActividades)}
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+  </>
+)}
     </div>
   );
 };
