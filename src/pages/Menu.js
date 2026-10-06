@@ -75,7 +75,7 @@ function Menu() {
     border: "none",
     borderRadius: "6px",
     fontFamily: "Arial",
-    fontSize: "16px",
+    fontSize: "14px",
     fontWeight: "bold",
     margin: "5px 0 5px 20px",
     cursor: "pointer",
@@ -395,7 +395,7 @@ function Menu() {
                   await registrarAccion("Ingresó al módulo Toma de Cierre de Año");
                   navigate("/cierreAño")}}
               >
-                Cierre de Año
+                Cierre de Año 
               </button>
               <button
             style={{
