@@ -21,7 +21,7 @@ const ReporCredito = () => {
   const colorPrincipal = esMonasterio ? "#5A2D16" : "#FC9E9B";
   const colorAccion = esMonasterio ? "#B8862D" : "#84B09C";
   const colorTabla = esMonasterio ? "#E8D1A5" : "#F9CEAE";
-  const colorSuave = esMonasterio ? "#F5EBDD" : "#EDC5CD";
+  const colorSuave = esMonasterio ? "#F5EBDD" : "#f8f3f4";
 
   // =========================================================
   // ESTADOS
