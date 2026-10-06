@@ -29,6 +29,20 @@ const Utilidad = () => {
   const [cargando, setCargando] = useState(false);
   const [buscado, setBuscado] = useState(false);
 
+  const [actividadAbierta, setActividadAbierta] = useState(null);
+
+const formatearFecha = (fecha) => {
+  if (!fecha) return "";
+  return new Date(fecha).toLocaleDateString("es-VE", { timeZone: "UTC" });
+};
+
+const simboloMoneda = (moneda) => {
+  if (moneda === "D") return "$";
+  if (moneda === "P") return "COP";
+  if (moneda === "Bs") return "Bs.";
+  return moneda || "";
+};
+
   const buscar = async () => {
     if (!desde || !hasta) return alert("Seleccione ambas fechas.");
     if (desde > hasta) return alert("La fecha DESDE no puede ser mayor que la fecha HASTA.");
@@ -198,40 +212,140 @@ const Utilidad = () => {
                   </tr>
                 </thead>
 
-                <tbody>
-                  {reporte.map((item) => (
-                    <tr key={item.actividadId} style={{ backgroundColor: "white" }}>
-                      <td style={{ ...celda, textAlign: "left", fontWeight: "bold" }}>
-                        {item.actividad}
-                      </td>
-                      <td style={celda}>$ {formatoVE(item.ventasTiendita)}</td>
-                      <td style={celda}>$ {formatoVE(item.ventasMonasterio)}</td>
-                      <td style={{ ...celda, fontWeight: "bold" }}>
-                        $ {formatoVE(item.ventasTotales)}
-                      </td>
-                      <td style={celda}>$ {formatoVE(item.costosTiendita)}</td>
-                      <td style={celda}>$ {formatoVE(item.costosMonasterio)}</td>
-                      <td style={{ ...celda, fontWeight: "bold" }}>
-                        $ {formatoVE(item.costosTotales)}
-                      </td>
-                      <td style={{
-                        ...celda,
-                        fontWeight: "bold",
-                        color: colorResultado(item.utilidad)
-                      }}>
-                        $ {formatoVE(item.utilidad)}
-                      </td>
-                      <td style={{
-                        ...celda,
-                        fontWeight: "bold",
-                        color: colorResultado(item.utilidad)
-                      }}>
-                        {formatoVE(item.margen)} %
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
+<tbody>
+  {reporte.map((item) => (
+    <React.Fragment key={item.actividadId}>
+      <tr style={{ backgroundColor: "white" }}>
+        <td style={{ ...celda, textAlign: "left", fontWeight: "bold" }}>
+          {item.actividad}
+          <button
+            onClick={() => setActividadAbierta(
+              actividadAbierta === item.actividadId ? null : item.actividadId
+            )}
+            style={{
+              marginLeft: "10px",
+              padding: "4px 9px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+              backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
+              color: "white",
+              fontWeight: "bold"
+            }}
+          >
+            {actividadAbierta === item.actividadId ? "Ocultar costos" : "Ver costos"}
+          </button>
+        </td>
 
+        <td style={celda}>$ {formatoVE(item.ventasTiendita)}</td>
+        <td style={celda}>$ {formatoVE(item.ventasMonasterio)}</td>
+        <td style={{ ...celda, fontWeight: "bold" }}>$ {formatoVE(item.ventasTotales)}</td>
+        <td style={celda}>$ {formatoVE(item.costosTiendita)}</td>
+        <td style={celda}>$ {formatoVE(item.costosMonasterio)}</td>
+        <td style={{ ...celda, fontWeight: "bold" }}>$ {formatoVE(item.costosTotales)}</td>
+
+        <td style={{
+          ...celda,
+          fontWeight: "bold",
+          color: colorResultado(item.utilidad)
+        }}>
+          $ {formatoVE(item.utilidad)}
+        </td>
+
+        <td style={{
+          ...celda,
+          fontWeight: "bold",
+          color: colorResultado(item.utilidad)
+        }}>
+          {formatoVE(item.margen)} %
+        </td>
+      </tr>
+
+      {actividadAbierta === item.actividadId && (
+        <tr>
+          <td colSpan="9" style={{ padding: "12px", backgroundColor: "white" }}>
+            <div style={{
+              border: "1px solid #bbb",
+              borderRadius: "7px",
+              padding: "12px",
+              backgroundColor: esMonasterio ? "#F5EBDD" : "#fff8f8"
+            }}>
+              <h4 style={{ margin: "0 0 10px 0", textAlign: "left" }}>
+                Detalle de costos — {item.actividad}
+              </h4>
+
+              {!item.detalleCostos || item.detalleCostos.length === 0 ? (
+                <p style={{ textAlign: "left", margin: 0 }}>
+                  No hay costos registrados para esta actividad en el período.
+                </p>
+              ) : (
+                <div style={{ overflowX: "auto" }}>
+                  <table style={{
+                    width: "100%",
+                    borderCollapse: "collapse",
+                    backgroundColor: "white"
+                  }}>
+                    <thead>
+                      <tr style={{
+                        backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE"
+                      }}>
+                        <th style={celda}>Fecha</th>
+                        <th style={celda}>Sede</th>
+                        <th style={celda}>Descripción</th>
+                        <th style={celda}>Recibo</th>
+                        <th style={celda}>Clasificación</th>
+                        <th style={celda}>Moneda</th>
+                        <th style={celda}>Monto original</th>
+                        <th style={celda}>Tasa usada</th>
+                        <th style={celda}>Costo USD</th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {item.detalleCostos.map((costo) => (
+                        <tr key={costo.id} style={{ backgroundColor: "white" }}>
+                          <td style={celda}>{formatearFecha(costo.fecha)}</td>
+                          <td style={celda}>{costo.sede}</td>
+                          <td style={{ ...celda, textAlign: "left" }}>{costo.descripcion}</td>
+                          <td style={celda}>{costo.numeroRecibo || "-"}</td>
+                          <td style={celda}>{costo.clasificacion}</td>
+                          <td style={celda}>{costo.moneda}</td>
+                          <td style={{ ...celda, textAlign: "right" }}>
+                            {simboloMoneda(costo.moneda)} {formatoVE(costo.montoOriginal)}
+                          </td>
+                          <td style={{ ...celda, textAlign: "right" }}>
+                            {costo.moneda === "D" ? "-" : formatoVE(costo.tasaUsada)}
+                          </td>
+                          <td style={{ ...celda, textAlign: "right", fontWeight: "bold" }}>
+                            $ {formatoVE(costo.montoDolares)}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+
+                    <tfoot>
+                      <tr style={{
+                        backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE",
+                        fontWeight: "bold"
+                      }}>
+                        <td colSpan="8" style={{ ...celda, textAlign: "right" }}>
+                          TOTAL COSTOS:
+                        </td>
+                        <td style={{ ...celda, textAlign: "right" }}>
+                          $ {formatoVE(item.costosTotales)}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              )}
+            </div>
+          </td>
+        </tr>
+      )}
+    </React.Fragment>
+  ))}
+</tbody>
                 <tfoot>
                   <tr style={{
                     backgroundColor: esMonasterio ? "#F5EBDD" : "#EDC5CD",
