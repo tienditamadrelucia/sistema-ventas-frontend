@@ -389,6 +389,60 @@ const totalSeleccionado = ventasPendientes
   // FORMATO
   // ====================================================
 
+const eliminarPago = async (pago) => {
+  if (!esAdministrador) {
+    alert("Solo el Administrador puede eliminar una liquidación.");
+    return;
+  }
+
+  const confirmar = window.confirm(
+    `¿Está seguro que desea ELIMINAR esta liquidación?\n\n` +
+    `${pago.sedePaga} → ${pago.sedeRecibe}\n` +
+    `Monto: $${formatearMonto(pago.monto)}\n\n` +
+    `También se eliminarán el gasto y el ingreso generados automáticamente.`
+  );
+
+  if (!confirmar) return;
+
+  try {
+    setProcesando(true);
+
+    const res = await fetch(
+      `${API_URL}/api/participaciones/pago/${pago._id}`,
+      { method: "DELETE" }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(
+        data.mensaje || "No fue posible eliminar la liquidación."
+      );
+    }
+
+    await registrarAccion(
+      `Eliminó liquidación de participación: ${pago.sedePaga} → ${pago.sedeRecibe} por $${formatearMonto(pago.monto)}`
+    );
+
+    alert("Liquidación eliminada correctamente.");
+
+    await Promise.all([
+      cargarEstadoCuenta(),
+      cargarPagos(),
+      cargarVentasPendientes(
+        formData.sedePaga,
+        formData.sedeRecibe
+      )
+    ]);
+
+  } catch (error) {
+    console.error("Error eliminando participación:", error);
+    alert(error.message || "Error eliminando la liquidación.");
+  } finally {
+    setProcesando(false);
+  }
+};
+
   function formatearMonto(valor) {
     const numero = Number(valor);
 
@@ -964,6 +1018,7 @@ const totalSeleccionado = ventasPendientes
               <th>Monto</th>
               <th>Observación</th>
               <th>Usuario</th>
+              <th>Acciones</th>
             </tr>
           </thead>
 
@@ -977,7 +1032,7 @@ const totalSeleccionado = ventasPendientes
                   backgroundColor: "white"
                 }}
               >
-                <td colSpan="8">
+                <td colSpan="9">
                   No hay pagos registrados.
                 </td>
               </tr>
@@ -1022,6 +1077,21 @@ const totalSeleccionado = ventasPendientes
                   <td>
                     {pago.usuario ||
                       "—"}
+                  </td>
+                  <td>
+                    {esAdministrador && (
+                      <span
+                        onClick={() => eliminarPago(pago)}
+                        title="Eliminar liquidación"
+                        style={{
+                          fontSize: "20px",
+                          cursor: "pointer",
+                          color: "#B84A4A"
+                        }}
+                      >
+                        🗑️
+                      </span>
+                    )}
                   </td>
                 </tr>
 
