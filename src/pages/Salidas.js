@@ -284,32 +284,40 @@ const editarSalida = (salida) => {
 // ===============================
 const eliminarSalida = async (salida) => {
   const rol = localStorage.getItem("rolUsuario");
-  // ⭐ SOLO ADMINISTRADOR puede eliminar AJUSTES
-  if (salida.observacion === "AJUSTE") {
-    if (rol !== "ADMINISTRADOR") {
-      alert("No está permitido eliminar los registros de AJUSTE");
-      return;
-    }
-  } else {
-    // ⭐ Ningún usuario puede eliminar salidas normales
-    alert("No está permitido eliminar este tipo de registro");
+
+  if (rol !== "ADMINISTRADOR") {
+    alert("Solo el Administrador puede eliminar salidas");
     return;
   }
-  // ⭐ Seguridad adicional para usuarios
-  if (rol === "USUARIO") {
-    alert("Debe dirigirse al Supervisor para realizar esta acción");
-    return;
-  }
-  if (window.confirm("¿Eliminar esta salida?")) {
-    const res = await eliminarSalidaApi(salida._id, usuarioActual); // ✔ CORRECTO
-    if (!res.ok) {
-      alert(res.error || "No se pudo eliminar la salida");
+
+  if (!window.confirm(
+    `¿Eliminar esta salida?\n\nProducto: ${salida.productoId?.descripcion || ""}\nCantidad: ${salida.cantidad}\nMotivo: ${salida.observacion}`
+  )) return;
+
+  try {
+    setProcesando(true);
+
+    const res = await eliminarSalidaApi(salida._id, usuarioActual);
+
+    if (!res || res.ok !== true) {
+      alert(res?.error || res?.mensaje || "No se pudo eliminar la salida");
       return;
     }
+
+    await registrarAccion(
+      `Eliminó salida de ${salida.cantidad} del producto ${salida.productoId?.codigo || ""}`
+    );
+
     const recarga = await cargarSalidas(paginaActual, 20, sede);
     setSalidas(recarga.salidas || recarga.salidasdb || []);
     setTotalPaginas(recarga.totalPages || 1);
-    await registrarAccion(`Eliminó una salida`);
+
+    alert("Salida eliminada correctamente.");
+  } catch (error) {
+    console.error("Error eliminando salida:", error);
+    alert("Error eliminando la salida");
+  } finally {
+    setProcesando(false);
   }
 };
 
