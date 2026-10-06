@@ -503,7 +503,7 @@ const eliminarSalida = async (salida) => {
               <td>{s.observacion}</td>
               <td>
                 <span onClick={() => editarSalida(s)} style={iconoEditar}>✏️</span>
-                <span onClick={() => eliminarSalida(s.id)} style={iconoEliminar}>🗑️</span>
+                <span onClick={() => eliminarSalida(s)} style={iconoEliminar}>🗑️</span>
               </td>
             </tr>
           ))}
