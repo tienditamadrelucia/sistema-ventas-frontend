@@ -247,7 +247,7 @@ function MenuMonasterio() {
                   await registrarAccion("Ingresó al módulo Entradas");
                   navigate("/entradas")}}
               >
-                Entradas
+                Entradas de Producción
               </button>
             
               <button 
@@ -281,19 +281,20 @@ function MenuMonasterio() {
 
           {openAdministracion && (
             <>
-          <button
+         <button
             style={{
-            ...botonSubmenu,
-            opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
-            cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
+              ...botonSubmenu,
+              opacity: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? 1 : 0.5,
+              cursor: localStorage.getItem("rolUsuario") === "ADMINISTRADOR" ? "pointer" : "not-allowed"
             }}
             disabled={localStorage.getItem("rolUsuario") !== "ADMINISTRADOR"}
-            onClick={async () => {
-            await registrarAccion("Entró al módulo USUARIOS");
-            if (localStorage.getItem("rolUsuario") === "ADMINISTRADOR") {
-              navigate("/usuarios");
-            }
-          }}
+            onClick={() => {
+            if (localStorage.getItem("rolUsuario") !== "ADMINISTRADOR") return;
+            navigate("/usuarios");
+            Promise.resolve()
+            .then(() => registrarAccion("Entró al módulo USUARIOS"))
+            .catch((error) => console.error("Error registrando acción:", error));
+            }}
           >
             Control de Usuarios
           </button>
