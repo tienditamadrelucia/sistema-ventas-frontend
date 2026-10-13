@@ -153,103 +153,32 @@ const Clientes = () => {
   // GUARDAR / ACTUALIZAR
   // ============================
   const guardarCliente = async () => {
-    if (procesando) return;
+  if (procesando) return;
+  if (!formData.identificacion) return alert("Debe ingresar la identificación.");
+  if (!/^[VEJG][0-9]+$/.test(formData.identificacion)) return alert("Formato de identificación inválido. Debe comenzar con V, E, J o G y luego números.");
+  if (!formData.nombreCompleto.trim()) return alert("Debe ingresar el nombre del cliente.");
+  if (!validarTelefono(formData.telefono)) return alert("Teléfono inválido. Ejemplo: 04121234567");
 
-    // Validar identificación
-    if (!formData.identificacion) {
-      alert("Debe ingresar la identificación.");
-      return;
-    }
+  setProcesando(true);
+  try {
+    const datos = { ...formData, fechaIngreso: modo === "crear" ? obtenerFechaVenezuela() : formData.fechaIngreso };
+    if (modo === "crear") await crearCliente(datos);
+    else await actualizarCliente(clienteEditando._id, datos);
 
-    const regexIdentificacion =
-      /^[VEJG][0-9]+$/;
+    const accion = modo === "crear" ? "Registró" : "Actualizó";
+    registrarAccion(`${accion} al cliente "${formData.nombreCompleto}"`)
+      .catch(error => console.error("Error registrando actividad:", error));
 
-    if (
-      !regexIdentificacion.test(
-        formData.identificacion
-      )
-    ) {
-      alert(
-        "❌ Formato de identificación inválido. " +
-        "Debe comenzar con V, E, J o G y luego números."
-      );
-      return;
-    }
-
-    // Verificar duplicado en la página actual
-    if (
-      clientes.some(
-        (c) =>
-          c.identificacion ===
-            formData.identificacion &&
-          c._id !== clienteEditando?._id
-      )
-    ) {
-      alert("❌ La identificación ya existe");
-      return;
-    }
-
-    if (!formData.nombreCompleto.trim()) {
-      alert("Debe ingresar el nombre del cliente.");
-      return;
-    }
-
-    if (!validarTelefono(formData.telefono)) {
-      alert(
-        "Teléfono inválido. Ejemplo: 04121234567"
-      );
-      return;
-    }
-
-    setProcesando(true);
-
-    try {
-      // Siempre usar la fecha del día
-      const fechaFinal = obtenerFechaVenezuela();
-
-      if (modo === "crear") {
-        await crearCliente({
-          ...formData,
-          fechaIngreso: fechaFinal
-        });
-
-        await registrarAccion(
-          `Registró al cliente "${formData.nombreCompleto}"`
-        );
-
-      } else {
-        await actualizarCliente(
-          clienteEditando._id,
-          {
-            ...formData,
-            fechaIngreso: fechaFinal
-          }
-        );
-
-        await registrarAccion(
-          `Actualizó al cliente "${formData.nombreCompleto}"`
-        );
-      }
-
-      // Recargar respetando paginación
-      await cargarClientes(page);
-
-      limpiarFormulario();
-
-    } catch (error) {
-      console.error(
-        "Error en guardarCliente:",
-        error
-      );
-
-      alert(
-        "Ocurrió un error guardando el cliente."
-      );
-
-    } finally {
-      setProcesando(false);
-    }
-  };
+    alert(modo === "crear" ? "Cliente registrado correctamente." : "Cliente actualizado correctamente.");
+    await cargarClientes(page);
+    limpiarFormulario();
+  } catch (error) {
+    console.error("Error guardando cliente:", error);
+    alert(error.response?.data?.mensaje || error.response?.data?.error || error.message || "Error guardando el cliente.");
+  } finally {
+    setProcesando(false);
+  }
+};
 
   // ============================
   // EDITAR
@@ -282,20 +211,16 @@ const Clientes = () => {
   // LIMPIAR FORMULARIO
   // ============================
   const limpiarFormulario = () => {
-    setModo("crear");
-    setClienteEditando(null);
-
-    setFormData({
-      identificacion: "",
-      nombreCompleto: "",
-      direccion: "",
-      telefono: "",
-      fechaIngreso:
-        obtenerFechaVenezuela()
-          .toISOString()
-          .substring(0, 10)
-    });
-  };
+  setModo("crear");
+  setClienteEditando(null);
+  setFormData({
+    identificacion: "",
+    nombreCompleto: "",
+    direccion: "",
+    telefono: "",
+    fechaIngreso: obtenerFechaVenezuela()
+  });
+};
 
   // ============================
   // ELIMINAR
