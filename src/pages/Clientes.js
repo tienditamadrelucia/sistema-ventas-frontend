@@ -49,19 +49,17 @@ const Clientes = () => {
   // ESTILOS
   // ============================
   const estiloBoton = {
-    width: "15%",
-    padding: "10px",
-    backgroundColor: esMonasterio
-      ? "#5A2D16"
-      : "#F9CEAE",
-    color: esMonasterio ? "white" : "#333",
-    border: "1px solid #ccc",
-    borderRadius: "8px",
-    fontWeight: "900",
-    fontFamily: "Arial Black",
-    cursor: "pointer",
-    marginTop: "10px"
-  };
+  width: "15%",
+  padding: "10px",
+  backgroundColor: esMonasterio ? "#5A2D16" : "#FC9E9B",
+  color: "white",
+  border: "none",
+  borderRadius: "8px",
+  fontWeight: "900",
+  fontFamily: "Arial Black",
+  cursor: "pointer",
+  marginTop: "10px"
+};
 
   const botonGuardar = {
     width: "30%",
