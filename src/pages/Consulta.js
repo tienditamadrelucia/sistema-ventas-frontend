@@ -229,21 +229,13 @@ const Consulta = () => {
   }
 };
 
-useEffect(() => {
-  if (!esCredito) return;
-  if (!venta) return;
-  if (!pagosMoneda || pagosMoneda.length === 0) return;
-  if (!tasaDolar || !tasaPeso) return;
-  calcularTotalesCredito(pagosMoneda);
-}, [esCredito, venta, pagosMoneda, tasaDolar, tasaPeso]);
-
-    const formatoVE = (valor) => {
-      if (!valor) return "0,00";
-        return Number(valor).toLocaleString("es-VE", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-    };
+const formatoVE = (valor) => {
+  if (!valor) return "0,00";
+    return Number(valor).toLocaleString("es-VE", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+    });
+};
 
     // -----------------------------
     // Funciones de búsqueda y filtros
@@ -402,30 +394,65 @@ useEffect(() => {
 };
 
   const cargarPagos = async (
-    factura,
-    esCreditoFactura,
-    tasasSaldo = null,
-    ventaActual = null
-  ) => {
+  factura,
+  esCreditoFactura,
+  tasasSaldo = null,
+  ventaActual = null
+) => {
   try {
     const res = await fetch(
-      `${API_URL}/api/moneda/factura/${factura}?sede=${encodeURIComponent(sede)}`
+      `${API_URL}/api/moneda/factura/${encodeURIComponent(factura)}?sede=${encodeURIComponent(sede)}`
     );
+
+    if (!res.ok) {
+      throw new Error(`Error HTTP ${res.status} al consultar pagos`);
+    }
+
     const data = await res.json();
-    const lista = data.lista || [];
+
+    if (!data.ok || !Array.isArray(data.lista)) {
+      throw new Error("El servidor no devolvió una lista válida de pagos");
+    }
+
+    const lista = [...data.lista].sort((a, b) =>
+      String(a.fecha || "").localeCompare(String(b.fecha || ""))
+    );
+
+    console.log("==================================");
+    console.log("FACTURA CONSULTADA:", factura);
+    console.log("SEDE:", sede);
+    console.log("CANTIDAD DE MOVIMIENTOS:", lista.length);
+    console.table(
+      lista.map((p) => ({
+        factura: p.factura,
+        fecha: p.fecha,
+        operacion: p.operacion,
+        sede: p.sede,
+        efectivoD: p.efectivoD,
+        efectivoBs: p.efectivoBs,
+        transferenciaBs: p.transferenciaBs,
+        efectivoP: p.efectivoP,
+        transferenciaP: p.transferenciaP
+      }))
+    );
+    console.log("==================================");
+
     setPagosMoneda(lista);
+
     if (esCreditoFactura) {
       await calcularTotalesCredito(
         lista,
         tasasSaldo,
         ventaActual
       );
-      }    
-    } catch (error) {
-      console.error("Error cargando pagos:", error);
-      alert("Error al buscar pagos");
     }
-  };
+
+  } catch (error) {
+    console.error("Error cargando pagos de la factura:", error);
+    setPagosMoneda([]);
+    alert("No se pudieron consultar los pagos de esta factura.");
+  }
+};
 
   const volverAlMenu = () => {
     window.opener.location.reload();
@@ -530,28 +557,26 @@ useEffect(() => {
 };
 
   const calcularTotalesCredito = async (
-    pagos,
-    tasasSaldo = null,
-    ventaActual = null
-  ) => {
+  pagos,
+  tasasSaldo = null,
+  ventaActual = null
+) => {
   try {
     const ventaCalculo = ventaActual || venta;
-      if (!ventaCalculo || !ventaCalculo.total) {
-        console.log("Venta incompleta, no se puede calcular el crédito");
-        return;
-      }
+
+    if (!ventaCalculo || ventaCalculo.total == null) {
+      console.error("Venta incompleta, no se puede calcular el crédito");
+      return;
+    }
 
     let totalPagadoUSD = 0;
-
     let totalDolares = 0;
     let totalBolivares = 0;
     let totalPesos = 0;
+    let movimientosSinTasa = 0;
 
-    // =====================================================
-    // CALCULAR CADA MOVIMIENTO CON LA TASA DE SU PROPIA FECHA
-    // =====================================================
+    // CALCULAR CADA MOVIMIENTO CON LA TASA DE SU FECHA
     for (const pago of pagos) {
-
       const usd =
         Number(pago.efectivoD || 0) +
         Number(pago.zelle || 0);
@@ -566,25 +591,25 @@ useEffect(() => {
         Number(pago.efectivoP || 0) +
         Number(pago.transferenciaP || 0);
 
-      // Guardamos también los totales físicos para mostrarlos
       totalDolares += usd;
       totalBolivares += bs;
       totalPesos += cop;
 
-      // Los dólares no necesitan conversión
       let valorMovimientoUSD = usd;
 
-      // Si el movimiento tiene Bs o COP necesitamos
-      // las tasas correspondientes a SU fecha
       if (bs !== 0 || cop !== 0) {
-
         const tasas = await obtenerTasasPorFecha(pago.fecha);
 
         if (!tasas) {
-          console.error(
-            "No se pudo calcular el movimiento por falta de tasa:",
-            pago
-          );
+          movimientosSinTasa++;
+          console.error("Abono sin tasa histórica:", {
+            id: pago._id,
+            factura: pago.factura,
+            fecha: pago.fecha,
+            bs,
+            cop
+          });
+          totalPagadoUSD += usd;
           continue;
         }
 
@@ -597,48 +622,39 @@ useEffect(() => {
         }
       }
 
-      // Los VUELTOS ya vienen negativos desde MongoDB,
-      // por lo que automáticamente descuentan del pago.
+      // Los vueltos negativos descuentan del pago.
       totalPagadoUSD += valorMovimientoUSD;
     }
 
-    // =====================================================
-    // TOTALES DE MONEDA ENTREGADA - VUELTOS
-    // =====================================================
-
+    // TOTALES REGISTRADOS EN CADA MONEDA
     setTotalUSD(totalDolares);
     setTotalBsPagado(totalBolivares);
     setTotalPPagado(totalPesos);
 
-    // =====================================================
-    // SALDO REAL EN DÓLARES
-    // =====================================================
+    // NO MOSTRAR UN SALDO DEFINITIVO SI FALTAN TASAS
+    if (movimientosSinTasa > 0) {
+      console.warn(
+        `${movimientosSinTasa} movimientos no pudieron convertirse por falta de tasas.`
+      );
+      setRestaUSD(NaN);
+      setRestaBs(NaN);
+      setRestaP(NaN);
+      return;
+    }
 
+    // CALCULAR SALDO EN DÓLARES
     const totalFacturaUSD = Number(ventaCalculo.total);
-
     let saldoUSD = totalFacturaUSD - totalPagadoUSD;
 
-    // Tolerancia que ya usamos en Pago.jsx
     const TOLERANCIA_USD = 0.25;
 
-    // Si queda una diferencia pequeña dentro de la tolerancia,
-    // consideramos la factura completamente cancelada.
     if (Math.abs(saldoUSD) <= TOLERANCIA_USD) {
       saldoUSD = 0;
     }
 
     setRestaUSD(saldoUSD);
 
-    // =====================================================
-    // EQUIVALENCIA DEL SALDO
-    //
-    // tasaDolar y tasaPeso son las tasas que Consulta tenga
-    // cargadas en ese momento:
-    //
-    // - consulta normal -> tasa de hoy
-    // - registrar abono -> tasa de la fecha seleccionada
-    // =====================================================
-
+    // EQUIVALENCIAS DEL SALDO
     const td = tasasSaldo
       ? Number(tasasSaldo.tasaD)
       : Number(tasaDolar);
@@ -650,58 +666,13 @@ useEffect(() => {
     setRestaBs(td ? saldoUSD * td : 0);
     setRestaP(tpeso ? saldoUSD * tpeso : 0);
 
-    // =====================================================
-    // CRÉDITO TOTALMENTE CANCELADO
-    // =====================================================
-
-    if (
-      saldoUSD === 0 &&
-      ventaCalculo?.estado === "CREDITO"
-    ) {
-      alert(
-        "✔ La venta ha sido cancelada en su totalidad. Se cambiará a CONTADO."
-      );
-
-      try {
-        const res = await fetch(
-          `${API_URL}/api/ventas/cambiar-estado/${ventaCalculo._id}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              estado: "CONTADO"
-            })
-          }
-        );
-
-        const data = await res.json();
-
-        if (data.ok) {
-          setEsCredito(false);
-
-          // Recargar la factura actualizada
-          consultarFactura(numeroFactura);
-        } else {
-          alert("Error cambiando estado a CONTADO");
-        }
-
-      } catch (error) {
-        console.error(
-          "Error cambiando estado:",
-          error
-        );
-
-        alert("Error cambiando estado a CONTADO");
-      }
-    }
+    // IMPORTANTE:
+    // Consultar una factura NO cambia su estado.
+    // La cancelación definitiva del crédito debe
+    // gestionarse mediante un proceso independiente.
 
   } catch (error) {
-    console.error(
-      "Error calculando totales del crédito:",
-      error
-    );
+    console.error("Error calculando totales del crédito:", error);
   }
 };
 
