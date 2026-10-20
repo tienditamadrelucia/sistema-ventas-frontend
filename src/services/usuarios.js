@@ -31,22 +31,34 @@ export async function eliminarUsuario(id) {
   });
 }
 
-export async function buscarUsuario(usuario, clave) {  
+export async function buscarUsuario(usuario, clave) {
   try {
     const res = await fetch(`${API}/login`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json"
+      },
+      credentials: "include",
       body: JSON.stringify({ usuario, clave })
     });
-    console.log("Respuesta de la API:", res);
+
+    const data = await res.json();
+
     if (!res.ok) {
-      return {ok: false, mensaje: "Frontend: Error en la respuesta del servidor"};
+      return {
+        ok: false,
+        mensaje: data.mensaje || "Usuario o contraseña incorrectos"
+      };
     }
-    const data=await res.json();
-    console.log("Datos de respuesta: ", data);
-    return data;    
+
+    return data;
+
   } catch (error) {
-      console.error("Frontend: Error en buscarUsuario:", error);
-      return { ok: false, mensaje: error.message }; // Asegúrate de que siempre devuelves un objeto    
+    console.error("Error iniciando sesión:", error);
+
+    return {
+      ok: false,
+      mensaje: "No se pudo conectar con el servidor"
+    };
   }
 }
