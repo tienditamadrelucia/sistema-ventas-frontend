@@ -37,10 +37,12 @@ export async function actualizarUsuario(id, data) {
 }
 
 export async function eliminarUsuario(id) {
-  return await fetch(`${API}/${id}`, {
+  const res = await fetch(`${API}/${encodeURIComponent(id)}`, {
     method: "DELETE",
     credentials: "include"
   });
+
+  return await res.json();
 }
 
 export async function buscarUsuario(usuario, clave) {
