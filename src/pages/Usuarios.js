@@ -176,7 +176,7 @@ function Usuarios() {
     setFormData({
       nombre: user.nombre,
       usuario: user.usuario,
-      clave: user.clave,
+      clave: "",
       rol: user.rol,
 
       // Usuarios antiguos: Tiendita sí, Monasterio no
@@ -186,7 +186,21 @@ function Usuarios() {
   };
 
   const handleActualizar = async () => {
-    await actualizarUsuario(usuarioEditando._id, formData);
+    const datosActualizar = { ...formData };
+
+    if (!datosActualizar.clave.trim()) {
+      delete datosActualizar.clave;
+    }
+
+    const resultado = await actualizarUsuario(
+      usuarioEditando._id,
+      datosActualizar
+    );
+
+    if (!resultado.ok) {
+      alert(resultado.mensaje || "No se pudo actualizar el usuario");
+      return;
+    }
 
     const actualizados = usuarios.map((u) =>
       u._id === usuarioEditando._id
@@ -282,9 +296,9 @@ function Usuarios() {
         />
 
         <input
-          type="text"
+          type="password"
           name="clave"
-          placeholder="Contraseña"
+          placeholder={modo === "crear" ? "Contraseña" : "Nueva contraseña (opcional)"}
           value={formData.clave}
           onChange={handleChange}
           style={{ width: "95%", padding: "6px", marginBottom: "8px" }}
@@ -385,7 +399,7 @@ function Usuarios() {
             <tr key={u._id}>
               <td>{u.nombre}</td>
               <td>{u.usuario}</td>
-              <td>{u.clave}</td>
+              <td>••••••••</td>
               <td>{u.rol}</td>
               <td>{u.accesoTiendita !== false ? "✅" : "❌"}</td>
               <td>{u.accesoMonasterio === true ? "✅" : "❌"}</td>

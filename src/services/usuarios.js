@@ -1,33 +1,45 @@
-import { API_URL } from "../config"; 
+import { API_URL } from "../config";
 
 const API = `${API_URL}/api/usuarios`;
 
 export async function obtenerUsuarios() {
-  const res = await fetch(API);
+  const res = await fetch(API, {
+    credentials: "include"
+  });
+
   return await res.json();
 }
 
 export async function crearUsuario(data) {
   const res = await fetch(API, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
     body: JSON.stringify(data)
   });
+
   return await res.json();
 }
 
 export async function actualizarUsuario(id, data) {
   const res = await fetch(`${API}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
+    credentials: "include",
     body: JSON.stringify(data)
   });
+
   return await res.json();
 }
 
 export async function eliminarUsuario(id) {
   return await fetch(`${API}/${id}`, {
-    method: "DELETE"
+    method: "DELETE",
+    credentials: "include"
   });
 }
 
