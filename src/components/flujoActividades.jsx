@@ -18,7 +18,7 @@ const formato = valor =>
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
-
+ 
 const fechaCorta = valor =>
   valor
     ? String(valor)
