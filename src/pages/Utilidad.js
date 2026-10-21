@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Encabezado from "../components/Encabezado";
 import { API_URL } from "../config";
+import FlujoActividades from "../components/FlujoActividades";
 
 const formatoVE = (num) => Number(num || 0).toLocaleString("es-VE", {
   minimumFractionDigits: 2,
@@ -30,6 +31,13 @@ const Utilidad = () => {
   const [buscado, setBuscado] = useState(false);
 
   const [actividadAbierta, setActividadAbierta] = useState(null);
+  const [vista, setVista] = useState("FLUJO");
+
+const esAdministrador =
+  localStorage
+    .getItem("rolUsuario")
+    ?.trim()
+    .toUpperCase() === "ADMINISTRADOR";
 
 const formatearFecha = (fecha) => {
   if (!fecha) return "";
@@ -51,7 +59,12 @@ const simboloMoneda = (moneda) => {
     setBuscado(true);
 
     try {
-      const res = await fetch(`${API_URL}/api/ventas/utilidad-actividad?desde=${desde}&hasta=${hasta}`);
+      const res = await fetch(
+  `${API_URL}/api/ventas/utilidad-actividad?desde=${desde}&hasta=${hasta}`,
+  {
+    credentials: "include"
+  }
+);
       const data = await res.json();
 
       if (!res.ok || !data.ok) {
@@ -94,6 +107,21 @@ const simboloMoneda = (moneda) => {
     return "#333";
   };
 
+  if (!esAdministrador) {
+  return (
+    <h2 style={{ color: "red", textAlign: "center" }}>
+      Acceso permitido solo al administrador
+    </h2>
+  );
+}
+
+if (vista === "FLUJO") {
+  return (
+    <FlujoActividades
+      onVerUtilidad={() => setVista("UTILIDAD")}
+    />
+  );
+}
   return (
     <div>
       <Encabezado sede={sede} />
@@ -102,6 +130,28 @@ const simboloMoneda = (moneda) => {
         <h2 style={{ textAlign: "center", marginBottom: "20px" }}>
           Reporte de Utilidad por Actividad Productiva
         </h2>
+        <div
+  style={{
+    textAlign: "center",
+    marginBottom: "20px"
+  }}
+>
+  <button
+    type="button"
+    onClick={() => setVista("FLUJO")}
+    style={{
+      padding: "9px 16px",
+      border: "none",
+      borderRadius: "7px",
+      background: esMonasterio ? "#B8862D" : "#84B09C",
+      color: "white",
+      cursor: "pointer",
+      fontWeight: "bold"
+    }}
+  >
+    Ver ingresos y gastos por moneda
+  </button>
+</div>
 
         <div style={{
           width: "600px",
