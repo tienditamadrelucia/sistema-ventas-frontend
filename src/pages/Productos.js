@@ -517,6 +517,31 @@ const payload = {
   if (inputFotoRef.current) inputFotoRef.current.value = "";
   };
 
+  useEffect(() => {
+  const iniciar = async () => {
+    setProcesando(true);
+
+    try {
+      await cargarProductos();
+      await limpiarFormulario();
+    } catch (error) {
+      console.error("Error al iniciar Productos:", error);
+      alert(error.message || "No se pudieron cargar los productos");
+    } finally {
+      setProcesando(false);
+    }
+  };
+
+  iniciar();
+
+  registrarAccion("Ingresó al módulo Productos").catch((error) => {
+    console.error("Error registrando el acceso:", error);
+  });
+
+  // La carga inicial se ejecuta al abrir la pantalla.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, []);
+
   // -------------------------
   // RETURN
   // -------------------------
