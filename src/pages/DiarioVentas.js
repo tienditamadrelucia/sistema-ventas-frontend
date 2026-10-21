@@ -19,7 +19,7 @@ const DiarioVentas = () => {
   // -------------------------
   // ESTILOS (MISMOS QUE SALIDAS)
   // -------------------------
-  const estiloBoton = {
+  const estiloBoton = { 
     width: "15%",
     padding: "10px",
     backgroundColor: colorPrincipal,
@@ -73,6 +73,21 @@ const DiarioVentas = () => {
   });
   const [procesando, setProcesando] = useState(false);
 
+  const [consulta, setConsulta] = useState(null);
+  const [verificacion, setVerificacion] = useState(null);
+
+  const esAdministrador =
+    localStorage.getItem("rolUsuario")
+      ?.trim()
+      .toUpperCase() === "ADMINISTRADOR";
+
+  const invalidarReporte = () => {
+    setConsulta(null);
+    setVerificacion(null);
+    setReporte([]);
+    setTotales({});
+  };
+
   const formatoVE = (valor) => {
     if (!valor) return "0,00";
     return Number(valor).toLocaleString("es-VE", {
@@ -119,65 +134,235 @@ const totalResumenActividades = actividadesResumen.reduce(
   // CARGAR REPORTE
   // -------------------------
   const cargarReporte = async () => {
-  setProcesando(true);
-  if (!desde || !hasta) {
-    alert("Debe seleccionar un rango de fechas");
+  if (procesando) return;
+
+  if (!desde || !hasta || desde > hasta) {
+    alert("Seleccione un rango de fechas válido");
     return;
   }
+
+  setProcesando(true);
+  invalidarReporte();
+
   try {
     const res = await fetch(
-      `${API_URL}/api/ventas/reporte/${desde}/${hasta}?sede=${encodeURIComponent(sede)}`
+      `${API_URL}/api/ventas/reporte/${desde}/${hasta}?sede=${encodeURIComponent(sede)}`,
+      {
+        credentials: "include"
+      }
     );
+
     const data = await res.json();
-    if (!data.ok) {
-      alert(data.msg || "No hay datos para este rango");
-      setReporte([]);
-      setTotales({
-        totalEfectivoP: 0,
-        totalTransferenciaP: 0,
-        totalEfectivoBs: 0,
-        totalTransferenciaBs: 0,
-        totalPuntoBs: 0,
-        totalPagomovilBs: 0,
-        totalEfectivoD: 0,
-        totalZelle: 0
-      });
-      setProcesando(false);
-      return;
+
+    if (!res.ok || !data.ok) {
+      throw new Error(
+        data.mensaje ||
+        data.msg ||
+        "No hay datos para este rango"
+      );
     }
-    setProcesando(false);
+
     setReporte(data.reporte || []);
     setTotales(data.totales || {});
-    formularioRef.current?.scrollIntoView({ behavior: "smooth" });    
+
+    setConsulta({
+    desde,
+    hasta,
+    sede,
+    revision: data.revisionCaja
+  });
+
+    // Solo se verifica un día y una sede a la vez.
+    if (desde === hasta) {
+      const estadoRes = await fetch(
+        `${API_URL}/api/caja/verificacion/${desde}?sede=${encodeURIComponent(sede)}`,
+        {
+          credentials: "include"
+        }
+      );
+
+      const estado = await estadoRes.json();
+
+      if (!estadoRes.ok || !estado.ok) {
+        throw new Error(
+          estado.mensaje ||
+          "No se pudo consultar la verificación de caja"
+        );
+      }
+
+      if (
+        !Number.isInteger(data.revisionCaja) ||
+        estado.revision !== data.revisionCaja
+      ) {
+      throw new Error(
+        "El día cambió después de generar el reporte. " +
+        "Pulse Buscar de nuevo."
+      );
+      }
+
+      setVerificacion(estado.verificado === true);
+      }
+
+    formularioRef.current?.scrollIntoView({
+      behavior: "smooth"
+    });
   } catch (error) {
-    console.error("Error cargando reporte:", error);
-    alert("Error cargando reporte");
+    alert(error.message || "Error cargando reporte");
+  } finally {
+    setProcesando(false);
+  }
+};
+
+const cambiarVerificacion = async (accion) => {
+  if (
+    procesando ||
+    !esAdministrador ||
+    !consulta ||
+    consulta.desde !== consulta.hasta ||
+    verificacion === null
+  ) {
+    return;
+  }
+
+  let motivo = "";
+
+  if (accion === "REABRIR") {
+    const respuesta = window.prompt(
+      "Indique el motivo de reapertura:"
+    );
+
+    if (respuesta === null) return;
+
+    motivo = respuesta.trim();
+
+    if (!motivo) {
+      alert("Debe indicar el motivo");
+      return;
+    }
+  }
+
+  const mensaje = accion === "VERIFICAR"
+    ? (
+        `Confirmo que revisé el reporte y recibí el dinero ` +
+        `completo del ${consulta.desde} en ${consulta.sede}.\n\n` +
+        "Se bloquearán los cambios de ese día. ¿Continuar?"
+      )
+    : (
+        `Se permitirán nuevamente cambios del ` +
+        `${consulta.desde} en ${consulta.sede}.\n\n` +
+        "¿Continuar?"
+      );
+
+  if (!window.confirm(mensaje)) return;
+
+  setProcesando(true);
+
+  try {
+    const res = await fetch(
+      `${API_URL}/api/caja/verificacion/${consulta.desde}`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+        sede: consulta.sede,
+        accion,
+        motivo,
+        revision: consulta.revision
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(
+        data.mensaje ||
+        "No se pudo cambiar la verificación"
+      );
+    }
+
+    setVerificacion(data.verificado === true);
+
+    setConsulta(actual => ({
+      ...actual,
+      revision: data.revision
+    }));
+
+    if (data.verificado) {
+      alert("Dinero verificado. Día bloqueado.");
+    } else {
+      invalidarReporte();
+
+      alert(
+        "Día reabierto. Pulse Buscar para revisar " +
+        "los importes actuales."
+      );
+    }
+  } catch (error) {
+    // Una respuesta perdida no demuestra que no se guardó.
+    setVerificacion(null);
+
+    alert(
+      (error.message || "Error cambiando la verificación") +
+      ". Pulse Buscar para consultar el estado actual."
+    );
+  } finally {
+    setProcesando(false);
   }
 };
 
   const eliminarFacturaDesdeDiario = async (factura) => {
+  if (procesando || verificacion === true) return;
+
   const confirmar = window.confirm(
     "¿Está seguro que desea ELIMINAR la factura completa?\n" +
     "Se eliminarán: venta, productos y pagos.\n" +
     "Esta acción no se puede deshacer."
   );
+
   if (!confirmar) return;
+
+  setProcesando(true);
+
+  let eliminada = false;
+
   try {
     const res = await fetch(
       `${API_URL}/api/facturas/eliminar-completa/${factura}?sede=${encodeURIComponent(sede)}`,
-      { method: "DELETE" }
+      {
+        method: "DELETE",
+        credentials: "include"
+      }
     );
+
     const json = await res.json();
-    if (!json.ok) {
-      alert("No se pudo eliminar la factura.");
-      return;
+
+    if (!res.ok || !json.ok) {
+      throw new Error(
+        json.mensaje ||
+        json.msg ||
+        "No se pudo eliminar la factura"
+      );
     }
+
+    eliminada = true;
     alert("Factura eliminada correctamente.");
-    // Recargar el reporte
-    cargarReporte();
+    invalidarReporte();
   } catch (error) {
-    console.error("Error eliminando factura:", error);
-    alert("Hubo un error al eliminar la factura.");
+    alert(error.message || "Error eliminando factura");
+  } finally {
+    setProcesando(false);
+  }
+
+  // Se consulta nuevamente con el botón Buscar para
+  // actualizar los importes y el estado de verificación.
+  if (eliminada) {
+    formularioRef.current?.scrollIntoView({
+      behavior: "smooth"
+    });
   }
 };
 
@@ -235,14 +420,22 @@ const totalResumenActividades = actividadesResumen.reduce(
           <input
             type="date"
             value={desde}
-            onChange={(e) => setDesde(e.target.value)}
+            disabled={procesando}
+            onChange={(e) => {
+              setDesde(e.target.value);
+              invalidarReporte();
+            }}
             style={{ width: "45%", padding: "5px" }}
           />
 
           <input
             type="date"
             value={hasta}
-            onChange={(e) => setHasta(e.target.value)}
+            disabled={procesando}
+            onChange={(e) => {
+              setHasta(e.target.value);
+              invalidarReporte();
+            }}
             style={{ width: "45%", padding: "5px" }}
           />
         </div>
@@ -251,6 +444,7 @@ const totalResumenActividades = actividadesResumen.reduce(
           <button 
             className="botonElegante"
             style={botonBuscar}
+            disabled={procesando}
             onClick={cargarReporte}
           >
             Buscar
@@ -337,6 +531,7 @@ const totalResumenActividades = actividadesResumen.reduce(
               >
                 <button
                   className="btn-eliminar"
+                  disabled={procesando || verificacion === true}
                   onClick={() => eliminarFacturaDesdeDiario(item.venta.factura)}
                 >
                   🗑️
@@ -423,6 +618,64 @@ const totalResumenActividades = actividadesResumen.reduce(
     </tbody>
 
       </table>
+        <div
+          style={{
+            textAlign: "center",
+            margin: "20px auto",
+            padding: "15px",
+            border: "1px solid #ccc",
+            borderRadius: "8px",
+            maxWidth: "700px"
+          }}
+        >
+          {!consulta ? (
+          <p>
+            Busque el reporte de una sola fecha para consultar
+            la verificación del dinero.
+          </p>
+          ) : consulta.desde !== consulta.hasta ? (
+          <p>
+            Para verificar el dinero, seleccione la misma fecha
+            en Desde y Hasta y pulse Buscar.
+          </p>
+          ) : (
+        <>
+          <p>
+            <strong>
+              {consulta.sede} — {consulta.desde}
+            </strong>
+          </p>
+
+          <p>
+            {verificacion === null
+              ? "Estado de verificación sin confirmar. Pulse Buscar."
+              : verificacion
+                ? "Dinero verificado. Día bloqueado para cambios."
+                : "Día sin verificar."}
+            </p>
+
+          {esAdministrador && verificacion !== null && (
+            <button
+              disabled={procesando}
+              style={{
+                ...botonBuscar,
+                width: "auto",
+                padding: "10px 20px"
+              }}
+              onClick={() =>
+              cambiarVerificacion(
+              verificacion ? "REABRIR" : "VERIFICAR"
+            )
+          }
+        >
+          {verificacion
+            ? "Reabrir día"
+            : "Verificar dinero recibido y bloquear día"}
+        </button>
+      )}
+    </>
+  )}
+</div>
 
         {/* TOTALES FINALES */}
         <h3 style={{ textAlign: "center", marginTop: "30px", marginBottom: "10px", fontWeight: "bold" }}>

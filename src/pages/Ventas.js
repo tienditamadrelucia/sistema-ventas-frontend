@@ -95,6 +95,17 @@ const Ventas = () => {
   const [ventaFinalizada, setVentaFinalizada] = useState(false);
   const [procesando, setProcesando] = useState(false);
   const [estado, setEstado] = useState("normal");
+  const guardandoOperacionRef = useRef(false);
+  const operacionPendienteRef = useRef(null);
+
+  const firmaPagoActual = () =>
+  JSON.stringify({
+    fecha,
+    sede: sedeActual,
+    identificacion,
+    listaFactura,
+    iva
+  });
 
   const estiloBoton = {
     width: "20%",
@@ -551,379 +562,326 @@ const Ventas = () => {
   // -----------------------------
   // PAGOS
   // -----------------------------
-  const pagoContado = async () => {      
-  if (listaFactura.length === 0) {
+  const abrirPagoPreparado = async (credito) => {
+  if (procesando || guardandoOperacionRef.current) return;
+
+  if (!listaFactura.length) {
     alert("Aún no hay productos ingresados");
     return;
   }
-  let facturaNumero = numeroFactura;
-  // ⭐ 1) DETERMINAR NÚMERO DE FACTURA
-  if (!facturaNumero || facturaNumero === "") {
-    // Venta nueva → generar número
-    const fact = await obtenerFacturaNro(); 
-    facturaNumero = fact + 1;
-    setNumeroFactura(facturaNumero);
-  }
-  // Si ya tiene número → NO generar nada
 
-  // ⭐ 2) VALIDAR PAGO EXISTENTE
-  const pago = await buscarPagoPorFactura(facturaNumero, sedeActual);
-  const vuelto = await buscarVueltoPorFactura(facturaNumero, sedeActual);
-  if (!pago.ok) {
-    alert("Error al buscar pagos.");
-    return;
-  }
-  if (pago.pago) {
-    const confirmar = window.confirm(
-      "Ya existe un pago registrado para esta factura.\n¿Desea modificarlo?"
-    );
-    if (!confirmar) return;
-    setPagoExistente(pago.pago);
-  } else {
-    setPagoExistente(null);
-  }
-  if (vuelto.ok && vuelto.vuelto) {
-    setVueltoExistente(vuelto.vuelto);
-  } else {
-    setVueltoExistente(null);
-  }
-  // ⭐ 3) ABRIR MODAL DE PAGO
-  setModoCredito(false);
-  setMostrarPago(true);
-};
+  if (!validarCliente()) return;
 
-  const pagoCredito = async () => {
-    if (listaFactura.length === 0) {
-      alert("Debe ingresar productos antes de procesar un crédito");
-      return;
-    }
-    let facturaNumero = numeroFactura;
-    // ⭐ 1) DETERMINAR NÚMERO DE FACTURA
-    if (!facturaNumero || facturaNumero === "") {
-    // Venta nueva → generar número
-    const fact = await obtenerFacturaNro(); 
-    facturaNumero = fact + 1;
-    setNumeroFactura(facturaNumero);
-    }
-    // Si ya tiene número → NO generar nada
-    
-    if (!clienteSeleccionado) {
-      alert("Debe seleccionar un cliente para crédito");
-      return;
-    }    
-    setNumeroFactura(facturaNumero);
-    setModoCredito(true);
-    setPagoExistente(null);
-    setVueltoExistente(null);
-    setMostrarPago(true);
-    console.log("Procesando venta a CRÉDITO...");
-  };
-
-  const validarPagoAntes = () => {
-    if (!validarCliente()) return;
-    if (!pagoRegistrado) {
-      alert("Debe registrar el pago antes de guardar la venta.");
-      return;
-    }
-    guardarVenta();
-  };
-
-  // -----------------------------
-  // GUARDAR VENTA
-  // -----------------------------
-  const guardarVenta = async () => {
-  if (procesando) return;
   setProcesando(true);
-  try {
-    // ============================
-    // 1) USAR EL NÚMERO DE FACTURA EXISTENTE
-    // ============================
-    const facturaNumero = numeroFactura;
-
-    if (!facturaNumero || facturaNumero === 0) {
-      alert("Error: No hay número de factura asignado.");
-      return;
-    }
-    // ============================
-    // 2) VERIFICAR SI LA FACTURA YA EXISTE
-    // ============================
-    const respExiste = await fetch(
-      `${API_URL}/api/ventas/${facturaNumero}?sede=${encodeURIComponent(sedeActual)}`
-    );
-    const dataExiste = await respExiste.json();
-
-    if (dataExiste.ok && dataExiste.venta) {
-      // ⭐ EXISTE → ELIMINAR VENTA
-      await fetch(`${API_URL}/api/ventas/${dataExiste.venta._id}`, {
-        method: "DELETE"
-      });
-      // ⭐ ELIMINAR VENDIDOS ASOCIADOS
-      await fetch(`${API_URL}/api/vendidos/eliminarPorFactura/${facturaNumero}`, {
-        method: "DELETE"
-      });
-    }
-    // ============================
-    // 3) PREPARAR DATOS DE LA NUEVA VENTA
-    // ============================
-    const { idPago, idVuelto, totalAbonado, modoCredito: esCredito } = pagoData || {};
-    const estado = esCredito ? "CREDITO" : "CONTADO";
-    const abono = esCredito ? totalAbonado : totalDolar;
-    const saldo = esCredito ? totalDolar - totalAbonado : 0;
-    const ventaData = {
-      factura: facturaNumero,
-      cliente: identificacion,
-      fecha,
-      hora,
-      subtotal: subtotalDolar,
-      IVA: iva,
-      total: totalDolar,
-      usuario: UsuarioActual,
-      estado,
-      sede: sedeActual
-    };
-    // ============================
-    // 4) GUARDAR LA VENTA NUEVA
-    // ============================
-    const resVenta = await fetch(`${API_URL}/api/ventas`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(ventaData)
-    });
-    const dataVenta = await resVenta.json();
-    if (!resVenta.ok || !dataVenta.ok) {
-      alert("Error guardando la venta");
-      return;
-    }
-    // ============================
-    // 5) GUARDAR LOS PRODUCTOS VENDIDOS
-    // ============================
-    for (const item of listaFactura) {
-        const vendidoData = {            
-          factura: facturaNumero,
-          productoId:item.idProducto, 
-          cantidad: item.cantidad,
-          precio: item.precioVenta,
-          dscto: item.descuento || 0, 
-          total: item.total,
-          sede: sedeActual
-          };
-          console.log("➡️ ENVIANDO VENDIDO:", vendidoData);
-
-    await guardarVendido(vendidoData)      
-    }
-    alert(`Venta guardada correctamente.\nFactura N° ${facturaNumero}`);
-    // ============================
-    // 6) LIMPIAR PANTALLA
-    // ============================
-    setNumeroFactura("")    
-    limpiarCliente();
-    setPagoData(null);
-    setPagoRegistrado(false);
-    setIdPagoExistente(null);
-    setIdVueltoExistente(null);
-    setListaFactura([]);
-    setClienteSeleccionado("");
-    setModoCredito(false);
-    setNumeroFactura(0);
-    setIva(0)
-    
-  } catch (error) {
-    console.error("Error guardando venta:", error);
-    alert("Error guardando venta");
-  } finally {
-    setProcesando(false);
-  }
-};
-
-  // -----------------------------
-  // SALIDA / CANCELACIÓN
-  // -----------------------------
-  const confirmarSalida = async () => {
-    // Si no hay pago registrado, no hay nada en backend que limpiar
-    if (!pagoRegistrado) {
-      window.close();
-      return;
-    }
-    const deseaSalir = window.confirm(
-      "Ya se registró un pago para esta factura.\n" +
-        "No puede salir sin grabar la factura.\n\n" +
-        "¿Desea BORRAR el pago para poder salir?"
-    );
-    if (!deseaSalir) return;
-    if (numeroFactura) {
-      await fetch(`${API_URL}/api/facturas/eliminar-completa/${numeroFactura}`, {
-        method: "DELETE"
-      });
-    }
-    alert("Pago eliminado con éxito");
-    setPagoRegistrado(false);
-    setIdPagoExistente(null);
-    setIdVueltoExistente(null);
-    setNumeroFactura(0);
-    window.close();
-  };
-
-  const volverAlMenu = () => {
-  try {
-    window.onbeforeunload = null;
-    if (window.opener) {
-      window.opener.location.reload(); // refresca el menú
-    }
-    window.close(); // cierra esta ventana
-  } catch (error) {
-    console.error("Error al volver al menú:", error);
-
-    window.onbeforeunload = null;
-
-    if (window.opener) {
-      window.opener.location.reload();
-    }
-    window.close();
-  }
-};
-
-  const guardarSinPago = async () => {
-  if (procesando) return;
 
   try {
-    // ============================
-    // 1) VALIDAR QUE HAY PRODUCTOS
-    // ============================
-    if (listaFactura.length === 0) {
-      alert("No hay productos en la factura");
-      return;
-    }
-
-    // ============================
-    // 2) VALIDAR CLIENTE
-    // ============================
-    if (!clienteSeleccionado) {
-      alert("Debe seleccionar un cliente.");
-      return;
-    }
-
-    // ============================
-    // 3) ASIGNAR NÚMERO DE FACTURA
-    // ============================
-    setProcesando(true);
-
-    const numeroActual = await obtenerFacturaNro();
-    const facturaNumero = Number(numeroActual) + 1;
-
-    setNumeroFactura(facturaNumero);
-
-    // ============================
-    // 4) ARMAR OBJETO DE VENTA
-    // ============================
-    const ventaData = {
-      fecha: fecha,
-      hora: hora,
-      factura: facturaNumero,
-      cliente: identificacion,
-      subtotal: subtotalDolar,
-      IVA: iva,
-      total: totalDolar,
-      usuario: UsuarioActual,
-      estado: "CREDITO",
-      sede: sedeActual
-    };
-
-    console.log("VENTA QUE SE ENVÍA:", ventaData);
-
-    // ============================
-    // 5) GUARDAR VENTA
-    // ============================
-    const respVenta = await guardarVta(ventaData);
-
-    if (!respVenta.data || respVenta.data.ok !== true) {
-      alert("Error guardando la venta");
-      return;
-    }
-
-    // ============================
-    // 6) GUARDAR PRODUCTOS VENDIDOS
-    // ============================
-    console.log(
-      "LISTA FACTURA COMPLETA:",
-      listaFactura
+    const res = await fetch(
+      `${API_URL}/api/caja/verificacion/${fecha}?sede=${encodeURIComponent(sedeActual)}`,
+      {
+        credentials: "include"
+      }
     );
 
-    for (const item of listaFactura) {
-      const vendidoData = {
-        factura: facturaNumero,
+    const estadoCaja = await res.json();
 
-        // CORRECTO:
-        // En el carrito el campo se llama idProducto
-        productoId: item.idProducto,
+    if (!res.ok || !estadoCaja.ok) {
+      throw new Error(
+        estadoCaja.mensaje ||
+        "No se pudo comprobar el día"
+      );
+    }
 
-        cantidad: item.cantidad,
-        precio: item.precioVenta,
-        dscto: item.descuento || 0,
-        total: item.total,
+    if (estadoCaja.verificado) {
+      throw new Error(
+        "El dinero de ese día ya fue verificado. " +
+        "El administrador debe reabrirlo para registrar cambios."
+      );
+    }
 
-        // MUY IMPORTANTE:
-        // separar TIENDITA de MONASTERIO
-        sede: sedeActual
-      };
+    // El servidor asignará el número definitivo al guardar.
+    const numero = venta?._id
+      ? venta.factura
+      : Number(await obtenerFacturaNro()) + 1;
 
-      console.log(
-        "VENDIDO QUE SE ENVÍA:",
-        vendidoData
+    setNumeroFactura(numero);
+
+    const borrador =
+      pagoData?.preparado &&
+      pagoData.firma === firmaPagoActual() &&
+      pagoData.modoCredito === credito
+        ? pagoData
+        : null;
+
+    if (borrador) {
+      setPagoExistente({
+        ...borrador.pagoPreparado,
+        _id: borrador.idPago || undefined
+      });
+
+      setVueltoExistente({
+        ...(
+          borrador.vueltoPreparado || {
+            efectivoP: 0,
+            efectivoBs: 0,
+            efectivoD: 0
+          }
+        ),
+        _id: borrador.idVuelto || undefined
+      });
+    } else if (venta?._id) {
+      const respuesta = await fetch(
+        `${API_URL}/api/moneda/factura/${numero}?sede=${encodeURIComponent(sedeActual)}`,
+        {
+          credentials: "include"
+        }
       );
 
-      await guardarVendido(vendidoData);
+      const movimientos = await respuesta.json();
+
+      if (
+        !respuesta.ok ||
+        !movimientos.ok ||
+        !Array.isArray(movimientos.lista)
+      ) {
+        throw new Error(
+          movimientos.mensaje ||
+          "No se pudieron consultar los pagos"
+        );
+      }
+
+      const pagos = movimientos.lista.filter(
+        movimiento =>
+          ["VENTA", "ABONO DE CREDITO"].includes(
+            movimiento.operacion
+          )
+      );
+
+      const vueltos = movimientos.lista.filter(
+        movimiento => movimiento.operacion === "VUELTOS"
+      );
+
+      if (pagos.length > 1 || vueltos.length > 1) {
+        throw new Error(
+          "Esta factura tiene varios movimientos. " +
+          "Revísela desde el módulo de créditos."
+        );
+      }
+
+      setPagoExistente(pagos[0] || null);
+      setVueltoExistente(vueltos[0] || null);
+    } else {
+      setPagoExistente(null);
+      setVueltoExistente(null);
     }
 
-    // ============================
-    // 7) REGISTRAR ACCIÓN
-    // ============================
-    await registrarAccion(
-      `Guardó factura sin pago N° ${facturaNumero} - ${sedeActual}`
-    );
-
-    // ============================
-    // 8) AVISAR
-    // ============================
-    alert(
-      `Factura guardada sin pago.\nNúmero: ${facturaNumero}`
-    );
-
-    // ============================
-    // 9) LIMPIAR PANTALLA
-    // ============================
-    limpiarCliente();
-
-    setPagoData(null);
-    setPagoRegistrado(false);
-    setIdPagoExistente(null);
-    setIdVueltoExistente(null);
-
-    setListaFactura([]);
-    setClienteSeleccionado("");
-    setModoCredito(false);
-    setNumeroFactura("");
-
-    setIva(0);
-
+    setModoCredito(credito);
+    setMostrarPago(true);
   } catch (error) {
-    console.error(
-      "ERROR COMPLETO:",
-      error
-    );
-
-    console.error(
-      "RESPUESTA DEL SERVIDOR:",
-      error.response?.data
-    );
-
-    alert(
-      "Error inesperado al guardar la factura sin pago"
-    );
-
+    alert(error.message || "No se pudo preparar el pago");
   } finally {
     setProcesando(false);
   }
 };
+
+const pagoContado = () => abrirPagoPreparado(false);
+
+const pagoCredito = () => abrirPagoPreparado(true);
+
+const validarPagoAntes = () => {
+  if (!validarCliente()) return;
+
+  if (!pagoData?.preparado) {
+    alert("Confirme el pago antes de guardar la venta");
+    return;
+  }
+
+  guardarVenta();
+};
+
+const guardarOperacion = async (sinPago) => {
+  if (procesando || guardandoOperacionRef.current) return;
+
+  if (!listaFactura.length) {
+    alert("No hay productos en la factura");
+    return;
+  }
+
+  if (!validarCliente()) return;
+
+  if (
+    !sinPago &&
+    (
+      !pagoData?.preparado ||
+      pagoData.firma !== firmaPagoActual()
+    )
+  ) {
+    alert(
+      "La factura cambió o falta el pago. " +
+      "Confírmelo nuevamente antes de guardar."
+    );
+    return;
+  }
+
+  if (sinPago && pagoData?.preparado) {
+    alert(
+      "Ya preparó un pago. Use Guardar Venta " +
+      "o descarte el pago antes de guardar sin pago."
+    );
+    return;
+  }
+
+  guardandoOperacionRef.current = true;
+  setProcesando(true);
+
+  try {
+    const operacion = {
+      ventaId: venta?._id || null,
+
+      versionVenta: venta
+        ? Number(venta.__v || 0)
+        : null,
+
+      sinPago,
+
+      modoCredito:
+        sinPago || pagoData?.modoCredito === true,
+
+      venta: {
+        fecha,
+        hora,
+        cliente: identificacion,
+        subtotal: subtotalDolar,
+        IVA: Number(iva || 0),
+        total: totalDolar,
+        sede: sedeActual
+      },
+
+      items: listaFactura.map(item => ({
+        productoId: item.idProducto,
+        cantidad: Number(item.cantidad),
+        precio: Number(item.precioVenta),
+        dscto: Number(item.descuento || 0),
+        total: Number(item.total)
+      })),
+
+      pago: sinPago
+        ? null
+        : pagoData.pagoPreparado,
+
+      vuelto: sinPago
+        ? null
+        : pagoData.vueltoPreparado,
+
+      idPago: sinPago
+        ? null
+        : pagoData.idPago,
+
+      idVuelto: sinPago
+        ? null
+        : pagoData.idVuelto
+    };
+
+    const firma = JSON.stringify(operacion);
+
+    if (operacionPendienteRef.current?.firma !== firma) {
+      operacionPendienteRef.current = {
+        firma,
+        id: window.crypto.randomUUID()
+      };
+    }
+
+    const res = await fetch(
+      `${API_URL}/api/ventas/operacion-completa`,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          ...operacion,
+          operacionId: operacionPendienteRef.current.id
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok || !data.ok) {
+      throw new Error(
+        data.mensaje ||
+        data.msg ||
+        data.error ||
+        "No se pudo guardar la operación"
+      );
+    }
+
+    limpiarCliente();
+
+    setPagoData(null);
+    setPagoRegistrado(false);
+    setPagoExistente(null);
+    setVueltoExistente(null);
+    setIdPagoExistente(null);
+    setIdVueltoExistente(null);
+    setListaFactura([]);
+    setModoCredito(false);
+    setNumeroFactura("");
+    setIva(0);
+    setVenta(null);
+
+    operacionPendienteRef.current = null;
+
+    alert(
+      "Venta guardada correctamente. Factura N° " +
+      data.factura
+    );
+
+    try {
+      await registrarAccion(
+        `Guardó factura N° ${data.factura} - ${sedeActual}`
+      );
+    } catch {
+      alert(
+        "La venta se guardó, pero no se pudo " +
+        "registrar la acción en la bitácora."
+      );
+    }
+  } catch (error) {
+    alert(
+      (error.message || "No se pudo guardar la venta") +
+      ". Si perdió la conexión, conserve los datos " +
+      "y consulte el estado antes de modificar " +
+      "o volver a guardar."
+    );
+  } finally {
+    guardandoOperacionRef.current = false;
+    setProcesando(false);
+  }
+};
+
+const guardarVenta = () => guardarOperacion(false);
+
+const guardarSinPago = () => guardarOperacion(true);
+
+const confirmarSalida = () => {
+  if (procesando || guardandoOperacionRef.current) return;
+
+  if (
+    (listaFactura.length || pagoData?.preparado) &&
+    !window.confirm(
+      "Hay cambios sin guardar. " +
+      "¿Desea descartarlos y salir?"
+    )
+  ) {
+    return;
+  }
+
+  // Salir no elimina pagos ni facturas existentes.
+  window.close();
+};
+
+const volverAlMenu = () => confirmarSalida();
 
   const pagarFactura = async () => {
   const numero = prompt("Ingrese el número de factura a pagar:");
@@ -950,7 +908,11 @@ const Ventas = () => {
       return;
     }
     // 3. Guardar datos de la venta
-    setVenta(data.venta);    
+    setVenta(data.venta);
+    setFecha(data.venta.fecha.slice(0, 10));
+    setIva(Number(data.venta.IVA || 0));
+    setPagoData(null);
+    setPagoRegistrado(false);    
     // 5. Buscar cliente
     const cedula = data.venta.cliente;
     alert("cliente "+cedula);
@@ -1022,10 +984,11 @@ const cargarDetalleFacturaParaPago = async (detalle) => {
       const dataProd = await resProd.json();
       const producto = dataProd.producto ?? dataProd;
       listaReconstruida.push({
+        idProducto: item.productoId?._id || item.productoId,
         codigo: producto.codigo || "",
         descripcion: producto.descripcion || "",
         cantidad: item.cantidad ?? 0,
-        precioVenta: producto.venta ?? 0,        
+        precioVenta: item.precio ?? producto.venta ?? 0,
         descuento: item.dscto ?? 0,
         total: item.total ?? 0
       });
@@ -1882,6 +1845,7 @@ const cargarFacturaParaPago = async (dataVenta) => {
 
           {mostrarPago && (            
             <Pago            
+              soloPreparar={true}
               modoCredito={modoCredito}
               fecha={fecha}
               sede={sedeActual}
@@ -1895,12 +1859,16 @@ const cargarFacturaParaPago = async (dataVenta) => {
               vueltoExistente={vueltoExistente}
               idVueltoExistente={idVueltoExistente}
               onCerrar={() => setMostrarPago(false)}
-              onPagoCompletado={(dataPago) => {                
-                setPagoData(dataPago);
-                setPagoRegistrado(true);
-                setIdPagoExistente(dataPago.idPago);
-                setIdVueltoExistente(dataPago.idVuelto);
-              }}
+              onPagoCompletado={(dataPago) => {
+                setPagoData({
+                ...dataPago,
+                firma: firmaPagoActual()
+              });
+
+              setPagoRegistrado(true);
+              setIdPagoExistente(dataPago.idPago);
+              setIdVueltoExistente(dataPago.idVuelto);
+            }}
             />
           )}
 

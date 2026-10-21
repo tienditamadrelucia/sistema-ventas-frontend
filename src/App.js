@@ -39,6 +39,7 @@ import CierreMes from "./pages/CierreMes.js"
 import AjustePrecios from "./pages/AjustePrecios.js"
 import ActividadProductiva from "./pages/ActividadProductiva.js";
 import Participaciones from "./pages/Participaciones";
+import "./utils/sesionAPI";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 

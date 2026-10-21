@@ -4,6 +4,7 @@ import { registrarMoneda, buscarPagoPorFactura,
 
 const Pago = ({
   modoCredito,
+  soloPreparar = false,
   fecha,
   sede: sedeProp,
   facturaNumero,
@@ -371,6 +372,166 @@ const facturaCancelada = modoCredito
     // ESTADOS INTERNOS    
     setTotalAbonado(0);        
   };
+
+  const prepararPago = () => {
+  if (guardando) return;
+
+  const montos = [
+    pagoUsdEfectivo,
+    pagoUsdZelle,
+    pagoBsEfectivo,
+    pagoBsTransferencia,
+    pagoBsPunto,
+    pagoBsMovil,
+    pagoCopEfectivo,
+    pagoCopTransferencia,
+    vueltoUsdUsuario,
+    vueltoCopUsuario,
+    vueltoBsUsuario
+  ];
+
+  if (
+    montos.some(valor =>
+      !Number.isFinite(Number(valor || 0)) ||
+      Number(valor || 0) < 0
+    )
+  ) {
+    alert("Los importes deben ser números válidos y no negativos");
+    return;
+  }
+
+  if (
+    !Number.isFinite(Number(tasaD)) ||
+    Number(tasaD) <= 0 ||
+    !Number.isFinite(Number(tasaP)) ||
+    Number(tasaP) <= 0
+  ) {
+    alert("Debe disponer de tasas válidas");
+    return;
+  }
+
+  if (
+    !/^\d{4}-\d{2}-\d{2}$/.test(fecha || "") ||
+    !Number.isSafeInteger(Number(facturaNumero)) ||
+    Number(facturaNumero) <= 0
+  ) {
+    alert("Revise la fecha y el número de factura");
+    return;
+  }
+
+  if (
+    Number(pagoBsPunto) > 0 &&
+    (!refPunto || !lotePunto)
+  ) {
+    alert("Debe ingresar referencia y lote para el pago por punto");
+    return;
+  }
+
+  if (
+    Number(pagoCopTransferencia) > 0 &&
+    (!refCopTransferencia || !bancoCopTransferencia)
+  ) {
+    alert(
+      "Debe ingresar referencia y banco para la transferencia en COP"
+    );
+    return;
+  }
+
+  // Convertir todo a USD antes de calcular el pago neto.
+  const netoUSD = totalPagadoUSD - vueltoUsuarioUSD;
+
+  if (!Number.isFinite(netoUSD) || netoUSD <= 0) {
+    alert("El pago neto debe ser mayor que cero");
+    return;
+  }
+
+  if (
+    !modoCredito &&
+    Math.abs(netoUSD - Number(totalDolar)) >
+      TOLERANCIA_USD + 0.000001
+  ) {
+    alert("El pago y el vuelto no cuadran con el total de la factura");
+    return;
+  }
+
+  const pagoPreparado = {
+    fecha,
+    sede,
+    factura: Number(facturaNumero),
+    operacion: modoCredito ? "ABONO DE CREDITO" : "VENTA",
+    total: modoCredito ? netoUSD : Number(totalDolar),
+
+    efectivoP: Number(pagoCopEfectivo || 0),
+    transferenciaP: Number(pagoCopTransferencia || 0),
+    referenciaP: refCopTransferencia || "",
+    bancoP: bancoCopTransferencia || "",
+
+    efectivoBs: Number(pagoBsEfectivo || 0),
+    transferenciaBs: Number(pagoBsTransferencia || 0),
+    referenciaTBs: refBsTransferencia || "",
+    bancoTBs: bancoBsTransferencia || "",
+
+    puntoBs: Number(pagoBsPunto || 0),
+    refPunto: refPunto || "",
+    lotePunto: lotePunto || "",
+
+    pagomovilBs: Number(pagoBsMovil || 0),
+    referenciaPMBs: refMovil || "",
+    bancoPMBs: bancoMovil || "",
+
+    efectivoD: Number(pagoUsdEfectivo || 0),
+    zelle: Number(pagoUsdZelle || 0),
+    referenciaZ: refUsdZelle || "",
+    bancoZ: bancoUsdZelle || ""
+  };
+
+  const hayVuelto = [
+    vueltoUsdUsuario,
+    vueltoCopUsuario,
+    vueltoBsUsuario
+  ].some(valor => Number(valor || 0) > 0);
+
+  const vueltoPreparado = hayVuelto
+    ? {
+        fecha,
+        sede,
+        factura: Number(facturaNumero),
+        operacion: "VUELTOS",
+        total: 0,
+
+        efectivoP: -Number(vueltoCopUsuario || 0),
+        efectivoBs: -Number(vueltoBsUsuario || 0),
+        efectivoD: -Number(vueltoUsdUsuario || 0),
+
+        transferenciaP: 0,
+        transferenciaBs: 0,
+        puntoBs: 0,
+        pagomovilBs: 0,
+        zelle: 0
+      }
+    : null;
+
+  onPagoCompletado({
+    preparado: true,
+
+    idPago:
+      idPagoExistente ||
+      pagoExistente?._id ||
+      null,
+
+    idVuelto:
+      IdVueltoExistente ||
+      vueltoExistente?._id ||
+      null,
+
+    totalAbonado: netoUSD,
+    modoCredito,
+    pagoPreparado,
+    vueltoPreparado
+  });
+
+  onCerrar();
+};
 
   return (
     <div className="modal"
@@ -837,6 +998,10 @@ const facturaCancelada = modoCredito
               }}
               disabled={!facturaCancelada}              
               onClick={async () => {
+                if (soloPreparar) {
+                   prepararPago();
+                    return;
+                }
               // ============================
               // VALIDACIONES DE REFERENCIAS
               // ============================
@@ -964,7 +1129,11 @@ const facturaCancelada = modoCredito
           setGuardando(false);
           }}
         >
-          {guardando ? "Guardando..." : "Guardar"}
+          {guardando
+            ? "Guardando..."
+            : soloPreparar
+            ? "Confirmar pago"
+            : "Guardar"}
         </button>
         </div>
       </div>    

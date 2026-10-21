@@ -1,120 +1,138 @@
-import axios from "axios";
-import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
-
+import { API_URL } from "../config";
 
 const API = `${API_URL}/api/moneda`;
-//const APIURL = `${API_URL}/api`;
 
-export const registrarMoneda = async (data) => {
+async function solicitar(ruta = "", opciones = {}) {
   try {
-    const res = await fetch(API, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+    const res = await fetch(`${API}${ruta}`, {
+      ...opciones,
+      credentials: "include"
     });
-    // Manejo de respuesta de error HTTP
-    if (!res.ok) {
-      const detalle = await res.json().catch(() => null);
-      const mensajeError = detalle?.mensaje || "Error en la respuesta del servidor";
-      console.error(`Error al registrar moneda: ${mensajeError}`, detalle); // Log detallado para depuración
+
+    const json = await res.json().catch(() => null);
+
+    if (!res.ok || !json || json.ok === false) {
       return {
         ok: false,
-        mensaje: mensajeError,
-        detalle,
-        status: res.status,
+        mensaje:
+          json?.mensaje ||
+          json?.msg ||
+          json?.error ||
+          "No se pudo completar la solicitud",
+        status: res.status
       };
     }
-    // Respuesta exitosa
-    const json = await res.json();
+
     return {
       ok: true,
-      data: json,
+      data: json
     };
-  } catch (error) {
-    // Manejo de error de conexión
-    console.error("❌ ERROR FETCH:", error);
+  } catch {
     return {
       ok: false,
       mensaje: "No se pudo conectar con el servidor",
-      detalle: error.message,
-      status: "N/A",
+      status: 0
     };
   }
+}
+
+function opcionesJSON(method, datos) {
+  return {
+    method,
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(datos)
+  };
+}
+
+export const registrarMoneda = datos =>
+  solicitar("", opcionesJSON("POST", datos));
+
+export const actualizarMoneda = (id, datos) =>
+  solicitar(
+    `/${encodeURIComponent(id)}`,
+    opcionesJSON("PUT", datos)
+  );
+
+export const eliminarMoneda = async id => {
+  const resultado = await solicitar(
+    `/${encodeURIComponent(id)}`,
+    { method: "DELETE" }
+  );
+
+  return resultado.ok
+    ? resultado.data
+    : resultado;
 };
 
-// OBTENER MOVIMIENTOS (opcional)
 export const obtenerMovimientos = async () => {
-  try {
-    const res = await axios.get(API);
-    return res.data;
-  } catch (error) {
-    console.error("Error obteniendo movimientos:", error);
-    return { ok: false, mensaje: "Error en el servidor" };
-  }
+  const resultado = await solicitar();
+
+  return resultado.ok
+    ? resultado.data
+    : resultado;
 };
 
-// OBTENER MOVIMIENTO POR ID (opcional)
-export const obtenerMovimientoPorId = async (id) => {
-  try {
-    const res = await axios.get(`${API}/${id}`);
-    return res.data;
-  } catch (error) {
-    console.error("Error obteniendo movimiento:", error);
-    return { ok: false, mensaje: "Error en el servidor" };
-  }
+export const obtenerMovimientoPorId = async id => {
+  const resultado = await solicitar(
+    `/${encodeURIComponent(id)}`
+  );
+
+  return resultado.ok
+    ? resultado.data
+    : resultado;
 };
 
-export const buscarPagoPorFactura = async (factura, sede) => {
-  try {
-    const res = await fetch(`${API}/factura/${factura}`);
-    const json = await res.json();
-    if (!json.ok) return json;
-    // Buscar el movimiento con operacion = "VENTA"
-    const pago = json.lista.find(m => m.operacion === "VENTA");
-    return { ok: true, pago: pago || null }; // Retornamos null si no hay pago
-  } catch (e) {
-    console.error("Error al buscar pago:", e.message);
-    return { ok: false, mensaje: "No se pudo conectar" };
-  }
-};
+async function buscarMovimiento(
+  factura,
+  sede,
+  operacion,
+  campo
+) {
+  const sedeActual =
+    sede ||
+    localStorage.getItem("sede") ||
+    "TIENDITA";
 
-export const buscarVueltoPorFactura = async (factura, sede) => {
-  try {
-    const res = await fetch(`${API}/factura/${factura}?sede=${encodeURIComponent(sede)}`);
-    const json = await res.json();
-    if (!json.ok) return json;
-    // Buscar el movimiento con operacion = "VUELTOS"
-    const vuelto = json.lista.find(m => m.operacion === "VUELTOS");
-    return { ok: true, vuelto: vuelto || null }; // Retornamos null si no hay vuelto
-  } catch (e) {
-    console.error("Error al buscar vuelto:", e.message);
-    return { ok: false, mensaje: "No se pudo conectar" };
-  }
-};
+  const resultado = await solicitar(
+    `/factura/${encodeURIComponent(factura)}` +
+    `?sede=${encodeURIComponent(sedeActual)}`
+  );
 
-export const actualizarMoneda = async (id, data) => {
-  try {
-    const res = await fetch(`${API}/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    });
-    const json = await res.json();
-    return { ok: true, data: json };
-  } catch (e) {
-    return { ok: false, mensaje: "No se pudo conectar" };
+  if (!resultado.ok) {
+    return resultado;
   }
-};
 
-export const eliminarMoneda = async (id) => {
-  try {
-    const res = await fetch(`${API}/${id}`, {
-      method: "DELETE"
-    });
-    return await res.json();
-  } catch (error) {
-    return { ok: false, error };
+  if (!Array.isArray(resultado.data.lista)) {
+    return {
+      ok: false,
+      mensaje: "La respuesta de movimientos no es válida"
+    };
   }
-};
+
+  const movimiento = resultado.data.lista.find(
+    item => item.operacion === operacion
+  );
+
+  return {
+    ok: true,
+    [campo]: movimiento || null
+  };
+}
+
+export const buscarPagoPorFactura = (factura, sede) =>
+  buscarMovimiento(
+    factura,
+    sede,
+    "VENTA",
+    "pago"
+  );
+
+export const buscarVueltoPorFactura = (factura, sede) =>
+  buscarMovimiento(
+    factura,
+    sede,
+    "VUELTOS",
+    "vuelto"
+  );
