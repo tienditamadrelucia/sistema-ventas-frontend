@@ -106,6 +106,7 @@ const Productos = () => {
   const [productoEditando, setProductoEditando] = useState(null);
   const [categorias, setCategorias] = useState([]);
   const formularioRef = useRef(null);  
+  const productoParaVolverRef = useRef(null);
   const [procesando, setProcesando] = useState(false);
   const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
     () => localStorage.getItem(`productosCategoria_${sede}`) || ""
@@ -402,6 +403,11 @@ const payload = {
 
     // ⭐ 5. GUARDAR LA CATEGORÍA QUE DEBE QUEDAR SELECCIONADA
     await limpiarFormulario();
+
+    if (modo === "editar") {
+      productoParaVolverRef.current = productoEditando;
+    }
+
     await cargarProductos();
 
     setProcesando(false);
@@ -541,6 +547,23 @@ const payload = {
   // La carga inicial se ejecuta al abrir la pantalla.
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, []);
+
+  useEffect(() => {
+  const id = productoParaVolverRef.current;
+
+  if (!id) return;
+
+  const fila = document.getElementById(`producto-${id}`);
+
+  if (fila) {
+    fila.scrollIntoView({
+      behavior: "smooth",
+      block: "center"
+    });
+  }
+
+  productoParaVolverRef.current = null;
+}, [productos]);
 
   // -------------------------
   // RETURN
@@ -967,7 +990,7 @@ const payload = {
         <tbody>
           {productosFiltrados.map((p) => {            
             return (
-            <tr key={p._id}>
+            <tr key={p._id} id={`producto-${p._id}`}>
               <td>
                 {p.foto && (
                 <img
