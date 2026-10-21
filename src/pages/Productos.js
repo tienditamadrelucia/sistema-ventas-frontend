@@ -107,7 +107,9 @@ const Productos = () => {
   const [categorias, setCategorias] = useState([]);
   const formularioRef = useRef(null);  
   const [procesando, setProcesando] = useState(false);
-  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState("");
+  const [categoriaSeleccionada, setCategoriaSeleccionada] = useState(
+    () => localStorage.getItem(`productosCategoria_${sede}`) || ""
+    );
   const [guardando, setGuardando] = useState(false);
   const [actividadesProductivas, setActividadesProductivas] = useState([]);
 
@@ -156,44 +158,28 @@ const Productos = () => {
   }
 };
 
-  const productosFiltrados = formData.categoria
-    ? productos.filter((p) => p.categoria === formData.categoria)
-    : productos;    
+  const productosFiltrados = categoriaSeleccionada
+  ? productos.filter(
+      (p) => String(p.categoria) === String(categoriaSeleccionada)
+    )
+  : productos;   
 
   const inputFotoRef = useRef(null);
   
-  const cargarProductos = async (categoria = "") => {
-  const res = await fetch(`${API_URL}/api/productos?sede=${encodeURIComponent(sede)}`);
-  const data = await res.json();
+  const cargarProductos = async () => {
+  const res = await fetch(
+    `${API_URL}/api/productos?sede=${encodeURIComponent(sede)}`
+  );
 
-  if (categoria) {
-    setProductos(data.filter(p => p.categoria === categoria));
-  } else {
-    setProductos(data);
+  if (!res.ok) {
+    throw new Error("No se pudieron cargar los productos");
   }
+
+  const data = await res.json();
+  setProductos(data);
 };
 
-  useEffect(() => {
-    setProcesando(true);
-    cargarProductos(); // ahora sí existe
-    registrarAccion("Ingresó al módulo Productos");
-    setProcesando(false);
-  }, []);    
-
-  useEffect(() => {
-  limpiarFormulario();   // 👈 genera el primer código al iniciar  
-  }, []);
-
-  useEffect(() => {
-  return () => {
-    if (formData.preview) {
-      URL.revokeObjectURL(formData.preview);
-    }
-  };
-}, [formData.preview]);
-
-
-    // -------------------------
+  // -------------------------
   // MANEJO DE FORMULARIO
   // -------------------------
 
@@ -415,21 +401,10 @@ const payload = {
     }
 
     // ⭐ 5. GUARDAR LA CATEGORÍA QUE DEBE QUEDAR SELECCIONADA
-const cat = categoriaSeleccionada || formData.categoria;
+    await limpiarFormulario();
+    await cargarProductos();
 
-// ⭐ 6. LIMPIAR FORMULARIO
-limpiarFormulario();
-
-setFormData(prev => ({
-  ...prev,
-  categoria: cat,
-  preview: undefined
-}));
-
-// ⭐ 7. RECARGAR LISTA Y ESPERAR A QUE TERMINE
-await cargarProductos();
-
-setProcesando(false);
+    setProcesando(false);
 
   } finally {
     setGuardando(false); // 🔓 SIEMPRE se reactiva el botón
@@ -524,7 +499,7 @@ setProcesando(false);
     //alert("codigo + data.codigo")
   setFormData({
     codigo: data.codigo,   // 👈 AHORA SÍ: muestra el nuevo código disponible
-    categoria: "",
+    categoria: categoriaSeleccionada,
     descripcion: "",
     medida: "",
     stock: "",
@@ -598,10 +573,20 @@ setProcesando(false);
           name="categoria"
           value={formData.categoria}
           onChange={(e) => {
-            handleChange(e);
-            setCategoriaSeleccionada(e.target.value);   // ⭐ Guardar categoría activa
-            cargarProductos(e.target.value);            // ⭐ Cargar solo esa categoría
-          }}
+            const categoria = e.target.value;
+
+            setCategoriaSeleccionada(categoria);
+
+            localStorage.setItem(
+              `productosCategoria_${sede}`,
+              categoria
+            );
+
+          setFormData((prev) => ({
+          ...prev,
+          categoria
+          }));
+        }}
           style={selectEstilo}
         >
           <option value="">Seleccione una categoría</option>
