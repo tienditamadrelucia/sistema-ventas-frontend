@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Encabezado from "../components/Encabezado";
 import { API_URL } from "../config";
-import FlujoActividades from "../components/FlujoActividades.jsx";
+import FlujoActividades from "../components/FlujoActividades.js";
 
 const formatoVE = (num) => Number(num || 0).toLocaleString("es-VE", {
   minimumFractionDigits: 2,
@@ -21,7 +21,7 @@ const Utilidad = () => {
     ventasTiendita: 0,
     ventasMonasterio: 0,
     ventasTotales: 0,
-    costosTiendita: 0,
+    costosTiendita: 0, 
     costosMonasterio: 0,
     costosTotales: 0,
     utilidad: 0,
