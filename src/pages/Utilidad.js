@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Encabezado from "../components/Encabezado";
 import { API_URL } from "../config";
-import FlujoActividades from "../components/FlujoActividades";
+import FlujoActividades from "../components/FlujoActividades.jsx";
 
 const formatoVE = (num) => Number(num || 0).toLocaleString("es-VE", {
   minimumFractionDigits: 2,
