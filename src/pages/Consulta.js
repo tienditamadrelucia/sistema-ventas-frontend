@@ -9,6 +9,7 @@ import { obtenerAbonosPorFactura } from "../services/ser_moneda";
 import { API_URL } from "../config"; // ajusta la ruta según tu carpeta
 import Pago from "../components/Pago/Pago";
 import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
+import React, { useState, useEffect, useRef } from "react";
 
 const Consulta = () => {
   const navigate = useNavigate();
@@ -87,9 +88,13 @@ const Consulta = () => {
     const hoy = obtenerFechaVenezuela();
     const [fecha, setFecha] = useState(obtenerFechaVenezuela());   
     const [procesando, setProcesando] = useState(false);
+    const eliminandoAbonoRef = useRef(false);
+    const esAdministrador =
+      localStorage
+        .getItem("rolUsuario")
+        ?.trim()
+        .toUpperCase() === "ADMINISTRADOR";
     const [mostrarFechaAbono, setMostrarFechaAbono] = useState(false);    
-
-
     const API = `${API_URL}/api`;
 
     const estiloBotonVolver = {
@@ -397,45 +402,34 @@ const formatoVE = (valor) => {
   factura,
   esCreditoFactura,
   tasasSaldo = null,
-  ventaActual = null
+  ventaActual = null,
+  propagarError = false
 ) => {
   try {
     const res = await fetch(
-      `${API_URL}/api/moneda/factura/${encodeURIComponent(factura)}?sede=${encodeURIComponent(sede)}`
+      `${API_URL}/api/moneda/factura/${encodeURIComponent(factura)}?sede=${encodeURIComponent(sede)}`,
+      {
+        credentials: "include"
+      }
     );
-
-    if (!res.ok) {
-      throw new Error(`Error HTTP ${res.status} al consultar pagos`);
-    }
 
     const data = await res.json();
 
-    if (!data.ok || !Array.isArray(data.lista)) {
-      throw new Error("El servidor no devolvió una lista válida de pagos");
+    if (
+      !res.ok ||
+      !data.ok ||
+      !Array.isArray(data.lista)
+    ) {
+      throw new Error(
+        data.mensaje || "No se pudieron consultar los pagos."
+      );
     }
 
     const lista = [...data.lista].sort((a, b) =>
-      String(a.fecha || "").localeCompare(String(b.fecha || ""))
+      String(a.fecha || "").localeCompare(
+        String(b.fecha || "")
+      )
     );
-
-    console.log("==================================");
-    console.log("FACTURA CONSULTADA:", factura);
-    console.log("SEDE:", sede);
-    console.log("CANTIDAD DE MOVIMIENTOS:", lista.length);
-    console.table(
-      lista.map((p) => ({
-        factura: p.factura,
-        fecha: p.fecha,
-        operacion: p.operacion,
-        sede: p.sede,
-        efectivoD: p.efectivoD,
-        efectivoBs: p.efectivoBs,
-        transferenciaBs: p.transferenciaBs,
-        efectivoP: p.efectivoP,
-        transferenciaP: p.transferenciaP
-      }))
-    );
-    console.log("==================================");
 
     setPagosMoneda(lista);
 
@@ -447,8 +441,14 @@ const formatoVE = (valor) => {
       );
     }
 
+    return lista;
   } catch (error) {
-    console.error("Error cargando pagos de la factura:", error);
+    console.error("Error cargando pagos:", error);
+
+    if (propagarError) {
+      throw error;
+    }
+
     setPagosMoneda([]);
     alert("No se pudieron consultar los pagos de esta factura.");
   }
@@ -637,8 +637,14 @@ const formatoVE = (valor) => {
         `${movimientosSinTasa} movimientos no pudieron convertirse por falta de tasas.`
       );
       setRestaUSD(NaN);
-      setRestaBs(NaN);
-      setRestaP(NaN);
+      setRestaBs(
+        Number.isFinite(td) && td > 0 ? saldoUSD * td : NaN
+      );
+      setRestaP(
+        Number.isFinite(tpeso) && tpeso > 0
+        ? saldoUSD * tpeso
+        : NaN
+      );
       return;
     }
 
@@ -729,6 +735,114 @@ const abrirModalPagoConFecha = async () => {
   }
 };
 
+  const eliminarAbono = async (abono) => {
+  if (procesando || eliminandoAbonoRef.current) return;
+
+  if (!esAdministrador) {
+    alert("Solo el administrador puede eliminar abonos.");
+    return;
+  }
+
+  if (
+    !venta ||
+    !abono._id ||
+    abono.operacion !== "ABONO DE CREDITO"
+  ) {
+    return;
+  }
+
+  const ventaConsultada = venta;
+  const factura = ventaConsultada.factura;
+
+  if (Number(abono.factura) !== Number(factura)) {
+    alert("El abono no corresponde a la factura consultada.");
+    return;
+  }
+
+  const confirmar = window.confirm(
+    `¿Eliminar el abono del ${String(abono.fecha).slice(0, 10)} ` +
+    `de la factura ${factura}?\n\n` +
+    "Se eliminará este movimiento y se recalculará el saldo pendiente."
+  );
+
+  if (!confirmar) return;
+
+  eliminandoAbonoRef.current = true;
+  setProcesando(true);
+
+  let eliminado = false;
+
+  try {
+    const parametros = new URLSearchParams({
+      factura: String(factura),
+      sede
+    });
+
+    const res = await fetch(
+      `${API_URL}/api/moneda/${encodeURIComponent(abono._id)}?${parametros}`,
+      {
+        method: "DELETE",
+        credentials: "include"
+      }
+    );
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok || !data?.ok) {
+      throw new Error(
+        data?.mensaje ||
+        data?.error ||
+        "No se pudo confirmar la eliminación. Actualice la consulta antes de volver a intentarlo."
+      );
+    }
+
+    eliminado = true;
+
+    setPagosMoneda((anteriores) =>
+      anteriores.filter((p) => p._id !== abono._id)
+    );
+
+    // Evitar mostrar el saldo anterior durante la recarga.
+    setRestaUSD(NaN);
+    setRestaBs(NaN);
+    setRestaP(NaN);
+
+    const tasasHoy = await cargarTasasDeHoy();
+
+    await cargarPagos(
+      factura,
+      true,
+      tasasHoy || {
+        tasaD: NaN,
+        tasaP: NaN
+      },
+      ventaConsultada,
+      true
+    );
+
+    try {
+      await registrarAccion(
+        `Eliminó el abono ${abono._id} de la factura ${factura} en ${sede}`
+      );
+    } catch (error) {
+      console.error("Error registrando la acción:", error);
+    }
+
+    alert("Abono eliminado. Los pagos y el saldo se actualizaron.");
+  } catch (error) {
+    console.error("Error eliminando abono:", error);
+
+    alert(
+      eliminado
+        ? "El abono fue eliminado, pero no se pudo completar la actualización de pantalla. Vuelva a buscar la factura."
+        : error.message || "No se pudo eliminar el abono."
+    );
+  } finally {
+    eliminandoAbonoRef.current = false;
+    setProcesando(false);
+  }
+};
+
     // -----------------------------
     // Render
     // -----------------------------
@@ -770,11 +884,16 @@ const abrirModalPagoConFecha = async () => {
             <input
               type="number"
               value={numeroFactura}
+              disabled={procesando}
               onChange={(e) => setNumeroFactura(e.target.value)}
               style={{ width:"60px" }}
             />
 
-            <button onClick={() => consultarFactura(numeroFactura)} style={botonVarios}>
+            <button 
+              disabled={procesando}
+              onClick={() => consultarFactura(numeroFactura)} 
+              style={botonVarios}
+            >
               Buscar
             </button>   
           
@@ -888,7 +1007,7 @@ const abrirModalPagoConFecha = async () => {
 </div>
 )}
 
-{pagosMoneda.length >= 1 && (
+{venta && (
   <div className="bloque-credito">
       <div
       style={{
@@ -919,12 +1038,23 @@ const abrirModalPagoConFecha = async () => {
             <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>Pago Móvil</th>
             <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>Efectivo $</th>
             <th style={{ border:"1px solid #ccc", padding:"6px", width:"70px", fontFamily:"Arial Black" }}>Zelle</th>
+            {esAdministrador && (
+              <th
+                style={{
+                  border: "1px solid #ccc",
+                  padding: "6px",
+                  fontFamily: "Arial Black"
+                }}
+              >
+                Eliminar
+              </th>
+            )}
           </tr>
         </thead>
 
         <tbody>
           {pagosMoneda.map((p, i) => (
-            <tr key={i}>
+            <tr key={p._id}>
               <td style={{ border:"1px solid #ccc", padding:"4px" }}>
                 {p.fecha?.substring(0,10)}
               </td>
@@ -943,6 +1073,33 @@ const abrirModalPagoConFecha = async () => {
 
               <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.efectivoD)}</td>
               <td style={{ border:"1px solid #ccc", padding:"4px" }}>{formatoVE(p.zelle)}</td>
+              {esAdministrador && (
+                <td
+                  style={{
+                    border: "1px solid #ccc",
+                    padding: "4px",
+                    textAlign: "center"
+                  }}
+                >
+                  {p.operacion === "ABONO DE CREDITO" && (
+                  <button
+                    type="button"
+                    disabled={procesando}
+                    onClick={() => eliminarAbono(p)}
+                    title="Eliminar este abono"
+                    aria-label="Eliminar este abono"
+                    style={{
+                      border: "none",
+                      background: "transparent",
+                      fontSize: "20px",
+                      cursor: procesando ? "not-allowed" : "pointer"
+                    }}
+                  >
+                    🗑️
+                  </button>
+                  )}
+                </td>
+              )}
             </tr>
           ))}
         </tbody>
@@ -964,16 +1121,27 @@ const abrirModalPagoConFecha = async () => {
     Volver al Menú
   </button>
 
-  <button onClick={borrarCampos} style={botonVarios}>
+  <button 
+    disabled={procesando}
+    onClick={borrarCampos} 
+    style={botonVarios}
+  >
     Limpiar
   </button>
 
-  <button onClick={eliminarFactura} style={estiloBotonEliminar}>
+  <button 
+    disabled={procesando}
+    onClick={eliminarFactura} 
+    style={estiloBotonEliminar}
+  >
     Eliminar
   </button>
   
   {esCredito && (
-    <button onClick={() => setMostrarFechaAbono(true)} style={estiloBotonGuardar}
+    <button 
+      disabled={procesando}
+      onClick={() => setMostrarFechaAbono(true)} 
+      style={estiloBotonGuardar}
       className="btn-abono"
     >    
       Registrar abono
@@ -1087,4 +1255,4 @@ const abrirModalPagoConFecha = async () => {
 </div> 
 );
 };
-export default Consulta;
+export default Consulta; 
