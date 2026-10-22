@@ -1042,6 +1042,9 @@ const abrirModalPagoConFecha = async () => {
                 style={{
                   border: "1px solid #ccc",
                   padding: "6px",
+                  width: "45px",
+                  padding: "2px",
+                  whiteSpace: "nowrap",
                   fontFamily: "Arial Black"
                 }}
               >
@@ -1077,6 +1080,7 @@ const abrirModalPagoConFecha = async () => {
                   style={{
                     border: "1px solid #ccc",
                     padding: "4px",
+                    width: "45px",
                     textAlign: "center"
                   }}
                 >
