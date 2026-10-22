@@ -5,6 +5,7 @@ import { obtenerGastos, crearGasto, actualizarGasto, eliminarGasto } from "../se
 import { registrarAccion } from "../utils/registrarAccion";
 import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import { API_URL } from "../config";
+import CompraReventa from "../components/CompraReventa.js";
 
 const Gastos = () => {
   const navigate = useNavigate();
@@ -18,6 +19,10 @@ const Gastos = () => {
   const [actividadesProductivas, setActividadesProductivas] = useState([]);
   const [modo, setModo] = useState("crear");
   const [gastoEditando, setGastoEditando] = useState(null);
+  const [mostrarCompra, setMostrarCompra] = useState(false);
+  const puedeComprar = ["ADMINISTRADOR", "SUPERVISOR"].includes(
+    localStorage.getItem("rolUsuario")?.trim().toUpperCase()
+  );
   const formularioRef = useRef(null);
   const [procesando, setProcesando] = useState(false);
   const hoy = obtenerFechaVenezuela();
@@ -79,11 +84,25 @@ const Gastos = () => {
   // -------------------------
 
   async function cargarGastos() {
-    setProcesando(true); // ⭐ NUEVO
+  setProcesando(true);
+
+  try {
     const data = await obtenerGastos(sede);
+
+    if (!data.ok || !Array.isArray(data.lista)) {
+      throw new Error(
+        data.mensaje || "No se pudieron cargar los gastos."
+      );
+    }
+
     setGastos(data.lista);
-    setProcesando(false); // ⭐ NUEVO
+  } catch (error) {
+    console.error("Error cargando gastos:", error);
+    alert(error.message || "No se pudieron cargar los gastos.");
+  } finally {
+    setProcesando(false);
   }
+}
 
   // -------------------------
   // CARGAR TIPOS DE GASTO
@@ -217,11 +236,12 @@ if (modo === "crear") {
       await cargarGastos();
       limpiarFormulario();
 
-    } catch (error) {
-      console.error("Error guardando gasto:", error);
-    } finally {
-      setProcesando(false); // ⭐ NUEVO
-    }
+  } catch (error) {
+    console.error("Error guardando gasto:", error);
+    alert(error.message || "No se pudo guardar el gasto.");
+  } finally {
+    setProcesando(false);
+  }
   };
 
   // -------------------------
@@ -229,6 +249,15 @@ if (modo === "crear") {
   // -------------------------
 
   const editarGasto = (g) => {
+    if (
+  g.compraReventa ||
+  g.clasificacion === "COMPRA_REVENTA"
+) {
+  alert(
+    "Esta compra tiene entradas y costos asociados. No puede editarse como un gasto común."
+  );
+  return;
+}
   setModo("editar");
   setGastoEditando(g);
 
@@ -264,14 +293,41 @@ if (modo === "crear") {
   // -------------------------
 
   const eliminar = async (id) => {
-    if (!window.confirm("¿Eliminar este gasto?")) return;
+  if (procesando) return;
 
-    setProcesando(true); // ⭐ NUEVO
+  const gasto = gastos.find((g) => g._id === id);
+
+  if (
+    gasto?.compraReventa ||
+    gasto?.clasificacion === "COMPRA_REVENTA"
+  ) {
+    alert(
+      "Esta compra tiene entradas y costos asociados. No puede eliminarse como un gasto común."
+    );
+    return;
+  }
+
+  if (!window.confirm("¿Eliminar este gasto?")) return;
+
+  setProcesando(true);
+
+  try {
     await eliminarGasto(id);
-    await registrarAccion("Eliminó un gasto");
+
+    try {
+      await registrarAccion("Eliminó un gasto");
+    } catch (error) {
+      console.error("Error registrando la acción:", error);
+    }
+
     await cargarGastos();
-    setProcesando(false); // ⭐ NUEVO
-  };
+  } catch (error) {
+    console.error("Error eliminando gasto:", error);
+    alert(error.message || "No se pudo eliminar el gasto.");
+  } finally {
+    setProcesando(false);
+  }
+};
 
   // -------------------------
   // LIMPIAR
@@ -304,6 +360,22 @@ const formatearMonto = (valor) => {
   });
 };
 
+if (mostrarCompra && puedeComprar) {
+  return (
+    <div>
+      <Encabezado sede={sede} />
+
+      <CompraReventa
+        sede={sede}
+        onVolver={async () => {
+          setMostrarCompra(false);
+          await cargarGastos();
+        }}
+      />
+    </div>
+  );
+}
+
   // -------------------------
   // RENDER
   // -------------------------
@@ -334,6 +406,27 @@ const formatearMonto = (valor) => {
         <h2 style={{ textAlign: "center", marginBottom: "20px", fontWeight: "bold" }}>
           Gestión de Gastos
         </h2>
+
+        {puedeComprar && (
+          <div style={{ textAlign: "center", marginBottom: "20px" }}>
+            <button
+              type="button"
+              disabled={procesando}
+              onClick={() => setMostrarCompra(true)}
+              style={{
+                padding: "10px 20px",
+                backgroundColor: esMonasterio ? "#B8862D" : "#84B09C",
+                color: "white",
+                border: "none",
+                borderRadius: "8px",
+                cursor: procesando ? "not-allowed" : "pointer",
+                fontWeight: "bold"
+              }}
+            >
+              Registrar compra para reventa
+            </button>
+          </div>
+        )}        
 
         {/* FORMULARIO */}
         <div
@@ -524,12 +617,16 @@ const formatearMonto = (valor) => {
                   <td>{g.fecha.slice(0, 10)}</td>
                   <td>{g.descripcion}</td>
                   <td>
-                    {g.clasificacion === "COSTO_PRODUCCION"
+                    {g.clasificacion === "COMPRA_REVENTA"
+                      ? "COMPRA PARA REVENTA"                        
+                      : g.clasificacion === "COSTO_PRODUCCION"
                       ? "COSTO DE PRODUCCIÓN"
                       : g.clasificacion === "GASTO_OPERATIVO"
                       ? "GASTO OPERATIVO"
                       : g.clasificacion === "SUELDOS_PERSONAL"
                       ? "SUELDOS DEL PERSONAL"
+                      : g.clasificacion === "TRANSFERENCIA_PARTICIPACION"
+                      ? "TRANSFERENCIA DE PARTICIPACIÓN"                    
                       : "SIN CLASIFICAR"}
                   </td>
                   <td>{g.actividadProductiva?.descripcion || "—"}</td>
@@ -550,5 +647,5 @@ const formatearMonto = (valor) => {
     </div>
   );
 };
-
+ 
 export default Gastos;

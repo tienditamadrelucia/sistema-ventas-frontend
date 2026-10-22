@@ -622,7 +622,9 @@ const datosEntrada = {
           style={selectEstilo}
         >
           <option value="">Seleccione motivo</option>
-          <option value="COMPRAS">COMPRAS</option>
+          <option value="COMPRAS" disabled>
+            COMPRAS — registrar desde Gastos
+          </option>
           <option value="PRODUCCIÓN DEL MONASTERIO">PRODUCCIÓN DEL MONASTERIO</option>
           <option value="DONACIONES">DONACIONES</option>
           <option value="REPOSICIÓN">REPOSICIÓN</option>

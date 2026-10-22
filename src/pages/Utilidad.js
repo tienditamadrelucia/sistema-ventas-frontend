@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import Encabezado from "../components/Encabezado";
 import { API_URL } from "../config";
 import FlujoActividades from "../components/FlujoActividades.js";
+import GananciaReventa from "../components/GananciaReventa.js";
 
 const formatoVE = (num) => Number(num || 0).toLocaleString("es-VE", {
   minimumFractionDigits: 2,
@@ -115,11 +116,50 @@ const simboloMoneda = (moneda) => {
   );
 }
 
+if (vista === "GANANCIA_REVENTA") {
+  return (
+    <div>
+      <Encabezado sede={sede} />
+
+      <GananciaReventa
+        onVolver={() => setVista("FLUJO")}
+      />
+    </div>
+  );
+}
+
 if (vista === "FLUJO") {
   return (
-    <FlujoActividades
-      onVerUtilidad={() => setVista("UTILIDAD")}
-    />
+    <div>
+      <div
+        style={{
+          textAlign: "center",
+          padding: "10px"
+        }}
+      >
+        <button
+          type="button"
+          onClick={() => setVista("GANANCIA_REVENTA")}
+          style={{
+            padding: "10px 20px",
+            backgroundColor: esMonasterio
+              ? "#B8862D"
+              : "#84B09C",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            fontWeight: "bold",
+            cursor: "pointer"
+          }}
+        >
+          Ganancia de productos para reventa
+        </button>
+      </div>
+
+      <FlujoActividades
+        onVerUtilidad={() => setVista("UTILIDAD")}
+      />
+    </div>
   );
 }
   return (
