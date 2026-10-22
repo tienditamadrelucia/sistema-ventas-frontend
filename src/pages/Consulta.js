@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from "react";
 import Encabezado from "../components/Encabezado";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
