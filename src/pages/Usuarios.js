@@ -47,6 +47,7 @@ function Usuarios() {
   const [usuarioEditando, setUsuarioEditando] = useState(null);
   const [formData, setFormData] = useState(formularioVacio);
   const [logs, setLogs] = useState([]);
+  const [sedeLogs, setSedeLogs] = useState(sede);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [cargando, setCargando] = useState(false);
@@ -136,16 +137,24 @@ function Usuarios() {
   }, [esAdministrador]);
 
   useEffect(() => {
-    if (esAdministrador) recargarLogs();
-  }, [esAdministrador]);
+  if (esAdministrador) recargarLogs();
+}, [esAdministrador, sedeLogs]);
 
   async function recargarLogs(pagina = 1) {
     setCargandoLogs(true);
 
     try {
+      const parametros = new URLSearchParams({
+        page: String(pagina),
+        limit: "20",
+        sede: sedeLogs
+      });
+
       const res = await fetch(
-        `${API_URL}/api/logs?page=${pagina}&limit=20`,
-        { credentials: "include" }
+        `${API_URL}/api/logs?${parametros}`,
+        {
+          credentials: "include"
+        }
       );
 
       const data = await res.json();

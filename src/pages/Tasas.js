@@ -143,6 +143,23 @@ const Tasas = () => {
   };
 
   const handleGuardar = async () => {
+        const fechaActual = obtenerFechaVenezuela();
+
+    if (form.fecha !== fechaActual) {
+      alert(
+        "Cambió el día desde que abrió esta pantalla. Se recargará para consultar las tasas correctas. No se guardó ningún cambio."
+      );
+
+      window.location.reload();
+      return;
+    }
+
+    if (existeHoy && !form._id) {
+      alert(
+        "Falta el identificador de la tasa. Recargue la pantalla antes de modificar."
+      );
+      return;
+    }
     if (!form.cajachicaP || !form.cajachicaD || !form.tasaP || !form.tasaD) {
       alert("Debe completar todos los campos");
       return;
@@ -199,16 +216,18 @@ const Tasas = () => {
   };
 
   const handleBorrar = () => {
-    registrarAccion("Limpió formulario de tasas");
-    setForm({
-      fecha: fecha,
-      cajachicaP: "",
-      cajachicaD: "",
-      tasaP: "",
-      tasaD: ""
-    });
-    setModoModificar(false);
-  };
+  registrarAccion("Limpió formulario de tasas");
+
+  setForm((anterior) => ({
+    ...anterior,
+    cajachicaP: "",
+    cajachicaD: "",
+    tasaP: "",
+    tasaD: ""
+  }));
+
+  setModoModificar(true);
+};
 
   const handleVolver = () => {
     navigate(esMonasterio ? "/menu-monasterio" : "/menu");
