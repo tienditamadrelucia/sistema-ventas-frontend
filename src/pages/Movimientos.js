@@ -160,14 +160,13 @@ const ObtenerMovimientos = async () => {
     );
     // 3. Transformar movimientos
     setMovimientosArray(movimientosArray);
-    const movimientosTransformados = movimientosArray.map(m => {
-      return {
+    const movimientosTransformados = movimientosArray.map((m) => ({
       fecha: m.fecha,
+      factura: m.tipo === "VENTA" ? m.factura : "",
       entrada: m.tipo === "ENTRADA" ? m.cantidad : "",
       salida: m.tipo === "SALIDA" ? m.cantidad : "",
-      venta: m.tipo === "VENTA" ? m.cantidad : "",
-      };
-    });
+      venta: m.tipo === "VENTA" ? m.cantidad : ""
+    }));
     // 4. Calcular existencia actual
     let existencia = stockInicial;
       const movimientosConExistencia = movimientosTransformados.map(m => {
@@ -309,37 +308,55 @@ const ObtenerMovimientos = async () => {
         Movimientos del Producto
       </h3>
       <div style={{ display:"flex", justifyContent:"center" }}>
-        <table 
-          border="1" 
-          cellPadding="8" 
+        <table
+          border="1"
+          cellPadding="8"
           style={{
-            width: "50%",
+            width: "65%",
             textAlign: "center",
-            backgroundColor: "white",
+            backgroundColor: "white"
           }}
         >
-          <thead style={{ backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}>
+          <thead
+            style={{
+              backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE"
+            }}
+          >
             <tr>
               <th>Fecha</th>
+              <th>Factura</th>
               <th>Entrada</th>
               <th>Salida</th>
               <th>Venta</th>
               <th>Existencia Actual</th>
             </tr>
           </thead>
+
           <tbody>
             {movimientosArray.map((m, index) => (
-              <tr key={index}>
-                <td>{m.fecha.slice(0, 10).split("-").reverse().join("/")}</td>
-                <td>{m.entrada}</td>
-                <td>{m.salida}</td>
-                <td>{m.venta}</td>
-                <td>{m.existenciaActual}</td>
-              </tr>
+            <tr key={index}>
+              <td>
+                {String(m.fecha || "")
+                .slice(0, 10)
+                .split("-")
+                .reverse()
+                .join("/")}
+              </td>
+              <td>{m.factura ?? "—"}</td>
+              <td>{m.entrada}</td>
+              <td>{m.salida}</td>
+              <td>{m.venta}</td>
+              <td>{m.existenciaActual}</td>
+            </tr>
             ))}
-            {/* FILA DE TOTALES */}
-            <tr style={{ fontWeight: "bold", backgroundColor: "#f0f0f0" }}>
-              <td>TOTALES</td>
+
+            <tr
+              style={{
+                fontWeight: "bold",
+                backgroundColor: "#f0f0f0"
+              }}
+            >
+              <td colSpan="2">TOTALES</td>
               <td>{totales.totalEntradas}</td>
               <td>{totales.totalSalidas}</td>
               <td>{totales.totalVentas}</td>
