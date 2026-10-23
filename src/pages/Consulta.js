@@ -1022,7 +1022,7 @@ const abrirModalPagoConFecha = async () => {
         <strong>Tasas usadas para esta venta -----→ USD/Bs: {tasaDolar} ••••• USD/COP: {tasaPeso} ••••• Fecha: {venta ? venta.fecha.substring(0,10) : ""}</strong>
       </div>      
     <div style={{ border:"1px solid #ccc", padding:"10px", borderRadius:"8px", width:"1200px" }}>
-      <h3 style={{ marginBottom:"1px" }}>Pagos de Crédito</h3>
+      <h3 style={{ marginBottom:"1px" }}>Registro de Pagos</h3>
 
       <table style={{ width:"100%", borderCollapse:"collapse", fontSize:"13px" }}>
         <thead>
