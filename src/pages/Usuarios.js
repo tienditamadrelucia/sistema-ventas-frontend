@@ -47,7 +47,7 @@ function Usuarios() {
   const [usuarioEditando, setUsuarioEditando] = useState(null);
   const [formData, setFormData] = useState(formularioVacio);
   const [logs, setLogs] = useState([]);
-  const [sedeLogs, setSedeLogs] = useState(sede);
+  const [sedeLogs, setSedeLogs] = useState("TODAS");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [cargando, setCargando] = useState(false);
@@ -659,7 +659,45 @@ function Usuarios() {
             </tbody>
           </table>
         </div>
-                <h3>Bitácora de acciones</h3>
+        <h3>Bitácora de acciones</h3>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              marginBottom: "15px",
+              flexWrap: "wrap"
+            }}
+          >
+            <label htmlFor="sede-bitacora">Mostrar acciones de:</label>
+
+            <select
+              id="sede-bitacora"
+              value={sedeLogs}
+              disabled={procesando}
+              onChange={(e) => {
+                setLogs([]);
+                setPage(1);
+                setTotalPages(1);
+                setSedeLogs(e.target.value);
+              }}
+              style={{ padding: "7px" }}
+            >
+              <option value="TIENDITA">Tiendita</option>
+              <option value="MONASTERIO">Monasterio</option>
+              <option value="TODAS">Todas las sedes</option>
+              <option value="SIN_SEDE">Sin sede registrada</option>
+            </select>
+
+            <button
+              type="button"
+              disabled={procesando}
+              onClick={() => recargarLogs(page)}
+              style={botonAccion}
+            >
+              Actualizar bitácora
+            </button>
+          </div>
 
         <div style={{ overflowX: "auto" }}>
           <table
@@ -672,6 +710,7 @@ function Usuarios() {
               <tr style={{ backgroundColor: "#eee" }}>
                 <th>Fecha y hora</th>
                 <th>Usuario</th>
+                <th>Sede</th>
                 <th>Acción</th>
               </tr>
             </thead>
@@ -685,14 +724,19 @@ function Usuarios() {
                     })}
                   </td>
                   <td>{log.usuario || "—"}</td>
-                  <td>{log.accion || "—"}</td>
+                  <td>
+                    {["TIENDITA", "MONASTERIO"].includes(log.sede)
+                      ? log.sede
+                      : "Sin sede registrada"}
+                    </td>
+                    <td>{log.accion || "—"}</td>
                 </tr>
               ))}
 
               {logs.length === 0 && (
                 <tr>
                   <td
-                    colSpan="3"
+                    colSpan="4"
                     style={{ textAlign: "center", padding: "20px" }}
                   >
                     {cargandoLogs
