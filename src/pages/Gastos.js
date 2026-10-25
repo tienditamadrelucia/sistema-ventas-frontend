@@ -7,6 +7,50 @@ import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import { API_URL } from "../config";
 import CompraReventa from "../components/CompraReventa.js";
 
+function mostrarActividadGasto(gasto) {
+  if (!gasto.compraReventa) {
+    return gasto.actividadProductiva?.descripcion || "—";
+  }
+
+  const detalles = gasto.compraReventa.detalles;
+
+  if (!Array.isArray(detalles) || detalles.length === 0) {
+    return "Detalle de actividades no disponible";
+  }
+
+  const actividades = new Map();
+
+  for (const detalle of detalles) {
+    const actividad = detalle.actividadProductiva;
+
+    if (!actividad) {
+      actividades.set(
+        "SIN_ACTIVIDAD",
+        "Sin actividad asignada"
+      );
+      continue;
+    }
+
+    const id =
+      typeof actividad === "string"
+        ? actividad
+        : String(actividad._id);
+
+    const descripcion =
+      actividad.descripcion || "Actividad sin descripción";
+
+    actividades.set(id, descripcion);
+  }
+
+  const nombres = [...actividades.values()];
+
+  if (nombres.length === 1) {
+    return nombres[0];
+  }
+
+  return `Varias actividades: ${nombres.join(" / ")}`;
+}
+
 const Gastos = () => {
   const navigate = useNavigate();
   const sede = localStorage.getItem("sede") || "TIENDITA";
@@ -629,7 +673,9 @@ if (mostrarCompra && puedeComprar) {
                       ? "TRANSFERENCIA DE PARTICIPACIÓN"                    
                       : "SIN CLASIFICAR"}
                   </td>
-                  <td>{g.actividadProductiva?.descripcion || "—"}</td>
+                  <td style={{ padding: "6px", textAlign: "left" }}>
+                    {mostrarActividadGasto(g)}
+                  </td>
                   <td>{g.moneda}</td>
                   <td>{formatearMonto(g.monto)}</td>
                   <td>{g.numeroRecibo}</td>
