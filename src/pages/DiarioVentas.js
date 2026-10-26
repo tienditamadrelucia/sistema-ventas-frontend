@@ -1,14 +1,30 @@
 // src/pages/Diario.jsx
 import Encabezado from "../components/Encabezado";
-import React, { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { API_URL } from "../config";
 import {obtenerFechaVenezuela} from "../utils/fechaVenezuela";
 
 const DiarioVentas = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
   const formularioRef = useRef(null);
-  const sede = localStorage.getItem("sede") || "TIENDITA";
+  const cargaInicialRef = useRef(false);
+
+  const fechaRecibida = location.state?.fechaRevision;
+
+  const fechaRevision =
+  typeof fechaRecibida === "string" &&
+  /^\d{4}-\d{2}-\d{2}$/.test(fechaRecibida)
+    ? fechaRecibida
+    : "";
+
+  const sedeRecibida = location.state?.sedeRevision;
+
+  const sede = ["TIENDITA", "MONASTERIO"].includes(sedeRecibida)
+  ? sedeRecibida
+  : localStorage.getItem("sede") || "TIENDITA";
   const esMonasterio = sede === "MONASTERIO";
 
   const colorPrincipal = esMonasterio ? "#5A2D16" : "#FC9E9B"; 
@@ -58,8 +74,13 @@ const DiarioVentas = () => {
   // -------------------------
   // ESTADOS
   // -------------------------
-  const [desde, setDesde] = useState(obtenerFechaVenezuela());
-  const [hasta, setHasta] = useState(obtenerFechaVenezuela());
+  const [desde, setDesde] = useState(
+    fechaRevision || obtenerFechaVenezuela()
+  );
+
+  const [hasta, setHasta] = useState(
+    fechaRevision || obtenerFechaVenezuela()
+  );
   const [reporte, setReporte] = useState([]);
   const [totales, setTotales] = useState({
     totalEfectivoP: 0,
@@ -212,6 +233,16 @@ const totalResumenActividades = actividadesResumen.reduce(
     setProcesando(false);
   }
 };
+
+useEffect(() => {
+  if (!fechaRevision || cargaInicialRef.current) return;
+
+  cargaInicialRef.current = true;
+  cargarReporte();
+
+  // La consulta automática se realiza una vez al abrir desde Revisión.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [fechaRevision]);
 
 const cambiarVerificacion = async (accion) => {
   if (
@@ -454,13 +485,19 @@ const cambiarVerificacion = async (accion) => {
 
       {/* BOTÓN VOLVER */}      
       <div style={{ display: "flex", justifyContent: "center", marginBottom: "20px" }}>
-        <button
-          onClick={() => {
-          window.close();
-          }}
+      <button
+        type="button"
+        disabled={procesando}
+        onClick={() =>
+        navigate(
+          localStorage.getItem("sede") === "MONASTERIO"
+          ? "/menu-monasterio"
+          : "/menu"
+          )
+          }
           style={estiloBoton}
         >
-          Volver al MENÚ PRINCIPAL
+          VOLVER AL MENÚ
         </button>
         <div className="acciones-reporte">
           <img
