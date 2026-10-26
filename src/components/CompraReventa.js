@@ -2,6 +2,10 @@ import React, { useEffect, useRef, useState } from "react";
 import { API_URL } from "../config";
 import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import { crearCompraReventa } from "../services/ser_gastos";
+import CargosCompra from "./CargosCompra";
+import {
+  calcularImportesCompra
+} from "../utils/calculoCompraReventa";
 
 const lineaVacia = () => ({
   categoria: "",
@@ -36,7 +40,7 @@ export default function CompraReventa({ sede, onVolver }) {
   });
 
   const [lineas, setLineas] = useState([lineaVacia()]);
-
+  const [cargos, setCargos] = useState([]);
   const enviandoRef = useRef(false);
   const operacionRef = useRef(null);
 
@@ -186,6 +190,36 @@ const productosDeCategoria = (categoria) =>
   const tasa =
     datos.moneda === "D" ? 1 : Number(datos.tasaCambio);
 
+    const cargosParaCalcular = cargos.map((cargo) => ({
+  ...cargo,
+  valor: Number(cargo.valor)
+}));
+
+let calculoCompra = null;
+let errorCalculoCompra = "";
+
+const productosCompletos = lineas.every(
+  (linea) =>
+    linea.productoId &&
+    String(linea.cantidad).trim() !== "" &&
+    String(linea.costoUnitarioMoneda).trim() !== ""
+);
+
+if (productosCompletos) {
+  try {
+    calculoCompra = calcularImportesCompra(
+      lineas.map((linea) => ({
+        productoId: linea.productoId,
+        cantidad: Number(linea.cantidad),
+        costoUnitarioMoneda: Number(linea.costoUnitarioMoneda)
+      })),
+      cargosParaCalcular
+    );
+  } catch (error) {
+    errorCalculoCompra = error.message;
+  }
+}
+
   const guardar = async (e) => {
     e.preventDefault();
 
@@ -240,17 +274,23 @@ const productosDeCategoria = (categoria) =>
           };
         });
 
+        const importesConfirmados = calcularImportesCompra(
+          detalles,
+          cargosParaCalcular
+        );
+
         if (!operacionRef.current) {
           operacionRef.current = window.crypto.randomUUID();
         }
 
         solicitud = {
-          ...datos,
-          sede,
-          tasaCambio: tasa,
-          claveOperacion: operacionRef.current,
-          detalles
-        };
+        ...datos,
+        sede,
+        tasaCambio: tasa,
+        claveOperacion: operacionRef.current,
+        detalles,
+        cargos: importesConfirmados.cargos
+      };
       }
 
       setPendiente(solicitud);
@@ -461,6 +501,13 @@ const productosDeCategoria = (categoria) =>
       )}
 
       <form onSubmit={guardar}>
+        <CargosCompra
+          cargos={cargos}
+          setCargos={setCargos}
+          moneda={datos.moneda}
+          esMonasterio={esMonasterio}
+          calculo={calculoCompra}
+        />
         <fieldset
           disabled={
             bloqueado || cargando || Boolean(errorCarga)
@@ -852,47 +899,110 @@ const productosDeCategoria = (categoria) =>
         </fieldset>
 
         <div
-          style={{
-            ...caja,
-            backgroundColor: colorSuave,
-            textAlign: "center"
-          }}
-        >
-          <h3 style={{ margin: "0 0 10px" }}>
-            Total de la compra: {dinero(total)} {datos.moneda}
-          </h3>
+  style={{
+    ...caja,
+    backgroundColor: colorSuave,
+    textAlign: "center"
+  }}
+>
+  <p>
+    Subtotal de productos:
+    {" "}
+    <strong>
+      {dinero(
+        calculoCompra?.subtotalProductosMoneda ?? total
+      )}
+      {" "}
+      {datos.moneda}
+    </strong>
+  </p>
 
-          {Number.isFinite(tasa) && tasa > 0 && (
-            <p>
-              Equivalente aproximado: US$ {dinero(total / tasa)}
-            </p>
-          )}
+  {calculoCompra ? (
+    <>
+      <p>
+        Impuestos y recargos:
+        {" "}
+        <strong>
+          {dinero(calculoCompra.totalCargosMoneda)}
+          {" "}
+          {datos.moneda}
+        </strong>
+      </p>
 
-          <p style={{ fontSize: "13px" }}>
-            La compra genera sus entradas automáticamente.
-            Regístrela una sola vez.
-          </p>
+      <p>
+        De los cargos, se incorpora al costo:
+        {" "}
+        <strong>
+          {dinero(calculoCompra.cargosCostoMoneda)}
+          {" "}
+          {datos.moneda}
+        </strong>
+      </p>
 
-          <button
-            type="submit"
-            style={{
-              ...boton,
-              opacity:
-                guardando || cargando || Boolean(errorCarga)
-                  ? 0.6
-                  : 1
-            }}
-            disabled={
-              guardando || cargando || Boolean(errorCarga)
-            }
-          >
-            {guardando
-              ? "Guardando..."
-              : pendiente
-              ? "Reintentar la misma compra"
-              : "Guardar compra"}
-          </button>
-        </div>
+      <p>
+        De los cargos, no se incorpora al costo:
+        {" "}
+        <strong>
+          {dinero(calculoCompra.cargosNoCostoMoneda)}
+          {" "}
+          {datos.moneda}
+        </strong>
+      </p>
+
+      <h3>
+        Total a pagar:
+        {" "}
+        {dinero(calculoCompra.totalMoneda)}
+        {" "}
+        {datos.moneda}
+      </h3>
+
+      {Number.isFinite(tasa) && tasa > 0 && (
+        <p>
+          Equivalente aproximado: US$
+          {" "}
+          {dinero(calculoCompra.totalMoneda / tasa)}
+        </p>
+      )}
+    </>
+  ) : (
+    <p>
+      {errorCalculoCompra ||
+        "Complete los productos y cargos para calcular el total."}
+    </p>
+  )}
+
+  <p style={{ fontSize: "13px" }}>
+    La compra genera sus entradas automáticamente.
+    Regístrela una sola vez.
+  </p>
+
+  <button
+    type="submit"
+    style={{
+      ...boton,
+      opacity:
+        guardando ||
+        cargando ||
+        Boolean(errorCarga) ||
+        (!pendiente && !calculoCompra)
+          ? 0.6
+          : 1
+    }}
+    disabled={
+      guardando ||
+      cargando ||
+      Boolean(errorCarga) ||
+      (!pendiente && !calculoCompra)
+    }
+  >
+    {guardando
+      ? "Guardando..."
+      : pendiente
+      ? "Reintentar la misma compra"
+      : "Guardar compra"}
+  </button>
+</div>
 
         <div
           style={{
