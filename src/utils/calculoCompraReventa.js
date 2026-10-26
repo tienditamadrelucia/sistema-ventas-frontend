@@ -1,3 +1,5 @@
+/* global BigInt: readonly */
+
 function errorCompra(mensaje) {
   const error = new Error(mensaje);
   error.estado = 400;
