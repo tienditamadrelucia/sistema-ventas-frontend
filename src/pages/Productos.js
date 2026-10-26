@@ -200,6 +200,29 @@ const Productos = () => {
   // MANEJO DE FORMULARIO
   // -------------------------
 
+  const inputFotoRef = useRef(null);
+
+const cargarProductos = async () => {
+  const res = await fetch(
+    `${API_URL}/api/productos?sede=${encodeURIComponent(sede)}`,
+    {
+      credentials: "include"
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok || !Array.isArray(data)) {
+    throw new Error(
+      data?.mensaje ||
+      data?.error ||
+      "No se pudieron cargar los productos."
+    );
+  }
+
+  setProductos(data);
+};
+
   const handleChange = (e) => {
   const { name, value, files } = e.target;
   // ⭐ Imagen
@@ -946,6 +969,7 @@ const payload = {
         </div>
 
         <input
+          ref={inputFotoRef}
           type="file"
           name="foto"
           accept="image/*"
