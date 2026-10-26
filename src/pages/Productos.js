@@ -102,6 +102,13 @@ const Productos = () => {
   // -------------------------
   
   const [productos, setProductos] = useState([]);
+  const [ordenProductos, setOrdenProductos] = useState(() => {
+  const guardado = localStorage.getItem(
+    `productosOrden_${sede}`
+    );
+
+    return guardado === "NOMBRE" ? "NOMBRE" : "CODIGO";
+  });
   const [modo, setModo] = useState("crear");
   const [productoEditando, setProductoEditando] = useState(null);
   const [categorias, setCategorias] = useState([]);
@@ -159,26 +166,35 @@ const Productos = () => {
   }
 };
 
-  const productosFiltrados = categoriaSeleccionada
-  ? productos.filter(
-      (p) => String(p.categoria) === String(categoriaSeleccionada)
-    )
-  : productos;   
-
-  const inputFotoRef = useRef(null);
-  
-  const cargarProductos = async () => {
-  const res = await fetch(
-    `${API_URL}/api/productos?sede=${encodeURIComponent(sede)}`
+  const productosFiltrados = (
+  categoriaSeleccionada
+    ? productos.filter(
+        (p) =>
+          String(p.categoria) === String(categoriaSeleccionada)
+      )
+    : [...productos]
+).sort((a, b) => {
+  const porNombre = String(a.descripcion || "").localeCompare(
+    String(b.descripcion || ""),
+    "es",
+    {
+      sensitivity: "base",
+      numeric: true
+    }
   );
 
-  if (!res.ok) {
-    throw new Error("No se pudieron cargar los productos");
-  }
+  const porCodigo = String(a.codigo ?? "").localeCompare(
+    String(b.codigo ?? ""),
+    "es",
+    {
+      numeric: true
+    }
+  );
 
-  const data = await res.json();
-  setProductos(data);
-};
+  return ordenProductos === "NOMBRE"
+    ? porNombre || porCodigo
+    : porCodigo || porNombre;
+});
 
   // -------------------------
   // MANEJO DE FORMULARIO
@@ -966,6 +982,47 @@ const payload = {
       <h3 style={{ textAlign: "center", marginBottom: "15px", fontWeight: "bold" }}>
         Lista de Productos
       </h3>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        gap: "10px",
+        marginBottom: "15px",
+        flexWrap: "wrap"
+      }}
+    >
+      <label
+        htmlFor="orden-productos"
+        style={{ fontWeight: "bold" }}
+      >
+        Ordenar por:
+      </label>
+
+      <select
+        id="orden-productos"
+        value={ordenProductos}
+        disabled={procesando || guardando}
+        onChange={(e) => {
+          const orden = e.target.value;
+
+          setOrdenProductos(orden);
+
+          localStorage.setItem(
+            `productosOrden_${sede}`,
+            orden
+          );
+        }}
+        style={{
+          ...selectEstilo,
+          width: "240px",
+          marginBottom: 0
+        }}
+      >
+        <option value="CODIGO">Código: menor a mayor</option>
+        <option value="NOMBRE">Nombre: A a Z</option>
+        </select>
+      </div>      
 
       <table border="1" cellPadding="14" style={{ width: "100%", textAlign: "center" }}>
         <thead style={{ backgroundColor: esMonasterio ? "#E8D1A5" : "#F9CEAE" }}> 
