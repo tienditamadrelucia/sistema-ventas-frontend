@@ -4,6 +4,7 @@ import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import { crearCompraReventa } from "../services/ser_gastos";
 
 const lineaVacia = () => ({
+  categoria: "",
   productoId: "",
   cantidad: "",
   costoUnitarioMoneda: ""
@@ -17,6 +18,7 @@ const dinero = (valor) =>
 
 export default function CompraReventa({ sede, onVolver }) {
   const [productos, setProductos] = useState([]);
+  const [categorias, setCategorias] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [errorCarga, setErrorCarga] = useState("");
   const [guardando, setGuardando] = useState(false);
@@ -39,43 +41,87 @@ export default function CompraReventa({ sede, onVolver }) {
   const operacionRef = useRef(null);
 
   useEffect(() => {
-    let activo = true;
+  let activo = true;
 
-    const cargar = async () => {
-      try {
-        const res = await fetch(
+  const cargar = async () => {
+    setCargando(true);
+    setErrorCarga("");
+
+    try {
+      const [resProductos, resCategorias] = await Promise.all([
+        fetch(
           `${API_URL}/api/productos?sede=${encodeURIComponent(sede)}`,
           { credentials: "include" }
+        ),
+        fetch(
+          `${API_URL}/api/categorias`,
+          { credentials: "include" }
+        )
+      ]);
+
+      const [datosProductos, datosCategorias] = await Promise.all([
+        resProductos.json(),
+        resCategorias.json()
+      ]);
+
+      const listaCategorias = Array.isArray(datosCategorias)
+        ? datosCategorias
+        : datosCategorias?.categorias;
+
+      if (!resProductos.ok || !Array.isArray(datosProductos)) {
+        throw new Error(
+          datosProductos?.mensaje ||
+          "No se pudieron cargar los productos."
         );
+      }
 
-        const data = await res.json();
+      if (!resCategorias.ok || !Array.isArray(listaCategorias)) {
+        throw new Error(
+          datosCategorias?.mensaje ||
+          "No se pudieron cargar las categorías."
+        );
+      }
 
-        if (!res.ok || !Array.isArray(data)) {
-          throw new Error(
-            data?.mensaje || "No se pudieron cargar los productos."
+      if (activo) {
+        const compararNombre = (a, b) =>
+          String(a.descripcion || "").localeCompare(
+            String(b.descripcion || ""),
+            "es",
+            {
+              sensitivity: "base",
+              numeric: true
+            }
           );
-        }
 
-        if (activo) {
-          setProductos(
-            data.filter(
+        setProductos(
+          datosProductos
+            .filter(
               (p) => (p.origen || "COMPRADO") === "COMPRADO"
             )
-          );
-        }
-      } catch (error) {
-        if (activo) setErrorCarga(error.message);
-      } finally {
-        if (activo) setCargando(false);
+            .sort(compararNombre)
+        );
+
+        setCategorias(
+          [...listaCategorias].sort(compararNombre)
+        );
       }
-    };
+    } catch (error) {
+      if (activo) {
+        setErrorCarga(error.message);
+      }
+    } finally {
+      if (activo) {
+        setCargando(false);
+      }
+    }
+  };
 
-    cargar();
+  cargar();
 
-    return () => {
-      activo = false;
-    };
-  }, [sede]);
+  return () => {
+    activo = false;
+  };
+}, [sede]);
 
   const cambiarDato = (e) => {
     const { name, value, type, checked } = e.target;
@@ -98,6 +144,30 @@ export default function CompraReventa({ sede, onVolver }) {
       )
     );
   };
+
+  const cambiarCategoria = (indice, categoria) => {
+  setLineas((anteriores) =>
+    anteriores.map((linea, i) =>
+      i === indice
+        ? {
+            ...linea,
+            categoria,
+            productoId: "",
+            cantidad: "",
+            costoUnitarioMoneda: ""
+          }
+        : linea
+    )
+  );
+};
+
+const productosDeCategoria = (categoria) =>
+  categoria
+    ? productos.filter(
+        (producto) =>
+          String(producto.categoria ?? "") === String(categoria)
+      )
+    : [];
 
   const subtotal = (linea) =>
     Math.round(
@@ -217,81 +287,177 @@ export default function CompraReventa({ sede, onVolver }) {
     }
   };
 
-  const bloqueado = guardando || Boolean(pendiente);
+    const bloqueado = guardando || Boolean(pendiente);
+
+  const esMonasterio = sede === "MONASTERIO";
+
+  const colorPrincipal = esMonasterio
+    ? "#5A2D16"
+    : "#FC9E9B";
+
+  const colorAccion = esMonasterio
+    ? "#B8862D"
+    : "#84B09C";
+
+  const colorTabla = esMonasterio
+    ? "#E8D1A5"
+    : "#F9CEAE";
+
+  const colorSuave = esMonasterio
+    ? "#F5EBDD"
+    : "#fff7f7";
+
+  const caja = {
+    width: "550px",
+    maxWidth: "100%",
+    boxSizing: "border-box",
+    margin: "0 auto 20px",
+    padding: "20px",
+    border: "1px solid #ccc",
+    borderRadius: "8px",
+    backgroundColor: "white",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)"
+  };
 
   const campo = {
-    padding: "8px",
     width: "100%",
-    boxSizing: "border-box"
+    padding: "6px",
+    border: "1px solid #ccc",
+    borderRadius: "6px",
+    boxSizing: "border-box",
+    fontFamily: "Arial",
+    fontSize: "14px"
+  };
+
+  const selector = {
+    ...campo,
+    backgroundColor: esMonasterio ? "#E8D1A5" : "#EDC5CD"
+  };
+
+  const etiqueta = {
+    display: "block",
+    fontWeight: "bold",
+    marginBottom: "5px"
   };
 
   const boton = {
-    padding: "10px 18px",
-    margin: "8px",
-    cursor: "pointer"
+    padding: "8px 16px",
+    border: "none",
+    borderRadius: "6px",
+    backgroundColor: colorAccion,
+    color: "white",
+    fontFamily: "Arial Black, Arial, sans-serif",
+    cursor: "pointer",
+    minWidth: "160px",
+    maxWidth: "100%"
+  };
+
+  const botonVolver = {
+    ...boton,
+    backgroundColor: colorPrincipal
+  };
+
+  const celda = {
+    border: "1px solid #ccc",
+    padding: "8px",
+    textAlign: "center"
+  };
+
+  const aviso = {
+    ...caja,
+    backgroundColor: colorSuave,
+    boxShadow: "none"
   };
 
   if (guardada) {
     return (
       <div style={{ padding: "20px", textAlign: "center" }}>
-        <h2>Compra guardada</h2>
+        <h2>Compra guardada correctamente</h2>
 
-        <p>
-          Se registró un gasto con sus entradas y se
-          actualizaron los costos promedio.
-        </p>
+        <div style={caja}>
+          <p>
+            Se registró un gasto con sus entradas y se
+            actualizaron los costos promedio.
+          </p>
 
-        <p>
-          Total: {dinero(guardada.monto)} {guardada.moneda}
-        </p>
+          <h3 style={{ color: colorAccion }}>
+            Total: {dinero(guardada.monto)} {guardada.moneda}
+          </h3>
 
-        <button
-          type="button"
-          style={boton}
-          onClick={onVolver}
-        >
-          Volver a gastos
-        </button>
+          <button
+            type="button"
+            style={botonVolver}
+            onClick={onVolver}
+          >
+            Volver a gastos
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div
-      style={{
-        maxWidth: "1050px",
-        margin: "auto",
-        padding: "20px"
-      }}
-    >
-      <h2>Compra de productos para reventa</h2>
+    <div style={{ padding: "20px" }}>
+      <h2
+        style={{
+          textAlign: "center",
+          marginBottom: "20px",
+          fontWeight: "bold"
+        }}
+      >
+        Gestión de Compras para Reventa
+      </h2>
 
-      <p>
-        Registre aquí la compra completa. No vuelva a ingresar
-        sus productos en Entradas ni registre otro gasto por
-        la misma compra.
-      </p>
+      {guardando && (
+        <div
+          role="status"
+          style={{
+            background: "#84868A",
+            color: "white",
+            padding: "8px",
+            textAlign: "center",
+            fontWeight: "bold",
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            width: "100%",
+            zIndex: 1000
+          }}
+        >
+          Guardando compra, por favor espere...
+        </div>
+      )}
 
-      {cargando && <p>Cargando productos...</p>}
+      {cargando && (
+        <p role="status" style={{ textAlign: "center" }}>
+          Cargando categorías y productos...
+        </p>
+      )}
 
       {errorCarga && (
-        <p role="alert" style={{ color: "red" }}>
+        <div
+          role="alert"
+          style={{ ...aviso, color: "#B84A4A" }}
+        >
           {errorCarga}
-        </p>
+        </div>
       )}
 
       {mensaje && (
-        <p role="alert" style={{ color: "red" }}>
+        <div
+          role="alert"
+          style={{ ...aviso, color: "#B84A4A" }}
+        >
           {mensaje}
-        </p>
+        </div>
       )}
 
-      {pendiente && (
-        <p>
+      {pendiente && !guardando && (
+        <div role="status" style={aviso}>
           La compra está pendiente de confirmación. Reintente
           con estos mismos datos. Antes de iniciar otra compra,
           compruebe el resultado en Gastos.
-        </p>
+        </div>
       )}
 
       <form onSubmit={guardar}>
@@ -300,247 +466,449 @@ export default function CompraReventa({ sede, onVolver }) {
             bloqueado || cargando || Boolean(errorCarga)
           }
           style={{
-            border: "1px solid #ccc",
-            padding: "16px"
+            border: "none",
+            padding: 0,
+            margin: 0,
+            minWidth: 0
           }}
         >
-          <label>
-            Fecha
-            <input
-              style={campo}
-              type="date"
-              name="fecha"
-              value={datos.fecha}
-              max={obtenerFechaVenezuela()}
-              onChange={cambiarDato}
-              required
-            />
-          </label>
-
-          <label>
-            Descripción
-            <input
-              style={campo}
-              name="descripcion"
-              value={datos.descripcion}
-              onChange={cambiarDato}
-              required
-            />
-          </label>
-
-          <label>
-            Número de recibo o factura (opcional)
-            <input
-              style={campo}
-              name="numeroRecibo"
-              value={datos.numeroRecibo}
-              onChange={cambiarDato}
-            />
-          </label>
-
-          <label>
-            Moneda de toda la compra
-            <select
-              style={campo}
-              name="moneda"
-              value={datos.moneda}
-              onChange={cambiarDato}
+          <div style={caja}>
+            <h3
+              style={{
+                textAlign: "center",
+                marginTop: 0,
+                marginBottom: "20px"
+              }}
             >
-              <option value="D">Dólares</option>
-              <option value="P">Pesos</option>
-              <option value="Bs">Bolívares</option>
-            </select>
-          </label>
+              Registrar Compra
+            </h3>
 
-          {datos.moneda !== "D" && (
-            <label>
-              ¿Cuántos{" "}
-              {datos.moneda === "P" ? "pesos" : "bolívares"}{" "}
-              equivalen a US$ 1?
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns:
+                  "repeat(auto-fit, minmax(180px, 1fr))",
+                gap: "15px",
+                marginBottom: "15px"
+              }}
+            >
+              <div>
+                <label
+                  htmlFor="compra-fecha"
+                  style={etiqueta}
+                >
+                  Fecha
+                </label>
+
+                <input
+                  id="compra-fecha"
+                  style={campo}
+                  type="date"
+                  name="fecha"
+                  value={datos.fecha}
+                  max={obtenerFechaVenezuela()}
+                  onChange={cambiarDato}
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="compra-recibo"
+                  style={etiqueta}
+                >
+                  N° recibo o factura (opcional)
+                </label>
+
+                <input
+                  id="compra-recibo"
+                  style={campo}
+                  name="numeroRecibo"
+                  value={datos.numeroRecibo}
+                  onChange={cambiarDato}
+                />
+              </div>
+            </div>
+
+            <div style={{ marginBottom: "15px" }}>
+              <label
+                htmlFor="compra-descripcion"
+                style={etiqueta}
+              >
+                Descripción
+              </label>
+
               <input
+                id="compra-descripcion"
                 style={campo}
-                type="number"
-                name="tasaCambio"
-                min="0.000001"
-                step="any"
-                value={datos.tasaCambio}
+                name="descripcion"
+                value={datos.descripcion}
                 onChange={cambiarDato}
                 required
               />
-            </label>
-          )}
+            </div>
 
-          <p>
-            <label>
+            <div style={{ marginBottom: "15px" }}>
+              <label
+                htmlFor="compra-moneda"
+                style={etiqueta}
+              >
+                Moneda de la compra
+              </label>
+
+              <select
+                id="compra-moneda"
+                style={selector}
+                name="moneda"
+                value={datos.moneda}
+                onChange={cambiarDato}
+              >
+                <option value="D">Dólares</option>
+                <option value="P">Pesos</option>
+                <option value="Bs">Bolívares</option>
+              </select>
+            </div>
+
+            {datos.moneda !== "D" && (
+              <div style={{ marginBottom: "15px" }}>
+                <label
+                  htmlFor="compra-tasa"
+                  style={etiqueta}
+                >
+                  {datos.moneda === "P" ? "Pesos" : "Bolívares"}
+                  {" "}por cada US$ 1
+                </label>
+
+                <input
+                  id="compra-tasa"
+                  style={campo}
+                  type="number"
+                  name="tasaCambio"
+                  min="0.000001"
+                  step="any"
+                  value={datos.tasaCambio}
+                  onChange={cambiarDato}
+                  required
+                />
+              </div>
+            )}
+
+            <label
+              style={{
+                display: "flex",
+                gap: "8px",
+                alignItems: "center",
+                fontWeight: "bold"
+              }}
+            >
               <input
                 type="checkbox"
                 name="cajaChica"
                 checked={datos.cajaChica}
                 onChange={cambiarDato}
               />
-              {" "}Salió de caja chica
+              ¿Salió de caja chica?
             </label>
-          </p>
-
-          <div style={{ overflowX: "auto" }}>
-            <table
-              border="1"
-              cellPadding="8"
-              style={{
-                width: "100%",
-                borderCollapse: "collapse"
-              }}
-            >
-              <thead>
-                <tr>
-                  <th>Producto</th>
-                  <th>Cantidad</th>
-                  <th>Costo por unidad ({datos.moneda})</th>
-                  <th>Subtotal ({datos.moneda})</th>
-                  <th>Quitar</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {lineas.map((linea, indice) => (
-                  <tr key={indice}>
-                    <td>
-                      <select
-                        style={campo}
-                        value={linea.productoId}
-                        onChange={(e) =>
-                          cambiarLinea(
-                            indice,
-                            "productoId",
-                            e.target.value
-                          )
-                        }
-                        required
-                      >
-                        <option value="">
-                          Seleccione un producto
-                        </option>
-
-                        {productos.map((producto) => (
-                          <option
-                            key={producto._id}
-                            value={producto._id}
-                            disabled={lineas.some(
-                              (otra, i) =>
-                                i !== indice &&
-                                otra.productoId === producto._id
-                            )}
-                          >
-                            {producto.codigo} -{" "}
-                            {producto.descripcion}
-                          </option>
-                        ))}
-                      </select>
-                    </td>
-
-                    <td>
-                      <input
-                        style={campo}
-                        type="number"
-                        min="0.001"
-                        step="0.001"
-                        value={linea.cantidad}
-                        onChange={(e) =>
-                          cambiarLinea(
-                            indice,
-                            "cantidad",
-                            e.target.value
-                          )
-                        }
-                        required
-                      />
-                    </td>
-
-                    <td>
-                      <input
-                        style={campo}
-                        type="number"
-                        min="0.000001"
-                        step="0.000001"
-                        value={linea.costoUnitarioMoneda}
-                        onChange={(e) =>
-                          cambiarLinea(
-                            indice,
-                            "costoUnitarioMoneda",
-                            e.target.value
-                          )
-                        }
-                        required
-                      />
-                    </td>
-
-                    <td>{dinero(subtotal(linea))}</td>
-
-                    <td>
-                      <button
-                        type="button"
-                        disabled={lineas.length === 1}
-                        onClick={() =>
-                          setLineas((prev) =>
-                            prev.filter((_, i) => i !== indice)
-                          )
-                        }
-                      >
-                        Quitar
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
           </div>
 
-          <button
-            type="button"
-            style={boton}
-            disabled={lineas.length >= 200}
-            onClick={() =>
-              setLineas((prev) => [...prev, lineaVacia()])
-            }
+          <div
+            style={{
+              maxWidth: "1200px",
+              margin: "0 auto 20px"
+            }}
           >
-            Agregar producto
-          </button>
+            <h3
+              style={{
+                textAlign: "center",
+                marginBottom: "15px",
+                fontWeight: "bold"
+              }}
+            >
+              Productos de la Compra
+            </h3>
+
+            <p
+              style={{
+                textAlign: "center",
+                fontSize: "14px"
+              }}
+            >
+              Seleccione la categoría y después el producto.
+              Los productos aparecen ordenados de A a Z.
+            </p>
+
+            <div style={{ overflowX: "auto" }}>
+              <table
+                style={{
+                  width: "100%",
+                  minWidth: "1000px",
+                  borderCollapse: "collapse",
+                  backgroundColor: "white"
+                }}
+              >
+                <thead
+                  style={{ backgroundColor: colorTabla }}
+                >
+                  <tr>
+                    <th
+                      style={{ ...celda, width: "180px" }}
+                    >
+                      Categoría
+                    </th>
+                    <th style={celda}>Producto</th>
+                    <th
+                      style={{ ...celda, width: "100px" }}
+                    >
+                      Cantidad
+                    </th>
+                    <th
+                      style={{ ...celda, width: "150px" }}
+                    >
+                      Costo por unidad ({datos.moneda})
+                    </th>
+                    <th
+                      style={{ ...celda, width: "120px" }}
+                    >
+                      Subtotal ({datos.moneda})
+                    </th>
+                    <th
+                      style={{ ...celda, width: "40px" }}
+                    >
+                      Quitar
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody>
+                  {lineas.map((linea, indice) => (
+                    <tr key={indice}>
+                      <td style={celda}>
+                        <select
+                          style={selector}
+                          value={linea.categoria}
+                          aria-label={`Categoría ${indice + 1}`}
+                          onChange={(e) =>
+                            cambiarCategoria(
+                              indice,
+                              e.target.value
+                            )
+                          }
+                          required
+                        >
+                          <option value="">
+                            Seleccione categoría
+                          </option>
+
+                          {categorias.map((categoria) => (
+                            <option
+                              key={categoria._id}
+                              value={String(categoria.codigo)}
+                            >
+                              {categoria.descripcion}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+
+                      <td style={celda}>
+                        <select
+                          style={selector}
+                          value={linea.productoId}
+                          disabled={!linea.categoria}
+                          aria-label={`Producto ${indice + 1}`}
+                          onChange={(e) =>
+                            cambiarLinea(
+                              indice,
+                              "productoId",
+                              e.target.value
+                            )
+                          }
+                          required
+                        >
+                          <option value="">
+                            Seleccione un producto
+                          </option>
+
+                          {productosDeCategoria(
+                            linea.categoria
+                          ).map((producto) => (
+                            <option
+                              key={producto._id}
+                              value={producto._id}
+                              disabled={lineas.some(
+                                (otra, i) =>
+                                  i !== indice &&
+                                  otra.productoId === producto._id
+                              )}
+                            >
+                              {producto.descripcion}
+                              {" — "}
+                              {producto.codigo}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+
+                      <td style={celda}>
+                        <input
+                          style={campo}
+                          type="number"
+                          min="0.001"
+                          step="0.001"
+                          aria-label={`Cantidad ${indice + 1}`}
+                          value={linea.cantidad}
+                          onChange={(e) =>
+                            cambiarLinea(
+                              indice,
+                              "cantidad",
+                              e.target.value
+                            )
+                          }
+                          required
+                        />
+                      </td>
+
+                      <td style={celda}>
+                        <input
+                          style={campo}
+                          type="number"
+                          min="0.000001"
+                          step="0.000001"
+                          aria-label={`Costo unitario ${indice + 1}`}
+                          value={linea.costoUnitarioMoneda}
+                          onChange={(e) =>
+                            cambiarLinea(
+                              indice,
+                              "costoUnitarioMoneda",
+                              e.target.value
+                            )
+                          }
+                          required
+                        />
+                      </td>
+
+                      <td
+                        style={{
+                          ...celda,
+                          fontWeight: "bold"
+                        }}
+                      >
+                        {dinero(subtotal(linea))}
+                      </td>
+
+                      <td style={celda}>
+                        <button
+                          type="button"
+                          title="Quitar producto"
+                          aria-label={`Quitar producto ${indice + 1}`}
+                          disabled={lineas.length === 1}
+                          style={{
+                            border: "none",
+                            background: "transparent",
+                            fontSize: "20px",
+                            color: "#B84A4A",
+                            cursor: "pointer",
+                            opacity:
+                              lineas.length === 1 ? 0.4 : 1
+                          }}
+                          onClick={() =>
+                            setLineas((anteriores) =>
+                              anteriores.filter(
+                                (_, i) => i !== indice
+                              )
+                            )
+                          }
+                        >
+                          🗑️
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              style={{
+                textAlign: "center",
+                marginTop: "15px"
+              }}
+            >
+              <button
+                type="button"
+                style={boton}
+                disabled={lineas.length >= 200}
+                onClick={() =>
+                  setLineas((anteriores) => [
+                    ...anteriores,
+                    lineaVacia()
+                  ])
+                }
+              >
+                Agregar producto
+              </button>
+            </div>
+          </div>
         </fieldset>
 
-        <p>
-          <strong>
-            Total: {dinero(total)} {datos.moneda}
-          </strong>
-        </p>
+        <div
+          style={{
+            ...caja,
+            backgroundColor: colorSuave,
+            textAlign: "center"
+          }}
+        >
+          <h3 style={{ margin: "0 0 10px" }}>
+            Total de la compra: {dinero(total)} {datos.moneda}
+          </h3>
 
-        {Number.isFinite(tasa) && tasa > 0 && (
-          <p>
-            Equivalente aproximado: US$ {dinero(total / tasa)}
+          {Number.isFinite(tasa) && tasa > 0 && (
+            <p>
+              Equivalente aproximado: US$ {dinero(total / tasa)}
+            </p>
+          )}
+
+          <p style={{ fontSize: "13px" }}>
+            La compra genera sus entradas automáticamente.
+            Regístrela una sola vez.
           </p>
-        )}
 
-        <button
-          type="submit"
-          style={boton}
-          disabled={
-            guardando || cargando || Boolean(errorCarga)
-          }
-        >
-          {guardando
-            ? "Guardando..."
-            : pendiente
-            ? "Reintentar la misma compra"
-            : "Guardar compra"}
-        </button>
+          <button
+            type="submit"
+            style={{
+              ...boton,
+              opacity:
+                guardando || cargando || Boolean(errorCarga)
+                  ? 0.6
+                  : 1
+            }}
+            disabled={
+              guardando || cargando || Boolean(errorCarga)
+            }
+          >
+            {guardando
+              ? "Guardando..."
+              : pendiente
+              ? "Reintentar la misma compra"
+              : "Guardar compra"}
+          </button>
+        </div>
 
-        <button
-          type="button"
-          style={boton}
-          disabled={guardando}
-          onClick={onVolver}
+        <div
+          style={{
+            textAlign: "center",
+            marginBottom: "20px"
+          }}
         >
-          {pendiente ? "Consultar gastos" : "Volver a gastos"}
-        </button>
+          <button
+            type="button"
+            style={botonVolver}
+            disabled={guardando}
+            onClick={onVolver}
+          >
+            {pendiente ? "Consultar gastos" : "Volver a gastos"}
+          </button>
+        </div>
       </form>
     </div>
   );
