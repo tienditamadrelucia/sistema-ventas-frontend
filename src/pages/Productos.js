@@ -1088,9 +1088,9 @@ const payload = {
               <td>{p.medida}</td>
               <td>{p.stock}</td>
               <td>{p.fechaIngreso.slice(0, 10).split("-").reverse().join("/")}</td>
-              <td>{p.costo}</td>
-              <td>{p.precioanterior}</td>
-              <td>{p.venta}</td>
+              <td>{Number(p.costo ?? 0).toFixed(2)}</td>
+              <td>{Number(p.precioanterior ?? 0).toFixed(2)}</td>
+              <td>{Number(p.venta ?? 0).toFixed(2)}</td>
               <td>
                 {p.origen === "PRODUCCION_MONASTERIO" 
                   ? "MONASTERIO"
