@@ -463,6 +463,7 @@ export default function ProduccionPollo() {
               )}
 
             <form
+              noValidate
               onSubmit={guardar}
               style={{
                 border: "1px solid #5A2D16",
@@ -525,41 +526,8 @@ export default function ProduccionPollo() {
                       onChange={cambiar}
                       required
                     />
-                  </label>
-
-                  <label>
-                    (kg) de control antes de despiezar 
-                    <input
-                      style={campo}
-                      type="number"
-                      name="pesoControlKg"
-                      min="0.001"
-                      step="0.001"
-                      value={formulario.pesoControlKg}
-                      onChange={cambiar}
-                      required
-                    />
-                  </label>
-
-                  <label>
-                    (kg) Huesos, recortes y otras mermas 
-                    <input
-                      style={campo}
-                      type="number"
-                      name="mermasKg"
-                      min="0"
-                      step="0.001"
-                      value={formulario.mermasKg}
-                      onChange={cambiar}
-                      required
-                    />
-                  </label>
-                </div>
-
-                <p>
-                  El peso de control incluye todo lo que se
-                  distribuirá entre productos y mermas.
-                </p>
+                  </label>                  
+                </div>             
 
                 <div style={{ overflowX: "auto" }}>
                   <table
@@ -735,14 +703,7 @@ export default function ProduccionPollo() {
                 <button
                   type="submit"
                   style={boton}
-                  disabled={
-                    guardando ||
-                    cargando ||
-                    (
-                      !pendiente &&
-                      (!control.valido || productos.length === 0)
-                    )
-                  }
+                  disabled={guardando || cargando || !detalle}                  
                 >
                   {guardando
                     ? "PROCESANDO..."
