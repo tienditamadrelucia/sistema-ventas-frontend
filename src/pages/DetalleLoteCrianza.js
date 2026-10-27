@@ -201,6 +201,15 @@ export default function DetalleLoteCrianza() {
               >
                 REGISTRAR PRODUCCIÓN
               </button>
+              <button
+                type="button"
+                style={boton}
+                onClick={() =>
+                  navigate(`/lotes-crianza/${id}/gastos`)
+                }
+              >
+                GASTOS DEL LOTE
+              </button>
             </div>
 
             <h3 style={{ marginTop: "30px" }}>

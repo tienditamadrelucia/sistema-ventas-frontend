@@ -122,3 +122,77 @@ export async function registrarProduccionCrianza(
     }
   );
 }
+
+// =====================================================
+// CONSULTAR GASTOS DEL LOTE
+// =====================================================
+export async function obtenerGastosLoteCrianza(id) {
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}/gastos`
+  );
+}
+
+// =====================================================
+// VINCULAR UN GASTO EXISTENTE
+// =====================================================
+export async function vincularGastoLote(id, datos) {
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}/gastos/asignar`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        gastoId: datos.gastoId,
+        concepto: datos.concepto,
+        montoAsignado: datos.montoAsignado
+      })
+    }
+  );
+}
+
+// =====================================================
+// CREAR GASTO Y VINCULARLO AL LOTE
+// =====================================================
+export async function crearGastoLoteCrianza(id, datos) {
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}/gastos`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        fecha: datos.fecha,
+        sede: datos.sede,
+        descripcion: datos.descripcion,
+        moneda: datos.moneda,
+        monto: datos.monto,
+        montoAsignado: datos.montoAsignado,
+        concepto: datos.concepto,
+        actividadProductiva: datos.actividadProductiva,
+        numeroRecibo: datos.numeroRecibo,
+        cajaChica: datos.cajaChica,
+        claveOperacion: datos.claveOperacion
+      })
+    }
+  );
+}
+
+// =====================================================
+// BUSCAR GASTOS EXISTENTES DISPONIBLES
+// =====================================================
+export async function buscarGastosParaLote(
+  id,
+  sede,
+  desde,
+  hasta,
+  pagina = 1
+) {
+  const parametros = new URLSearchParams({
+    sede,
+    desde,
+    hasta,
+    pagina: String(pagina)
+  });
+
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}` +
+    `/gastos/disponibles?${parametros.toString()}`
+  );
+}
