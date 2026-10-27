@@ -464,34 +464,16 @@ export default function LotesCrianza() {
                         {lote.observaciones || "—"}
                       </td>
                       <td style={celda}>
-                          <button
-                            type="button"
-                            disabled={guardando}
-                            onClick={() =>
-                              navigate(
-                              `/lotes-crianza/${lote._id}/baja`
-                              )
-                            }
-                            style={boton}
-                          >
-                            REGISTRAR BAJA
-                          </button>
-                          <button
-                            type="button"
-                            disabled={guardando}
-                            onClick={() =>
-                              navigate(
-                              `/lotes-crianza/${lote._id}/produccion`
-                            )
-                            }
-                            style={{
-                              ...boton,
-                              marginLeft: "8px",
-                              marginTop: "5px"
-                            }}
-                          >
-                            REGISTRAR PRODUCCIÓN
-                          </button>
+                        <button
+                          type="button"
+                          disabled={guardando}
+                          onClick={() =>
+                            navigate(`/lotes-crianza/${lote._id}`)
+                          }
+                          style={boton}
+                        >
+                          VER LOTE
+                        </button>
                       </td>
                       {esAdministrador && (
                         <td
