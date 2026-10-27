@@ -228,7 +228,9 @@ function MenuMonasterio() {
           </button>
           <button
             style={botonPrincipal}
-            onClick={() => navigate("/lotes-crianza")}
+            onClick={async()=> {
+            await registrarAccion("Ingresó al módulo Lotes por crianza");
+              navigate("/lotes-crianza");}}
           >
             Registro Lotes de Pollos
           </button>
