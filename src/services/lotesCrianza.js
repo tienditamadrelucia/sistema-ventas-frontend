@@ -100,3 +100,25 @@ export async function registrarBajaCrianza(id, datos) {
     }
   );
 }
+
+// =====================================================
+// REGISTRAR PRODUCCIÓN Y SUS ENTRADAS
+// =====================================================
+export async function registrarProduccionCrianza(
+  id,
+  datos
+) {
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}/producciones`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        fecha: datos.fecha,
+        pollosProcesados: datos.pollosProcesados,
+        observaciones: datos.observaciones,
+        detalles: datos.detalles,
+        claveOperacion: datos.claveOperacion
+      })
+    }
+  );
+}
