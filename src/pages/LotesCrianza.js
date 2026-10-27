@@ -476,6 +476,22 @@ export default function LotesCrianza() {
                           >
                             REGISTRAR BAJA
                           </button>
+                          <button
+                            type="button"
+                            disabled={guardando}
+                            onClick={() =>
+                              navigate(
+                              `/lotes-crianza/${lote._id}/produccion`
+                            )
+                            }
+                            style={{
+                              ...boton,
+                              marginLeft: "8px",
+                              marginTop: "5px"
+                            }}
+                          >
+                            REGISTRAR PRODUCCIÓN
+                          </button>
                       </td>
                       {esAdministrador && (
                         <td
