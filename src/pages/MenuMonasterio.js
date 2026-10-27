@@ -226,7 +226,12 @@ function MenuMonasterio() {
           >
             Productos por Stock
           </button>
-
+          <button
+            style={botonPrincipal}
+            onClick={() => navigate("/lotes-crianza")}
+          >
+            Registro Lotes de Pollos
+          </button>
             </>
           )}                
 
