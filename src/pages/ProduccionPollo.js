@@ -528,7 +528,7 @@ export default function ProduccionPollo() {
                   </label>
 
                   <label>
-                    Peso de control antes de despiezar (kg)
+                    (kg) de control antes de despiezar 
                     <input
                       style={campo}
                       type="number"
@@ -542,7 +542,7 @@ export default function ProduccionPollo() {
                   </label>
 
                   <label>
-                    Huesos, recortes y otras mermas (kg)
+                    (kg) Huesos, recortes y otras mermas 
                     <input
                       style={campo}
                       type="number"
