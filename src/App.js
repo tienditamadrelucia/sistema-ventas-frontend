@@ -42,6 +42,7 @@ import Participaciones from "./pages/Participaciones";
 import "./utils/sesionAPI";
 import RevisionDiaria from "./pages/RevisionDiaria";
 import LotesCrianza from "./pages/LotesCrianza";
+import BajaCrianza from "./pages/BajaCrianza";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -138,6 +139,7 @@ function App() {
         <Route path="/participaciones" element={<ProtectedRoute><Participaciones /></ProtectedRoute>}/>
         <Route path="/revision-diaria" element={<ProtectedRoute><RevisionDiaria /></ProtectedRoute>}/>
         <Route path="/lotes-crianza" element={<ProtectedRoute><LotesCrianza /></ProtectedRoute>}/>
+        <Route path="/lotes-crianza/:id/baja" element={<ProtectedRoute><BajaCrianza /></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   );

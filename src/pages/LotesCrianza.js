@@ -431,6 +431,7 @@ export default function LotesCrianza() {
                     <th style={celda}>
                       Observaciones
                     </th>
+                    <th style={celda}>Seguimiento</th>
                     {esAdministrador && (
                       <th
                         style={{
@@ -440,7 +441,7 @@ export default function LotesCrianza() {
                       >
                         Eliminar
                       </th>
-                    )}
+                    )}                    
                   </tr>
                 </thead>
 
@@ -461,6 +462,20 @@ export default function LotesCrianza() {
                       </td>
                       <td style={celda}>
                         {lote.observaciones || "—"}
+                      </td>
+                      <td style={celda}>
+                          <button
+                            type="button"
+                            disabled={guardando}
+                            onClick={() =>
+                              navigate(
+                              `/lotes-crianza/${lote._id}/baja`
+                              )
+                            }
+                            style={boton}
+                          >
+                            REGISTRAR BAJA
+                          </button>
                       </td>
                       {esAdministrador && (
                         <td
@@ -488,7 +503,7 @@ export default function LotesCrianza() {
                           >
                             🗑️
                           </button>
-                        </td>
+                        </td>                        
                       )}
                     </tr>
                   ))}

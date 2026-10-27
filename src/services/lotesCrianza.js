@@ -73,3 +73,30 @@ export async function eliminarLoteCrianza(id) {
     }
   );
 }
+
+// =====================================================
+// CONSULTAR DETALLE DEL LOTE
+// =====================================================
+export async function obtenerDetalleLoteCrianza(id) {
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}`
+  );
+}
+
+// =====================================================
+// REGISTRAR BAJA DE ANIMALES
+// =====================================================
+export async function registrarBajaCrianza(id, datos) {
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}/bajas`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        fecha: datos.fecha,
+        cantidad: datos.cantidad,
+        motivo: datos.motivo,
+        claveOperacion: datos.claveOperacion
+      })
+    }
+  );
+}
