@@ -115,6 +115,8 @@ export async function registrarProduccionCrianza(
       body: JSON.stringify({
         fecha: datos.fecha,
         pollosProcesados: datos.pollosProcesados,
+        pesoControlKg: datos.pesoControlKg,
+        mermasKg: datos.mermasKg,
         observaciones: datos.observaciones,
         detalles: datos.detalles,
         claveOperacion: datos.claveOperacion
@@ -194,5 +196,32 @@ export async function buscarGastosParaLote(
   return solicitar(
     `${API}/${encodeURIComponent(id)}` +
     `/gastos/disponibles?${parametros.toString()}`
+  );
+}
+
+// =====================================================
+// MODIFICAR PRODUCCIÓN Y SUS ENTRADAS
+// =====================================================
+export async function actualizarProduccionCrianza(
+  id,
+  produccionId,
+  datos
+) {
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}` +
+    `/producciones/${encodeURIComponent(produccionId)}`,
+    {
+      method: "PUT",
+      body: JSON.stringify({
+        fecha: datos.fecha,
+        pollosProcesados: datos.pollosProcesados,
+        pesoControlKg: datos.pesoControlKg,
+        mermasKg: datos.mermasKg,
+        observaciones: datos.observaciones,
+        detalles: datos.detalles,
+        versionEsperada: datos.versionEsperada,
+        claveOperacion: datos.claveOperacion
+      })
+    }
   );
 }

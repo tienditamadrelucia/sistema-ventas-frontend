@@ -146,6 +146,7 @@ function App() {
         <Route path="/lotes-crianza/:id/produccion" element={<ProtectedRoute><ProduccionPollo /></ProtectedRoute>}/>
         <Route path="/lotes-crianza/:id" element={<ProtectedRoute><DetalleLoteCrianza /></ProtectedRoute>}/>
         <Route path="/lotes-crianza/:id/gastos" element={<ProtectedRoute><GastosLote /></ProtectedRoute>}/>
+        <Route path="/lotes-crianza/:id/produccion/:produccionId/editar" element={<ProtectedRoute><ProduccionPollo key="editar-produccion" /></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   );

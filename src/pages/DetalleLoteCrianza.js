@@ -226,7 +226,15 @@ export default function DetalleLoteCrianza() {
                       <th style={celda}>Fecha</th>
                       <th style={celda}>Pollos procesados</th>
                       <th style={celda}>Peso obtenido</th>
-                      <th style={celda}>Acciones</th>
+                      <th style={celda}>Detalle</th>
+                      <th
+                        style={{
+                        ...celda,
+                          width: "55px"
+                        }}
+                      >
+                        Modificar
+                      </th>
                     </tr>
                   </thead>
 
@@ -257,6 +265,33 @@ export default function DetalleLoteCrianza() {
                             {jornadaAbierta === item._id
                               ? "OCULTAR DETALLE"
                               : "VER DETALLE"}
+                          </button>
+                        </td>
+                        <td
+                          style={{
+                            ...celda,
+                            width: "55px"
+                          }}
+                        >
+                          <button
+                            type="button"
+                            title="Modificar esta producción"
+                            aria-label="Modificar esta producción"
+                            onClick={() =>
+                              navigate(
+                              `/lotes-crianza/${id}/produccion/${item._id}/editar`
+                            )
+                            }
+                            style={{
+                              padding: "6px 10px",
+                              backgroundColor: "#E8D1A5",
+                              border: "1px solid #ccc",
+                              borderRadius: "5px",
+                              cursor: "pointer",
+                              fontSize: "18px"
+                            }}
+                          >
+                            ✎
                           </button>
                         </td>
                       </tr>

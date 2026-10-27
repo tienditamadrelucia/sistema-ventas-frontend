@@ -11,18 +11,22 @@ import Encabezado from "../components/Encabezado";
 import { API_URL } from "../config";
 import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import {
+  evaluarControlProduccion
+} from "../utils/controlProduccionPollo";
+import {
   obtenerDetalleLoteCrianza,
-  registrarProduccionCrianza
+  registrarProduccionCrianza,
+  actualizarProduccionCrianza
 } from "../services/lotesCrianza";
 
 const tipos = [
-  ["PECHUGA", "Pechuga", "piezas"],
-  ["MUSLOS", "Muslos", "paquetes de 2"],
-  ["ALAS", "Alas", ""],
-  ["PATAS", "Patas", ""],
-  ["POLLO_ENTERO", "Pollo entero", "piezas"],
-  ["MILANESA", "Milanesa", ""],
-  ["CHURRASCO", "Churrasco", ""]
+  ["PECHUGA", "Pechuga", "cantidadPresentaciones", "Pechugas completas"],
+  ["MUSLOS", "Muslos", "cantidadPresentaciones", "Paquetes de 2 muslos"],
+  ["ALAS", "Alas", "", ""],
+  ["PATAS", "Patas", "", ""],
+  ["POLLO_ENTERO", "Pollo entero", "cantidadPresentaciones", "Pollos enteros"],
+  ["MILANESA", "Milanesa", "pechugasUtilizadas", "Pechugas utilizadas"],
+  ["CHURRASCO", "Churrasco", "muslosUtilizados", "Muslos individuales utilizados"]
 ];
 
 const campo = {
@@ -51,38 +55,47 @@ const celda = {
   textAlign: "left"
 };
 
-function filasIniciales(detalles = []) {
-  return tipos.map(([tipoProducto]) => {
-    const anterior = detalles.find(
-      (detalle) => detalle.tipoProducto === tipoProducto
-    );
+function prepararFormulario(datos = {}, historico = false) {
+  return {
+    fecha: String(
+      datos.fecha || obtenerFechaVenezuela()
+    ).slice(0, 10),
+    pollosProcesados: datos.pollosProcesados ?? "",
+    pesoControlKg: datos.pesoControlKg ?? "",
+    mermasKg: datos.mermasKg ?? (historico ? "" : 0),
+    observaciones: datos.observaciones || "",
 
-    return {
-      tipoProducto,
-      productoId: anterior?.productoId || "",
-      pesoKg: anterior?.pesoKg ?? "",
-      cantidadPresentaciones:
-        anterior?.cantidadPresentaciones ?? ""
-    };
-  });
-}
+    filas: tipos.map(([tipoProducto]) => {
+      const anterior = (datos.detalles || []).find(
+        (detalle) => detalle.tipoProducto === tipoProducto
+      );
 
-function mostrarPeso(peso) {
-  return Number(peso).toLocaleString("es-VE", {
-    minimumFractionDigits: 3,
-    maximumFractionDigits: 3
-  });
+      return {
+        tipoProducto,
+        productoId: anterior?.productoId || "",
+        pesoKg: anterior?.pesoKg ?? "",
+        cantidadPresentaciones:
+          anterior?.cantidadPresentaciones ?? "",
+        pechugasUtilizadas:
+          anterior?.pechugasUtilizadas ?? "",
+        muslosUtilizados:
+          anterior?.muslosUtilizados ?? ""
+      };
+    })
+  };
 }
 
 export default function ProduccionPollo() {
-  const { id } = useParams();
+  const { id, produccionId } = useParams();
+  const editando = Boolean(produccionId);
   const navigate = useNavigate();
   const ocupadoRef = useRef(false);
 
   const clavePendiente =
     `produccionPollo:${
       localStorage.getItem("usuarioNombre") || ""
-    }:${id}`;
+    }:${id}` +
+    (editando ? `:editar:${produccionId}` : "");
 
   const [pendiente, setPendiente] = useState(() => {
     try {
@@ -94,8 +107,8 @@ export default function ProduccionPollo() {
         datos &&
         typeof datos.claveOperacion === "string" &&
         typeof datos.fecha === "string" &&
-        Number.isSafeInteger(datos.pollosProcesados) &&
-        Array.isArray(datos.detalles)
+        Array.isArray(datos.detalles) &&
+        Number.isSafeInteger(datos.pollosProcesados)
       )
         ? datos
         : null;
@@ -104,21 +117,17 @@ export default function ProduccionPollo() {
     }
   });
 
-  const [fecha, setFecha] = useState(
-    pendiente?.fecha ||
-    obtenerFechaVenezuela().slice(0, 10)
-  );
-  const [pollos, setPollos] = useState(
-    pendiente?.pollosProcesados || ""
-  );
-  const [observaciones, setObservaciones] = useState(
-    pendiente?.observaciones || ""
-  );
-  const [filas, setFilas] = useState(() =>
-    filasIniciales(pendiente?.detalles)
+  const [formulario, setFormulario] = useState(() =>
+    prepararFormulario(pendiente || {})
   );
 
   const [detalle, setDetalle] = useState(null);
+  const [jornadaBase, setJornadaBase] = useState(null);
+
+  const [versionEsperada, setVersionEsperada] = useState(
+    pendiente?.versionEsperada ?? null
+  );
+
   const [productos, setProductos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
@@ -131,6 +140,7 @@ export default function ProduccionPollo() {
       try {
         const resultados = await Promise.allSettled([
           obtenerDetalleLoteCrianza(id),
+
           fetch(
             `${API_URL}/api/productos?sede=MONASTERIO`,
             { credentials: "include" }
@@ -165,19 +175,37 @@ export default function ProduccionPollo() {
 
         if (!activo) return;
 
-        if (resultados[0].status === "fulfilled") {
-          setDetalle(resultados[0].value);
-        }
-
-        if (resultados[1].status === "fulfilled") {
-          setProductos(resultados[1].value);
-        }
-
         const fallo = resultados.find(
           (resultado) => resultado.status === "rejected"
         );
 
         if (fallo) throw fallo.reason;
+
+        const datos = resultados[0].value;
+
+        const jornada = editando
+          ? datos.producciones.find(
+              (item) => item._id === produccionId
+            )
+          : null;
+
+        if (editando && !jornada && !pendiente) {
+          throw new Error("La jornada no existe.");
+        }
+
+        setDetalle(datos);
+        setProductos(resultados[1].value);
+        setJornadaBase(jornada);
+
+        if (!pendiente) {
+          setFormulario(
+            prepararFormulario(jornada || {}, editando)
+          );
+
+          setVersionEsperada(
+            jornada ? (jornada.__v ?? 0) : null
+          );
+        }
       } catch (fallo) {
         if (activo) setError(fallo.message);
       } finally {
@@ -190,27 +218,64 @@ export default function ProduccionPollo() {
     return () => {
       activo = false;
     };
-  }, [id]);
+
+    // La solicitud pendiente se conserva durante esta pantalla.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, produccionId]);
+
+  function cambiar(e) {
+    const { name, value } = e.target;
+
+    setFormulario((anterior) => ({
+      ...anterior,
+      [name]: value
+    }));
+  }
 
   function cambiarFila(indice, nombre, valor) {
-    setFilas((anteriores) =>
-      anteriores.map((fila, posicion) =>
+    setFormulario((anterior) => ({
+      ...anterior,
+      filas: anterior.filas.map((fila, posicion) =>
         posicion === indice
           ? { ...fila, [nombre]: valor }
           : fila
       )
-    );
+    }));
   }
 
   function borrarPendiente() {
     try {
       sessionStorage.removeItem(clavePendiente);
     } catch {
-      // El resultado confirmado por el servidor se conserva.
+      // El resultado ya fue confirmado por el servidor.
     }
 
     setPendiente(null);
   }
+
+  const utilizadas = formulario.filas.filter(
+    (fila) =>
+      fila.productoId ||
+      [
+        "pesoKg",
+        "cantidadPresentaciones",
+        "pechugasUtilizadas",
+        "muslosUtilizados"
+      ].some((nombre) => fila[nombre] !== "")
+  );
+
+  const control = evaluarControlProduccion({
+    ...formulario,
+    detalles: utilizadas
+  });
+
+  const disponibles = detalle
+    ? detalle.resumen.enCrianza +
+      (editando ? jornadaBase?.pollosProcesados || 0 : 0)
+    : 0;
+
+  const bloqueado =
+    cargando || guardando || Boolean(pendiente);
 
   async function guardar(e) {
     e.preventDefault();
@@ -227,102 +292,87 @@ export default function ProduccionPollo() {
 
     if (!solicitud) {
       try {
-        const cantidadPollos = Number(pollos);
-
-        if (
-          !Number.isSafeInteger(cantidadPollos) ||
-          cantidadPollos <= 0 ||
-          cantidadPollos > detalle.resumen.enCrianza
-        ) {
-          throw new Error(
-            "Revise la cantidad de pollos procesados."
-          );
+        if (!control.valido) {
+          throw new Error(control.errores.join(" "));
         }
 
-        const utilizadas = filas.filter(
-          (fila) =>
-            fila.productoId ||
-            fila.pesoKg !== "" ||
-            fila.cantidadPresentaciones !== ""
-        );
-
-        if (utilizadas.length === 0) {
+        if (
+          Number(formulario.pollosProcesados) >
+          disponibles
+        ) {
           throw new Error(
-            "Registre al menos un producto obtenido."
+            "La cantidad supera los pollos disponibles para esta jornada."
           );
         }
 
         const ids = new Set();
 
         const detalles = utilizadas.map((fila) => {
-          const tipo = tipos.find(
-            (item) => item[0] === fila.tipoProducto
-          );
-
-          const pesoKg = Number(fila.pesoKg);
-          const gramos = Math.round(pesoKg * 1000);
-
           if (
-            !fila.productoId ||
             !productos.some(
               (producto) => producto._id === fila.productoId
             )
           ) {
             throw new Error(
-              `Seleccione el producto para ${tipo[1]}.`
+              `Seleccione un producto válido para ${fila.tipoProducto}.`
             );
           }
 
           if (ids.has(fila.productoId)) {
-            throw new Error(
-              "No puede seleccionar el mismo producto en dos filas."
-            );
+            throw new Error("No puede repetir un producto.");
           }
 
           ids.add(fila.productoId);
 
-          if (
-            !Number.isFinite(pesoKg) ||
-            pesoKg <= 0 ||
-            !Number.isSafeInteger(gramos) ||
-            Math.abs(
-              pesoKg * 1000 - gramos
-            ) >= 0.000001
-          ) {
-            throw new Error(
-              `Revise el peso de ${tipo[1]}. Use hasta tres decimales.`
-            );
-          }
-
-          const cantidadPresentaciones = tipo[2]
-            ? Number(fila.cantidadPresentaciones)
-            : null;
-
-          if (
-            tipo[2] &&
-            (
-              !Number.isSafeInteger(cantidadPresentaciones) ||
-              cantidadPresentaciones <= 0
-            )
-          ) {
-            throw new Error(
-              `Indique la cantidad de ${tipo[2]} de ${tipo[1]}.`
-            );
-          }
+          const esPieza = [
+            "PECHUGA",
+            "MUSLOS",
+            "POLLO_ENTERO"
+          ].includes(fila.tipoProducto);
 
           return {
-            tipoProducto: fila.tipoProducto,
             productoId: fila.productoId,
-            pesoKg: gramos / 1000,
-            cantidadPresentaciones
+            tipoProducto: fila.tipoProducto,
+            pesoKg: Number(fila.pesoKg),
+
+            cantidadPresentaciones: esPieza
+              ? Number(fila.cantidadPresentaciones)
+              : null,
+
+            ...(fila.tipoProducto === "MILANESA"
+              ? {
+                  pechugasUtilizadas:
+                    Number(fila.pechugasUtilizadas)
+                }
+              : {}),
+
+            ...(fila.tipoProducto === "CHURRASCO"
+              ? {
+                  muslosUtilizados:
+                    Number(fila.muslosUtilizados)
+                }
+              : {})
           };
         });
 
+        if (
+          editando &&
+          !Number.isSafeInteger(versionEsperada)
+        ) {
+          throw new Error(
+            "Vuelva a abrir la jornada para editarla."
+          );
+        }
+
         solicitud = {
-          fecha,
-          pollosProcesados: cantidadPollos,
-          observaciones: observaciones.trim(),
+          fecha: formulario.fecha,
+          pollosProcesados:
+            Number(formulario.pollosProcesados),
+          pesoControlKg: control.peso.controlKg,
+          mermasKg: control.peso.mermasKg,
+          observaciones: formulario.observaciones.trim(),
           detalles,
+          ...(editando ? { versionEsperada } : {}),
           claveOperacion: window.crypto.randomUUID()
         };
 
@@ -333,10 +383,7 @@ export default function ProduccionPollo() {
 
         setPendiente(solicitud);
       } catch (fallo) {
-        setError(
-          fallo.message ||
-          "No se pudo preparar la solicitud. No se envió la producción."
-        );
+        setError(fallo.message);
         return;
       }
     }
@@ -346,15 +393,21 @@ export default function ProduccionPollo() {
     setError("");
 
     try {
-      const respuesta = await registrarProduccionCrianza(
-        id,
-        solicitud
-      );
+      const respuesta = editando
+        ? await actualizarProduccionCrianza(
+            id,
+            produccionId,
+            solicitud
+          )
+        : await registrarProduccionCrianza(
+            id,
+            solicitud
+          );
 
       borrarPendiente();
       window.alert(respuesta.mensaje);
 
-      navigate("/lotes-crianza", {
+      navigate(`/lotes-crianza/${id}`, {
         replace: true
       });
     } catch (fallo) {
@@ -363,8 +416,7 @@ export default function ProduccionPollo() {
         setError(fallo.message);
       } else {
         setError(
-          `${fallo.message} ` +
-          "Reintente la misma solicitud para evitar duplicarla."
+          `${fallo.message} Reintente conservando la misma solicitud.`
         );
       }
     } finally {
@@ -373,59 +425,53 @@ export default function ProduccionPollo() {
     }
   }
 
-  const totalGramos = filas.reduce((suma, fila) => {
-    const peso = Number(fila.pesoKg);
-
-    return suma + (
-      Number.isFinite(peso) && peso > 0
-        ? Math.round(peso * 1000)
-        : 0
-    );
-  }, 0);
-
-  const restantes = detalle
-    ? detalle.resumen.enCrianza - Number(pollos || 0)
-    : null;
-
   return (
     <div>
       <Encabezado />
 
-      <main style={{ padding: "20px", color: "#5A2D16" }}>
+      <main
+        style={{
+          padding: "20px",
+          color: "#5A2D16",
+          maxWidth: "1200px",
+          margin: "0 auto"
+        }}
+      >
         <h2 style={{ textAlign: "center" }}>
-          REGISTRAR PRODUCCIÓN DE POLLOS
+          {editando
+            ? "MODIFICAR PRODUCCIÓN DE POLLOS"
+            : "REGISTRAR PRODUCCIÓN DE POLLOS"}
         </h2>
 
-        {cargando && <p>Cargando lote y productos...</p>}
+        {cargando && (
+          <p>Cargando jornada y productos...</p>
+        )}
 
         {detalle && (
-          <form
-            onSubmit={guardar}
-            style={{
-              maxWidth: "1100px",
-              margin: "20px auto",
-              border: "1px solid #5A2D16",
-              borderRadius: "8px",
-              overflow: "hidden"
-            }}
-          >
-            <h3
-              style={{
-                margin: 0,
-                padding: "14px",
-                backgroundColor: "#E8D1A5"
-              }}
-            >
+          <>
+            <h3 style={{ textAlign: "center" }}>
               Lote: {detalle.lote.nombre}
             </h3>
 
-            <div style={{ padding: "16px" }}>
+            {editando &&
+              jornadaBase?.versionControl !== 1 && (
+                <p>
+                  Esta jornada se registró sin los nuevos
+                  controles. Complete las cantidades y los
+                  pesos reales antes de corregirla.
+                </p>
+              )}
+
+            <form
+              onSubmit={guardar}
+              style={{
+                border: "1px solid #5A2D16",
+                borderRadius: "8px",
+                padding: "18px"
+              }}
+            >
               <fieldset
-                disabled={
-                  cargando ||
-                  guardando ||
-                  Boolean(pendiente)
-                }
+                disabled={bloqueado}
                 style={{
                   border: "none",
                   padding: 0,
@@ -437,9 +483,8 @@ export default function ProduccionPollo() {
                   style={{
                     display: "grid",
                     gridTemplateColumns:
-                      "repeat(auto-fit, minmax(190px, 1fr))",
-                    gap: "15px",
-                    marginBottom: "20px"
+                      "repeat(auto-fit, minmax(220px, 1fr))",
+                    gap: "15px"
                   }}
                 >
                   <label>
@@ -447,8 +492,9 @@ export default function ProduccionPollo() {
                     <input
                       style={campo}
                       type="date"
-                      value={fecha}
-                      onChange={(e) => setFecha(e.target.value)}
+                      name="fecha"
+                      value={formulario.fecha}
+                      onChange={cambiar}
                       min={String(
                         detalle.lote.fechaInicio
                       ).slice(0, 10)}
@@ -458,10 +504,10 @@ export default function ProduccionPollo() {
                   </label>
 
                   <label>
-                    Disponibles en crianza
+                    Disponibles para esta jornada
                     <input
                       style={campo}
-                      value={detalle.resumen.enCrianza}
+                      value={disponibles}
                       readOnly
                     />
                   </label>
@@ -471,36 +517,74 @@ export default function ProduccionPollo() {
                     <input
                       style={campo}
                       type="number"
+                      name="pollosProcesados"
                       min="1"
                       step="1"
-                      max={detalle.resumen.enCrianza}
-                      value={pollos}
-                      onChange={(e) => setPollos(e.target.value)}
+                      max={disponibles}
+                      value={formulario.pollosProcesados}
+                      onChange={cambiar}
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Peso de control antes de despiezar (kg)
+                    <input
+                      style={campo}
+                      type="number"
+                      name="pesoControlKg"
+                      min="0.001"
+                      step="0.001"
+                      value={formulario.pesoControlKg}
+                      onChange={cambiar}
+                      required
+                    />
+                  </label>
+
+                  <label>
+                    Huesos, recortes y otras mermas (kg)
+                    <input
+                      style={campo}
+                      type="number"
+                      name="mermasKg"
+                      min="0"
+                      step="0.001"
+                      value={formulario.mermasKg}
+                      onChange={cambiar}
                       required
                     />
                   </label>
                 </div>
 
-                <h3>Productos obtenidos</h3>
+                <p>
+                  El peso de control incluye todo lo que se
+                  distribuirá entre productos y mermas.
+                </p>
 
                 <div style={{ overflowX: "auto" }}>
                   <table
                     style={{
                       width: "100%",
-                      minWidth: "650px",
+                      minWidth: "700px",
                       borderCollapse: "collapse"
                     }}
                   >
-                    <thead style={{ backgroundColor: "#E8D1A5" }}>
+                    <thead
+                      style={{ backgroundColor: "#E8D1A5" }}
+                    >
                       <tr>
-                        <th style={celda}>Tipo / producto</th>
-                        <th style={celda}>Piezas / paquetes</th>
-                        <th style={celda}>Peso total (kg)</th>
+                        <th style={celda}>Producto</th>
+                        <th style={celda}>
+                          Cantidad de referencia
+                        </th>
+                        <th style={celda}>
+                          Peso obtenido (kg)
+                        </th>
                       </tr>
                     </thead>
 
                     <tbody>
-                      {filas.map((fila, indice) => {
+                      {formulario.filas.map((fila, indice) => {
                         const tipo = tipos[indice];
 
                         return (
@@ -523,13 +607,23 @@ export default function ProduccionPollo() {
                                     Sin producción / seleccione producto
                                   </option>
 
+                                  {fila.productoId &&
+                                    !productos.some(
+                                      (p) =>
+                                        p._id === fila.productoId
+                                    ) && (
+                                      <option value={fila.productoId}>
+                                        Producto anterior: revise su configuración
+                                      </option>
+                                    )}
+
                                   {productos.map((producto) => (
                                     <option
                                       key={producto._id}
                                       value={producto._id}
-                                      disabled={filas.some(
-                                        (otra, posicion) =>
-                                          posicion !== indice &&
+                                      disabled={formulario.filas.some(
+                                        (otra, i) =>
+                                          i !== indice &&
                                           otra.productoId === producto._id
                                       )}
                                     >
@@ -543,17 +637,17 @@ export default function ProduccionPollo() {
                             <td style={celda}>
                               {tipo[2] ? (
                                 <label>
-                                  {tipo[2]}
+                                  {tipo[3]}
                                   <input
                                     style={campo}
                                     type="number"
                                     min="1"
                                     step="1"
-                                    value={fila.cantidadPresentaciones}
+                                    value={fila[tipo[2]]}
                                     onChange={(e) =>
                                       cambiarFila(
                                         indice,
-                                        "cantidadPresentaciones",
+                                        tipo[2],
                                         e.target.value
                                       )
                                     }
@@ -565,10 +659,10 @@ export default function ProduccionPollo() {
                             <td style={celda}>
                               <input
                                 style={campo}
-                                aria-label={`Peso de ${tipo[1]} en kilos`}
                                 type="number"
                                 min="0.001"
                                 step="0.001"
+                                aria-label={`Peso de ${tipo[1]} en kilos`}
                                 value={fila.pesoKg}
                                 onChange={(e) =>
                                   cambiarFila(
@@ -586,57 +680,56 @@ export default function ProduccionPollo() {
                   </table>
                 </div>
 
-                <p>
-                  <strong>
-                    Peso total obtenido:{" "}
-                    {mostrarPeso(totalGramos / 1000)} kg
-                  </strong>
-                </p>
-
-                {!pendiente && (
-                  <p>
-                    Pollos que continúan en crianza:{" "}
-                    <strong>{restantes}</strong>
+                {[
+                  control.pechugas,
+                  control.muslos,
+                  control.peso
+                ].map((item, indice) => (
+                  <p
+                    key={indice}
+                    style={{
+                      padding: "10px",
+                      border: "1px solid #ccc",
+                      borderRadius: "5px",
+                      color: item.completo ? "#286140" : "#a22",
+                      backgroundColor: item.completo
+                        ? "#edf6ed"
+                        : "#fff5ef"
+                    }}
+                  >
+                    {item.mensaje}
                   </p>
-                )}
+                ))}
 
                 <p>
-                  Registre cada producto una sola vez:
-                  la pechuga destinada a milanesa no se
-                  incluye también como pechuga.
+                  Las pechugas destinadas a milanesa y los
+                  muslos destinados a churrasco no se registran
+                  también como productos sin deshuesar.
                 </p>
 
                 <label>
                   Observaciones
                   <textarea
                     style={{ ...campo, minHeight: "70px" }}
+                    name="observaciones"
                     maxLength={2000}
-                    value={observaciones}
-                    onChange={(e) =>
-                      setObservaciones(e.target.value)
-                    }
+                    value={formulario.observaciones}
+                    onChange={cambiar}
                   />
                 </label>
               </fieldset>
 
-              <p>
-                Esta producción queda disponible en Monasterio.
-                El consumo y los envíos se registran después.
-              </p>
-
               {pendiente && !guardando && (
                 <p>
-                  Hay una solicitud pendiente de confirmar.
+                  Hay una solicitud pendiente.
                   El reintento conserva su identificador.
                 </p>
               )}
 
               <div
                 style={{
-                  display: "flex",
-                  flexWrap: "wrap",
-                  justifyContent: "center",
-                  gap: "10px"
+                  textAlign: "center",
+                  marginTop: "15px"
                 }}
               >
                 <button
@@ -645,39 +738,57 @@ export default function ProduccionPollo() {
                   disabled={
                     guardando ||
                     cargando ||
-                    (!pendiente && productos.length === 0)
+                    (
+                      !pendiente &&
+                      (!control.valido || productos.length === 0)
+                    )
                   }
                 >
                   {guardando
                     ? "PROCESANDO..."
                     : pendiente
-                      ? "REINTENTAR LA MISMA PRODUCCIÓN"
-                      : "GUARDAR PRODUCCIÓN"}
-                </button>
-
-                <button
-                  type="button"
-                  disabled={guardando}
-                  style={{ ...boton, backgroundColor: "#888" }}
-                  onClick={() => navigate("/lotes-crianza")}
-                >
-                  {pendiente ? "VOLVER A LOTES" : "CANCELAR"}
+                      ? "REINTENTAR LA MISMA SOLICITUD"
+                      : editando
+                        ? "GUARDAR CORRECCIÓN"
+                        : "GUARDAR PRODUCCIÓN"}
                 </button>
               </div>
-            </div>
-          </form>
+            </form>
+          </>
         )}
 
         {error && (
           <p
             role="alert"
-            style={{ color: "#b00020", textAlign: "center" }}
+            style={{
+              color: "#b00020",
+              textAlign: "center"
+            }}
           >
             {error}
           </p>
         )}
 
-        <div style={{ textAlign: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            flexWrap: "wrap",
+            gap: "12px",
+            marginTop: "20px"
+          }}
+        >
+          <button
+            type="button"
+            disabled={guardando}
+            style={{ ...boton, backgroundColor: "#888" }}
+            onClick={() =>
+              navigate(`/lotes-crianza/${id}`)
+            }
+          >
+            VOLVER AL LOTE
+          </button>
+
           <button
             type="button"
             disabled={guardando}
