@@ -61,3 +61,15 @@ export async function crearLoteCrianza(datos) {
     })
   });
 }
+
+// =====================================================
+// ELIMINAR LOTE
+// =====================================================
+export async function eliminarLoteCrianza(id) {
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}`,
+    {
+      method: "DELETE"
+    }
+  );
+}

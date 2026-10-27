@@ -227,7 +227,7 @@ function MenuMonasterio() {
             Productos por Stock
           </button>
           <button
-            style={botonPrincipal}
+            style={botonSubmenu}
             onClick={async()=> {
             await registrarAccion("Ingresó al módulo Lotes por crianza");
               navigate("/lotes-crianza");}}

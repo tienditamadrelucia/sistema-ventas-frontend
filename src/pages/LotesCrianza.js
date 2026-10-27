@@ -8,7 +8,8 @@ import Encabezado from "../components/Encabezado";
 import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import {
   obtenerLotesCrianza,
-  crearLoteCrianza
+  crearLoteCrianza,
+  eliminarLoteCrianza
 } from "../services/lotesCrianza";
 
 const formularioVacio = () => ({
@@ -57,6 +58,8 @@ function mostrarFecha(fecha) {
 
 export default function LotesCrianza() {
   const navigate = useNavigate();
+  const esAdministrador =
+  localStorage.getItem("rolUsuario") === "ADMINISTRADOR";
   const guardandoRef = useRef(false);
 
   const [formulario, setFormulario] = useState(
@@ -146,7 +149,10 @@ export default function LotesCrianza() {
           )
         ].sort((a, b) =>
           String(b.fechaInicio).localeCompare(
-            String(a.fechaInicio)
+          String(a.fechaInicio)
+          ) ||
+            String(b._id).localeCompare(
+            String(a._id)
           )
         )
       );
@@ -160,6 +166,46 @@ export default function LotesCrianza() {
       setGuardando(false);
     }
   }
+
+  async function eliminar(lote) {
+  if (
+    !esAdministrador ||
+    guardandoRef.current
+  ) {
+    return;
+  }
+
+  const confirmar = window.confirm(
+    `¿Desea eliminar el lote "${lote.nombre}"?\n\n` +
+    "Sólo podrá eliminarse si no tiene registros asociados."
+  );
+
+  if (!confirmar) return;
+
+  guardandoRef.current = true;
+  setGuardando(true);
+  setError("");
+  setMensaje("");
+
+  try {
+    const respuesta = await eliminarLoteCrianza(
+      lote._id
+    );
+
+    setLotes((anteriores) =>
+      anteriores.filter(
+        (item) => item._id !== lote._id
+      )
+    );
+
+    setMensaje(respuesta.mensaje);
+  } catch (fallo) {
+    setError(fallo.message);
+  } finally {
+    guardandoRef.current = false;
+    setGuardando(false);
+  }
+}
 
   return (
     <div>
@@ -304,7 +350,7 @@ export default function LotesCrianza() {
             >
               <button type="submit" style={boton}>
                 {guardando
-                  ? "GUARDANDO..."
+                  ? "PROCESANDO..."
                   : "GUARDAR LOTE"}
               </button>
 
@@ -385,6 +431,16 @@ export default function LotesCrianza() {
                     <th style={celda}>
                       Observaciones
                     </th>
+                    {esAdministrador && (
+                      <th
+                        style={{
+                        ...celda,
+                        width: "50px"
+                        }}
+                      >
+                        Eliminar
+                      </th>
+                    )}
                   </tr>
                 </thead>
 
@@ -406,6 +462,34 @@ export default function LotesCrianza() {
                       <td style={celda}>
                         {lote.observaciones || "—"}
                       </td>
+                      {esAdministrador && (
+                        <td
+                          style={{
+                          ...celda,
+                          width: "50px"
+                          }}
+                        >
+                          <button
+                            type="button"
+                            disabled={guardando}
+                            onClick={() => eliminar(lote)}
+                            title="Eliminar lote sin registros asociados"
+                            aria-label={`Eliminar lote ${lote.nombre}`}
+                            style={{
+                              border: "none",
+                              background: "transparent",
+                              padding: "4px",
+                              fontSize: "19px",
+                              cursor: guardando
+                                ? "not-allowed"
+                                : "pointer",
+                              opacity: guardando ? 0.5 : 1
+                            }}
+                          >
+                            🗑️
+                          </button>
+                        </td>
+                      )}
                     </tr>
                   ))}
                 </tbody>
