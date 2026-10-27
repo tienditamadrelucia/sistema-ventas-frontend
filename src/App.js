@@ -46,6 +46,7 @@ import BajaCrianza from "./pages/BajaCrianza";
 import ProduccionPollo from "./pages/ProduccionPollo";
 import DetalleLoteCrianza from "./pages/DetalleLoteCrianza";
 import GastosLote from "./pages/GastosLote";
+import ConsumoLote from "./pages/ConsumoLote";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -147,6 +148,7 @@ function App() {
         <Route path="/lotes-crianza/:id" element={<ProtectedRoute><DetalleLoteCrianza /></ProtectedRoute>}/>
         <Route path="/lotes-crianza/:id/gastos" element={<ProtectedRoute><GastosLote /></ProtectedRoute>}/>
         <Route path="/lotes-crianza/:id/produccion/:produccionId/editar" element={<ProtectedRoute><ProduccionPollo key="editar-produccion" /></ProtectedRoute>}/>
+        <Route path="/lotes-crianza/:id/consumo" element={<ProtectedRoute><ConsumoLote /></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   );

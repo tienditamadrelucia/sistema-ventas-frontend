@@ -225,3 +225,48 @@ export async function actualizarProduccionCrianza(
     }
   );
 }
+
+// =====================================================
+// CONSULTAR DISPONIBILIDAD E HISTORIAL DE CONSUMO
+// =====================================================
+export async function obtenerConsumoLoteCrianza(
+  id,
+  sede = "MONASTERIO",
+  fecha
+) {
+  const parametros = new URLSearchParams({
+    sede
+  });
+
+  if (fecha) {
+    parametros.set("fecha", fecha);
+  }
+
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}` +
+    `/consumos?${parametros.toString()}`
+  );
+}
+
+// =====================================================
+// REGISTRAR CONSUMO INTERNO
+// =====================================================
+export async function registrarConsumoLoteCrianza(
+  id,
+  datos
+) {
+  return solicitar(
+    `${API}/${encodeURIComponent(id)}/consumos`,
+    {
+      method: "POST",
+      body: JSON.stringify({
+        fecha: datos.fecha,
+        sede: datos.sede,
+        destino: datos.destino,
+        observaciones: datos.observaciones,
+        detalles: datos.detalles,
+        claveOperacion: datos.claveOperacion
+      })
+    }
+  );
+}

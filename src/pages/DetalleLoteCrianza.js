@@ -210,6 +210,15 @@ export default function DetalleLoteCrianza() {
               >
                 GASTOS DEL LOTE
               </button>
+              <button
+                type="button"
+                style={boton}
+                onClick={() =>
+                  navigate(`/lotes-crianza/${id}/consumo`)
+                }
+              >
+                CONSUMO INTERNO
+              </button>
             </div>
 
             <h3 style={{ marginTop: "30px" }}>
