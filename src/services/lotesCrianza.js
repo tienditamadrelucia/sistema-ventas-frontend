@@ -20,7 +20,7 @@ async function solicitar(url, opciones = {}) {
       datos?.error ||
       (res.status === 401
         ? "Debe iniciar sesión nuevamente."
-        : "No se pudo completar la solicitud.");
+        : `No se pudo completar la solicitud. HTTP ${res.status}`);
 
     const error = new Error(mensaje);
     error.status = res.status;
