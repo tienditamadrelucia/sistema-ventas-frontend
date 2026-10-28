@@ -219,6 +219,15 @@ export default function DetalleLoteCrianza() {
               >
                 CONSUMO INTERNO
               </button>
+              <button
+                type="button"
+                style={boton}
+                onClick={() =>
+                  navigate(`/lotes-crianza/${id}/enviar`)
+                }
+              >
+                ENVIAR A TIENDITA
+              </button>
             </div>
 
             <h3 style={{ marginTop: "30px" }}>
