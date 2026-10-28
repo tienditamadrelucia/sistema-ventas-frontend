@@ -234,6 +234,15 @@ function MenuMonasterio() {
           >
             Registro Lotes de Pollos
           </button>
+          <button
+            style={botonSubmenu}
+            onClick={async () => {
+              await registrarAccion("Ingresó al módulo Producción de Huevos");
+              navigate("/huevos/grupos");
+            }}
+          >
+            Producción de Huevos
+          </button>
             </>
           )}                
 

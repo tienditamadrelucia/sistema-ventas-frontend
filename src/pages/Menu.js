@@ -261,9 +261,18 @@ function Menu() {
                 style={botonSubmenu}                
                 onClick={() => window.location.assign("/recibir-envios")}                
               >
-                Recibir Producción del Monasterio
+                Recibir Producción de Pollos
               </button>
-              <button 
+              <button
+                style={botonSubmenu}
+                onClick={async () => {
+                  await registrarAccion("Ingresó al módulo Recepción de Huevos");
+                  navigate("/huevos/recepcion");
+                }}
+              >
+                Recibir Huevos del Monasterio
+              </button>
+              <button               
                 style={botonSubmenu}
                 onClick={async() => {
                   await registrarAccion("Ingresó al módulo Movimientos");
