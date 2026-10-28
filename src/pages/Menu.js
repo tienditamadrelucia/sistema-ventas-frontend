@@ -258,19 +258,8 @@ function Menu() {
                 Salidas
               </button>
               <button
-                type="button"
-                onClick={() => window.location.assign("/recibir-envios")}
-                style={{
-                  padding: "10px 16px",
-                  margin: "8px",
-                  backgroundColor: "#84B09C",
-                  color: "white",
-                  border: "1px solid #ccc",
-                  borderRadius: "8px",
-                  fontFamily: "Arial",
-                  fontWeight: "bold",
-                  cursor: "pointer"
-                }}
+                style={botonSubmenu}                
+                onClick={() => window.location.assign("/recibir-envios")}                
               >
                 Recibir Producción del Monasterio
               </button>
