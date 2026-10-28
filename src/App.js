@@ -48,6 +48,7 @@ import DetalleLoteCrianza from "./pages/DetalleLoteCrianza";
 import GastosLote from "./pages/GastosLote";
 import ConsumoLote from "./pages/ConsumoLote";
 import EnviarLote from "./pages/EnviarLote";
+import RecibirEnvioLote from "./pages/RecibirEnvioLote";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -151,6 +152,7 @@ function App() {
         <Route path="/lotes-crianza/:id/produccion/:produccionId/editar" element={<ProtectedRoute><ProduccionPollo key="editar-produccion" /></ProtectedRoute>}/>
         <Route path="/lotes-crianza/:id/consumo" element={<ProtectedRoute><ConsumoLote /></ProtectedRoute>}/>
         <Route path="/lotes-crianza/:id/enviar" element={<ProtectedRoute><EnviarLote /></ProtectedRoute>}/>
+        <Route path="/recibir-envios" element={<ProtectedRoute><RecibirEnvioLote /></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   );
