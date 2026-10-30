@@ -488,13 +488,18 @@ const cambiarVerificacion = async (accion) => {
       <button
         type="button"
         disabled={procesando}
-        onClick={() =>
+        onClick={() => {
+          if (window.opener && !window.opener.closed) {
+            window.close();
+            return;
+          }  
         navigate(
           localStorage.getItem("sede") === "MONASTERIO"
           ? "/menu-monasterio"
-          : "/menu"
-          )
-          }
+          : "/menu",
+          {replace: true}
+          );
+          }}
           style={estiloBoton}
         >
           VOLVER AL MENÚ
