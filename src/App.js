@@ -50,6 +50,7 @@ import ConsumoLote from "./pages/ConsumoLote";
 import EnviarLote from "./pages/EnviarLote";
 import RecibirEnvioLote from "./pages/RecibirEnvioLote";
 import Huevos from "./pages/Huevos";
+import DocumentosInventario from "./pages/DocumentosInventario";
 
 import ProtectedRoute from "./ProtectedRoute";   // ⭐ IMPORTANTE
 
@@ -154,6 +155,9 @@ function App() {
         <Route path="/lotes-crianza/:id/enviar" element={<ProtectedRoute><EnviarLote /></ProtectedRoute>}/>
         <Route path="/recibir-envios" element={<ProtectedRoute><RecibirEnvioLote /></ProtectedRoute>}/>
         <Route path="/huevos/:seccion" element={<ProtectedRoute><Huevos /></ProtectedRoute>}/>
+        <Route path="/documentos-entradas" element={<ProtectedRoute><DocumentosInventario key="documentos-entradas" tipoInicial="ENTRADA"/></ProtectedRoute>}/>
+        <Route path="/documentos-salidas"  element={<ProtectedRoute><DocumentosInventario key="documentos-salidas" tipoInicial="SALIDA"/></ProtectedRoute>}/>
+        <Route path="/revision-inventario" element={<ProtectedRoute><DocumentosInventario key="revision-inventario" modoRevision/></ProtectedRoute>}/>
       </Routes>
     </BrowserRouter>
   );

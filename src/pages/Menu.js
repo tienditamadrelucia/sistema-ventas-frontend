@@ -244,7 +244,7 @@ function Menu() {
                 style={botonSubmenu}
                 onClick={async() => {
                   await registrarAccion("Ingresó al módulo Entradas");
-                  navigate("/entradas")}}
+                  navigate("/documentos-entradas")}}
               >
                 Entradas
               </button>
@@ -253,7 +253,7 @@ function Menu() {
                 style={botonSubmenu}
                 onClick={async() => {
                   await registrarAccion("Ingresó al módulo Salidas");
-                  navigate("/salidas")}}
+                  navigate("/documentos-salidas")}}
               >
                 Salidas
               </button>
@@ -353,6 +353,18 @@ function Menu() {
           >
             Revisión de ventas por día
           </button>        
+          <button
+            style={botonSubmenu}
+            onClick={async () => {
+              await registrarAccion(
+                "Ingresó a Revisión de Entradas y Salidas"
+              );
+
+              navigate("/revision-inventario");
+            }}
+          >
+            Revisión de Entradas y Salidas
+          </button>
               <button 
                 style={botonSubmenu}
                 onClick={async() => {
