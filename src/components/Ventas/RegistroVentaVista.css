@@ -1,0 +1,463 @@
+.registro-venta {
+  --rv-principal: #628173;
+  --rv-suave: #edf4ef;
+  --rv-cabecera: #f9ceae;
+  --rv-volver: #fc9e9b;
+  --rv-texto: #17372b;
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 16px;
+  color: #222;
+  font-family: "Times New Roman", serif;
+}
+
+.registro-venta.rv-monasterio {
+  --rv-principal: #986b23;
+  --rv-suave: #faf4e9;
+  --rv-cabecera: #e8d1a5;
+  --rv-volver: #5a2d16;
+  --rv-texto: #5a2d16;
+}
+
+.registro-venta *,
+.registro-venta *::before,
+.registro-venta *::after {
+  box-sizing: border-box;
+}
+
+.registro-venta .rv-titulo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 3px solid var(--rv-principal);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+}
+
+.registro-venta .rv-titulo h1 {
+  margin: 0;
+  font-size: clamp(24px, 3vw, 36px);
+  color: var(--rv-texto);
+}
+
+.registro-venta .rv-sede {
+  background: var(--rv-principal);
+  color: white;
+  padding: 8px 20px;
+  border-radius: 24px;
+  font-weight: bold;
+}
+
+.registro-venta fieldset.rv-formulario {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.registro-venta .rv-distribucion {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 18px;
+  align-items: start;
+}
+
+.registro-venta .rv-principal {
+  min-width: 0;
+  display: grid;
+  gap: 16px;
+}
+
+.registro-venta .rv-datos {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  gap: 16px;
+}
+
+.registro-venta .rv-panel {
+  min-width: 0;
+  border: 1px solid #c9c6c0;
+  border-radius: 10px;
+  background: white;
+  overflow: hidden;
+}
+
+.registro-venta .rv-panel h2 {
+  margin: 0;
+  padding: 12px 16px;
+  background: #f5f3ef;
+  color: #222;
+  font-size: 22px;
+}
+
+.registro-venta .rv-contenido {
+  padding: 16px;
+}
+
+.registro-venta .rv-factura {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr .8fr;
+  gap: 10px;
+}
+
+.registro-venta .rv-cliente {
+  display: grid;
+  grid-template-columns: minmax(120px, .8fr) minmax(140px, 1.3fr);
+  gap: 10px;
+}
+
+.registro-venta .rv-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+  font-size: 16px;
+}
+
+.registro-venta input,
+.registro-venta select {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  background: white;
+  color: #222;
+  padding: 8px;
+  font: 15px Arial, sans-serif;
+}
+
+.registro-venta input[readonly] {
+  background: #f1f1ef;
+}
+
+.registro-venta input:focus,
+.registro-venta select:focus,
+.registro-venta button:focus-visible {
+  outline: 3px solid var(--rv-principal);
+  outline-offset: 2px;
+}
+
+.registro-venta small {
+  font: 12px Arial, sans-serif;
+  color: #555;
+  line-height: 1.4;
+}
+
+.registro-venta .rv-fila-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.registro-venta button {
+  min-height: 42px;
+  border: 1px solid #b7bbb7;
+  border-radius: 6px;
+  padding: 10px 16px;
+  font: bold 14px Arial, sans-serif;
+  cursor: pointer;
+  background: #f5f5f3;
+  color: #333;
+}
+
+.registro-venta button:disabled,
+.registro-venta fieldset:disabled button {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+.registro-venta button.rv-boton-principal {
+  background: var(--rv-principal);
+  border-color: var(--rv-principal);
+  color: white;
+}
+
+.registro-venta button.rv-boton-cliente {
+  background: var(--rv-cabecera);
+}
+
+.registro-venta .rv-selector-producto {
+  display: grid;
+  grid-template-columns:
+    120px minmax(140px, .8fr) minmax(180px, 1.5fr);
+  gap: 12px;
+}
+
+.registro-venta .rv-importes {
+  display: grid;
+  grid-template-columns:
+    minmax(150px, 1.3fr) repeat(4, minmax(75px, 1fr));
+  gap: 12px;
+  align-items: end;
+  margin-top: 16px;
+}
+
+.registro-venta .rv-stock {
+  min-height: 40px;
+  padding: 11px;
+  border-radius: 5px;
+  background: var(--rv-suave);
+  color: var(--rv-texto);
+  font-weight: bold;
+  text-align: center;
+}
+
+.registro-venta .rv-ayuda {
+  margin: 14px 0 0;
+  padding: 10px;
+  border-radius: 5px;
+  background: var(--rv-suave);
+  color: var(--rv-texto);
+  font: 13px Arial, sans-serif;
+}
+
+.registro-venta .rv-aviso {
+  margin: 12px 0 0;
+  padding: 11px;
+  border-radius: 5px;
+  color: #784908;
+  background: #fff5d9;
+  font: 14px Arial, sans-serif;
+  line-height: 1.4;
+}
+
+.registro-venta .rv-error {
+  color: #a32727;
+  font: 13px Arial, sans-serif;
+}
+
+.registro-venta .rv-agregar {
+  flex: 1;
+}
+
+.registro-venta .rv-tabla {
+  overflow-x: auto;
+}
+
+.registro-venta table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 660px;
+  font-size: 16px;
+}
+
+.registro-venta th,
+.registro-venta td {
+  border: 1px solid #d0d0cc;
+  padding: 10px;
+  text-align: left;
+}
+
+.registro-venta th {
+  background: var(--rv-cabecera);
+  white-space: nowrap;
+}
+
+.registro-venta tbody tr:nth-child(even) {
+  background: #fafbf9;
+}
+
+.registro-venta .rv-numero {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.registro-venta .rv-acciones {
+  white-space: nowrap;
+  width: 90px;
+}
+
+.registro-venta .rv-acciones button {
+  min-width: 36px;
+  min-height: 36px;
+  margin: 0 2px;
+  padding: 4px;
+  background: transparent;
+  border-color: transparent;
+  font-size: 21px;
+}
+
+.registro-venta .rv-acciones .rv-eliminar {
+  color: #be3030;
+}
+
+.registro-venta .rv-vacio {
+  text-align: center;
+  color: #666;
+  padding: 24px;
+}
+
+.registro-venta .rv-pie {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.registro-venta button.rv-volver {
+  background: var(--rv-volver);
+  border-color: var(--rv-volver);
+  color: white;
+}
+
+.registro-venta .rv-lateral {
+  display: grid;
+  gap: 16px;
+  position: sticky;
+  top: 12px;
+}
+
+.registro-venta .rv-total-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 18px;
+  font-size: 19px;
+}
+
+.registro-venta .rv-total-fila input {
+  max-width: 90px;
+}
+
+.registro-venta .rv-total-final {
+  padding: 14px 10px;
+  border-radius: 6px;
+  background: var(--rv-suave);
+  color: var(--rv-texto);
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.registro-venta .rv-tasas {
+  margin-top: 18px;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  background: #f7f7f5;
+  font: 12px Arial, sans-serif;
+  line-height: 1.7;
+}
+
+.registro-venta .rv-modalidades {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.registro-venta button.rv-credito {
+  background: #cad9fb;
+  border-color: #a4b9d8;
+  color: #294467;
+}
+
+.registro-venta.rv-monasterio button.rv-credito {
+  background: #e8d1a5;
+  color: #5a2d16;
+  border-color: #ceb384;
+}
+
+.registro-venta button.rv-guardar {
+  width: 100%;
+  margin-top: 14px;
+  min-height: 55px;
+  font-size: 19px;
+}
+
+.registro-venta button.rv-sin-pago {
+  width: 100%;
+  margin-top: 14px;
+  background: white;
+  border-color: var(--rv-principal);
+  color: var(--rv-texto);
+}
+
+.registro-venta .rv-nota {
+  margin: 12px 0 0;
+  font: 13px Arial, sans-serif;
+  color: #555;
+  line-height: 1.5;
+}
+
+.registro-venta .rv-procesando {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 999999;
+  background: #628173;
+  color: white;
+  padding: 12px;
+  text-align: center;
+  font: bold 15px Arial, sans-serif;
+}
+
+@media (max-width: 1150px) {
+  .registro-venta .rv-distribucion {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+
+  .registro-venta .rv-datos {
+    grid-template-columns: 1fr;
+  }
+
+  .registro-venta .rv-importes {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .registro-venta .rv-stock {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 850px) {
+  .registro-venta {
+    padding: 12px;
+  }
+
+  .registro-venta .rv-distribucion {
+    grid-template-columns: 1fr;
+  }
+
+  .registro-venta .rv-lateral {
+    position: static;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .registro-venta .rv-titulo {
+    align-items: flex-start;
+  }
+
+  .registro-venta .rv-sede {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .registro-venta .rv-selector-producto {
+    grid-template-columns: 100px minmax(0, 1fr);
+  }
+
+  .registro-venta .rv-selector-producto .rv-campo:last-child {
+    grid-column: 1 / -1;
+  }
+
+  .registro-venta .rv-importes {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .registro-venta .rv-lateral {
+    grid-template-columns: 1fr;
+  }
+
+  .registro-venta .rv-cliente {
+    grid-template-columns: 1fr;
+  }
+
+  .registro-venta .rv-contenido {
+    padding: 12px;
+  }
+}
