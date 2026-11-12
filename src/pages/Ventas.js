@@ -13,6 +13,7 @@ import ModalTasas from "../components/Tasas/ModalTasas";
 import { cargarTasasPorFecha } from "../services/ser_tasas";
 import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import RegistroVentaVista from "../components/Ventas/RegistroVentaVista";
+import useFilasVenta from "../components/Ventas/useFilasVenta";
 
 const Ventas = () => {
   const navigate = useNavigate();
@@ -67,7 +68,7 @@ const Ventas = () => {
   const [totalBs, setTotalBs] = useState(0);
   const [editando, setEditando] = useState(false);
   const [indexEditado, setIndexEditado] = useState(null);
-  const [listaFactura, setListaFactura] = useState([]);
+  const [listaFactura, setListaFactura, editorFilas] = useFilasVenta({productos: listaProductos, sede: sedeActual});
   const [mostrarPago, setMostrarPago] = useState(false);
 
   const [
@@ -819,6 +820,7 @@ const Ventas = () => {
 
   // PREPARAR EL PAGO
   const abrirPagoPreparado = async credito => {
+    if (!editorFilas.validar()) return;
     if (
       procesando ||
       guardandoOperacionRef.current
@@ -974,6 +976,7 @@ const Ventas = () => {
 
   // GUARDAR LA OPERACIÓN COMPLETA
   const guardarOperacion = async sinPago => {
+    if (!editorFilas.validar()) return;
     if (
       procesando ||
       guardandoOperacionRef.current
@@ -1178,7 +1181,11 @@ const Ventas = () => {
     }
 
     if (
-      (listaFactura.length || pagoData?.preparado) &&
+      (
+      listaFactura.length ||
+      pagoData?.preparado ||
+      editorFilas.hayContenido
+        ) &&
       !window.confirm(
         "Hay cambios sin guardar. " +
         "¿Desea descartarlos y salir?"
@@ -1413,7 +1420,8 @@ const Ventas = () => {
         listaFactura.length ||
         pagoData?.preparado ||
         venta ||
-        productoSeleccionado
+        productoSeleccionado ||
+        editorFilas.hayContenido
       ) &&
       !window.confirm(
         "¿Limpiar los datos de esta pantalla? " +
@@ -1448,6 +1456,7 @@ const Ventas = () => {
 
       <RegistroVentaVista
         datos={{
+          editorFilas,
           sedeActual,
           esMonasterio,
           fecha,

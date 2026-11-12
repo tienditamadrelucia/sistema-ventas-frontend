@@ -37,40 +37,16 @@ export default function RegistroVentaVista({
   acciones: a,
   referencias: r
 }) {
-  const ocupado =
-    d.procesando ||
-    d.buscandoCliente ||
-    d.buscandoProducto;
-
-  const pendiente =
-    d.editando ||
-    (
-      d.productoSeleccionado &&
-      Number(d.cantidad) > 0
-    );
+  const editor = d.editorFilas;
+  const ocupado = d.procesando || d.buscandoCliente;
+  const pendiente = editor.pendientes;
 
   const noGuardar =
     ocupado ||
     pendiente ||
     !d.listaFactura.length;
 
-  const stockConocido =
-    typeof d.stockActual === "number" &&
-    Number.isFinite(d.stockActual);
-
-  const faltaStock =
-    stockConocido &&
-    (
-      d.stockActual < 0 ||
-      Number(d.cantidad) > d.stockActual
-    );
-
-  const productos = d.listaProductos
-    .filter(
-      p =>
-        String(p.categoria) ===
-        String(d.categoriaSeleccionada)
-    )
+  const productosOrdenados = d.listaProductos
     .slice()
     .sort((x, y) =>
       String(x.descripcion || "").localeCompare(
@@ -86,12 +62,13 @@ export default function RegistroVentaVista({
   return (
     <div
       className={
-        "registro-venta" +
+        "registro-venta rv-en-filas" +
         (d.esMonasterio ? " rv-monasterio" : "")
       }
     >
       <header className="rv-titulo">
         <h1>REGISTRO DE VENTAS</h1>
+
         <span className="rv-sede">
           {d.sedeActual}
         </span>
@@ -120,6 +97,7 @@ export default function RegistroVentaVista({
                   <div className="rv-factura">
                     <label className="rv-campo">
                       Fecha
+
                       <input
                         ref={r.fecha}
                         type="date"
@@ -137,6 +115,7 @@ export default function RegistroVentaVista({
 
                     <label className="rv-campo">
                       N° factura
+
                       <input
                         value={d.numeroFactura || ""}
                         placeholder="Automático"
@@ -168,6 +147,7 @@ export default function RegistroVentaVista({
                   <div className="rv-cliente">
                     <label className="rv-campo">
                       Cédula / RIF
+
                       <input
                         ref={r.identificacion}
                         value={d.identificacion}
@@ -182,6 +162,7 @@ export default function RegistroVentaVista({
                           conEnter(e, a.buscarCliente)
                         }
                       />
+
                       <small>
                         Enter para buscar cliente
                       </small>
@@ -189,6 +170,7 @@ export default function RegistroVentaVista({
 
                     <label className="rv-campo">
                       Nombre
+
                       <select
                         ref={r.cliente}
                         value={
@@ -242,313 +224,377 @@ export default function RegistroVentaVista({
             </div>
 
             <section className="rv-panel">
-              <h2>
-                {d.editando
-                  ? "Modificar producto"
-                  : "Agregar producto"}
-              </h2>
-
-              <div className="rv-contenido">
-                <div className="rv-selector-producto">
-                  <label className="rv-campo">
-                    Código
-                    <input
-                      ref={r.codigo}
-                      value={d.codigoProducto}
-                      disabled={d.editando}
-                      autoComplete="off"
-                      onChange={e =>
-                        a.cambiarCodigo(e.target.value)
-                      }
-                      onKeyDown={e =>
-                        conEnter(e, a.buscarProducto)
-                      }
-                    />
-                    <small>
-                      Enter para buscar producto
-                    </small>
-                  </label>
-
-                  <label className="rv-campo">
-                    Categoría
-                    <select
-                      ref={r.categoria}
-                      value={d.categoriaSeleccionada}
-                      disabled={d.editando}
-                      onChange={e =>
-                        a.cambiarCategoria(e.target.value)
-                      }
-                      onKeyDown={e =>
-                        conEnter(e, () =>
-                          enfocar(r.producto)
-                        )
-                      }
-                    >
-                      <option value="">Seleccione</option>
-
-                      {d.categoriasDisponibles.map(c => (
-                        <option
-                          key={c._id}
-                          value={c.codigo}
-                        >
-                          {c.descripcion}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-
-                  <label className="rv-campo">
-                    Producto
-                    <select
-                      ref={r.producto}
-                      value={d.productoSeleccionado}
-                      disabled={d.editando}
-                      onChange={e =>
-                        a.seleccionarProducto(
-                          e.target.value
-                        )
-                      }
-                      onKeyDown={e =>
-                        conEnter(e, () =>
-                          enfocar(r.cantidad)
-                        )
-                      }
-                    >
-                      <option value="">
-                        Seleccione producto
-                      </option>
-
-                      {productos.map(p => (
-                        <option
-                          key={p._id}
-                          value={p._id}
-                        >
-                          {p.descripcion}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                </div>
-
-                <div className="rv-importes">
-                  <div
-                    className="rv-stock"
-                    role="status"
-                  >
-                    Disponible:{" "}
-                    {stockConocido
-                      ? cantidadVisible(d.stockActual)
-                      : "por confirmar"}
-                  </div>
-
-                  <label className="rv-campo">
-                    Cantidad
-                    <input
-                      ref={r.cantidad}
-                      type="number"
-                      step="0.001"
-                      min="0"
-                      value={d.cantidad}
-                      onFocus={e => e.target.select()}
-                      onChange={e =>
-                        a.cambiarCantidad(e.target.value)
-                      }
-                      onKeyDown={e =>
-                        conEnter(e, () =>
-                          enfocar(r.precio)
-                        )
-                      }
-                    />
-                  </label>
-
-                  <label className="rv-campo">
-                    Precio USD
-                    <input
-                      ref={r.precio}
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      value={d.precioVenta}
-                      onFocus={e => e.target.select()}
-                      onChange={e =>
-                        a.cambiarPrecio(e.target.value)
-                      }
-                      onKeyDown={e =>
-                        conEnter(e, () =>
-                          enfocar(r.descuento)
-                        )
-                      }
-                    />
-                  </label>
-
-                  <label className="rv-campo">
-                    Desc. %
-                    <input
-                      ref={r.descuento}
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      max="100"
-                      value={d.descuento}
-                      onFocus={e => e.target.select()}
-                      onChange={e =>
-                        a.cambiarDescuento(e.target.value)
-                      }
-                      onKeyDown={e =>
-                        conEnter(e, () =>
-                          enfocar(r.agregar)
-                        )
-                      }
-                    />
-                  </label>
-
-                  <label className="rv-campo">
-                    Total USD
-                    <input
-                      value={dinero(d.totalProducto)}
-                      readOnly
-                    />
-                  </label>
-                </div>
-
-                {d.errorPrecio && (
-                  <p className="rv-error" role="alert">
-                    {d.errorPrecio}
-                  </p>
-                )}
-
-                {faltaStock && (
-                  <p className="rv-aviso" role="status">
-                    La cantidad supera la existencia
-                    disponible. Puede continuar; comunique
-                    la diferencia a la administradora.
-                  </p>
-                )}
-
-                <p className="rv-ayuda">
-                  Enter: cantidad → precio → descuento →
-                  botón de agregar. Enter en ese botón
-                  agrega el producto.
-                </p>
-
-                <div className="rv-fila-botones">
-                  <button
-                    ref={r.agregar}
-                    type="button"
-                    className="rv-boton-principal rv-agregar"
-                    onClick={a.agregar}
-                    onKeyDown={e =>
-                      conEnter(e, a.agregar)
-                    }
-                  >
-                    {d.editando
-                      ? "ACTUALIZAR PRODUCTO"
-                      : "+ AGREGAR A LA VENTA"}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={a.limpiarProducto}
-                  >
-                    {d.editando
-                      ? "Cancelar edición"
-                      : "Limpiar producto"}
-                  </button>
-                </div>
-              </div>
-            </section>
-
-            <section className="rv-panel">
               <h2>Productos de la venta</h2>
 
               <div className="rv-contenido">
                 <div className="rv-tabla">
-                  <table>
+                  <table className="rv-tabla-editable">
                     <thead>
                       <tr>
                         <th>Código</th>
-                        <th>Descripción</th>
+                        <th>Categoría</th>
+                        <th>Producto</th>
+                        <th>Disponible</th>
                         <th>Cantidad</th>
                         <th>Precio USD</th>
                         <th>Desc. %</th>
                         <th>Total USD</th>
-                        <th>Acciones</th>
+                        <th>Quitar</th>
                       </tr>
                     </thead>
 
                     <tbody>
-                      {!d.listaFactura.length && (
-                        <tr>
-                          <td
-                            colSpan="7"
-                            className="rv-vacio"
-                          >
-                            Agregue los productos de esta venta.
-                          </td>
-                        </tr>
-                      )}
+                      {editor.filas.map((fila, index) => {
+                        const productos =
+                          productosOrdenados.filter(
+                            p =>
+                              !fila.categoria ||
+                              String(p.categoria) ===
+                                String(fila.categoria)
+                          );
 
-                      {d.listaFactura.map((item, index) => (
-                        <tr key={index}>
-                          <td>{item.codigo}</td>
-                          <td>{item.descripcion}</td>
+                        const conocido =
+                          typeof fila.stock === "number" &&
+                          Number.isFinite(fila.stock);
 
-                          <td className="rv-numero">
-                            {cantidadVisible(item.cantidad)}
-                          </td>
+                        const negativo =
+                          conocido &&
+                          (
+                            fila.stock < 0 ||
+                            Number(fila.cantidad) >
+                              fila.stock
+                          );
 
-                          <td className="rv-numero">
-                            {dinero(item.precioVenta)}
-                          </td>
+                        const ref = campo => elemento => {
+                          editor.registrarRef(
+                            fila.id,
+                            campo,
+                            elemento
+                          );
 
-                          <td className="rv-numero">
-                            {cantidadVisible(item.descuento)}
-                          </td>
+                          if (
+                            campo === "codigo" &&
+                            fila.id ===
+                              editor.primeraVaciaId
+                          ) {
+                            r.codigo.current = elemento;
+                          }
+                        };
 
-                          <td className="rv-numero">
-                            {dinero(item.total)}
-                          </td>
+                        return (
+                          <tr key={fila.id}>
+                            <td>
+                              <input
+                                ref={ref("codigo")}
+                                aria-label={
+                                  "Código, fila " +
+                                  (index + 1)
+                                }
+                                value={fila.codigo}
+                                autoComplete="off"
+                                aria-invalid={
+                                  Boolean(fila.error)
+                                }
+                                onChange={e =>
+                                  editor.cambiarCampo(
+                                    fila.id,
+                                    "codigo",
+                                    e.target.value
+                                  )
+                                }
+                                onKeyDown={e =>
+                                  conEnter(e, () =>
+                                    editor.buscarCodigo(
+                                      fila.id
+                                    )
+                                  )
+                                }
+                              />
+                            </td>
 
-                          <td className="rv-acciones">
-                            <button
-                              type="button"
-                              title="Editar producto"
-                              aria-label={
-                                "Editar " + item.descripcion
+                            <td>
+                              <select
+                                ref={ref("categoria")}
+                                aria-label={
+                                  "Categoría, fila " +
+                                  (index + 1)
+                                }
+                                value={fila.categoria}
+                                onChange={e =>
+                                  editor.cambiarCampo(
+                                    fila.id,
+                                    "categoria",
+                                    e.target.value
+                                  )
+                                }
+                                onKeyDown={e =>
+                                  conEnter(e, () =>
+                                    editor.enfocar(
+                                      fila.id,
+                                      "producto"
+                                    )
+                                  )
+                                }
+                              >
+                                <option value="">
+                                  Seleccione
+                                </option>
+
+                                {d.categoriasDisponibles.map(
+                                  c => (
+                                    <option
+                                      key={c._id}
+                                      value={c.codigo}
+                                    >
+                                      {c.descripcion}
+                                    </option>
+                                  )
+                                )}
+                              </select>
+                            </td>
+
+                            <td>
+                              <select
+                                ref={ref("producto")}
+                                aria-label={
+                                  "Producto, fila " +
+                                  (index + 1)
+                                }
+                                value={fila.productoId}
+                                title={fila.descripcion}
+                                onChange={e =>
+                                  editor.seleccionarProducto(
+                                    fila.id,
+                                    e.target.value
+                                  )
+                                }
+                                onKeyDown={e =>
+                                  conEnter(e, () =>
+                                    editor.enfocar(
+                                      fila.id,
+                                      "cantidad"
+                                    )
+                                  )
+                                }
+                              >
+                                <option value="">
+                                  Seleccione producto
+                                </option>
+
+                                {fila.productoId &&
+                                  !productos.some(
+                                    p =>
+                                      String(p._id) ===
+                                      String(fila.productoId)
+                                  ) && (
+                                    <option
+                                      value={fila.productoId}
+                                    >
+                                      {fila.descripcion}
+                                    </option>
+                                  )}
+
+                                {productos.map(p => (
+                                  <option
+                                    key={p._id}
+                                    value={p._id}
+                                  >
+                                    {p.descripcion}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+
+                            <td
+                              className={
+                                "rv-numero" +
+                                (
+                                  negativo
+                                    ? " rv-saldo-alerta"
+                                    : ""
+                                )
                               }
-                              disabled={d.editando}
-                              onClick={() =>
-                                a.editar(item, index)
+                              title={
+                                fila.aviso ||
+                                (
+                                  negativo
+                                    ? "Puede guardar con alerta para la administradora."
+                                    : "Existencia actual"
+                                )
                               }
                             >
-                              ✎
-                            </button>
+                              {fila.cargando
+                                ? "..."
+                                : conocido
+                                ? cantidadVisible(fila.stock)
+                                : "—"}
+                            </td>
 
-                            <button
-                              type="button"
-                              className="rv-eliminar"
-                              title="Quitar producto"
-                              aria-label={
-                                "Quitar " + item.descripcion
-                              }
-                              disabled={d.editando}
-                              onClick={() =>
-                                a.eliminar(index)
-                              }
-                            >
-                              🗑
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                            <td>
+                              <input
+                                ref={ref("cantidad")}
+                                aria-label={
+                                  "Cantidad, fila " +
+                                  (index + 1)
+                                }
+                                type="number"
+                                step="0.001"
+                                min="0"
+                                disabled={
+                                  !fila.productoId ||
+                                  fila.cargando
+                                }
+                                value={fila.cantidad}
+                                onFocus={e =>
+                                  e.target.select()
+                                }
+                                onChange={e =>
+                                  editor.cambiarCampo(
+                                    fila.id,
+                                    "cantidad",
+                                    e.target.value
+                                  )
+                                }
+                                onKeyDown={e =>
+                                  conEnter(e, () =>
+                                    editor.enfocar(
+                                      fila.id,
+                                      "precio"
+                                    )
+                                  )
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                ref={ref("precio")}
+                                aria-label={
+                                  "Precio, fila " +
+                                  (index + 1)
+                                }
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                disabled={
+                                  !fila.productoId ||
+                                  fila.cargando
+                                }
+                                value={fila.precio}
+                                onFocus={e =>
+                                  e.target.select()
+                                }
+                                onChange={e =>
+                                  editor.cambiarCampo(
+                                    fila.id,
+                                    "precio",
+                                    e.target.value
+                                  )
+                                }
+                                onKeyDown={e =>
+                                  conEnter(e, () =>
+                                    editor.enfocar(
+                                      fila.id,
+                                      "descuento"
+                                    )
+                                  )
+                                }
+                              />
+                            </td>
+
+                            <td>
+                              <input
+                                ref={ref("descuento")}
+                                aria-label={
+                                  "Descuento, fila " +
+                                  (index + 1)
+                                }
+                                type="number"
+                                step="0.01"
+                                min="0"
+                                max="100"
+                                disabled={
+                                  !fila.productoId ||
+                                  fila.cargando
+                                }
+                                value={fila.descuento}
+                                onFocus={e =>
+                                  e.target.select()
+                                }
+                                onChange={e =>
+                                  editor.cambiarCampo(
+                                    fila.id,
+                                    "descuento",
+                                    e.target.value
+                                  )
+                                }
+                                onKeyDown={e =>
+                                  conEnter(e, () =>
+                                    editor.siguienteFila(
+                                      fila.id
+                                    )
+                                  )
+                                }
+                              />
+                            </td>
+
+                            <td className="rv-numero">
+                              {dinero(fila.total)}
+                            </td>
+
+                            <td className="rv-acciones">
+                              <button
+                                type="button"
+                                className="rv-eliminar"
+                                title="Quitar fila"
+                                aria-label={
+                                  "Quitar fila " +
+                                  (index + 1)
+                                }
+                                onClick={() =>
+                                  editor.quitarFila(fila.id)
+                                }
+                              >
+                                🗑
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
                     </tbody>
                   </table>
                 </div>
 
-                <p className="rv-aviso">
-                  Si el stock queda negativo, podrá guardar
-                  la venta con una alerta para la administradora.
-                </p>
+                {editor.mensaje && (
+                  <p className="rv-error" role="alert">
+                    {editor.mensaje}
+                  </p>
+                )}
+
+                {editor.cargando && (
+                  <p className="rv-nota" role="status">
+                    Consultando existencia del producto...
+                  </p>
+                )}
+
+                <div className="rv-fila-botones">
+                  <button
+                    type="button"
+                    className="rv-boton-principal"
+                    onClick={editor.agregarFila}
+                    onKeyDown={e =>
+                      conEnter(e, editor.agregarFila)
+                    }
+                  >
+                    + AGREGAR FILA
+                  </button>
+
+                  <span className="rv-nota">
+                    Código + Enter: cargar producto ·
+                    Enter: cantidad → precio → descuento →
+                    siguiente fila.
+                  </span>
+                </div>
               </div>
             </section>
 
@@ -577,11 +623,14 @@ export default function RegistroVentaVista({
               <div className="rv-contenido">
                 <div className="rv-total-fila">
                   <span>Subtotal USD:</span>
-                  <strong>{dinero(d.subtotalDolar)}</strong>
+                  <strong>
+                    {dinero(d.subtotalDolar)}
+                  </strong>
                 </div>
 
                 <label className="rv-total-fila">
                   IVA %
+
                   <input
                     type="number"
                     min="0"
@@ -661,7 +710,7 @@ export default function RegistroVentaVista({
 
                 <p className="rv-nota" role="status">
                   {pendiente
-                    ? "Agregue el producto pendiente o cancele su edición antes de guardar."
+                    ? "Complete los productos pendientes antes de guardar. Las filas vacías se omiten."
                     : d.pagoData?.preparado
                     ? "Pago preparado. Pulse GUARDAR VENTA."
                     : "Prepare el pago con CONTADO o CRÉDITO y luego pulse GUARDAR VENTA."}
