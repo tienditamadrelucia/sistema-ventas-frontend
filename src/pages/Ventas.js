@@ -448,10 +448,13 @@ const Ventas = () => {
 
   if (cant > Number(stockActual)) {
     alert(
-      `Stock insuficiente.\n\n` +
+      "Stock insuficiente.\n\n" +
       `Cantidad solicitada: ${cant}\n` +
-      `Stock disponible: ${Number(stockActual).toFixed(2)}\n\n` +
-      `Puede continuar con la venta.`
+      "Stock disponible: " +
+      `${Number(stockActual).toFixed(2)}\n\n` +
+      "Puede continuar con la venta. " +
+      "Comunique la diferencia a la " +
+      "administradora para resolverla."
     );
   }
 };
@@ -832,10 +835,22 @@ const guardarOperacion = async (sinPago) => {
 
     operacionPendienteRef.current = null;
 
-    alert(
-      "Venta guardada correctamente. Factura N° " +
-      data.factura
-    );
+    const avisosInventario = Array.isArray(data.advertencias)
+  ? data.advertencias
+      .map(aviso => aviso.mensaje)
+      .filter(Boolean)
+  : [];
+
+alert(
+  "Venta guardada correctamente. Factura N° " +
+  data.factura +
+  (
+    avisosInventario.length
+      ? "\n\nALERTA DE INVENTARIO:\n" +
+        avisosInventario.join("\n\n")
+      : ""
+  )
+);
 
     try {
       await registrarAccion(

@@ -1032,6 +1032,19 @@ export default function Huevos() {
         `}
       </style>
 
+      {datos?.advertenciaInventario && (
+      <p
+       role="status"
+       style={{
+        color: "#8A4B00",
+        padding: "10px",
+        background: "#FFF8E6"
+        }}
+      >
+        {datos.advertenciaInventario}
+      </p>
+      )}
+
       <h2 style={{ textAlign: "center" }}>
         {titulos[seccion] || "PRODUCCIÓN DE HUEVOS"}
       </h2>

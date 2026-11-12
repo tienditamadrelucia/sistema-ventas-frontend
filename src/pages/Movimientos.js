@@ -150,7 +150,7 @@ const ObtenerMovimientos = async () => {
     }
     // 1. Stock inicial
     const producto = productos.find(p => p._id === formData.productoId);
-    const stockInicial = producto?.stock || 0;
+    
     // 2. Movimientos del backend
     const movimientosArray = await Consultar(
       formData.productoId,
@@ -158,6 +158,14 @@ const ObtenerMovimientos = async () => {
       formData.fechaFin,
       sede
     );
+    const stockInicial = movimientosArray.stockInicial;
+
+    if (!Number.isFinite(stockInicial)) {
+      throw new Error(
+        "No se pudo confirmar el saldo inicial de la consulta."
+      );
+    }
+    
     // 3. Transformar movimientos
     setMovimientosArray(movimientosArray);
     const movimientosTransformados = movimientosArray.map((m) => ({
