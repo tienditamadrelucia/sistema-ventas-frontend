@@ -1,15 +1,11 @@
 import { API_URL } from "../config";
 
-const API =
-  `${API_URL}/api/documentos-inventario`;
+const API = `${API_URL}/api/documentos-inventario`;
 
-// ==========================================
-// IDENTIFICADOR PARA EVITAR DUPLICAR REINTENTOS
-// ==========================================
 export function crearClaveDocumento() {
   const bytes = new Uint8Array(16);
 
-  window.crypto.getRandomValues(bytes);
+  globalThis.crypto.getRandomValues(bytes);
 
   return Array.from(
     bytes,
@@ -17,13 +13,7 @@ export function crearClaveDocumento() {
   ).join("");
 }
 
-// ==========================================
-// SOLICITUDES CON SESIÓN
-// ==========================================
-async function solicitar(
-  ruta = "",
-  opciones = {}
-) {
+async function solicitar(ruta = "", opciones = {}) {
   let res;
 
   try {
@@ -43,15 +33,9 @@ async function solicitar(
     throw error;
   }
 
-  const data = await res
-    .json()
-    .catch(() => null);
+  const data = await res.json().catch(() => null);
 
-  if (
-    !res.ok ||
-    !data ||
-    data.ok !== true
-  ) {
+  if (!res.ok || !data || data.ok !== true) {
     const error = new Error(
       data?.error ||
       data?.mensaje ||
@@ -73,11 +57,7 @@ async function solicitar(
   return data;
 }
 
-function escribir(
-  ruta,
-  metodo,
-  datos
-) {
+function escribir(ruta, metodo, datos) {
   if (
     !datos ||
     typeof datos.claveOperacion !== "string" ||
@@ -105,18 +85,12 @@ function escribir(
   });
 }
 
-// ==========================================
-// CARGAR MOTIVOS Y PERMISOS
-// ==========================================
 export function consultarOpcionesDocumentos(sede) {
   return solicitar(
     `/opciones?sede=${encodeURIComponent(sede)}`
   );
 }
 
-// ==========================================
-// LISTAR DOCUMENTOS
-// ==========================================
 export function cargarDocumentos(filtros = {}) {
   const permitidos = [
     "sede",
@@ -138,45 +112,22 @@ export function cargarDocumentos(filtros = {}) {
       valor !== null &&
       valor !== ""
     ) {
-      parametros.set(
-        campo,
-        String(valor)
-      );
+      parametros.set(campo, String(valor));
     }
   }
 
-  return solicitar(
-    `?${parametros.toString()}`
-  );
+  return solicitar(`?${parametros.toString()}`);
 }
 
-// ==========================================
-// CONSULTAR DOCUMENTO COMPLETO
-// ==========================================
 export function obtenerDocumentoInventario(id) {
-  return solicitar(
-    `/${encodeURIComponent(id)}`
-  );
+  return solicitar(`/${encodeURIComponent(id)}`);
 }
 
-// ==========================================
-// CREAR DOCUMENTO
-// ==========================================
 export function crearDocumentoInventario(datos) {
-  return escribir(
-    "",
-    "POST",
-    datos
-  );
+  return escribir("", "POST", datos);
 }
 
-// ==========================================
-// VERIFICAR O REABRIR
-// ==========================================
-export function revisarDocumentoInventario(
-  id,
-  datos
-) {
+export function revisarDocumentoInventario(id, datos) {
   return escribir(
     `/${encodeURIComponent(id)}/revision`,
     "POST",
@@ -184,15 +135,30 @@ export function revisarDocumentoInventario(
   );
 }
 
-// ==========================================
-// ELIMINAR DOCUMENTO COMPLETO
-// ==========================================
-export function eliminarDocumentoInventario(
+export function eliminarDocumentoInventario(id, datos) {
+  return escribir(
+    `/${encodeURIComponent(id)}`,
+    "DELETE",
+    datos
+  );
+}
+
+export function modificarCantidadArticuloInventario(
   id,
   datos
 ) {
   return escribir(
-    `/${encodeURIComponent(id)}`,
+    `/${encodeURIComponent(id)}/articulos/` +
+    encodeURIComponent(datos.articuloId),
+    "PATCH",
+    datos
+  );
+}
+
+export function eliminarArticuloInventario(id, datos) {
+  return escribir(
+    `/${encodeURIComponent(id)}/articulos/` +
+    encodeURIComponent(datos.articuloId),
     "DELETE",
     datos
   );

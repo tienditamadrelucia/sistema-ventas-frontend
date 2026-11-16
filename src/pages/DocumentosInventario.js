@@ -20,7 +20,9 @@ import {
   obtenerDocumentoInventario,
   crearDocumentoInventario,
   revisarDocumentoInventario,
-  eliminarDocumentoInventario
+  eliminarDocumentoInventario,
+  modificarCantidadArticuloInventario,
+  eliminarArticuloInventario
 } from "../services/documentosInventario";
 
 const filaVacia = () => ({
@@ -93,6 +95,7 @@ export default function DocumentosInventario({
 
   const [documentos, setDocumentos] = useState([]);
   const [detalle, setDetalle] = useState(null);
+  const [edicion, setEdicion] = useState(null);
   const [pagina, setPagina] = useState(1);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const [revision, setRevision] = useState(0);
@@ -363,29 +366,37 @@ export default function DocumentosInventario({
     try {
       let respuesta;
 
-      if (solicitud.accion === "GUARDAR") {
-        respuesta = await crearDocumentoInventario(
-          solicitud.datos
-        );
-      } else if (
-        solicitud.accion === "REVISAR"
-      ) {
-        respuesta = await revisarDocumentoInventario(
-          solicitud.id,
-          solicitud.datos
-        );
-      } else if (
-        solicitud.accion === "ELIMINAR"
-      ) {
-        respuesta = await eliminarDocumentoInventario(
-          solicitud.id,
-          solicitud.datos
-        );
-      } else {
-        throw new Error(
-          "La solicitud pendiente no se reconoce."
-        );
-      }
+if (solicitud.accion === "GUARDAR") {
+  respuesta = await crearDocumentoInventario(
+    solicitud.datos
+  );
+} else if (solicitud.accion === "REVISAR") {
+  respuesta = await revisarDocumentoInventario(
+    solicitud.id,
+    solicitud.datos
+  );
+} else if (solicitud.accion === "ELIMINAR") {
+  respuesta = await eliminarDocumentoInventario(
+    solicitud.id,
+    solicitud.datos
+  );
+} else if (solicitud.accion === "CANTIDAD") {
+  respuesta = await modificarCantidadArticuloInventario(
+    solicitud.id,
+    solicitud.datos
+  );
+} else if (
+  solicitud.accion === "QUITAR_ARTICULO"
+) {
+  respuesta = await eliminarArticuloInventario(
+    solicitud.id,
+    solicitud.datos
+  );
+} else {
+  throw new Error(
+    "La solicitud pendiente no se reconoce."
+  );
+}
 
       try {
         sessionStorage.removeItem(clavePendiente);
@@ -410,6 +421,7 @@ export default function DocumentosInventario({
       }
 
       setDetalle(null);
+      setEdicion(null);
       setObservacionRevision("");
       setPosibleDuplicado(false);
 
@@ -613,6 +625,7 @@ export default function DocumentosInventario({
         await obtenerDocumentoInventario(id);
 
       setDetalle(datos.documento);
+      setEdicion(null);
       setObservacionRevision("");
     } catch (e) {
       setError(e.message);
@@ -715,7 +728,87 @@ export default function DocumentosInventario({
       detalle._id
     );
   }
-    // ==========================================
+
+  const puedeCorregir =
+  detalle?.estado === "PENDIENTE" &&
+  detalle?.cierre !== "S" &&
+  (
+    esAdministrador ||
+    localStorage.getItem("rolUsuario") === "SUPERVISOR"
+  ) &&
+  (
+    detalle?.motivo !== "AJUSTE" ||
+    esAdministrador
+  );
+
+async function corregirArticulo(
+  fila,
+  quitar = false
+) {
+  if (bloqueado || !puedeCorregir) return;
+
+  const cantidad = Number(
+    String(edicion?.cantidad || "").replace(",", ".")
+  );
+
+  if (
+    !quitar &&
+    (
+      !Number.isFinite(cantidad) ||
+      cantidad <= 0
+    )
+  ) {
+    setError("Ingrese una cantidad mayor que cero.");
+    return;
+  }
+
+  if (
+    quitar &&
+    detalle.detalles.length === 1
+  ) {
+    setError(
+      "Utilice Eliminar documento completo " +
+      "para quitar el último artículo."
+    );
+    return;
+  }
+
+  const motivo = window.prompt(
+    `Indique el motivo para ${
+      quitar ? "eliminar" : "corregir"
+    } ${fila.descripcion}:`
+  );
+
+  if (motivo === null) return;
+
+  if (!motivo.trim()) {
+    setError("Indique el motivo de la corrección.");
+    return;
+  }
+
+  if (
+    quitar &&
+    !window.confirm(
+      `¿Eliminar únicamente ${fila.descripcion} ` +
+      `de ${detalle.referencia}?`
+    )
+  ) {
+    return;
+  }
+
+  await iniciar(
+    quitar ? "QUITAR_ARTICULO" : "CANTIDAD",
+    {
+      articuloId: fila._id,
+      versionEsperada: detalle.__v,
+      motivoCorreccion: motivo.trim(),
+      ...(!quitar ? { cantidad } : {})
+    },
+    detalle._id
+  );
+}
+
+  // ==========================================
   // PANTALLA
   // ==========================================
   return (
@@ -1491,8 +1584,90 @@ export default function DocumentosInventario({
                             </td>
 
                             <td style={celda}>
-                              {formato(fila.cantidad)}
-                            </td>
+                              {edicion?.id === fila._id ? (
+                                  <>
+                                    <input
+                                      aria-label={`Cantidad de ${fila.descripcion}`}
+                                      inputMode="decimal"
+                                      autoFocus
+                                      disabled={bloqueado}
+                                      style={{
+                                        ...campo,
+                                        width: "110px"
+                                      }}
+                                      value={edicion.cantidad}
+                                      onChange={e =>
+                                        setEdicion({
+                                          id: fila._id,
+                                          cantidad: e.target.value
+                                        })
+                                      }
+                                    />
+
+                                    <button
+                                      type="button"
+                                      style={boton}
+                                      disabled={bloqueado}
+                                      onClick={() => corregirArticulo(fila)}
+                                    >
+                                      GUARDAR
+                                    </button>
+
+                                    <button
+                                      type="button"
+                                      style={boton}
+                                      disabled={bloqueado}
+                                      onClick={() => setEdicion(null)}
+                                    >
+                                      CANCELAR
+                                    </button>
+                                  </>
+                                ) : (
+                                  <>
+                                    {formato(fila.cantidad)}
+
+                                    {puedeCorregir && (
+                                      <>
+                                        <button
+                                          type="button"
+                                          style={boton}
+                                          disabled={bloqueado}
+                                          onClick={() =>
+                                            setEdicion({
+                                              id: fila._id,
+                                              cantidad: String(fila.cantidad)
+                                            })
+                                          }
+                                        >
+                                          MODIFICAR
+                                        </button>
+
+                                        <button
+                                          type="button"
+                                          style={{
+                                            ...boton,
+                                            background: "#A64242"
+                                          }}
+                                          disabled={
+                                            bloqueado ||
+                                            detalle.detalles.length === 1
+                                          }
+                                          title={
+                                            detalle.detalles.length === 1
+                                              ? "Utilice Eliminar documento completo"
+                                              : "Eliminar este artículo"
+                                          }
+                                          onClick={() =>
+                                            corregirArticulo(fila, true)
+                                          }
+                                        >
+                                          ELIMINAR
+                                        </button>
+                                      </>
+                                    )}
+                                  </>
+                                )}
+                              </td>
                           </tr>
                         ))}
                       </tbody>
