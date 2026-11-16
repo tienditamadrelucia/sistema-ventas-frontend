@@ -5,7 +5,7 @@ const API = `${API_URL}/api/documentos-inventario`;
 export function crearClaveDocumento() {
   const bytes = new Uint8Array(16);
 
-  globalThis.crypto.getRandomValues(bytes);
+  window.crypto.getRandomValues(bytes);
 
   return Array.from(
     bytes,
