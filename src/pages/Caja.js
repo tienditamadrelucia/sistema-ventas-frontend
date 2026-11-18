@@ -180,117 +180,72 @@ const Caja = () => {
     });
     };    
 
-  const verificarFecha = async () => {
-    if (!fecha) {
-        alert("Debe seleccionar una fecha");
-        return;
-    }
-    const fechaFormateada = obtenerFechaVenezuela();
-    registrarAccion("Consultó datos del Cuadre de Caja del día");
-    const res = await fetch(
-      `${API_URL}/api/caja/${fechaFormateada}?sede=${encodeURIComponent(sede)}`
-    );
-    const data = await res.json();
-    const existe = data.existe === true;
-    // NO EXISTE → CREAR
-    if (!existe) {
-        alert("No existe un cuadre para esta fecha. Se creará uno nuevo.");
-        setModo("crear");
-        // cargar datos del día
-        cargarDatosDelDia(fechaFormateada);
-        // billetes vacíos
-        setBilletesP({});
-        setBilletesD({});
-        setBilletesBs({});
-        return;
-    }
-    // EXISTE → PREGUNTAR
-    const confirmar = window.confirm(
-    "Ya existe un cuadre para esta fecha.\n¿Desea modificarlo?"
-    );
-    // NO MODIFICAR → LECTURA
-    if (!confirmar) {
-  setModo("lectura");
-
-  const c = data.cuadre;
-
-  // Cargar caja, ventas, gastos, esperado
-  setCuadre({
-    CajaChicaP: c.cajaChica.P,
-    CajaChicaD: c.cajaChica.D,
-    CajaChicaBs: c.cajaChica.Bs,
-
-    VentasP: c.ventas.P,
-    VentasD: c.ventas.D,
-    VentasBs: c.ventas.Bs,
-
-    GastosP: c.gastos.P,
-    GastosD: c.gastos.D,
-    GastosBs: c.gastos.Bs,
-
-    totalEsperadoP: c.esperado.P,
-    totalEsperadoD: c.esperado.D,
-    totalEsperadoBs: c.esperado.Bs,
-    tasaP: c.tasaP,
-    tasaD: c.tasaD
-  });
-
-  // ⭐ DIFERENCIAS GUARDADAS
-  setDiferenciaP(c.diferencia.P);
-  setDiferenciaD(c.diferencia.D);
-  setDiferenciaBs(c.diferencia.Bs);
-
-  // ⭐ COMPENSACIÓN GUARDADA
-  setDifP(c.compensacion.P);
-  setDifD(c.compensacion.D);
-
-  // ⭐ Mostrar compensación si existe
-  setMostrarCompensacion(
-    c.compensacion.P !== 0 || c.compensacion.D !== 0
-  );
-
-  // Billetes guardados
-  setBilletesP(c.billetes.P || {});
-  setBilletesD(c.billetes.D || {});
-  setBilletesBs(c.billetes.Bs || {});
-
-  return;
-}
-    // SÍ MODIFICAR
-    setModo("modificar");
-    const c = data.cuadre;
-    setIdCuadre(c._id);
-    setCuadre(c)
-    setBilletesP(c.billetes.P || {});
-    setBilletesD(c.billetes.D || {});
-    setBilletesBs(c.billetes.Bs || {});
-    // recalcular ventas/gastos/caja chica
-    cargarDatosDelDia(fechaFormateada);
-    };  
-
-  const cargarDatosDelDia = async (fechaFormateada) => {
+  
+const verificarFecha = async () => {
+  if (!fecha) {
+    alert("Debe seleccionar una fecha");
+    return;
+  }
   try {
-    if (modo === "lectura") {
-      console.log("Modo lectura: no se recalculan ventas ni gastos.");
+    registrarAccion("Consultó datos del Cuadre de Caja del día");
+    const res = await fetch(`${API_URL}/api/caja/${fecha}?sede=${encodeURIComponent(sede)}`);
+    const respuesta = await res.json();
+    if (!res.ok) throw new Error(respuesta.error || "Error consultando caja");
+    const registros = Array.isArray(respuesta) ? respuesta : respuesta.cuadre ? [respuesta.cuadre] : [];
+    const c = registros.find(r => r.cajaChica && r.billetes) || null;
+    if (!c) {
+      alert("No existe un cuadre para esta fecha. Se creará uno nuevo.");
+      setModo("crear");
+      setIdCuadre(null);
+      setBilletesP({});
+      setBilletesD({});
+      setBilletesBs({});
+      setCuadre(prev => ({
+        ...prev,
+        CajaChicaP: 0, CajaChicaD: 0, CajaChicaBs: 0,
+        VentasP: 0, VentasD: 0, VentasBs: 0,
+        GastosP: 0, GastosD: 0, GastosBs: 0,
+        totalEsperadoP: 0, totalEsperadoD: 0, totalEsperadoBs: 0
+      }));
       return;
     }
-
-    console.log("Cargando datos del día…", fechaFormateada);
-
-    // 1. Caja chica y tasas
-    await cargarCajaChica(fechaFormateada);
-
-    // 2. Ventas
-    await cargarVentas(fechaFormateada);
-
-    // 3. Gastos
-    await cargarGastos(fechaFormateada);
-
+    const confirmar = window.confirm("Ya existe un cuadre para esta fecha.\n¿Desea modificarlo?");
+    setIdCuadre(c._id);
+    setCuadre({
+      CajaChicaP: c.cajaChica?.P || 0,
+      CajaChicaD: c.cajaChica?.D || 0,
+      CajaChicaBs: c.cajaChica?.Bs || 0,
+      VentasP: c.ventas?.P || 0,
+      VentasD: c.ventas?.D || 0,
+      VentasBs: c.ventas?.Bs || 0,
+      GastosP: c.gastos?.P || 0,
+      GastosD: c.gastos?.D || 0,
+      GastosBs: c.gastos?.Bs || 0,
+      totalEsperadoP: c.esperado?.P || 0,
+      totalEsperadoD: c.esperado?.D || 0,
+      totalEsperadoBs: c.esperado?.Bs || 0,
+      tasaP: c.tasaP || 0,
+      tasaD: c.tasaD || 0
+    });
+    setBilletesP(c.billetes?.P || {});
+    setBilletesD(c.billetes?.D || {});
+    setBilletesBs(c.billetes?.Bs || {});
+    setDiferenciaP(c.diferencia?.P || 0);
+    setDiferenciaD(c.diferencia?.D || 0);
+    setDiferenciaBs(c.diferencia?.Bs || 0);
+    setDifP(c.compensacion?.P || 0);
+    setDifD(c.compensacion?.D || 0);
+    setMostrarCompensacion(
+      (c.compensacion?.P || 0) !== 0 ||
+      (c.compensacion?.D || 0) !== 0
+    );
+    setModo(confirmar ? "modificar" : "lectura");
   } catch (error) {
-    console.error("ERROR EN FRONTEND:", error);
-    alert("Error consultando datos del día.");
+    console.error("ERROR CONSULTANDO CUADRE:", error);
+    alert(error.message);
   }
 };
+
 
   const cargarCajaChica = async (fechaFormateada) => {
   try {
