@@ -310,7 +310,7 @@ if (productosCompletos) {
         // Si no sabemos si se guardó, conservamos la misma
         // solicitud y el mismo identificador para reintentar.
         if (
-          [400, 401, 403, 404, 422, 423].includes(error.status)
+          [400, 401, 403, 404, 409, 422, 423].includes(error.status)
         ) {
           setPendiente(null);
         }
