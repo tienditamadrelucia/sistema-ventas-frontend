@@ -11,7 +11,7 @@ import {
 
 import Encabezado from "../components/Encabezado";
 import { API_URL } from "../config";
-
+import ConciliacionHuevos from "./ConciliacionHuevos";
 import {
   obtenerFechaVenezuela
 } from "../utils/fechaVenezuela";
@@ -45,7 +45,8 @@ const titulos = {
   consumo: "CONSUMO INTERNO DE HUEVOS",
   envios: "ENVIAR HUEVOS A TIENDITA",
   recepcion: "RECIBIR HUEVOS DEL MONASTERIO",
-  resumen: "RESUMEN DE PRODUCCIÓN DE HUEVOS"
+  resumen: "RESUMEN DE PRODUCCIÓN DE HUEVOS",
+  conciliacion: "CONCILIACIÓN DE INVENTARIO"
 };
 
 const fechaHoy = () =>
@@ -136,11 +137,11 @@ export default function Huevos() {
     localStorage.getItem("sede") || "TIENDITA";
 
   const sede =
-    seccion === "recepcion"
-      ? "TIENDITA"
-      : seccion === "consumo"
-        ? sedeUsuario
-        : "MONASTERIO";
+  seccion === "recepcion"
+    ? "TIENDITA"
+    : ["consumo", "conciliacion"].includes(seccion)
+      ? sedeUsuario
+      : "MONASTERIO";
 
   const esMonasterio = sede === "MONASTERIO";
 
@@ -1056,13 +1057,12 @@ export default function Huevos() {
         }}
       >
         {Object.entries(titulos)
-          .filter(
-            ([clave]) =>
-              (clave !== "resumen" || esAdmin) &&
-              (
-                sedeUsuario === "MONASTERIO" ||
-                ["recepcion", "consumo", "resumen"].includes(clave)
-              )
+          .filter(([clave]) =>
+            (!["resumen", "conciliacion"].includes(clave) || esAdmin) &&
+            (
+              sedeUsuario === "MONASTERIO" ||
+              ["recepcion", "consumo", "resumen", "conciliacion"].includes(clave)
+            )
           )
           .map(([clave, titulo]) => (
             <button
@@ -1178,7 +1178,7 @@ export default function Huevos() {
         (
           !datos.configuracion
             ? esAdmin
-            : seccion !== "resumen"
+            : !["resumen", "conciliacion"].includes(seccion)
         ) && (
           <form noValidate onSubmit={guardar}>
             <fieldset
@@ -2075,6 +2075,21 @@ export default function Huevos() {
           </div>
         </>
       )}
+      {/* CONCILIACIÓN ADMINISTRATIVA */}
+        {seccion === "conciliacion" && (
+          esAdmin ? (
+          datos?.configuracion && !pendiente && !cargando && (
+        <ConciliacionHuevos
+          key={sede}
+          sede={sede}
+          alGuardar={() => setRevision(actual => actual + 1)}
+        />
+          )
+        ) : (
+          <p>Esta operación es exclusiva del administrador.</p>
+        )
+      )}
+
             {/* INFORME ADMINISTRATIVO */}
       {seccion === "resumen" && (
         esAdmin ? (
