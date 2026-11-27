@@ -523,10 +523,11 @@ export default function RecibirEnvioLote() {
   }
 
   const bloqueado = guardando || Boolean(pendiente);
+
     return (
     <div style={{ padding: "20px" }}>
-      <Encabezado />
-
+      <Encabezado />   
+        
       <h2 style={{ textAlign: "center" }}>
         RECIBIR PRODUCCIÓN DEL MONASTERIO
       </h2>
@@ -1051,21 +1052,19 @@ export default function RecibirEnvioLote() {
         </form>
       )}
 
-      <HistorialRecepcionesPollos revision={revision} />
+      <div style={{ textAlign: "right", margin: "15px 0" }}>
+          <button
+            type="button"
+            style={{ ...boton, backgroundColor: "#FC9E9B" }}
+            disabled={guardando}
+            onClick={() => navigate("/menu")}
+          >
+            VOLVER AL MENÚ
+          </button>
+        </div>
 
-      <div style={{ textAlign: "center", marginTop: "20px" }}>
-        <button
-          type="button"
-          style={{
-            ...boton,
-            backgroundColor: "#FC9E9B"
-          }}
-          disabled={guardando}
-          onClick={() => navigate("/menu")}
-        >
-          VOLVER AL MENÚ
-        </button>
-      </div>
+      <HistorialRecepcionesPollos revision={revision} />
+      
     </div>
   );
 }
