@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Encabezado from "../components/Encabezado";
+import HistorialRecepcionesPollos from "../components/HistorialRecepcionesPollos";
 import { API_URL } from "../config";
 import { obtenerFechaVenezuela } from "../utils/fechaVenezuela";
 import {
@@ -1049,6 +1050,8 @@ export default function RecibirEnvioLote() {
           </div>
         </form>
       )}
+
+      <HistorialRecepcionesPollos revision={revision} />
 
       <div style={{ textAlign: "center", marginTop: "20px" }}>
         <button
