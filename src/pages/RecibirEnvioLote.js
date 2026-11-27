@@ -1052,7 +1052,7 @@ export default function RecibirEnvioLote() {
         </form>
       )}
 
-      <div style={{ textAlign: "right", margin: "15px 0" }}>
+      <div style={{ textAlign: "center", marginTop: "20px" }}>
           <button
             type="button"
             style={{ ...boton, backgroundColor: "#FC9E9B" }}
@@ -1064,7 +1064,7 @@ export default function RecibirEnvioLote() {
         </div>
 
       <HistorialRecepcionesPollos revision={revision} />
-      
+
     </div>
   );
 }
